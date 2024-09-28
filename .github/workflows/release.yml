@@ -5,6 +5,7 @@ on:
   push:
     tags:
       - v*
+      - rocm-*
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -15,7 +16,7 @@ env:
 
 jobs:
   release:
-    if: github.repository == 'ROCm/omnitrace'
+    if: github.repository == 'ROCm/rocprofiler-systems'
     runs-on: ubuntu-20.04
     permissions:
       contents: write

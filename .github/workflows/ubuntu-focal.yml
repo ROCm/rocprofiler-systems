@@ -3,7 +3,7 @@ run-name: ubuntu-focal
 
 on:
   push:
-    branches: [ main, develop, amd-mainline, amd-staging, release/** ]
+    branches: [ amd-mainline, amd-staging, release/** ]
     paths-ignore:
       - '*.md'
       - 'docs/**'
@@ -15,7 +15,7 @@ on:
       - '.github/workflows/formatting.yml'
       - 'docker/**'
   pull_request:
-    branches: [ main, develop, amd-mainline, amd-staging, release/** ]
+    branches: [ amd-mainline, amd-staging, release/** ]
     paths-ignore:
       - '*.md'
       - 'docs/**'
@@ -243,7 +243,7 @@ jobs:
       fail-fast: false
       matrix:
         compiler: ['g++']
-        rocm-version: ['5.4', '5.5', '5.6']
+        rocm-version: ['6.2']
         mpi-headers: ['OFF']
         build-jobs: ['3']
         ctest-exclude: ['-LE "mpi-example|transpose"']

@@ -3,7 +3,7 @@ run-name: opensuse-15
 
 on:
   push:
-    branches: [ main, develop, amd-mainline, amd-staging, release/** ]
+    branches: [ amd-mainline, amd-staging, release/** ]
     paths-ignore:
       - '*.md'
       - 'docs/**'
