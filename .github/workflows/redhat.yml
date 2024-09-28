@@ -3,7 +3,7 @@ run-name: redhat
 
 on:
   push:
-    branches: [ main, develop, amd-mainline, amd-staging, release/** ]
+    branches: [ amd-mainline, amd-staging, release/** ]
     paths-ignore:
       - '*.md'
       - 'docs/**'
@@ -15,7 +15,7 @@ on:
       - '.github/workflows/formatting.yml'
       - 'docker/**'
   pull_request:
-    branches: [ main, develop, amd-mainline, amd-staging, release/** ]
+    branches: [ amd-mainline, amd-staging, release/** ]
     paths-ignore:
       - '*.md'
       - 'docs/**'
@@ -44,18 +44,9 @@ jobs:
       fail-fast: false
       matrix:
         compiler: ['g++']
-        os-release: [ '8.7', '9.0', '9.1' ]
-        rocm-version: [ '0.0', '5.3', '5.4' ]
+        os-release: [ '8.8', '8.10', '9.2', '9.4' ]
+        rocm-version: [ '0.0', '6.2' ]
         build-type: ['Release']
-        include:
-            - compiler: 'g++'
-              os-release: '9.1'
-              rocm-version: '5.5'
-              build-type: 'Release'
-            - compiler: 'g++'
-              os-release: '9.1'
-              rocm-version: '5.6'
-              build-type: 'Release'
 
     steps:
     - uses: actions/checkout@v4
@@ -110,7 +101,7 @@ jobs:
           -DCMAKE_C_COMPILER=$(echo '${{ matrix.compiler }}' | sed 's/+/c/g')
           -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
-          -DCMAKE_INSTALL_PREFIX=/opt/omnitrace
+          -DCMAKE_INSTALL_PREFIX=/opt/rocprof-sys
           -DOMNITRACE_BUILD_TESTING=ON
           -DOMNITRACE_USE_MPI=OFF
           -DOMNITRACE_USE_HIP=${USE_HIP}
@@ -137,14 +128,14 @@ jobs:
       shell: bash
       run: |
         set -v
-        source /opt/omnitrace/share/omnitrace/setup-env.sh
+        source /opt/rocprof-sys/share/omnitrace/setup-env.sh
         ./scripts/test-install.sh --test-omnitrace-{instrument,avail,sample,rewrite,runtime,python}=1
 
     - name: Test User API
       timeout-minutes: 10
       run: |
         set -v
-        ./scripts/test-find-package.sh --install-dir /opt/omnitrace
+        ./scripts/test-find-package.sh --install-dir /opt/rocprof-sys
 
     - name: CTest Artifacts
       if: failure()
