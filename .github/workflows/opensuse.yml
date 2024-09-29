@@ -39,7 +39,7 @@ jobs:
   opensuse:
     runs-on: ubuntu-20.04
     container:
-      image: jrmadsen/omnitrace:ci-base-opensuse-${{ matrix.os-release }}
+      image: dgaliffiamd/rocprof-sys:ci-base-opensuse-${{ matrix.os-release }}
     strategy:
       fail-fast: false
       matrix:
