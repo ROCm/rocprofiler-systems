@@ -39,7 +39,7 @@ jobs:
   rhel:
     runs-on: ubuntu-20.04
     container:
-      image: jrmadsen/omnitrace:ci-base-rhel-${{ matrix.os-release }}
+      image: dgaliffiamd/rocprof-sys:ci-base-rhel-${{ matrix.os-release }}
     strategy:
       fail-fast: false
       matrix:

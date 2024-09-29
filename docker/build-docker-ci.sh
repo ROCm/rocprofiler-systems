@@ -6,7 +6,7 @@ set -e
 : ${DISTRO:=ubuntu}
 : ${VERSIONS:=20.04}
 : ${NJOBS=$(nproc)}
-: ${ELFUTILS_VERSION:=0.186}
+: ${ELFUTILS_VERSION:=0.188}
 : ${BOOST_VERSION:=1.79.0}
 : ${PYTHON_VERSIONS:="6 7 8 9 10 11 12"}
 : ${PUSH:=0}
@@ -142,7 +142,7 @@ set -e
 if [ "${DISTRO}" = "opensuse" ]; then
     DISTRO_IMAGE="opensuse/leap"
 elif [ "${DISTRO}" = "rhel" ]; then
-    DISTRO_IMAGE="rockylinux"
+    DISTRO_IMAGE="rockylinux/rockylinux"
 else
     DISTRO_IMAGE=${DISTRO}
 fi
@@ -152,7 +152,7 @@ do
     verbose-run docker build . \
         ${PULL} \
         -f ${DOCKER_FILE} \
-        --tag ${USER}/omnitrace:ci-base-${DISTRO}-${VERSION} \
+        --tag ${USER}/rocprof-sys:ci-base-${DISTRO}-${VERSION} \
         --build-arg DISTRO=${DISTRO_IMAGE} \
         --build-arg VERSION=${VERSION} \
         --build-arg NJOBS=${NJOBS} \
@@ -164,7 +164,7 @@ done
 if [ "${PUSH}" -gt 0 ]; then
     for VERSION in ${VERSIONS}
     do
-        verbose-run docker push ${USER}/omnitrace:ci-base-${DISTRO}-${VERSION}
+        verbose-run docker push ${USER}/rocprof-sys:ci-base-${DISTRO}-${VERSION}
     done
 fi
 
