@@ -367,14 +367,15 @@ Here is the full output from the previous
    OMNITRACE_USE_ROCTRACER=false
    OMNITRACE_USE_ROCTX=false
    OMNITRACE_USE_SAMPLING=true
-   [rocprof-sys][dl][1785877] rocprof-sys_main
-   [rocprof-sys][1785877][rocprof-sys_init_tooling] Instrumentation mode: Sampling
-       ______   .___  ___. .__   __.  __  .___________..______          ___       ______  _______
-      /  __  \  |   \/   | |  \ |  | |  | |           ||   _  \        /   \     /      ||   ____|
-     |  |  |  | |  \  /  | |   \|  | |  | `---|  |----`|  |_)  |      /  ^  \   |  ,----'|  |__
-     |  |  |  | |  |\/|  | |  . `  | |  |     |  |     |      /      /  /_\  \  |  |     |   __|
-     |  `--'  | |  |  |  | |  |\   | |  |     |  |     |  |\  \----./  _____  \ |  `----.|  |____
-      \______/  |__|  |__| |__| \__| |__|     |__|     | _| `._____/__/     \__\ \______||_______|
+   [rocprof-sys][dl][1785877] rocprofsys_main
+   [rocprof-sys][1785877][rocprofsys_init_tooling] Instrumentation mode: Sampling
+                                                     __
+       _ __    ___     ___   _ __    _ __    ___    / _|          ___   _   _   ___
+      | '__|  / _ \   / __| | '_ \  | '__|  / _ \  | |_   _____  / __| | | | | / __|
+      | |    | (_) | | (__  | |_) | | |    | (_) | |  _| |_____| \__ \ | |_| | \__ \
+      |_|     \___/   \___| | .__/  |_|     \___/  |_|           |___/  \__, | |___/
+                            |_|                                         |___/
+
       rocprof-sys v1.11.2 (rev: 2586b74db8bf335742600010b8d9f1ce8da9cf89, compiler: GNU v11.4.1, rocm: v6.1.x)
    [988.958]       perfetto.cc:58649 Configured tracing session 1, #sources:1, duration:0 ms, #buffers:1, total buffer size:1024000 KB, total sessions:1, uid:0 session name: ""
    [parallel-overhead-locks] Threads: 4
@@ -386,19 +387,19 @@ Here is the full output from the previous
    [4] number of iterations: 100
    [parallel-overhead-locks] fibonacci(30) x 4 = 409221992
    [parallel-overhead-locks] number of mutex locks = 400
-   [rocprof-sys][1785877][0][rocprof-sys_finalize] finalizing...
-   [rocprof-sys][1785877][0][rocprof-sys_finalize]
-   [rocprof-sys][1785877][0][rocprof-sys_finalize] rocprof-sys/process/1785877 : 0.294342 sec wall_clock,    4.776 MB peak_rss,    3.170 MB page_rss, 0.990000 sec cpu_clock,  336.3 % cpu_util [laps: 1]
-   [rocprof-sys][1785877][0][rocprof-sys_finalize] rocprof-sys/process/1785877/thread/0 : 0.291535 sec wall_clock, 0.002619 sec thread_cpu_clock,    0.9 % thread_cpu_util,    4.776 MB peak_rss [laps: 1]
-   [rocprof-sys][1785877][0][rocprof-sys_finalize] rocprof-sys/process/1785877/thread/1 : 0.271353 sec wall_clock, 0.222572 sec thread_cpu_clock,   82.0 % thread_cpu_util,    4.200 MB peak_rss [laps: 1]
-   [rocprof-sys][1785877][0][rocprof-sys_finalize] rocprof-sys/process/1785877/thread/2 : 0.238218 sec wall_clock, 0.206405 sec thread_cpu_clock,   86.6 % thread_cpu_util,    3.432 MB peak_rss [laps: 1]
-   [rocprof-sys][1785877][0][rocprof-sys_finalize] rocprof-sys/process/1785877/thread/3 : 0.209459 sec wall_clock, 0.193415 sec thread_cpu_clock,   92.3 % thread_cpu_util,    2.472 MB peak_rss [laps: 1]
-   [rocprof-sys][1785877][0][rocprof-sys_finalize] rocprof-sys/process/1785877/thread/4 : 0.212029 sec wall_clock, 0.211694 sec thread_cpu_clock,   99.8 % thread_cpu_util,    1.152 MB peak_rss [laps: 1]
-   [rocprof-sys][1785877][0][rocprof-sys_finalize]
-   [rocprof-sys][1785877][0][rocprof-sys_finalize] Finalizing perfetto...
+   [rocprof-sys][1785877][0][rocprofsys_finalize] finalizing...
+   [rocprof-sys][1785877][0][rocprofsys_finalize]
+   [rocprof-sys][1785877][0][rocprofsys_finalize] rocprof-sys/process/1785877 : 0.294342 sec wall_clock,    4.776 MB peak_rss,    3.170 MB page_rss, 0.990000 sec cpu_clock,  336.3 % cpu_util [laps: 1]
+   [rocprof-sys][1785877][0][rocprofsys_finalize] rocprof-sys/process/1785877/thread/0 : 0.291535 sec wall_clock, 0.002619 sec thread_cpu_clock,    0.9 % thread_cpu_util,    4.776 MB peak_rss [laps: 1]
+   [rocprof-sys][1785877][0][rocprofsys_finalize] rocprof-sys/process/1785877/thread/1 : 0.271353 sec wall_clock, 0.222572 sec thread_cpu_clock,   82.0 % thread_cpu_util,    4.200 MB peak_rss [laps: 1]
+   [rocprof-sys][1785877][0][rocprofsys_finalize] rocprof-sys/process/1785877/thread/2 : 0.238218 sec wall_clock, 0.206405 sec thread_cpu_clock,   86.6 % thread_cpu_util,    3.432 MB peak_rss [laps: 1]
+   [rocprof-sys][1785877][0][rocprofsys_finalize] rocprof-sys/process/1785877/thread/3 : 0.209459 sec wall_clock, 0.193415 sec thread_cpu_clock,   92.3 % thread_cpu_util,    2.472 MB peak_rss [laps: 1]
+   [rocprof-sys][1785877][0][rocprofsys_finalize] rocprof-sys/process/1785877/thread/4 : 0.212029 sec wall_clock, 0.211694 sec thread_cpu_clock,   99.8 % thread_cpu_util,    1.152 MB peak_rss [laps: 1]
+   [rocprof-sys][1785877][0][rocprofsys_finalize]
+   [rocprof-sys][1785877][0][rocprofsys_finalize] Finalizing perfetto...
    [rocprof-sys][1785877][perfetto]> Outputting '/home/user/code/rocprof-sys/build-release/rocprof-sys-output/2024-07-15_16.21/parallel-overhead-locksperfetto-trace-1785877.proto' (39.12 KB / 0.04 MB / 0.00 GB)... Done
    [rocprof-sys][1785877][wall_clock]> Outputting 'rocprof-sys-output/2024-07-15_16.21/parallel-overhead-lockswall_clock-1785877.json'
    [rocprof-sys][1785877][wall_clock]> Outputting 'rocprof-sys-output/2024-07-15_16.21/parallel-overhead-lockswall_clock-1785877.txt'
    [rocprof-sys][1785877][metadata]> Outputting 'rocprof-sys-output/2024-07-15_16.21/parallel-overhead-locksmetadata-1785877.json' and 'rocprof-sys-output/2024-07-15_16.21/parallel-overhead-locksfunctions-1785877.json'
-   [rocprof-sys][1785877][0][rocprof-sys_finalize] Finalized: 0.054582 sec wall_clock,    0.000 MB peak_rss,   -1.798 MB page_rss, 0.040000 sec cpu_clock,   73.3 % cpu_util
+   [rocprof-sys][1785877][0][rocprofsys_finalize] Finalized: 0.054582 sec wall_clock,    0.000 MB peak_rss,   -1.798 MB page_rss, 0.040000 sec cpu_clock,   73.3 % cpu_util
    [989.312]       perfetto.cc:60128 Tracing session 1 ended, total sessions:0
