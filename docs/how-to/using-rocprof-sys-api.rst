@@ -6,7 +6,7 @@
 Using the ROCm Profiler Systems API
 ****************************************************
 
-The following example shows how a program can use the ROCm Systems Profiler API 
+The following example shows how a program can use the ROCm Systems Profiler API
 for run-time analysis.
 
 ROCm Systems Profiler user API example program
@@ -14,19 +14,19 @@ ROCm Systems Profiler user API example program
 
 You can use the ROCm Systems Profiler API to define custom regions to profile and trace.
 The following C++ program demonstrates this technique by calling several functions from the
-ROCm Systems Profiler API, such as ``rocprof-sys_user_push_region`` and
-``rocprof-sys_user_stop_thread_trace``.
+ROCm Systems Profiler API, such as ``rocprofsys_user_push_region`` and
+``rocprofsys_user_stop_thread_trace``.
 
 .. note::
 
-   By default, when ROCm Systems Profiler detects any ``rocprof-sys_user_start_*`` or
-   ``rocprof-sys_user_stop_*`` function, instrumentation
-   is disabled at start up, which means ``rocprof-sys_user_stop_trace()`` is not
+   By default, when ROCm Systems Profiler detects any ``rocprofsys_user_start_*`` or
+   ``rocprofsys_user_stop_*`` function, instrumentation
+   is disabled at start up, which means ``rocprofsys_user_stop_trace()`` is not
    required at the beginning of ``main``. This behavior
    can be manually controlled by using the ``OMNITRACE_INIT_ENABLED`` environment variable.
    User-defined regions are always
-   recorded, regardless of whether ``rocprof-sys_user_start_*`` or
-   ``rocprof-sys_user_stop_*`` has been called.
+   recorded, regardless of whether ``rocprofsys_user_start_*`` or
+   ``rocprofsys_user_stop_*`` has been called.
 
 .. code-block:: shell
 
@@ -57,52 +57,52 @@ ROCm Systems Profiler API, such as ``rocprof-sys_user_push_region`` and
 
    namespace
    {
-   rocprof-sys_user_callbacks_t custom_callbacks   = OMNITRACE_USER_CALLBACKS_INIT;
-   rocprof-sys_user_callbacks_t original_callbacks = OMNITRACE_USER_CALLBACKS_INIT;
+   rocprofsys_user_callbacks_t custom_callbacks   = OMNITRACE_USER_CALLBACKS_INIT;
+   rocprofsys_user_callbacks_t original_callbacks = OMNITRACE_USER_CALLBACKS_INIT;
    }  // namespace
 
    int
    main(int argc, char** argv)
    {
       custom_callbacks.push_region = &custom_push_region;
-      rocprof-sys_user_configure(OMNITRACE_USER_UNION_CONFIG, custom_callbacks,
+      rocprofsys_user_configure(OMNITRACE_USER_UNION_CONFIG, custom_callbacks,
                               &original_callbacks);
 
-      rocprof-sys_user_push_region(argv[0]);
-      rocprof-sys_user_push_region("initialization");
+      rocprofsys_user_push_region(argv[0]);
+      rocprofsys_user_push_region("initialization");
       size_t nthread = std::min<size_t>(16, std::thread::hardware_concurrency());
       size_t nitr    = 50000;
       long   nfib    = 10;
       if(argc > 1) nfib = atol(argv[1]);
       if(argc > 2) nthread = atol(argv[2]);
       if(argc > 3) nitr = atol(argv[3]);
-      rocprof-sys_user_pop_region("initialization");
+      rocprofsys_user_pop_region("initialization");
 
       printf("[%s] Threads: %zu\n[%s] Iterations: %zu\n[%s] fibonacci(%li)...\n", argv[0],
             nthread, argv[0], nitr, argv[0], nfib);
 
-      rocprof-sys_user_push_region("thread_creation");
+      rocprofsys_user_push_region("thread_creation");
       std::vector<std::thread> threads{};
       threads.reserve(nthread);
       // disable instrumentation for child threads
-      rocprof-sys_user_stop_thread_trace();
+      rocprofsys_user_stop_thread_trace();
       for(size_t i = 0; i < nthread; ++i)
       {
          threads.emplace_back(&run, nitr, nfib);
       }
       // re-enable instrumentation
-      rocprof-sys_user_start_thread_trace();
-      rocprof-sys_user_pop_region("thread_creation");
+      rocprofsys_user_start_thread_trace();
+      rocprofsys_user_pop_region("thread_creation");
 
-      rocprof-sys_user_push_region("thread_wait");
+      rocprofsys_user_push_region("thread_wait");
       for(auto& itr : threads)
          itr.join();
-      rocprof-sys_user_pop_region("thread_wait");
+      rocprofsys_user_pop_region("thread_wait");
 
       run(nitr, nfib);
 
       printf("[%s] fibonacci(%li) x %lu = %li\n", argv[0], nfib, nthread, total.load());
-      rocprof-sys_user_pop_region(argv[0]);
+      rocprofsys_user_pop_region(argv[0]);
 
       return 0;
    }
@@ -121,12 +121,12 @@ ROCm Systems Profiler API, such as ``rocprof-sys_user_push_region`` and
    void
    run(size_t nitr, long n)
    {
-      rocprof-sys_user_push_region(RUN_LABEL);
+      rocprofsys_user_push_region(RUN_LABEL);
       long local = 0;
       for(size_t i = 0; i < nitr; ++i)
          local += fib(n);
       total += local;
-      rocprof-sys_user_pop_region(RUN_LABEL);
+      rocprofsys_user_pop_region(RUN_LABEL);
    }
 
    int
@@ -144,13 +144,13 @@ ROCm Systems Profiler API, such as ``rocprof-sys_user_push_region`` and
          char    _buff[1024];
          if(_err != 0) _msg = strerror_r(_err, _buff, sizeof(_buff));
 
-         rocprof-sys_annotation_t _annotations[] = {
+         rocprofsys_annotation_t _annotations[] = {
                { "errno", OMNITRACE_INT32, &_err }, { "strerror", OMNITRACE_STRING, _msg }
          };
 
          errno = 0;  // reset errno
          return (*original_callbacks.push_annotated_region)(
-               name, _annotations, sizeof(_annotations) / sizeof(rocprof-sys_annotation_t));
+               name, _annotations, sizeof(_annotations) / sizeof(rocprofsys_annotation_t));
       }
 
       return (*original_callbacks.push_region)(name);
@@ -192,7 +192,7 @@ First, instrument and run the program.
    ...
    $ rocprof-sys-run --profile --use-pid off --time-output off -- ./user-api.inst 20 4 100
    Pushing custom region :: ./user-api.inst
-   [rocprof-sys][rocprof-sys_init_tooling] Instrumentation mode: Trace
+   [rocprof-sys][rocprofsys_init_tooling] Instrumentation mode: Trace
 
 
        ______   .___  ___. .__   __.  __  .___________..______          ___       ______  _______
@@ -216,7 +216,7 @@ First, instrument and run the program.
    Pushing custom region :: run(20) x 100
    Pushing custom region :: run(20) x 100
    [./user-api.inst] fibonacci(20) x 4 = 3382500
-   [rocprof-sys][86267][0][rocprof-sys_finalize] finalizing...
+   [rocprof-sys][86267][0][rocprofsys_finalize] finalizing...
 
 
    [rocprof-sys][86267][0] rocprof-sys : 5.190895 sec wall_clock,    2.748 mb peak_rss, 6.330000 sec cpu_clock,  121.9 % cpu_util [laps: 1]
@@ -232,7 +232,7 @@ First, instrument and run the program.
    [rocprof-sys][wall_clock]|0> Outputting 'rocprof-sys-user-api.inst-output/wall_clock.txt'...
 
    [rocprof-sys][manager::finalize][metadata]> Outputting 'rocprof-sys-user-api.inst-output/metadata.json' and 'rocprof-sys-user-api.inst-output/functions.json'...
-   [rocprof-sys][86267][0][rocprof-sys_finalize] Finalized
+   [rocprof-sys][86267][0][rocprofsys_finalize] Finalized
 
 Then review the output.
 
