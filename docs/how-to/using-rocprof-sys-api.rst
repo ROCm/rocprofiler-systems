@@ -1,31 +1,32 @@
 .. meta::
-   :description: Omnitrace documentation and reference
-   :keywords: Omnitrace, ROCm, profiler, tracking, visualization, tool, Instinct, accelerator, AMD
+   :description: ROCm Systems Profiler documentation and reference
+   :keywords: rocprof-sys, rocprofiler-systems, ROCm, profiler, tracking, visualization, tool, Instinct, accelerator, AMD
 
 ****************************************************
-Using the Omnitrace API
+Using the ROCm Profiler Systems API
 ****************************************************
 
-The following example shows how a program can use the Omnitrace API for run-time analysis.
+The following example shows how a program can use the ROCm Systems Profiler API 
+for run-time analysis.
 
-Omnitrace user API example program
+ROCm Systems Profiler user API example program
 ========================================
 
-You can use the Omnitrace API to define custom regions to profile and trace.
-The following C++ program demonstrates this technique by calling several functions from the 
-Omnitrace API, such as ``omnitrace_user_push_region`` and 
-``omnitrace_user_stop_thread_trace``.
+You can use the ROCm Systems Profiler API to define custom regions to profile and trace.
+The following C++ program demonstrates this technique by calling several functions from the
+ROCm Systems Profiler API, such as ``rocprof-sys_user_push_region`` and
+``rocprof-sys_user_stop_thread_trace``.
 
 .. note::
 
-   By default, when Omnitrace detects any ``omnitrace_user_start_*`` or 
-   ``omnitrace_user_stop_*`` function, instrumentation
-   is disabled at start up, which means ``omnitrace_user_stop_trace()`` is not 
+   By default, when ROCm Systems Profiler detects any ``rocprof-sys_user_start_*`` or
+   ``rocprof-sys_user_stop_*`` function, instrumentation
+   is disabled at start up, which means ``rocprof-sys_user_stop_trace()`` is not
    required at the beginning of ``main``. This behavior
-   can be manually controlled by using the ``OMNITRACE_INIT_ENABLED`` environment variable. 
+   can be manually controlled by using the ``OMNITRACE_INIT_ENABLED`` environment variable.
    User-defined regions are always
-   recorded, regardless of whether ``omnitrace_user_start_*`` or 
-   ``omnitrace_user_stop_*`` has been called.
+   recorded, regardless of whether ``rocprof-sys_user_start_*`` or
+   ``rocprof-sys_user_stop_*`` has been called.
 
 .. code-block:: shell
 
@@ -56,52 +57,52 @@ Omnitrace API, such as ``omnitrace_user_push_region`` and
 
    namespace
    {
-   omnitrace_user_callbacks_t custom_callbacks   = OMNITRACE_USER_CALLBACKS_INIT;
-   omnitrace_user_callbacks_t original_callbacks = OMNITRACE_USER_CALLBACKS_INIT;
+   rocprof-sys_user_callbacks_t custom_callbacks   = OMNITRACE_USER_CALLBACKS_INIT;
+   rocprof-sys_user_callbacks_t original_callbacks = OMNITRACE_USER_CALLBACKS_INIT;
    }  // namespace
 
    int
    main(int argc, char** argv)
    {
       custom_callbacks.push_region = &custom_push_region;
-      omnitrace_user_configure(OMNITRACE_USER_UNION_CONFIG, custom_callbacks,
+      rocprof-sys_user_configure(OMNITRACE_USER_UNION_CONFIG, custom_callbacks,
                               &original_callbacks);
 
-      omnitrace_user_push_region(argv[0]);
-      omnitrace_user_push_region("initialization");
+      rocprof-sys_user_push_region(argv[0]);
+      rocprof-sys_user_push_region("initialization");
       size_t nthread = std::min<size_t>(16, std::thread::hardware_concurrency());
       size_t nitr    = 50000;
       long   nfib    = 10;
       if(argc > 1) nfib = atol(argv[1]);
       if(argc > 2) nthread = atol(argv[2]);
       if(argc > 3) nitr = atol(argv[3]);
-      omnitrace_user_pop_region("initialization");
+      rocprof-sys_user_pop_region("initialization");
 
       printf("[%s] Threads: %zu\n[%s] Iterations: %zu\n[%s] fibonacci(%li)...\n", argv[0],
             nthread, argv[0], nitr, argv[0], nfib);
 
-      omnitrace_user_push_region("thread_creation");
+      rocprof-sys_user_push_region("thread_creation");
       std::vector<std::thread> threads{};
       threads.reserve(nthread);
       // disable instrumentation for child threads
-      omnitrace_user_stop_thread_trace();
+      rocprof-sys_user_stop_thread_trace();
       for(size_t i = 0; i < nthread; ++i)
       {
          threads.emplace_back(&run, nitr, nfib);
       }
       // re-enable instrumentation
-      omnitrace_user_start_thread_trace();
-      omnitrace_user_pop_region("thread_creation");
+      rocprof-sys_user_start_thread_trace();
+      rocprof-sys_user_pop_region("thread_creation");
 
-      omnitrace_user_push_region("thread_wait");
+      rocprof-sys_user_push_region("thread_wait");
       for(auto& itr : threads)
          itr.join();
-      omnitrace_user_pop_region("thread_wait");
+      rocprof-sys_user_pop_region("thread_wait");
 
       run(nitr, nfib);
 
       printf("[%s] fibonacci(%li) x %lu = %li\n", argv[0], nfib, nthread, total.load());
-      omnitrace_user_pop_region(argv[0]);
+      rocprof-sys_user_pop_region(argv[0]);
 
       return 0;
    }
@@ -120,12 +121,12 @@ Omnitrace API, such as ``omnitrace_user_push_region`` and
    void
    run(size_t nitr, long n)
    {
-      omnitrace_user_push_region(RUN_LABEL);
+      rocprof-sys_user_push_region(RUN_LABEL);
       long local = 0;
       for(size_t i = 0; i < nitr; ++i)
          local += fib(n);
       total += local;
-      omnitrace_user_pop_region(RUN_LABEL);
+      rocprof-sys_user_pop_region(RUN_LABEL);
    }
 
    int
@@ -143,22 +144,22 @@ Omnitrace API, such as ``omnitrace_user_push_region`` and
          char    _buff[1024];
          if(_err != 0) _msg = strerror_r(_err, _buff, sizeof(_buff));
 
-         omnitrace_annotation_t _annotations[] = {
+         rocprof-sys_annotation_t _annotations[] = {
                { "errno", OMNITRACE_INT32, &_err }, { "strerror", OMNITRACE_STRING, _msg }
          };
 
          errno = 0;  // reset errno
          return (*original_callbacks.push_annotated_region)(
-               name, _annotations, sizeof(_annotations) / sizeof(omnitrace_annotation_t));
+               name, _annotations, sizeof(_annotations) / sizeof(rocprof-sys_annotation_t));
       }
 
       return (*original_callbacks.push_region)(name);
    }
 
-Linking the Omnitrace libraries to another program
+Linking the ROCm Systems Profiler libraries to another program
 =======================================================
 
-To link the ``omnitrace-user-library`` to another program, 
+To link the ``rocprofsys-user-library`` to another program,
 use the following CMake and ``g++`` directives.
 
 CMake
@@ -166,19 +167,19 @@ CMake
 
 .. code-block:: cmake
 
-   find_package(omnitrace REQUIRED COMPONENTS user)
+   find_package(rocprofsys REQUIRED COMPONENTS user)
    add_executable(foo foo.cpp)
-   target_link_libraries(foo PRIVATE omnitrace::omnitrace-user-library)
+   target_link_libraries(foo PRIVATE rocprofsys::rocprofsys-user-library)
 
 g++ compilation
 -------------------------------------------------------
 
-Assuming Omnitrace is installed in ``/opt/omnitrace``, use the ``g++`` compiler 
+Assuming ROCm Systems Profiler is installed in ``/opt/rocprof-sys``, use the ``g++`` compiler
 to build the application.
 
 .. code-block:: shell
 
-   g++ -I/opt/omnitrace foo.cpp -o foo -lomnitrace-user
+   g++ -I/opt/rocprof-sys foo.cpp -o foo -lrocprof-sys-user
 
 Output from the API example program
 ========================================
@@ -187,11 +188,11 @@ First, instrument and run the program.
 
 .. code-block:: shell
 
-   $ omnitrace-instrument -l --min-instructions=8 -E custom_push_region -o -- ./user-api
+   $ rocprof-sys-instrument -l --min-instructions=8 -E custom_push_region -o -- ./user-api
    ...
-   $ omnitrace-run --profile --use-pid off --time-output off -- ./user-api.inst 20 4 100
+   $ rocprof-sys-run --profile --use-pid off --time-output off -- ./user-api.inst 20 4 100
    Pushing custom region :: ./user-api.inst
-   [omnitrace][omnitrace_init_tooling] Instrumentation mode: Trace
+   [rocprof-sys][rocprof-sys_init_tooling] Instrumentation mode: Trace
 
 
        ______   .___  ___. .__   __.  __  .___________..______          ___       ______  _______
@@ -215,29 +216,29 @@ First, instrument and run the program.
    Pushing custom region :: run(20) x 100
    Pushing custom region :: run(20) x 100
    [./user-api.inst] fibonacci(20) x 4 = 3382500
-   [omnitrace][86267][0][omnitrace_finalize] finalizing...
+   [rocprof-sys][86267][0][rocprof-sys_finalize] finalizing...
 
 
-   [omnitrace][86267][0] omnitrace : 5.190895 sec wall_clock,    2.748 mb peak_rss, 6.330000 sec cpu_clock,  121.9 % cpu_util [laps: 1]
-   [omnitrace][86267][0] user-api.inst/thread-0 : 5.078713 sec wall_clock, 4.722415 sec thread_cpu_clock,   93.0 % thread_cpu_util,    1.276 mb peak_rss [laps: 1]
-   [omnitrace][86267][0] user-api.inst/thread-1 : 0.322248 sec wall_clock, 0.322191 sec thread_cpu_clock,  100.0 % thread_cpu_util,    1.000 mb peak_rss [laps: 1]
-   [omnitrace][86267][0] user-api.inst/thread-2 : 0.323255 sec wall_clock, 0.323194 sec thread_cpu_clock,  100.0 % thread_cpu_util,    0.000 mb peak_rss [laps: 1]
-   [omnitrace][86267][0] user-api.inst/thread-3 : 0.323569 sec wall_clock, 0.323484 sec thread_cpu_clock,  100.0 % thread_cpu_util,    1.092 mb peak_rss [laps: 1]
-   [omnitrace][86267][0] user-api.inst/thread-4 : 0.324178 sec wall_clock, 0.324057 sec thread_cpu_clock,  100.0 % thread_cpu_util,    1.184 mb peak_rss [laps: 1]
-   [omnitrace][86267][0] Post-processing 51 cpu frequency and memory usage entries...
+   [rocprof-sys][86267][0] rocprof-sys : 5.190895 sec wall_clock,    2.748 mb peak_rss, 6.330000 sec cpu_clock,  121.9 % cpu_util [laps: 1]
+   [rocprof-sys][86267][0] user-api.inst/thread-0 : 5.078713 sec wall_clock, 4.722415 sec thread_cpu_clock,   93.0 % thread_cpu_util,    1.276 mb peak_rss [laps: 1]
+   [rocprof-sys][86267][0] user-api.inst/thread-1 : 0.322248 sec wall_clock, 0.322191 sec thread_cpu_clock,  100.0 % thread_cpu_util,    1.000 mb peak_rss [laps: 1]
+   [rocprof-sys][86267][0] user-api.inst/thread-2 : 0.323255 sec wall_clock, 0.323194 sec thread_cpu_clock,  100.0 % thread_cpu_util,    0.000 mb peak_rss [laps: 1]
+   [rocprof-sys][86267][0] user-api.inst/thread-3 : 0.323569 sec wall_clock, 0.323484 sec thread_cpu_clock,  100.0 % thread_cpu_util,    1.092 mb peak_rss [laps: 1]
+   [rocprof-sys][86267][0] user-api.inst/thread-4 : 0.324178 sec wall_clock, 0.324057 sec thread_cpu_clock,  100.0 % thread_cpu_util,    1.184 mb peak_rss [laps: 1]
+   [rocprof-sys][86267][0] Post-processing 51 cpu frequency and memory usage entries...
 
-   [omnitrace][wall_clock]|0> Outputting 'omnitrace-user-api.inst-output/wall_clock.json'...
-   [omnitrace][wall_clock]|0> Outputting 'omnitrace-user-api.inst-output/wall_clock.tree.json'...
-   [omnitrace][wall_clock]|0> Outputting 'omnitrace-user-api.inst-output/wall_clock.txt'...
+   [rocprof-sys][wall_clock]|0> Outputting 'rocprof-sys-user-api.inst-output/wall_clock.json'...
+   [rocprof-sys][wall_clock]|0> Outputting 'rocprof-sys-user-api.inst-output/wall_clock.tree.json'...
+   [rocprof-sys][wall_clock]|0> Outputting 'rocprof-sys-user-api.inst-output/wall_clock.txt'...
 
-   [omnitrace][manager::finalize][metadata]> Outputting 'omnitrace-user-api.inst-output/metadata.json' and 'omnitrace-user-api.inst-output/functions.json'...
-   [omnitrace][86267][0][omnitrace_finalize] Finalized
+   [rocprof-sys][manager::finalize][metadata]> Outputting 'rocprof-sys-user-api.inst-output/metadata.json' and 'rocprof-sys-user-api.inst-output/functions.json'...
+   [rocprof-sys][86267][0][rocprof-sys_finalize] Finalized
 
 Then review the output.
 
 .. code-block:: shell
 
-   $ cat omnitrace-example-output/wall_clock.txt
+   $ cat rocprof-sys-example-output/wall_clock.txt
    |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
    |                                                                              REAL-CLOCK TIMER (I.E. WALL-CLOCK TIMER)                                                                              |
    |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

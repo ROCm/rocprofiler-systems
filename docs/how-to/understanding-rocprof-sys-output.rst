@@ -1,19 +1,19 @@
 .. meta::
-   :description: Omnitrace documentation and reference
-   :keywords: Omnitrace, ROCm, profiler, tracking, visualization, tool, Instinct, accelerator, AMD
+   :description: ROCm Profiler Systems documentation and reference
+   :keywords: rocprof-sys, rocprofiler-systems, ROCm, profiler, tracking, visualization, tool, Instinct, accelerator, AMD
 
 ****************************************************
-Understanding the Omnitrace output
+Understanding the ROCm Profiler Systems output
 ****************************************************
 
-The general output form of `Omnitrace <https://github.com/ROCm/omnitrace>`_ is
+The general output form of `ROCm Profiler Systems <https://github.com/ROCm/rocprofiler-systems>`_ is
 ``<OUTPUT_PATH>[/<TIMESTAMP>]/[<PREFIX>]<DATA_NAME>[-<OUTPUT_SUFFIX>].<EXT>``.
 
 For example, starting with the following base configuration:
 
 .. code-block:: shell
 
-   export OMNITRACE_OUTPUT_PATH=omnitrace-example-output
+   export OMNITRACE_OUTPUT_PATH=rocprof-sys-example-output
    export OMNITRACE_TIME_OUTPUT=ON
    export OMNITRACE_USE_PID=OFF
    export OMNITRACE_PROFILE=ON
@@ -21,12 +21,12 @@ For example, starting with the following base configuration:
 
 .. code-block:: shell
 
-   $ omnitrace-instrument -- ./foo
+   $ rocprof-sys-instrument -- ./foo
    ...
-   [omnitrace] Outputting 'omnitrace-example-output/perfetto-trace.proto'...
+   [rocprof-sys] Outputting 'rocprof-sys-example-output/perfetto-trace.proto'...
 
-   [omnitrace] Outputting 'omnitrace-example-output/wall-clock.txt'...
-   [omnitrace] Outputting 'omnitrace-example-output/wall-clock.json'...
+   [rocprof-sys] Outputting 'rocprof-sys-example-output/wall-clock.txt'...
+   [rocprof-sys] Outputting 'rocprof-sys-example-output/wall-clock.json'...
 
 If the ``OMNITRACE_USE_PID`` option is enabled, then running a non-MPI executable
 with a PID of ``63453`` results in the following output:
@@ -34,12 +34,12 @@ with a PID of ``63453`` results in the following output:
 .. code-block:: shell
 
    $ export OMNITRACE_USE_PID=ON
-   $ omnitrace-instrument -- ./foo
+   $ rocprof-sys-instrument -- ./foo
    ...
-   [omnitrace] Outputting 'omnitrace-example-output/perfetto-trace-63453.proto'...
+   [rocprof-sys] Outputting 'rocprof-sys-example-output/perfetto-trace-63453.proto'...
 
-   [omnitrace] Outputting 'omnitrace-example-output/wall-clock-63453.txt'...
-   [omnitrace] Outputting 'omnitrace-example-output/wall-clock-63453.json'...
+   [rocprof-sys] Outputting 'rocprof-sys-example-output/wall-clock-63453.txt'...
+   [rocprof-sys] Outputting 'rocprof-sys-example-output/wall-clock-63453.json'...
 
 If ``OMNITRACE_TIME_OUTPUT`` is enabled, then a job that started on January 31, 2022 at 12:30 PM
 generates the following:
@@ -47,17 +47,17 @@ generates the following:
 .. code-block:: shell
 
    $ export OMNITRACE_TIME_OUTPUT=ON
-   $ omnitrace-instrument -- ./foo
+   $ rocprof-sys-instrument -- ./foo
    ...
-   [omnitrace] Outputting 'omnitrace-example-output/2022-01-31_12.30_PM/perfetto-trace-63453.proto'...
+   [rocprof-sys] Outputting 'rocprof-sys-example-output/2022-01-31_12.30_PM/perfetto-trace-63453.proto'...
 
-   [omnitrace] Outputting 'omnitrace-example-output/2022-01-31_12.30_PM/wall-clock-63453.txt'...
-   [omnitrace] Outputting 'omnitrace-example-output/2022-01-31_12.30_PM/wall-clock-63453.json'...
+   [rocprof-sys] Outputting 'rocprof-sys-example-output/2022-01-31_12.30_PM/wall-clock-63453.txt'...
+   [rocprof-sys] Outputting 'rocprof-sys-example-output/2022-01-31_12.30_PM/wall-clock-63453.json'...
 
 Metadata
 ========================================
 
-Omnitrace outputs a ``metadata.json`` file. This metadata file contains
+ROCm Systems Profiler outputs a ``metadata.json`` file. This metadata file contains
 information about the settings, environment variables, output files, and info
 about the system and the run, as follows:
 
@@ -77,7 +77,7 @@ Metadata JSON Sample
 .. code-block:: json
 
    {
-      "omnitrace": {
+      "rocprof-sys": {
          "metadata": {
                "info": {
                   "HW_L1_CACHE_SIZE": 32768,
@@ -161,13 +161,13 @@ Metadata JSON Sample
                   "text": [
                      {
                            "value": [
-                              "omnitrace-tests-output/parallel-overhead-binary-rewrite/roctracer.txt"
+                              "rocprof-sys-tests-output/parallel-overhead-binary-rewrite/roctracer.txt"
                            ],
                            "key": "roctracer"
                      },
                      {
                            "value": [
-                              "omnitrace-tests-output/parallel-overhead-binary-rewrite/wall_clock.txt"
+                              "rocprof-sys-tests-output/parallel-overhead-binary-rewrite/wall_clock.txt"
                            ],
                            "key": "wall_clock"
                      }
@@ -175,15 +175,15 @@ Metadata JSON Sample
                   "json": [
                      {
                            "value": [
-                              "omnitrace-tests-output/parallel-overhead-binary-rewrite/roctracer.json",
-                              "omnitrace-tests-output/parallel-overhead-binary-rewrite/roctracer.tree.json"
+                              "rocprof-sys-tests-output/parallel-overhead-binary-rewrite/roctracer.json",
+                              "rocprof-sys-tests-output/parallel-overhead-binary-rewrite/roctracer.tree.json"
                            ],
                            "key": "roctracer"
                      },
                      {
                            "value": [
-                              "omnitrace-tests-output/parallel-overhead-binary-rewrite/wall_clock.json",
-                              "omnitrace-tests-output/parallel-overhead-binary-rewrite/wall_clock.tree.json"
+                              "rocprof-sys-tests-output/parallel-overhead-binary-rewrite/wall_clock.json",
+                              "rocprof-sys-tests-output/parallel-overhead-binary-rewrite/wall_clock.tree.json"
                            ],
                            "key": "wall_clock"
                      }
@@ -218,7 +218,7 @@ Metadata JSON Sample
                      "value": true,
                      "max_count": 1,
                      "cmdline": [
-                           "--omnitrace-json-output"
+                           "--rocprof-sys-json-output"
                      ],
                      "environ": "OMNITRACE_JSON_OUTPUT",
                      "config_updated": false,
@@ -237,10 +237,10 @@ Metadata JSON Sample
       }
    }
 
-Configuring the Omnitrace output
+Configuring the ROCm Systems Profiler output
 ========================================
 
-Omnitrace includes a core set of options for controlling the format
+ROCm Systems Profiler includes a core set of options for controlling the format
 and contents of the output files. For additional information, see the guide on
 :doc:`configuring runtime options <./configuring-runtime-options>`.
 
@@ -263,7 +263,7 @@ Output prefix keys
 
 Output prefix keys have many uses but are most helpful when dealing with multiple
 profiling runs or large MPI jobs.
-They are included in Omnitrace because they were introduced into Timemory
+They are included in ROCm Systems Profiler because they were introduced into Timemory
 for `compile-time-perf <https://github.com/jrmadsen/compile-time-perf>`_.
 They are needed to create different output files for a generic wrapper around
 compilation commands while still
@@ -272,7 +272,7 @@ overwriting the output from the last time a file was compiled.
 When doing scaling studies and specifying options via the command line,
 the recommended process is to
 use a common ``OMNITRACE_OUTPUT_PATH``, disable ``OMNITRACE_TIME_OUTPUT``,
-set ``OMNITRACE_OUTPUT_PREFIX="%argt%-"``, and let Omnitrace cleanly organize the output.
+set ``OMNITRACE_OUTPUT_PREFIX="%argt%-"``, and let ROCm Systems Profiler cleanly organize the output.
 
 .. csv-table::
    :header: "String", "Encoding"
@@ -328,26 +328,26 @@ this file.
    If you are experiencing problems viewing your trace in the latest version of `Perfetto <http://ui.perfetto.dev>`_,
    then try using `Perfetto UI v46.0 <https://ui.perfetto.dev/v46.0-35b3d9845/#!/>`_.
 
-.. image:: ../data/omnitrace-perfetto.png
+.. image:: ../data/rocprof-sys-perfetto.png
    :alt: Visualization of a performance graph in Perfetto
 
-.. image:: ../data/omnitrace-rocm.png
+.. image:: ../data/rocprof-sys-rocm.png
    :alt: Visualization of ROCm data in Perfetto
 
-.. image:: ../data/omnitrace-rocm-flow.png
+.. image:: ../data/rocprof-sys-rocm-flow.png
    :alt: Visualization of ROCm flow data in Perfetto
 
-.. image:: ../data/omnitrace-user-api.png
+.. image:: ../data/rocprof-sys-user-api.png
    :alt: Visualization of ROCm API calls in Perfetto
 
 Timemory output
 ========================================
 
-Use ``omnitrace-avail --components --filename`` to view the base filename for each component, as follows
+Use ``rocprof-sys-avail --components --filename`` to view the base filename for each component, as follows
 
 .. code-block:: shell
 
-   $ omnitrace-avail wall_clock -C -f
+   $ rocprof-sys-avail wall_clock -C -f
    |---------------------------------|---------------|------------------------|
    |            COMPONENT            |   AVAILABLE   |        FILENAME        |
    |---------------------------------|---------------|------------------------|
@@ -356,7 +356,7 @@ Use ``omnitrace-avail --components --filename`` to view the base filename for ea
    |---------------------------------|---------------|------------------------|
 
 The ``OMNITRACE_COLLAPSE_THREADS`` and ``OMNITRACE_COLLAPSE_PROCESSES`` settings are
-only valid when full `MPI support is enabled <../install/install.html#mpi-support-within-omnitrace>`_.
+only valid when full `MPI support is enabled <../install/install.html#mpi-support-within-rocprof-sys>`_.
 When they are set, Timemory combines the per-thread and per-rank data (respectively) of
 identical call stacks.
 
