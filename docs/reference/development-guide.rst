@@ -219,7 +219,7 @@ could look like this:
       void operator()(const gotcha_data&, void (*real_exit)(int), int _exit_code)
       {
          // catch the call to exit and finalize before truly exiting
-         rocprof-sys_finalize();
+         rocprofsys_finalize();
 
          real_exit(_exit_code);
       }
