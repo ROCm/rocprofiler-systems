@@ -1,31 +1,33 @@
 .. meta::
-   :description: Omnitrace documentation and reference
-   :keywords: Omnitrace, ROCm, profiler, tracking, visualization, tool, Instinct, accelerator, AMD
+   :description: ROCm Systems Profiler documentation and reference
+   :keywords: rocprof-sys, rocprofiler-systems, ROCm, profiler, tracking, visualization, tool, Instinct, accelerator, AMD
 
 ****************************************************
 Configuring runtime options
 ****************************************************
 
-The ``omnitrace.cfg`` file maintains a list of the `Omnitrace <https://github.com/ROCm/omnitrace>`_ runtime options. To create this configuration 
-file and view the current runtime options, use the ``omnitrace-avail`` executable.
+The ``rocprof-sys.cfg`` file maintains a list of the
+`ROCm Systems Profiler <https://github.com/ROCm/rocprofiler-systems>`_ runtime
+options. To create this configuration
+file and view the current runtime options, use the ``rocprof-sys-avail`` executable.
 
-The omnitrace-avail executable
+The rocprof-sys-avail executable
 ========================================
 
-The ``omnitrace-avail`` executable provides information about the runtime settings, 
+The ``rocprof-sys-avail`` executable provides information about the runtime settings,
 data collection capabilities, and, when built with PAPI support, the
 available hardware counters. The executable is effectively
-self-updating. As new capabilities and settings are added to the Omnitrace source code, they are
-propagated to ``omnitrace-avail``. ``omnitrace-avail`` should be viewed as the ultimate authority 
+self-updating. As new capabilities and settings are added to the ROCm Systems Profiler source code, they are
+propagated to ``rocprof-sys-avail``. ``rocprof-sys-avail`` should be viewed as the ultimate authority
 in the event of any conflicts with this documentation.
 
-It is recommended that you create a default configuration file in 
-``${HOME}/.omnitrace.cfg``. This can be done by
-running the command ``omnitrace-avail -G ~/.omnitrace.cfg``. Alternatively,  
-use the ``omnitrace-avail -G ~/.omnitrace.cfg --all`` option
+It is recommended that you create a default configuration file in
+``${HOME}/.rocprof-sys.cfg``. This can be done by
+running the command ``rocprof-sys-avail -G ~/.rocprof-sys.cfg``. Alternatively,
+use the ``rocprof-sys-avail -G ~/.rocprof-sys.cfg --all`` option
 for a verbose configuration file with descriptions, categories, and additional information.
 
-Modify ``${HOME}/.omnitrace.cfg`` as required. For example, enable `Perfetto <https://perfetto.dev/>`_,
+Modify ``${HOME}/.rocprof-sys.cfg`` as required. For example, enable `Perfetto <https://perfetto.dev/>`_,
 `Timemory <https://github.com/NERSC/timemory>`_, sampling, and process-level sampling by default
 and tweak the default sampling values.
 
@@ -44,34 +46,34 @@ and tweak the default sampling values.
 Exploring runtime settings
 -----------------------------------
 
-Use the following command to view the list of the available runtime settings, their current values, and descriptions 
+Use the following command to view the list of the available runtime settings, their current values, and descriptions
 for each setting:
 
 .. code-block:: shell
 
-   omnitrace-avail --description
+   rocprof-sys-avail --description
 
 .. note::
 
    Use ``--brief`` to suppress printing the current value and/or ``-c 0`` to suppress truncation of the descriptions.
 
-Any Boolean setting (``omnitrace-avail --settings --value --brief --filter bool``) 
-accepts a case insensitive match for nearly all common Boolean logic expressions: 
+Any Boolean setting (``rocprof-sys-avail --settings --value --brief --filter bool``)
+accepts a case insensitive match for nearly all common Boolean logic expressions:
 ``ON``, ``OFF``, ``YES``, ``NO``, ``TRUE``, ``FALSE``, ``0``, ``1``, etc.
 
 Exploring components
 -----------------------------------
 
-Omnitrace uses `Timemory <https://github.com/NERSC/timemory>`_ extensively to provide 
+ROCm Systems Profiler uses `Timemory <https://github.com/NERSC/timemory>`_ extensively to provide
 various capabilities and manage
-data and resources. By default, with ``OMNITRACE_PROFILE=ON``, Omnitrace only collects wall-clock
-timing values. However, by modifying the ``OMNITRACE_TIMEMORY_COMPONENTS`` setting, 
-Omnitrace can be configured to
+data and resources. By default, with ``OMNITRACE_PROFILE=ON``, ROCm Systems Profiler only collects wall-clock
+timing values. However, by modifying the ``OMNITRACE_TIMEMORY_COMPONENTS`` setting,
+ROCm Systems Profiler can be configured to
 collect hardware counters, CPU-clock timers, memory usage, context switches, page faults, network statistics,
-and much more. Omnitrace can even be used as a dynamic instrumentation vehicle 
+and much more. ROCm Systems Profiler can even be used as a dynamic instrumentation vehicle
 for other third-party profiling
 APIs such as `Caliper <https://github.com/LLNL/Caliper>`_ and `LIKWID <https://github.com/RRZE-HPC/likwid>`_.
-To leverage this capability, build Omnitrace from source with the CMake 
+To leverage this capability, build ROCm Systems Profiler from source with the CMake
 options ``TIMEMORY_USE_CALIPER=ON`` or ``TIMEMORY_USE_LIKWID=ON`` and then add
 ``caliper_marker``, ``likwid_marker``, or both to ``OMNITRACE_TIMEMORY_COMPONENTS``.
 
@@ -79,30 +81,30 @@ To view all possible components and their descriptions:
 
 .. code-block:: shell
 
-   omnitrace-avail --components --description
+   rocprof-sys-avail --components --description
 
 To restrict the output to available components and view the string identifiers for ``OMNITRACE_TIMEMORY_COMPONENTS``:
 
 .. code-block:: shell
 
-   omnitrace-avail --components --available --string --brief
+   rocprof-sys-avail --components --available --string --brief
 
 Exploring hardware counters
 -----------------------------------
 
-Omnitrace supports hardware counter collection via PAPI and ROCm.
+ROCm Systems Profiler supports hardware counter collection via PAPI and ROCm.
 Generally, PAPI is used to collect CPU-based hardware counters and ROCm is used to collect GPU-based hardware
-counters. Although it is possible to install PAPI with ROCm support and use it to 
-collect GPU-based hardware counters, this is not recommended because PAPI 
+counters. Although it is possible to install PAPI with ROCm support and use it to
+collect GPU-based hardware counters, this is not recommended because PAPI
 cannot simultaneously collect CPU and GPU hardware counters.
 
 To view all possible hardware counters and their descriptions, use the following command:
 
 .. code-block:: shell
 
-   omnitrace-avail --hw-counters --description
+   rocprof-sys-avail --hw-counters --description
 
-Appending the ``-c CPU`` option restricts the list of hardware counters to 
+Appending the ``-c CPU`` option restricts the list of hardware counters to
 those available through PAPI, while ``-c GPU`` limits the list to those available from ROCm.
 
 Enabling hardware counters
@@ -123,7 +125,7 @@ Here is a sample configuration for hardware counters:
    # using perf identifiers
    OMNITRACE_PAPI_EVENTS   = perf::INSTRUCTIONS perf::CACHE-REFERENCES perf::CACHE-MISSES
 
-.. _omnitrace_papi_events:
+.. _rocprof-sys_papi_events:
 
 OMNITRACE_PAPI_EVENTS
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -135,18 +137,18 @@ has a value <= 2. If you have ``sudo`` access, use the following command to modi
 
    echo 0 | sudo tee /proc/sys/kernel/perf_event_paranoid
 
-However this value is not retained upon reboot. 
+However this value is not retained upon reboot.
 Use the following command to preserve this setting after a reboot:
 
 .. code-block:: shell
 
    echo 'kernel.perf_event_paranoid=0' | sudo tee -a /etc/sysctl.conf
 
-PAPI events use a concept similar to a namespace. All specified hardware 
+PAPI events use a concept similar to a namespace. All specified hardware
 counters must be from the same namespace.
-For hardware counters starting with the ``PAPI_`` prefix, these are high-level 
+For hardware counters starting with the ``PAPI_`` prefix, these are high-level
 aggregates of multiple hardware counters.
-Otherwise, most events use two or three colons (``::`` or ``:::``) between the 
+Otherwise, most events use two or three colons (``::`` or ``:::``) between the
 component name and the counter name, for example,
 ``amd64_rapl::RAPL_ENERGY_PKG`` and ``perf::PERF_COUNT_HW_CPU_CYCLES``.
 
@@ -165,22 +167,22 @@ PAPI components from different namespaces:
 
 .. note::
 
-   If Omnitrace was configured with the default ``OMNITRACE_BUILD_PAPI=ON`` setting, 
+   If ROCm Systems Profiler was configured with the default ``OMNITRACE_BUILD_PAPI=ON`` setting,
    standard PAPI command-line tools such as
-   ``papi_avail`` and ``papi_event_chooser`` are not able to provide information 
-   about the PAPI library used by Omnitrace
-   (because Omnitrace statically links to ``libpapi``). However, all of these tools are 
-   installed with the prefix ``omnitrace-`` with
-   underscores replaced with hypens, for example ``papi_avail`` becomes ``omnitrace-papi-avail``.
+   ``papi_avail`` and ``papi_event_chooser`` are not able to provide information
+   about the PAPI library used by ROCm Systems Profiler
+   (because ROCm Systems Profiler statically links to ``libpapi``). However, all of these tools are
+   installed with the prefix ``rocprof-sys-`` with
+   underscores replaced with hypens, for example ``papi_avail`` becomes ``rocprof-sys-papi-avail``.
 
 OMNITRACE_ROCM_EVENTS
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Omnitrace reads the ROCm events from the ``${ROCM_PATH}/lib/rocprofiler/metrics.xml`` 
+ROCm Systems Profiler reads the ROCm events from the ``${ROCM_PATH}/lib/rocprofiler/metrics.xml``
 file. Use the ``ROCP_METRICS`` environment
-variable to point Omnitrace to a different XML metrics file, for example, 
+variable to point ROCm Systems Profiler to a different XML metrics file, for example,
 ``export ROCP_METRICS=${PWD}/custom_metrics.xml``.
-``omnitrace-avail -H -c GPU`` shows event names with a suffix of ``:device=N`` 
+``rocprof-sys-avail -H -c GPU`` shows event names with a suffix of ``:device=N``
 where ``N`` is the device number.
 For example, if you have two devices, the output is:
 
@@ -190,7 +192,7 @@ For example, if you have two devices, the output is:
    ...
    | Wavefronts:device=1                   | Derived counter: SQ_WAVES             |
 
-To collect the event on all devices, specify the event, 
+To collect the event on all devices, specify the event,
 such as ``Wavefronts``, without the ``:device=`` suffix.
 To collect the event only on specific devices, use the ``:device=`` suffix.
 
@@ -204,10 +206,10 @@ The following example:
 
    OMNITRACE_ROCM_EVENTS = GPUBusy     SQ_WAVES:device=0    SQ_INSTS_VALU:device=1
 
-omnitrace-avail examples
+rocprof-sys-avail examples
 -----------------------------------
 
-The following examples demonstrate how to use ``omnitrace-avail`` to perform several common 
+The following examples demonstrate how to use ``rocprof-sys-avail`` to perform several common
 configuration tasks.
 
 Generating a default configuration file
@@ -215,10 +217,10 @@ Generating a default configuration file
 
 .. code-block:: shell
 
-   $ omnitrace-avail -G ~/.omnitrace.cfg
-   [omnitrace-avail] Outputting text configuration file '/home/user/.omnitrace.cfg'...
-   $ cat ~/.omnitrace.cfg
-   # auto-generated by omnitrace-avail (version 1.2.0) on 2022-06-27 @ 19:15
+   $ rocprof-sys-avail -G ~/.rocprof-sys.cfg
+   [rocprof-sys-avail] Outputting text configuration file '/home/user/.rocprof-sys.cfg'...
+   $ cat ~/.rocprof-sys.cfg
+   # auto-generated by rocprof-sys-avail (version 1.2.0) on 2022-06-27 @ 19:15
 
    OMNITRACE_CONFIG_FILE                              =
    OMNITRACE_MODE                                     = trace
@@ -231,7 +233,7 @@ Generating a default configuration file
    OMNITRACE_USE_KOKKOSP                              = false
    OMNITRACE_USE_CODE_COVERAGE                        = false
    OMNITRACE_USE_PID                                  = true
-   OMNITRACE_OUTPUT_PATH                              = omnitrace-%tag%-output
+   OMNITRACE_OUTPUT_PATH                              = rocprof-sys-%tag%-output
    OMNITRACE_OUTPUT_PREFIX                            =
    OMNITRACE_CI                                       = false
    OMNITRACE_THREAD_POOL_SIZE                         = 8
@@ -301,10 +303,10 @@ Generating a default configuration file
 When creating a new configuration file, the following recommendations apply:
 
 * Use the ``--all`` option to view all descriptions, choices, and other information in the configuration file.
-* To create a new configuration without inheriting from an existing ``${HOME}/.omnitrace.cfg`` file,
+* To create a new configuration without inheriting from an existing ``${HOME}/.rocprof-sys.cfg`` file,
   set ``OMNITRACE_SUPPRESS_CONFIG=ON`` in the environment beforehand.
 * To create a new configuration that makes minor changes to an existing configuration,
-  set ``OMNITRACE_CONFIG_FILE=/path/to/existing/file`` and define the changes as environment 
+  set ``OMNITRACE_CONFIG_FILE=/path/to/existing/file`` and define the changes as environment
   variables before generating it.
 
 Viewing the setting descriptions
@@ -312,7 +314,7 @@ Viewing the setting descriptions
 
 .. code-block:: shell
 
-   $ omnitrace-avail -S -bd
+   $ rocprof-sys-avail -S -bd
    |-----------------------------------------|-----------------------------------------|
    |          ENVIRONMENT VARIABLE           |               DESCRIPTION               |
    |-----------------------------------------|-----------------------------------------|
@@ -320,13 +322,13 @@ Viewing the setting descriptions
    | OMNITRACE_ADD_SECONDARY                 | Enable/disable components adding sec... |
    | OMNITRACE_COLLAPSE_PROCESSES            | Enable/disable combining process-spe... |
    | OMNITRACE_COLLAPSE_THREADS              | Enable/disable combining thread-spec... |
-   | OMNITRACE_CONFIG_FILE                   | Configuration file for omnitrace        |
+   | OMNITRACE_CONFIG_FILE                   | Configuration file for rocprof-sys      |
    | OMNITRACE_COUT_OUTPUT                   | Write output to stdout                  |
    | OMNITRACE_CPU_AFFINITY                  | Enable pinning threads to CPUs (Linu... |
    | OMNITRACE_THREAD_POOL_SIZE              | Number of threads to use when genera... |
    | OMNITRACE_DEBUG                         | Enable debug output                     |
    | OMNITRACE_DIFF_OUTPUT                   | Generate a difference output vs. a p... |
-   | OMNITRACE_DL_VERBOSE                    | Verbosity within the omnitrace-dl li... |
+   | OMNITRACE_DL_VERBOSE                    | Verbosity within the rocprof-sys-dl ... |
    | OMNITRACE_ENABLED                       | Activation state of timemory            |
    | OMNITRACE_ENABLE_SIGNAL_HANDLER         | Enable signals in timemory_init         |
    | OMNITRACE_FILE_OUTPUT                   | Write output to files                   |
@@ -402,7 +404,7 @@ Viewing components
 
 .. code-block:: shell
 
-   $ omnitrace-avail -C -bd
+   $ rocprof-sys-avail -C -bd
    |-----------------------------------|----------------------------------------------|
    |             COMPONENT             |                 DESCRIPTION                  |
    |-----------------------------------|----------------------------------------------|
@@ -460,7 +462,7 @@ Viewing components
    | wall_clock                        | Real-clock timer (i.e. wall-clock timer).    |
    | written_bytes                     | Number of bytes sent to the storage layer.   |
    | written_char                      | Number of bytes which this task has cause... |
-   | omnitrace                         | Invokes instrumentation functions  omnitr... |
+   | rocprof-sys                       | Invokes instrumentation functions  omnitr... |
    | roctracer                         | High-precision ROCm API and kernel tracing.  |
    | sampling_wall_clock               | Wall-clock timing. Derived from statistic... |
    | sampling_cpu_clock                | CPU-clock timing. Derived from statistica... |
@@ -476,7 +478,7 @@ Viewing hardware counters
 
 .. code-block:: shell
 
-   $ omnitrace-avail -H -bd
+   $ rocprof-sys-avail -H -bd
    |---------------------------------------|---------------------------------------|
    |           HARDWARE COUNTER            |              DESCRIPTION              |
    |---------------------------------------|---------------------------------------|
@@ -1197,17 +1199,17 @@ Viewing hardware counters
 Creating a configuration file
 ========================================
 
-Omnitrace supports three configuration file formats: JSON, XML, and plain text.
-Use ``omnitrace-avail -G <filename> -F txt json xml`` to generate default 
+ROCm Systems Profiler supports three configuration file formats: JSON, XML, and plain text.
+Use ``rocprof-sys-avail -G <filename> -F txt json xml`` to generate default
 configuration files in each format. Optionally
 include the ``--all`` flag to include full descriptions and other information.
 Configuration files are specified by the ``OMNITRACE_CONFIG_FILE`` environment variable
-which by default looks for ``${HOME}/.omnitrace.cfg`` and ``${HOME}/.omnitrace.json``.
+which by default looks for ``${HOME}/.rocprof-sys.cfg`` and ``${HOME}/.rocprof-sys.json``.
 Multiple configuration files can be concatenated using the ``:`` symbol, for example:
 
 .. code-block:: shell
 
-   export OMNITRACE_CONFIG_FILE=~/.config/omnitrace.cfg:~/.config/omnitrace.json
+   export OMNITRACE_CONFIG_FILE=~/.config/rocprof-sys.cfg:~/.config/rocprof-sys.json
 
 If a configuration variable is specified in both a configuration file and in the environment,
 the environment variable takes precedence.
@@ -1220,7 +1222,7 @@ Variables are created when an lvalue starts with a ``$`` and are
 de-referenced when they appear as rvalues.
 
 Entries in the text configuration file which do not match a known setting
-in ``omnitrace-avail`` but are prefixed with ``OMNITRACE_`` are interpreted as
+in ``rocprof-sys-avail`` but are prefixed with ``OMNITRACE_`` are interpreted as
 environment variables. They are exported via ``setenv``
 but do not override an existing value for the environment variable.
 
@@ -1241,7 +1243,7 @@ but do not override an existing value for the environment variable.
    OMNITRACE_VERBOSE               = 1
 
    # output fields
-   OMNITRACE_OUTPUT_PATH           = omnitrace-output
+   OMNITRACE_OUTPUT_PATH           = rocprof-sys-output
    OMNITRACE_OUTPUT_PREFIX         = %tag%/
    OMNITRACE_TIME_OUTPUT           = OFF
    OMNITRACE_USE_PID               = OFF
@@ -1269,7 +1271,7 @@ The full JSON specification for a configuration value contains a lot of informat
 .. code-block:: json
 
    {
-      "omnitrace": {
+      "rocprof-sys": {
          "settings": {
                "OMNITRACE_ADD_SECONDARY": {
                   "count": -1,
@@ -1279,7 +1281,7 @@ The full JSON specification for a configuration value contains a lot of informat
                   "value": true,
                   "max_count": 1,
                   "cmdline": [
-                     "--omnitrace-add-secondary"
+                     "--rocprof-sys-add-secondary"
                   ],
                   "environ": "OMNITRACE_ADD_SECONDARY",
                   "cereal_class_version": 1,
@@ -1294,13 +1296,13 @@ The full JSON specification for a configuration value contains a lot of informat
       }
    }
 
-However when writing an JSON configuration file, the following example is minimally acceptable 
+However when writing an JSON configuration file, the following example is minimally acceptable
 for ``OMNITRACE_ADD_SECONDARY``:
 
 .. code-block:: json
 
    {
-      "omnitrace": {
+      "rocprof-sys": {
          "settings": {
                "OMNITRACE_ADD_SECONDARY": {
                   "value": true
@@ -1318,7 +1320,7 @@ The full XML specification for a configuration value contains the same informati
 
    <?xml version="1.0" encoding="utf-8"?>
    <timemory_xml>
-      <omnitrace>
+      <rocprof-sys>
          <settings>
                <cereal_class_version>2</cereal_class_version>
                <!-- Full setting specification -->
@@ -1330,7 +1332,7 @@ The full XML specification for a configuration value contains the same informati
                   <count>-1</count>
                   <max_count>1</max_count>
                   <cmdline>
-                     <value0>--omnitrace-add-secondary</value0>
+                     <value0>--rocprof-sys-add-secondary</value0>
                   </cmdline>
                   <categories>
                      <value0>component</value0>
@@ -1343,21 +1345,21 @@ The full XML specification for a configuration value contains the same informati
                </OMNITRACE_ADD_SECONDARY>
                <!-- etc. -->
          </settings>
-      </omnitrace>
+      </rocprof-sys>
    </timemory_xml>
 
-However, when writing an XML configuration file, it is minimally acceptable 
+However, when writing an XML configuration file, it is minimally acceptable
 to set ``OMNITRACE_ADD_SECONDARY=false``:
 
 .. code-block:: xml
 
    <?xml version="1.0" encoding="utf-8"?>
    <timemory_xml>
-      <omnitrace>
+      <rocprof-sys>
          <settings>
                <OMNITRACE_ADD_SECONDARY>
                   <value>false</value>
                </OMNITRACE_ADD_SECONDARY>
          </settings>
-      </omnitrace>
+      </rocprof-sys>
    </timemory_xml>
