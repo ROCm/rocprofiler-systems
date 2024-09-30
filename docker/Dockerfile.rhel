@@ -1,4 +1,4 @@
-ARG DISTRO=rockylinux
+ARG DISTRO=rockylinux/rockylinux
 ARG VERSION=8
 FROM ${DISTRO}:${VERSION}
 
