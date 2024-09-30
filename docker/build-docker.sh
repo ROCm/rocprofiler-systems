@@ -214,7 +214,7 @@ do
             esac
 
             # use Rocky Linux as a base image for RHEL builds
-            DISTRO_BASE_IMAGE=rockylinux
+            DISTRO_BASE_IMAGE=rockylinux/rockylinux
 
             verbose-build docker build . ${PULL} --progress plain -f ${DOCKER_FILE} --tag ${CONTAINER} --build-arg DISTRO=${DISTRO_BASE_IMAGE} --build-arg VERSION=${VERSION} --build-arg ROCM_VERSION=${ROCM_VERSION} --build-arg AMDGPU_RPM=${ROCM_RPM} --build-arg PYTHON_VERSIONS=\"${PYTHON_VERSIONS}\"
         elif [ "${DISTRO}" = "opensuse" ]; then
