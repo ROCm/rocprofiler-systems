@@ -58,7 +58,7 @@ test-release()
     shift
     local DOCKER_ARGS=""
     tty -s && DOCKER_ARGS="-it" || DOCKER_ARGS=""
-    verbose-run docker run ${DOCKER_ARGS} --rm -v ${PWD}:/home/omnitrace ${CONTAINER} /home/omnitrace/scripts/test-release.sh ${@}
+    verbose-run docker run ${DOCKER_ARGS} --rm -v ${PWD}:/home/rocprof-sys ${CONTAINER} /home/rocprof-sys/scripts/test-release.sh ${@}
 }
 
 reset-last()
@@ -121,6 +121,6 @@ do
     TAG=${DISTRO}-${VERSION}
     for ROCM_VERSION in ${ROCM_VERSIONS}
     do
-        test-release ${USER}/omnitrace:release-base-${TAG}-rocm-${ROCM_VERSION} ${SCRIPT_ARGS}
+        test-release ${USER}/rocprof-sys:release-base-${TAG}-rocm-${ROCM_VERSION} ${SCRIPT_ARGS}
     done
 done
