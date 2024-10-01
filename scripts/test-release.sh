@@ -107,10 +107,10 @@ test-install()
 change-directory()
 {
     if [ ! -f "${1}" ]; then
-        if [ -f "/home/omnitrace/${1}" ]; then
-            cd /home/omnitrace
-        elif [ -f "/home/omnitrace/docker/${1}" ]; then
-            cd /home/omnitrace/docker
+        if [ -f "/home/rocprof-sys/${1}" ]; then
+            cd /home/rocprof-sys
+        elif [ -f "/home/rocprof-sys/docker/${1}" ]; then
+            cd /home/rocprof-sys/docker
         fi
     fi
     realpath ${1}
