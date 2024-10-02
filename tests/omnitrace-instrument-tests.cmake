@@ -20,7 +20,7 @@ omnitrace_add_test(
         --print-instrumented
         functions
     RUN_ARGS 17
-    ENVIRONMENT "${_base_environment};OMNITRACE_COUT_OUTPUT=ON"
+    ENVIRONMENT "${_base_environment};ROCPROFSYS_COUT_OUTPUT=ON"
     BASELINE_PASS_REGEX "number of calls made = 17"
     REWRITE_PASS_REGEX "\\[function\\]\\[Forcing\\] caller-include-regex :: 'outer'"
     REWRITE_RUN_PASS_REGEX ">>> ._outer ([ \\|]+) 17")
@@ -50,5 +50,5 @@ omnitrace_add_test(
     REWRITE_ARGS -e -v 2 --min-instructions=8
     RUN_ARGS 10 4 1000
     ENVIRONMENT
-        "${_lock_environment};OMNITRACE_FLAT_PROFILE=ON;OMNITRACE_PROFILE=OFF;OMNITRACE_TRACE=ON;OMNITRACE_SAMPLING_KEEP_INTERNAL=OFF"
+        "${_lock_environment};ROCPROFSYS_FLAT_PROFILE=ON;ROCPROFSYS_PROFILE=OFF;ROCPROFSYS_TRACE=ON;ROCPROFSYS_SAMPLING_KEEP_INTERNAL=OFF"
     )

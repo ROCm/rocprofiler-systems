@@ -53,14 +53,14 @@ auto _thread_pool_cfg = []() {
         const int64_t _max_threads = std::thread::hardware_concurrency() / 2;
         const int64_t _min_threads = 1;
 
-        _nthreads = get_env<int64_t>("OMNITRACE_THREAD_POOL_SIZE", -1, false);
+        _nthreads = get_env<int64_t>("ROCPROFSYS_THREAD_POOL_SIZE", -1, false);
         if(_nthreads == -1)
         {
             _nthreads = 4;
             if(_nthreads > _max_threads) _nthreads = _max_threads;
             if(_nthreads < _min_threads) _nthreads = _min_threads;
 
-            tim::set_env("OMNITRACE_THREAD_POOL_SIZE", _nthreads, 0);
+            tim::set_env("ROCPROFSYS_THREAD_POOL_SIZE", _nthreads, 0);
         }
     }
 
@@ -192,7 +192,7 @@ shutdown()
 
     if(get_thread_pool_state() == State::Active)
     {
-        OMNITRACE_DEBUG_F("Destroying the omnitrace thread pool...\n");
+        OMNITRACE_DEBUG_F("Destroying the rocprof-sys thread pool...\n");
         get_thread_pool().destroy_threadpool();
         get_thread_pool_state() = State::Finalized;
     }

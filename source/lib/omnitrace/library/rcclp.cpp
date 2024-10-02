@@ -58,10 +58,10 @@ setup()
 
     // make sure the symbols are loaded to be wrapped
     dynamic_library _librccl{
-        "OMNITRACE_RCCL_LIBRARY", "librccl.so", RTLD_NOW | RTLD_GLOBAL, true, true, true
+        "ROCPROFSYS_RCCL_LIBRARY", "librccl.so", RTLD_NOW | RTLD_GLOBAL, true, true, true
     };
 
-    auto _use_data = tim::get_env("OMNITRACE_RCCLP_COMM_DATA", get_use_timemory());
+    auto _use_data = tim::get_env("ROCPROFSYS_RCCLP_COMM_DATA", get_use_timemory());
     if(!get_use_timemory())
     {
         trait::runtime_enabled<component::comm_data>::set(false);

@@ -48,7 +48,7 @@ struct source_location_history
 const std::string&
 get_file_name()
 {
-    static auto _fname = tim::get_env<std::string>("OMNITRACE_LOG_FILE", "");
+    static auto _fname = tim::get_env<std::string>("ROCPROFSYS_LOG_FILE", "");
     return _fname;
 }
 

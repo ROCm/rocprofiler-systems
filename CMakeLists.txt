@@ -107,8 +107,8 @@ if(DEFINED CMAKE_INSTALL_LIBDIR AND NOT DEFINED CMAKE_DEFAULT_INSTALL_LIBDIR)
         CACHE STRING "Object code libraries" FORCE)
 endif()
 
-if(NOT "$ENV{OMNITRACE_CI}" STREQUAL "")
-    set(CI_BUILD $ENV{OMNITRACE_CI})
+if(NOT "$ENV{ROCPROFSYS_CI}" STREQUAL "")
+    set(CI_BUILD $ENV{ROCPROFSYS_CI})
 else()
     set(CI_BUILD OFF)
 endif()
@@ -197,7 +197,7 @@ endif()
 if(OMNITRACE_USE_PYTHON)
     omnitrace_add_option(OMNITRACE_BUILD_PYTHON
                          "Build python bindings with internal pybind11" ON)
-elseif("$ENV{OMNITRACE_CI}")
+elseif("$ENV{ROCPROFSYS_CI}")
     # quiet warnings in dashboard
     if(OMNITRACE_PYTHON_ENVS OR OMNITRACE_PYTHON_PREFIX)
         omnitrace_message(
@@ -313,7 +313,7 @@ if(OMNITRACE_BUILD_HIDDEN_VISIBILITY)
     set(CMAKE_VISIBILITY_INLINES_HIDDEN ON)
 endif()
 
-if(OMNITRACE_BUILD_TESTING OR "$ENV{OMNITRACE_CI}" MATCHES "[1-9]+|ON|on|y|yes")
+if(OMNITRACE_BUILD_TESTING OR "$ENV{ROCPROFSYS_CI}" MATCHES "[1-9]+|ON|on|y|yes")
     enable_testing()
     include(CTest)
 endif()

@@ -635,7 +635,7 @@ set(TIMEMORY_MAX_THREADS
     "${OMNITRACE_MAX_THREADS}"
     CACHE STRING "Max statically-allocated threads" FORCE)
 set(TIMEMORY_SETTINGS_PREFIX
-    "OMNITRACE_"
+    "ROCPROFSYS_"
     CACHE STRING "Prefix used for settings and environment variables")
 set(TIMEMORY_PROJECT_NAME
     "rocprofsys"

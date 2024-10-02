@@ -37,7 +37,7 @@ This submodule imports the timemory Python function profiler
 try:
     import os
 
-    os.environ["OMNITRACE_PATH"] = os.path.abspath(
+    os.environ["ROCPROFSYS_PATH"] = os.path.abspath(
         os.path.join(os.path.dirname(__file__), "../../..")
     )
 

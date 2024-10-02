@@ -13,7 +13,7 @@ endif()
 
 function(rccl_message _MSG_TYPE)
     if("${CMAKE_PROJECT_NAME}" STREQUAL "rocprofsys"
-       AND "$ENV{OMNITRACE_CI}"
+       AND "$ENV{ROCPROFSYS_CI}"
        AND "${_MSG_TYPE}" MATCHES "WARNING")
         set(_MSG_TYPE STATUS) # don't generate warnings during CI
     endif()
@@ -32,7 +32,7 @@ if(NOT hip_FOUND)
 endif()
 
 if("${CMAKE_PROJECT_NAME}" STREQUAL "rocprofsys"
-   AND ("$ENV{OMNITRACE_CI}"
+   AND ("$ENV{ROCPROFSYS_CI}"
         OR OMNITRACE_CI
         OR OMNITRACE_BUILD_CI))
     find_package(rccl QUIET) # avoid generating warning in CI

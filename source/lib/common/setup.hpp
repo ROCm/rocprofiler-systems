@@ -75,7 +75,7 @@
     {                                                                                    \
         fflush(stderr);                                                                  \
         OMNITRACE_SETUP_LOG_START                                                        \
-        fprintf(stderr, "[omnitrace]" OMNITRACE_SETUP_LOG_NAME "[%i] ", getpid());       \
+        fprintf(stderr, "[rocprof-sys]" OMNITRACE_SETUP_LOG_NAME "[%i] ", getpid());       \
         fprintf(stderr, __VA_ARGS__);                                                    \
         OMNITRACE_SETUP_LOG_END                                                          \
         fflush(stderr);                                                                  \
@@ -133,7 +133,7 @@ get_environ(int _verbose, std::string _search_paths = {},
 
     auto _possible_rocp_metrics = std::vector<std::string>{};
     auto _possible_rocprof_libs = std::vector<std::string>{};
-    for(const auto* itr : { "OMNITRACE_ROCM_PATH", "ROCM_PATH" })
+    for(const auto* itr : { "ROCPROFSYS_ROCM_PATH", "ROCM_PATH" })
     {
         if(getenv(itr))
         {
@@ -172,7 +172,7 @@ get_environ(int _verbose, std::string _search_paths = {},
         if(path::exists(itr))
         {
             _data.emplace_back(
-                env_config{ "OMNITRACE_ROCPROFILER_LIBRARY", itr.c_str(), 0 });
+                env_config{ "ROCPROFSYS_ROCPROFILER_LIBRARY", itr.c_str(), 0 });
             _possible_rocp_metrics.emplace(
                 _possible_rocp_metrics.begin(),
                 common::join('/', path::dirname(itr), "../../lib/rocprofiler"));
@@ -195,7 +195,7 @@ get_environ(int _verbose, std::string _search_paths = {},
     }
 
     auto _found_rocp_metrics = (!_env_rocp_metrics.empty())
-                                   ? get_env("OMNITRACE_ROCP_METRICS_FORCE_VALID", false)
+                                   ? get_env("ROCPROFSYS_ROCP_METRICS_FORCE_VALID", false)
                                    : false;
 
     if(!_found_rocp_metrics)
@@ -232,7 +232,7 @@ get_environ(int _verbose, std::string _search_paths = {},
                  << path::exists(_rocp_metrics_xml) << ") and/or gfx_metrics.xml (found: "
                  << path::exists(_rocp_gfx_metrics_xml)
                  << "). To ignore this error, set "
-                    "OMNITRACE_ROCP_METRICS_FORCE_VALID=true in the environment";
+                    "ROCPROFSYS_ROCP_METRICS_FORCE_VALID=true in the environment";
         }
         else
         {
@@ -251,7 +251,7 @@ get_environ(int _verbose, std::string _search_paths = {},
 #endif
 
 #if defined(OMNITRACE_USE_OMPT) && OMNITRACE_USE_OMPT > 0
-    if(get_env("OMNITRACE_USE_OMPT", true))
+    if(get_env("ROCPROFSYS_USE_OMPT", true))
     {
         std::string _omni_omp_libs = _omnilib_dl;
         const char* _omp_libs      = getenv("OMP_TOOL_LIBRARIES");

@@ -104,7 +104,7 @@ omnitrace_libc_start_main(int (*_main)(int, char**, char**), int _argc, char** _
     start_main_t user_main = dlsym(RTLD_NEXT, "__libc_start_main");
 
     // disable future LD_PRELOADs
-    setenv("OMNITRACE_PRELOAD", "0", 1);
+    setenv("ROCPROFSYS_PRELOAD", "0", 1);
 
     if(user_main && user_main != _this_func)
     {
@@ -115,14 +115,14 @@ omnitrace_libc_start_main(int (*_main)(int, char**, char**), int _argc, char** _
         }
         else
         {
-            // call omnitrace main function wrapper
+            // call rocprof-sys main function wrapper
             return user_main(omnitrace_main, _argc, _argv, _init, _fini, _rtld_fini,
                              _stack_end);
         }
     }
     else
     {
-        fputs("Error! omnitrace could not find __libc_start_main!", stderr);
+        fputs("Error! rocprof-sys could not find __libc_start_main!", stderr);
         return -1;
     }
 }

@@ -34,46 +34,46 @@ if [ -d "$(realpath /tmp)" ]; then
     export TMPDIR
 fi
 
-: ${CONFIG_DIR:=$(mktemp -t -d omnitrace-test-install-XXXX)}
+: ${CONFIG_DIR:=$(mktemp -t -d rocprofsys-test-install-XXXX)}
 : ${SOURCE_DIR:=$(dirname ${SCRIPT_DIR})}
-: ${ENABLE_OMNITRACE_INSTRUMENT:=1}
-: ${ENABLE_OMNITRACE_AVAIL:=1}
-: ${ENABLE_OMNITRACE_SAMPLE:=1}
-: ${ENABLE_OMNITRACE_PYTHON:=0}
-: ${ENABLE_OMNITRACE_REWRITE:=1}
-: ${ENABLE_OMNITRACE_RUNTIME:=1}
+: ${ENABLE_ROCPROFSYS_INSTRUMENT:=1}
+: ${ENABLE_ROCPROFSYS_AVAIL:=1}
+: ${ENABLE_ROCPROFSYS_SAMPLE:=1}
+: ${ENABLE_ROCPROFSYS_PYTHON:=0}
+: ${ENABLE_ROCPROFSYS_REWRITE:=1}
+: ${ENABLE_ROCPROFSYS_RUNTIME:=1}
 
 usage()
 {
     print_option() { printf "    --%-10s %-30s     %s (default: %s)\n" "${1}" "${2}" "${3}" "${4}"; }
     echo "Options:"
     print_option source-dir "<PATH>" "Location of source directory" "${SOURCE_DIR}"
-    print_option test-rocprof-sys-instrument "0|1" "Enable testing rocprof-sys-instrument" "${ENABLE_OMNITRACE_INSTRUMENT}"
-    print_option test-rocprof-sys-avail "0|1" "Enable testing rocprof-sys-avail" "${ENABLE_OMNITRACE_AVAIL}"
-    print_option test-rocprof-sys-sample "0|1" "Enable testing rocprof-sys-sample" "${ENABLE_OMNITRACE_SAMPLE}"
-    print_option test-rocprof-sys-python "0|1" "Enable testing rocprof-sys-python" "${ENABLE_OMNITRACE_PYTHON}"
-    print_option test-rocprof-sys-rewrite "0|1" "Enable testing rocprof-sys-instrument binary rewrite" "${ENABLE_OMNITRACE_REWRITE}"
-    print_option test-rocprof-sys-runtime "0|1" "Enable testing rocprof-sys-instrument runtime instrumentation" "${ENABLE_OMNITRACE_RUNTIME}"
+    print_option test-rocprof-sys-instrument "0|1" "Enable testing rocprof-sys-instrument" "${ENABLE_ROCPROFSYS_INSTRUMENT}"
+    print_option test-rocprof-sys-avail "0|1" "Enable testing rocprof-sys-avail" "${ENABLE_ROCPROFSYS_AVAIL}"
+    print_option test-rocprof-sys-sample "0|1" "Enable testing rocprof-sys-sample" "${ENABLE_ROCPROFSYS_SAMPLE}"
+    print_option test-rocprof-sys-python "0|1" "Enable testing rocprof-sys-python" "${ENABLE_ROCPROFSYS_PYTHON}"
+    print_option test-rocprof-sys-rewrite "0|1" "Enable testing rocprof-sys-instrument binary rewrite" "${ENABLE_ROCPROFSYS_REWRITE}"
+    print_option test-rocprof-sys-runtime "0|1" "Enable testing rocprof-sys-instrument runtime instrumentation" "${ENABLE_ROCPROFSYS_RUNTIME}"
 }
 
-cat << EOF > ${CONFIG_DIR}/omnitrace.cfg
-OMNITRACE_VERBOSE               = 2
-OMNITRACE_PROFILE               = ON
-OMNITRACE_TRACE                 = ON
-OMNITRACE_USE_SAMPLING          = ON
-OMNITRACE_USE_PROCESS_SAMPLING  = ON
-OMNITRACE_OUTPUT_PATH           = %env{CONFIG_DIR}%/omnitrace-tests-output
-OMNITRACE_OUTPUT_PREFIX         = %tag%/
-OMNITRACE_SAMPLING_FREQ         = 100
-OMNITRACE_SAMPLING_DELAY        = 0.05
-OMNITRACE_COUT_OUTPUT           = ON
-OMNITRACE_TIME_OUTPUT           = OFF
-OMNITRACE_USE_PID               = OFF
+cat << EOF > ${CONFIG_DIR}/rocprof-sys.cfg
+ROCPROFSYS_VERBOSE               = 2
+ROCPROFSYS_PROFILE               = ON
+ROCPROFSYS_TRACE                 = ON
+ROCPROFSYS_USE_SAMPLING          = ON
+ROCPROFSYS_USE_PROCESS_SAMPLING  = ON
+ROCPROFSYS_OUTPUT_PATH           = %env{CONFIG_DIR}%/rocprofsys-tests-output
+ROCPROFSYS_OUTPUT_PREFIX         = %tag%/
+ROCPROFSYS_SAMPLING_FREQ         = 100
+ROCPROFSYS_SAMPLING_DELAY        = 0.05
+ROCPROFSYS_COUT_OUTPUT           = ON
+ROCPROFSYS_TIME_OUTPUT           = OFF
+ROCPROFSYS_USE_PID               = OFF
 EOF
 
 export CONFIG_DIR
-export OMNITRACE_CONFIG_FILE=${CONFIG_DIR}/omnitrace.cfg
-verbose-run cat ${OMNITRACE_CONFIG_FILE}
+export ROCPROFSYS_CONFIG_FILE=${CONFIG_DIR}/rocprof-sys.cfg
+verbose-run cat ${ROCPROFSYS_CONFIG_FILE}
 
 while [[ $# -gt 0 ]]
 do
@@ -101,27 +101,27 @@ do
 
     case "${ARG}" in
         --test-rocprof-sys-instrument)
-            ENABLE_OMNITRACE_INSTRUMENT=${VAL}
+            ENABLE_ROCPROFSYS_INSTRUMENT=${VAL}
             continue
             ;;
         --test-rocprof-sys-avail)
-            ENABLE_OMNITRACE_AVAIL=${VAL}
+            ENABLE_ROCPROFSYS_AVAIL=${VAL}
             continue
             ;;
         --test-rocprof-sys-sample)
-            ENABLE_OMNITRACE_SAMPLE=${VAL}
+            ENABLE_ROCPROFSYS_SAMPLE=${VAL}
             continue
             ;;
         --test-rocprof-sys-python)
-            ENABLE_OMNITRACE_PYTHON=${VAL}
+            ENABLE_ROCPROFSYS_PYTHON=${VAL}
             continue
             ;;
         --test-rocprof-sys-rewrite)
-            ENABLE_OMNITRACE_REWRITE=${VAL}
+            ENABLE_ROCPROFSYS_REWRITE=${VAL}
             continue
             ;;
         --test-rocprof-sys-runtime)
-            ENABLE_OMNITRACE_RUNTIME=${VAL}
+            ENABLE_ROCPROFSYS_RUNTIME=${VAL}
             continue
             ;;
         --source-dir)
@@ -179,7 +179,7 @@ test-rocprof-sys-rewrite()
         local LS_ARGS=""
     fi
     verbose-run rocprof-sys-instrument -e -v 1 -o ${CONFIG_DIR}/ls.inst --simulate -- ${LS_NAME}
-    for i in $(find ${CONFIG_DIR}/omnitrace-tests-output/ls.inst -type f); do verbose-run ls ${i}; done
+    for i in $(find ${CONFIG_DIR}/rocprofsys-tests-output/ls.inst -type f); do verbose-run ls ${i}; done
     verbose-run rocprof-sys-instrument -e -v 1 -o ${CONFIG_DIR}/ls.inst -- ${LS_NAME}
     verbose-run rocprof-sys-run -- ${CONFIG_DIR}/ls.inst ${LS_ARGS}
 }
@@ -194,13 +194,13 @@ test-rocprof-sys-runtime()
         local LS_ARGS=""
     fi
     verbose-run rocprof-sys-instrument -e -v 1 --simulate -- ${LS_NAME} ${LS_ARGS}
-    for i in $(find ${CONFIG_DIR}/omnitrace-tests-output/$(basename ${LS_NAME}) -type f); do verbose-run ls ${i}; done
+    for i in $(find ${CONFIG_DIR}/rocprofsys-tests-output/$(basename ${LS_NAME}) -type f); do verbose-run ls ${i}; done
     verbose-run rocprof-sys-instrument -e -v 1 -- ${LS_NAME} ${LS_ARGS}
 }
 
-if [ "${ENABLE_OMNITRACE_INSTRUMENT}" -ne 0 ]; then verbose-run test-rocprof-sys-instrument; fi
-if [ "${ENABLE_OMNITRACE_AVAIL}" -ne 0 ]; then verbose-run test-rocprof-sys-avail; fi
-if [ "${ENABLE_OMNITRACE_SAMPLE}" -ne 0 ]; then verbose-run test-rocprof-sys-sample; fi
-if [ "${ENABLE_OMNITRACE_PYTHON}" -ne 0 ]; then verbose-run test-rocprof-sys-python; fi
-if [ "${ENABLE_OMNITRACE_REWRITE}" -ne 0 ]; then verbose-run test-rocprof-sys-rewrite; fi
-if [ "${ENABLE_OMNITRACE_RUNTIME}" -ne 0 ]; then verbose-run test-rocprof-sys-runtime; fi
+if [ "${ENABLE_ROCPROFSYS_INSTRUMENT}" -ne 0 ]; then verbose-run test-rocprof-sys-instrument; fi
+if [ "${ENABLE_ROCPROFSYS_AVAIL}" -ne 0 ]; then verbose-run test-rocprof-sys-avail; fi
+if [ "${ENABLE_ROCPROFSYS_SAMPLE}" -ne 0 ]; then verbose-run test-rocprof-sys-sample; fi
+if [ "${ENABLE_ROCPROFSYS_PYTHON}" -ne 0 ]; then verbose-run test-rocprof-sys-python; fi
+if [ "${ENABLE_ROCPROFSYS_REWRITE}" -ne 0 ]; then verbose-run test-rocprof-sys-rewrite; fi
+if [ "${ENABLE_ROCPROFSYS_RUNTIME}" -ne 0 ]; then verbose-run test-rocprof-sys-runtime; fi

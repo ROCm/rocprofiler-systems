@@ -138,15 +138,15 @@ roctracer::setup(void* table, bool on_load_trace)
     OMNITRACE_VERBOSE_F(1, "setting up roctracer...\n");
     OMNITRACE_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
 
-    dynamic_library _amdhip64{ "OMNITRACE_ROCTRACER_LIBAMDHIP64",
+    dynamic_library _amdhip64{ "ROCPROFSYS_ROCTRACER_LIBAMDHIP64",
                                find_library_path("libamdhip64.so",
-                                                 { "OMNITRACE_ROCM_PATH", "ROCM_PATH" },
+                                                 { "ROCPROFSYS_ROCM_PATH", "ROCM_PATH" },
                                                  { OMNITRACE_DEFAULT_ROCM_PATH }) };
 
 #if OMNITRACE_HIP_VERSION_MAJOR == 4 && OMNITRACE_HIP_VERSION_MINOR < 4
     dynamic_library _kfdwrapper{
-        "OMNITRACE_ROCTRACER_LIBKFDWRAPPER",
-        find_library_path("libkfdwrapper64.so", { "OMNITRACE_ROCM_PATH", "ROCM_PATH" },
+        "ROCPROFSYS_ROCTRACER_LIBKFDWRAPPER",
+        find_library_path("libkfdwrapper64.so", { "ROCPROFSYS_ROCM_PATH", "ROCM_PATH" },
                           { OMNITRACE_DEFAULT_ROCM_PATH },
                           { "roctracer/lib", "roctracer/lib64", "lib", "lib64" })
     };

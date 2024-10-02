@@ -392,7 +392,7 @@ rocm_metrics()
     auto _settings = tim::settings::shared_instance();
     if(_settings)
     {
-        auto ritr = _settings->find("OMNITRACE_ROCM_EVENTS");
+        auto ritr = _settings->find("ROCPROFSYS_ROCM_EVENTS");
         if(ritr != _settings->end())
         {
             auto _rocm_events = ritr->second;

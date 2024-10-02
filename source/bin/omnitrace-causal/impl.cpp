@@ -121,10 +121,10 @@ forward_signal(int sig)
 int
 get_verbose()
 {
-    verbose = get_env("OMNITRACE_CAUSAL_VERBOSE",
-                      get_env<int>("OMNITRACE_VERBOSE", verbose, false));
+    verbose = get_env("ROCPROFSYS_CAUSAL_VERBOSE",
+                      get_env<int>("ROCPROFSYS_VERBOSE", verbose, false));
     auto _debug =
-        get_env("OMNITRACE_CAUSAL_DEBUG", get_env<bool>("OMNITRACE_DEBUG", false, false));
+        get_env("ROCPROFSYS_CAUSAL_DEBUG", get_env<bool>("ROCPROFSYS_DEBUG", false, false));
     if(_debug) verbose += 8;
     return verbose;
 }
@@ -194,15 +194,15 @@ get_initial_environment()
         }
     }
 
-    update_env(_env, "OMNITRACE_MODE", "causal");
-    update_env(_env, "OMNITRACE_USE_CAUSAL", true);
-    update_env(_env, "OMNITRACE_USE_SAMPLING", false);
-    update_env(_env, "OMNITRACE_TRACE", false);
-    update_env(_env, "OMNITRACE_PROFILE", false);
-    update_env(_env, "OMNITRACE_USE_PROCESS_SAMPLING", false);
-    update_env(_env, "OMNITRACE_THREAD_POOL_SIZE",
-               get_env<int>("OMNITRACE_THREAD_POOL_SIZE", 0));
-    update_env(_env, "OMNITRACE_LAUNCHER", "rocprof-sys-causal");
+    update_env(_env, "ROCPROFSYS_MODE", "causal");
+    update_env(_env, "ROCPROFSYS_USE_CAUSAL", true);
+    update_env(_env, "ROCPROFSYS_USE_SAMPLING", false);
+    update_env(_env, "ROCPROFSYS_TRACE", false);
+    update_env(_env, "ROCPROFSYS_PROFILE", false);
+    update_env(_env, "ROCPROFSYS_USE_PROCESS_SAMPLING", false);
+    update_env(_env, "ROCPROFSYS_THREAD_POOL_SIZE",
+               get_env<int>("ROCPROFSYS_THREAD_POOL_SIZE", 0));
+    update_env(_env, "ROCPROFSYS_LAUNCHER", "rocprof-sys-causal");
 
     return _env;
 }
@@ -430,7 +430,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env,
                                                         #   2. func_B
                                                         #   3. func_A or func_B
     General tips:
-    - Insert progress points at hotspots in your code or use omnitrace's runtime instrumentation
+    - Insert progress points at hotspots in your code or use rocprof-sys's runtime instrumentation
         - Note: binary rewrite will produce a incompatible new binary
     - Collect a flat profile via sampling
         - E.g., rocprof-sys-sample -F -- <exe> <args>
@@ -466,20 +466,20 @@ parse_args(int argc, char** argv, std::vector<char*>& _env,
             auto _monochrome = p.get<bool>("monochrome");
             monochrome()     = _monochrome;
             p.set_use_color(!_monochrome);
-            update_env(_env, "OMNITRACE_MONOCHROME", (_monochrome) ? "1" : "0");
+            update_env(_env, "ROCPROFSYS_MONOCHROME", (_monochrome) ? "1" : "0");
             update_env(_env, "MONOCHROME", (_monochrome) ? "1" : "0");
         });
     parser.add_argument({ "--debug" }, "Debug output")
         .max_count(1)
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_DEBUG", p.get<bool>("debug"));
+            update_env(_env, "ROCPROFSYS_DEBUG", p.get<bool>("debug"));
         });
     parser.add_argument({ "-v", "--verbose" }, "Verbose output")
         .count(1)
         .action([&](parser_t& p) {
             auto _v = p.get<int>("verbose");
             verbose = _v;
-            update_env(_env, "OMNITRACE_VERBOSE", _v);
+            update_env(_env, "ROCPROFSYS_VERBOSE", _v);
         });
 
     std::string _config_file      = {};
@@ -504,7 +504,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env,
             "the name of the target executable (or a regex for matching to the name of "
             "the target) for causal profiling, e.g., `rocprof-sys-causal -l foo -- "
             "mpirun "
-            "-n 4 foo`. This ensures that the omnitrace library is LD_PRELOADed on the "
+            "-n 4 foo`. This ensures that the rocprof-sys library is LD_PRELOADed on the "
             "proper target")
         .count(1)
         .dtype("executable")
@@ -549,7 +549,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env,
         .choices({ "function", "line" })
         .choice_alias("function", { "func" })
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_CAUSAL_MODE", p.get<std::string>("mode"));
+            update_env(_env, "ROCPROFSYS_CAUSAL_MODE", p.get<std::string>("mode"));
         });
 
     parser.add_argument({ "-b", "--backend" }, "Causal profiling sampling backend.")
@@ -557,7 +557,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env,
         .dtype("string")
         .choices({ "auto", "perf", "timer" })
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_CAUSAL_BACKEND", p.get<std::string>("backend"));
+            update_env(_env, "ROCPROFSYS_CAUSAL_BACKEND", p.get<std::string>("backend"));
         });
 
     parser
@@ -566,7 +566,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env,
         .min_count(1)
         .dtype("filename")
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_CAUSAL_FILE", p.get<std::string>("output-name"));
+            update_env(_env, "ROCPROFSYS_CAUSAL_FILE", p.get<std::string>("output-name"));
         });
 
     bool _reset = false;
@@ -584,7 +584,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env,
         .max_count(1)
         .dtype("bool")
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_CAUSAL_END_TO_END", p.get<bool>("end-to-end"));
+            update_env(_env, "ROCPROFSYS_CAUSAL_END_TO_END", p.get<bool>("end-to-end"));
         });
 
     parser
@@ -594,7 +594,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env,
         .count(1)
         .dtype("seconds")
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_CAUSAL_DELAY", p.get<double>("wait"));
+            update_env(_env, "ROCPROFSYS_CAUSAL_DELAY", p.get<double>("wait"));
         });
 
     parser
@@ -607,7 +607,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env,
         .count(1)
         .dtype("seconds")
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_CAUSAL_DURATION", p.get<double>("duration"));
+            update_env(_env, "ROCPROFSYS_CAUSAL_DURATION", p.get<double>("duration"));
         });
 
     int64_t _niterations       = 1;
@@ -811,38 +811,38 @@ parse_args(int argc, char** argv, std::vector<char*>& _env,
 
     if(_add_defaults)
     {
-        add_default_env(_env, "OMNITRACE_TIME_OUTPUT", false);
-        add_default_env(_env, "OMNITRACE_USE_PID", false);
-        add_default_env(_env, "OMNITRACE_USE_KOKKOSP", true);
+        add_default_env(_env, "ROCPROFSYS_TIME_OUTPUT", false);
+        add_default_env(_env, "ROCPROFSYS_USE_PID", false);
+        add_default_env(_env, "ROCPROFSYS_USE_KOKKOSP", true);
 
 #if defined(OMNITRACE_USE_OMPT) && OMNITRACE_USE_OMPT > 0
-        add_default_env(_env, "OMNITRACE_USE_OMPT", true);
+        add_default_env(_env, "ROCPROFSYS_USE_OMPT", true);
 #endif
 
 #if(defined(OMNITRACE_USE_MPI) && OMNITRACE_USE_MPI > 0) ||                              \
     (defined(OMNITRACE_USE_MPI_HEADERS) && OMNITRACE_USE_MPI_HEADERS > 0)
-        add_default_env(_env, "OMNITRACE_USE_MPIP", true);
+        add_default_env(_env, "ROCPROFSYS_USE_MPIP", true);
 #endif
 
 #if defined(OMNITRACE_USE_ROCTRACER) && OMNITRACE_USE_ROCTRACER > 0
-        add_default_env(_env, "OMNITRACE_ROCTRACER_HIP_API", true);
-        add_default_env(_env, "OMNITRACE_ROCTRACER_HSA_API", true);
+        add_default_env(_env, "ROCPROFSYS_ROCTRACER_HIP_API", true);
+        add_default_env(_env, "ROCPROFSYS_ROCTRACER_HSA_API", true);
 #endif
 
 #if defined(OMNITRACE_USE_RCCL) && OMNITRACE_USE_RCCL > 0
-        add_default_env(_env, "OMNITRACE_USE_RCCLP", true);
+        add_default_env(_env, "ROCPROFSYS_USE_RCCLP", true);
 #endif
     }
 
-    _fill("OMNITRACE_CAUSAL_BINARY_EXCLUDE", _binary_excludes, _generate_configs);
-    _fill("OMNITRACE_CAUSAL_SOURCE_EXCLUDE", _source_excludes, _generate_configs);
-    _fill("OMNITRACE_CAUSAL_FUNCTION_EXCLUDE", _function_excludes, _generate_configs);
+    _fill("ROCPROFSYS_CAUSAL_BINARY_EXCLUDE", _binary_excludes, _generate_configs);
+    _fill("ROCPROFSYS_CAUSAL_SOURCE_EXCLUDE", _source_excludes, _generate_configs);
+    _fill("ROCPROFSYS_CAUSAL_FUNCTION_EXCLUDE", _function_excludes, _generate_configs);
 
-    _fill("OMNITRACE_CAUSAL_BINARY_SCOPE", _binary_scopes, _generate_configs);
-    _fill("OMNITRACE_CAUSAL_SOURCE_SCOPE", _source_scopes, _generate_configs);
-    _fill("OMNITRACE_CAUSAL_FUNCTION_SCOPE", _function_scopes, _generate_configs);
+    _fill("ROCPROFSYS_CAUSAL_BINARY_SCOPE", _binary_scopes, _generate_configs);
+    _fill("ROCPROFSYS_CAUSAL_SOURCE_SCOPE", _source_scopes, _generate_configs);
+    _fill("ROCPROFSYS_CAUSAL_FUNCTION_SCOPE", _function_scopes, _generate_configs);
 
-    _fill("OMNITRACE_CAUSAL_FIXED_SPEEDUP", _virtual_speedups, false);
+    _fill("ROCPROFSYS_CAUSAL_FIXED_SPEEDUP", _virtual_speedups, false);
 
     // make sure at least one env exists
     if(_causal_envs_tmp.empty()) _causal_envs_tmp.emplace_back();
@@ -859,9 +859,9 @@ parse_args(int argc, char** argv, std::vector<char*>& _env,
     if(_generate_configs)
     {
         auto _is_omni_cfg = [](std::string_view itr) {
-            return (itr.find("OMNITRACE") == 0 && itr.find("OMNITRACE_MODE") != 0 &&
-                    itr.find("OMNITRACE_DEBUG_") != 0 && itr.find('=') < itr.length());
-            // omnitrace has miscellaneous env options starting with OMNITRACE_DEBUG_ that
+            return (itr.find("ROCPROFSYS") == 0 && itr.find("ROCPROFSYS_MODE") != 0 &&
+                    itr.find("ROCPROFSYS_DEBUG_") != 0 && itr.find('=') < itr.length());
+            // rocprof-sys has miscellaneous env options starting with ROCPROFSYS_DEBUG_ that
             // are not official options
         };
 
@@ -881,9 +881,9 @@ parse_args(int argc, char** argv, std::vector<char*>& _env,
         _env.erase(std::remove_if(_env.begin(), _env.end(), _is_omni_cfg), _env.end());
 
         auto _omni_env = std::vector<std::pair<std::string, std::string>>{};
-        // make sure that OMNITRACE_CONFIG_FILE is the first entry
+        // make sure that ROCPROFSYS_CONFIG_FILE is the first entry
         {
-            auto citr = _omni_env_m.find("OMNITRACE_CONFIG_FILE");
+            auto citr = _omni_env_m.find("ROCPROFSYS_CONFIG_FILE");
             if(citr != _omni_env_m.end())
             {
                 _omni_env.emplace_back(citr->first, citr->second);
@@ -905,12 +905,12 @@ parse_args(int argc, char** argv, std::vector<char*>& _env,
                 for(const auto& itr : _data)
                     _width = std::max(_width, itr.first.length());
 
-                _os << "# omnitrace common settings\n";
+                _os << "# rocprofsys common settings\n";
                 for(const auto& itr : _omni_env)
                     _os << std::setw(_width + 1) << std::left << itr.first << " = "
                         << itr.second << "\n";
 
-                _os << "\n# omnitrace causal settings\n";
+                _os << "\n# rocprofsys causal settings\n";
                 for(const auto& itr : _data)
                     _os << std::setw(_width + 1) << std::left << itr.first << " = "
                         << itr.second << "\n";
@@ -928,14 +928,14 @@ parse_args(int argc, char** argv, std::vector<char*>& _env,
                                  ? fname.str()
                                  : join(array_config{ ":" }, _config_file, fname.str());
             auto _cfg =
-                std::map<std::string_view, std::string>{ { "OMNITRACE_CONFIG_FILE",
+                std::map<std::string_view, std::string>{ { "ROCPROFSYS_CONFIG_FILE",
                                                            _cfg_name } };
             _causal_envs.emplace_back(_cfg);
         }
     }
 
     if(_reset)
-        _causal_envs.front().emplace(std::string_view{ "OMNITRACE_CAUSAL_FILE_RESET" },
+        _causal_envs.front().emplace(std::string_view{ "ROCPROFSYS_CAUSAL_FILE_RESET" },
                                      std::string{ "true" });
 
     return _outv;

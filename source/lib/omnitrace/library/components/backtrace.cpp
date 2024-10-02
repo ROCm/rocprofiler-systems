@@ -120,11 +120,14 @@ backtrace::filter_and_patch(const std::vector<entry_type>& _data)
         const auto _npos          = std::string::npos;
         if(_keep_internal) return 1;
         if(_lbl.find("omnitrace_main") != _npos) return 0;
+        if(_lbl.find("rocprofsys_main") != _npos) return 0;
         if(_lbl.find("omnitrace::") != _npos) return 0;
+        if(_lbl.find("rocprofsys::") != _npos) return 0;
         if(_lbl.find("tim::openmp::") != _npos) return -1;
         if(_lbl.find("tim::") != _npos) return 0;
         if(_lbl.find("DYNINST_") != _npos) return 0;
         if(_lbl.find("omnitrace_") != _npos) return -1;
+        if(_lbl.find("rocprofsys_") != _npos) return -1;
         if(_lbl.find("rocprofiler_") != _npos) return -1;
         if(_lbl.find("roctracer_") != _npos) return -1;
         if(_lbl.find("perfetto::") != _npos) return -1;
@@ -134,7 +137,7 @@ backtrace::filter_and_patch(const std::vector<entry_type>& _data)
     };
 
     static bool _keep_suffix = tim::get_env<bool>(
-        "OMNITRACE_SAMPLING_KEEP_DYNINST_SUFFIX", get_debug_sampling());
+        "ROCPROFSYS_SAMPLING_KEEP_DYNINST_SUFFIX", get_debug_sampling());
 
     // in the dyninst binary rewrite runtime, instrumented functions are appended with
     // "_dyninst", i.e. "main" will show up as "main_dyninst" in the backtrace.

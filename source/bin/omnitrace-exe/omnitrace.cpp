@@ -116,7 +116,7 @@ main(int argc, char** argv)
         _completed.set_value();
     };
 
-    for(const auto* itr : { "CI", "OMNITRACE_CI" })
+    for(const auto* itr : { "CI", "ROCPROFSYS_CI" })
     {
         if(_get_env(itr)) _env_failure(itr);
     }

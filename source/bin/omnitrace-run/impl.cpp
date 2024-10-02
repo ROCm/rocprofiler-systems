@@ -113,10 +113,10 @@ int
 get_verbose(parser_data_t& _data)
 {
     auto& verbose = _data.verbose;
-    verbose       = get_env("OMNITRACE_CAUSAL_VERBOSE",
-                      get_env<int>("OMNITRACE_VERBOSE", verbose, false));
+    verbose       = get_env("ROCPROFSYS_CAUSAL_VERBOSE",
+                      get_env<int>("ROCPROFSYS_VERBOSE", verbose, false));
     auto _debug =
-        get_env("OMNITRACE_CAUSAL_DEBUG", get_env<bool>("OMNITRACE_DEBUG", false, false));
+        get_env("ROCPROFSYS_CAUSAL_DEBUG", get_env<bool>("ROCPROFSYS_DEBUG", false, false));
     if(_debug) verbose += 8;
     return verbose;
 }
@@ -282,7 +282,7 @@ parse_args(int argc, char** argv, parser_data_t& _parser_data, bool& _fork_exec)
     };
 
     const auto* _desc = R"desc(
-    Command line interface to omnitrace configuration.
+    Command line interface to rocprof-sys configuration.
     )desc";
 
     auto parser = parser_t{ basename(argv[0]), _desc };

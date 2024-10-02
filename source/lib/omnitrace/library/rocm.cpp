@@ -163,7 +163,7 @@ extern "C"
         OMNITRACE_BASIC_VERBOSE_F(2 || rocm::on_load_trace, "Loading...\n");
         OMNITRACE_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
 
-        if(!tim::get_env("OMNITRACE_INIT_TOOLING", true)) return true;
+        if(!tim::get_env("ROCPROFSYS_INIT_TOOLING", true)) return true;
         if(!tim::settings::enabled()) return true;
 
         roctracer_is_init() = true;
@@ -191,7 +191,7 @@ extern "C"
 
 #if defined(OMNITRACE_USE_ROCPROFILER) && OMNITRACE_USE_ROCPROFILER > 0
         bool _force_rocprofiler_init =
-            tim::get_env("OMNITRACE_FORCE_ROCPROFILER_INIT", false, false);
+            tim::get_env("ROCPROFSYS_FORCE_ROCPROFILER_INIT", false, false);
 #else
         bool _force_rocprofiler_init = false;
 #endif
@@ -203,9 +203,9 @@ extern "C"
         {
 #if OMNITRACE_HIP_VERSION < 50500
             auto _rocprof =
-                dynamic_library{ "OMNITRACE_ROCPROFILER_LIBRARY",
+                dynamic_library{ "ROCPROFSYS_ROCPROFILER_LIBRARY",
                                  find_library_path("librocprofiler64.so",
-                                                   { "OMNITRACE_ROCM_PATH", "ROCM_PATH" },
+                                                   { "ROCPROFSYS_ROCM_PATH", "ROCM_PATH" },
                                                    { OMNITRACE_DEFAULT_ROCM_PATH },
                                                    { "lib", "lib64", "rocprofiler/lib",
                                                      "rocprofiler/lib64" }),

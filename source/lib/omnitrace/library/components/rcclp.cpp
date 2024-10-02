@@ -123,7 +123,7 @@ configure_rcclp(const std::set<std::string>& permit, const std::set<std::string>
             auto _reject = reject;
             // check environment
             auto reject_list =
-                tim::get_env<std::string>("OMNITRACE_RCCLP_REJECT_LIST", "");
+                tim::get_env<std::string>("ROCPROFSYS_RCCLP_REJECT_LIST", "");
             // add environment setting
             for(const auto& itr : tim::delimit(reject_list))
                 _reject.insert(itr);
@@ -135,7 +135,7 @@ configure_rcclp(const std::set<std::string>& permit, const std::set<std::string>
             auto _permit = permit;
             // check environment
             auto permit_list =
-                tim::get_env<std::string>("OMNITRACE_RCCLP_PERMIT_LIST", "");
+                tim::get_env<std::string>("ROCPROFSYS_RCCLP_PERMIT_LIST", "");
             // add environment setting
             for(const auto& itr : tim::delimit(permit_list))
                 _permit.insert(itr);

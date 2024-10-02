@@ -165,7 +165,7 @@ ensure_finalization(bool _static_init = false)
                            _tid->system_value);
     }
 
-    if(common::get_env("OMNITRACE_MONOCHROME", false)) tim::log::monochrome() = true;
+    if(common::get_env("ROCPROFSYS_MONOCHROME", false)) tim::log::monochrome() = true;
 
     timeout::setup();
 
@@ -185,7 +185,7 @@ ensure_finalization(bool _static_init = false)
         OMNITRACE_BASIC_DEBUG_F("\n");
         auto _verbose =
             get_verbose_env() + ((get_debug_env() || get_debug_init()) ? 16 : 0);
-        auto _search_paths = JOIN(':', tim::get_env<std::string>("OMNITRACE_PATH", ""),
+        auto _search_paths = JOIN(':', tim::get_env<std::string>("ROCPROFSYS_PATH", ""),
                                   tim::get_env<std::string>("PWD"), ".",
                                   tim::get_env<std::string>("LD_LIBRARY_PATH", ""),
                                   tim::get_env<std::string>("LIBRARY_PATH", ""),
@@ -278,7 +278,7 @@ omnitrace_set_env_hidden(const char* env_name, const char* env_val)
     {
         OMNITRACE_WARNING_F(
             0,
-            "omnitrace_set_env(\"%s\", \"%s\") called after omnitrace was initialized. "
+            "omnitrace_set_env(\"%s\", \"%s\") called after rocprof-sys was initialized. "
             "state = %s. This environment variable will have no effect\n",
             env_name, env_val, std::to_string(get_state()).c_str());
     }
@@ -325,7 +325,7 @@ omnitrace_set_mpi_hidden(bool use, bool attached)
 
     if(use && !attached && get_state() == State::PreInit)
     {
-        tim::set_env("OMNITRACE_USE_PID", "ON", 1);
+        tim::set_env("ROCPROFSYS_USE_PID", "ON", 1);
     }
     else if(!use)
     {
@@ -336,9 +336,9 @@ omnitrace_set_mpi_hidden(bool use, bool attached)
     {
         OMNITRACE_WARNING_F(
             0,
-            "omnitrace_set_mpi(use=%s, attached=%s) called after omnitrace was "
+            "omnitrace_set_mpi(use=%s, attached=%s) called after rocprof-sys was "
             "initialized. state = %s. MPI support may not be properly initialized. Use "
-            "OMNITRACE_USE_MPIP=ON and OMNITRACE_USE_PID=ON to ensure full support\n",
+            "ROCPROFSYS_USE_MPIP=ON and ROCPROFSYS_USE_PID=ON to ensure full support\n",
             std::to_string(use).c_str(), std::to_string(attached).c_str(),
             std::to_string(get_state()).c_str());
     }
@@ -393,9 +393,9 @@ omnitrace_init_library_hidden()
     configure_settings();
 
     auto _debug_value = get_debug();
-    if(_debug_init) config::set_setting_value("OMNITRACE_DEBUG", true);
+    if(_debug_init) config::set_setting_value("ROCPROFSYS_DEBUG", true);
     scope::destructor _debug_dtor{ [_debug_value, _debug_init]() {
-        if(_debug_init) config::set_setting_value("OMNITRACE_DEBUG", _debug_value);
+        if(_debug_init) config::set_setting_value("ROCPROFSYS_DEBUG", _debug_value);
     } };
 
     tim::trait::runtime_enabled<comp::roctracer>::set(get_use_roctracer());
@@ -410,9 +410,9 @@ omnitrace_init_library_hidden()
 extern "C" bool
 omnitrace_init_tooling_hidden()
 {
-    if(get_env("OMNITRACE_MONOCHROME", false, false)) tim::log::monochrome() = true;
+    if(get_env("ROCPROFSYS_MONOCHROME", false, false)) tim::log::monochrome() = true;
 
-    if(!tim::get_env("OMNITRACE_INIT_TOOLING", true))
+    if(!tim::get_env("ROCPROFSYS_INIT_TOOLING", true))
     {
         omnitrace_init_library_hidden();
         return false;
@@ -598,8 +598,8 @@ omnitrace_init_hidden(const char* _mode, bool _is_binary_rewrite, const char* _a
             OMNITRACE_WARNING_F(
                 0,
                 "omnitrace_init(mode=%s, is_binary_rewrite=%s, argv0=%s) "
-                "called after omnitrace was initialized. state = %s. Mode-based settings "
-                "(via -M <MODE> passed to omnitrace exe) may not be properly "
+                "called after rocprof-sys was initialized. state = %s. Mode-based settings "
+                "(via -M <MODE> passed to rocprof-sys exe) may not be properly "
                 "configured.\n",
                 _mode, std::to_string(_is_binary_rewrite).c_str(), _argv0.c_str(),
                 std::to_string(get_state()).c_str());
@@ -631,7 +631,7 @@ omnitrace_init_hidden(const char* _mode, bool _is_binary_rewrite, const char* _a
         "mode: %s | is binary rewrite: %s | command: %s\n", _mode,
         (_is_binary_rewrite) ? "y" : "n", _argv0.c_str());
 
-    tim::set_env("OMNITRACE_MODE", _mode, 0);
+    tim::set_env("ROCPROFSYS_MODE", _mode, 0);
     config::is_binary_rewrite() = _is_binary_rewrite;
 
     if(_set_mpi_called)
@@ -645,7 +645,7 @@ omnitrace_init_hidden(const char* _mode, bool _is_binary_rewrite, const char* _a
 extern "C" void
 omnitrace_reset_preload_hidden(void)
 {
-    tim::set_env("OMNITRACE_PRELOAD", "0", 1);
+    tim::set_env("ROCPROFSYS_PRELOAD", "0", 1);
     auto&& _preload_libs = common::get_env("LD_PRELOAD", std::string{});
     if(_preload_libs.find("librocprof-sys") != std::string::npos)
     {
@@ -735,9 +735,9 @@ omnitrace_finalize_hidden(void)
 
     auto _debug_init  = get_debug_finalize();
     auto _debug_value = get_debug();
-    if(_debug_init) config::set_setting_value("OMNITRACE_DEBUG", true);
+    if(_debug_init) config::set_setting_value("ROCPROFSYS_DEBUG", true);
     scope::destructor _debug_dtor{ [_debug_value, _debug_init]() {
-        if(_debug_init) config::set_setting_value("OMNITRACE_DEBUG", _debug_value);
+        if(_debug_init) config::set_setting_value("ROCPROFSYS_DEBUG", _debug_value);
     } };
 
     auto& _thread_bundle = thread_data<thread_bundle_t>::instance();
@@ -749,7 +749,7 @@ omnitrace_finalize_hidden(void)
         {
             OMNITRACE_PRINT_F("\n");
             config::print_settings(
-                tim::get_env<bool>("OMNITRACE_PRINT_ENV", get_debug()));
+                tim::get_env<bool>("ROCPROFSYS_PRINT_ENV", get_debug()));
         }
     }
 
@@ -959,7 +959,7 @@ omnitrace_finalize_hidden(void)
         _cfg.use_suffix = config::get_use_pid();
         _cfg.suffix     = settings::default_process_suffix();
         _timemory_manager->write_metadata(settings::get_global_output_prefix(),
-                                          "omnitrace", _cfg);
+                                          "rocprofsys", _cfg);
     }
 
     categories::shutdown();

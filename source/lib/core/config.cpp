@@ -203,180 +203,180 @@ configure_settings(bool _init)
                         std::to_string(get_state()).c_str());
     }
 
-    tim::manager::add_metadata("OMNITRACE_VERSION", OMNITRACE_VERSION_STRING);
-    tim::manager::add_metadata("OMNITRACE_VERSION_MAJOR", OMNITRACE_VERSION_MAJOR);
-    tim::manager::add_metadata("OMNITRACE_VERSION_MINOR", OMNITRACE_VERSION_MINOR);
-    tim::manager::add_metadata("OMNITRACE_VERSION_PATCH", OMNITRACE_VERSION_PATCH);
-    tim::manager::add_metadata("OMNITRACE_GIT_DESCRIBE", OMNITRACE_GIT_DESCRIBE);
-    tim::manager::add_metadata("OMNITRACE_GIT_REVISION", OMNITRACE_GIT_REVISION);
+    tim::manager::add_metadata("ROCPROFSYS_VERSION", OMNITRACE_VERSION_STRING);
+    tim::manager::add_metadata("ROCPROFSYS_VERSION_MAJOR", OMNITRACE_VERSION_MAJOR);
+    tim::manager::add_metadata("ROCPROFSYS_VERSION_MINOR", OMNITRACE_VERSION_MINOR);
+    tim::manager::add_metadata("ROCPROFSYS_VERSION_PATCH", OMNITRACE_VERSION_PATCH);
+    tim::manager::add_metadata("ROCPROFSYS_GIT_DESCRIBE", OMNITRACE_GIT_DESCRIBE);
+    tim::manager::add_metadata("ROCPROFSYS_GIT_REVISION", OMNITRACE_GIT_REVISION);
 
-    tim::manager::add_metadata("OMNITRACE_LIBRARY_ARCH", OMNITRACE_LIBRARY_ARCH);
-    tim::manager::add_metadata("OMNITRACE_SYSTEM_NAME", OMNITRACE_SYSTEM_NAME);
-    tim::manager::add_metadata("OMNITRACE_SYSTEM_PROCESSOR", OMNITRACE_SYSTEM_PROCESSOR);
-    tim::manager::add_metadata("OMNITRACE_SYSTEM_VERSION", OMNITRACE_SYSTEM_VERSION);
+    tim::manager::add_metadata("ROCPROFSYS_LIBRARY_ARCH", OMNITRACE_LIBRARY_ARCH);
+    tim::manager::add_metadata("ROCPROFSYS_SYSTEM_NAME", OMNITRACE_SYSTEM_NAME);
+    tim::manager::add_metadata("ROCPROFSYS_SYSTEM_PROCESSOR", OMNITRACE_SYSTEM_PROCESSOR);
+    tim::manager::add_metadata("ROCPROFSYS_SYSTEM_VERSION", OMNITRACE_SYSTEM_VERSION);
 
-    tim::manager::add_metadata("OMNITRACE_COMPILER_ID", OMNITRACE_COMPILER_ID);
-    tim::manager::add_metadata("OMNITRACE_COMPILER_VERSION", OMNITRACE_COMPILER_VERSION);
+    tim::manager::add_metadata("ROCPROFSYS_COMPILER_ID", OMNITRACE_COMPILER_ID);
+    tim::manager::add_metadata("ROCPROFSYS_COMPILER_VERSION", OMNITRACE_COMPILER_VERSION);
 
 #if OMNITRACE_HIP_VERSION > 0
-    tim::manager::add_metadata("OMNITRACE_HIP_VERSION", OMNITRACE_HIP_VERSION_STRING);
-    tim::manager::add_metadata("OMNITRACE_HIP_VERSION_MAJOR",
+    tim::manager::add_metadata("ROCPROFSYS_HIP_VERSION", OMNITRACE_HIP_VERSION_STRING);
+    tim::manager::add_metadata("ROCPROFSYS_HIP_VERSION_MAJOR",
                                OMNITRACE_HIP_VERSION_MAJOR);
-    tim::manager::add_metadata("OMNITRACE_HIP_VERSION_MINOR",
+    tim::manager::add_metadata("ROCPROFSYS_HIP_VERSION_MINOR",
                                OMNITRACE_HIP_VERSION_MINOR);
-    tim::manager::add_metadata("OMNITRACE_HIP_VERSION_PATCH",
+    tim::manager::add_metadata("ROCPROFSYS_HIP_VERSION_PATCH",
                                OMNITRACE_HIP_VERSION_PATCH);
 #endif
 
     auto _config = settings::shared_instance();
 
     // if using timemory, default to perfetto being off
-    auto _default_perfetto_v = !tim::get_env<bool>("OMNITRACE_PROFILE", false, false);
+    auto _default_perfetto_v = !tim::get_env<bool>("ROCPROFSYS_PROFILE", false, false);
 
     auto _system_backend =
-        tim::get_env("OMNITRACE_PERFETTO_BACKEND_SYSTEM", false, false);
+        tim::get_env("ROCPROFSYS_PERFETTO_BACKEND_SYSTEM", false, false);
 
-    auto _omnitrace_debug = _config->get<bool>("OMNITRACE_DEBUG");
+    auto _omnitrace_debug = _config->get<bool>("ROCPROFSYS_DEBUG");
     if(_omnitrace_debug) tim::set_env("TIMEMORY_DEBUG_SETTINGS", "1", 0);
 
     OMNITRACE_CONFIG_SETTING(
-        std::string, "OMNITRACE_MODE",
+        std::string, "ROCPROFSYS_MODE",
         "Data collection mode. Used to set default values for OMNITRACE_USE_* options. "
-        "Typically set by omnitrace binary instrumenter.",
+        "Typically set by rocprof-sys binary instrumenter.",
         std::string{ "trace" }, "backend", "advanced", "mode")
         ->set_choices({ "trace", "sampling", "causal", "coverage" });
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_CI",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_CI",
                              "Enable some runtime validation checks (typically enabled "
                              "for continuous integration)",
                              false, "debugging", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_MONOCHROME", "Disable colorized logging",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_MONOCHROME", "Disable colorized logging",
                              false, "debugging", "advanced");
 
-    OMNITRACE_CONFIG_EXT_SETTING(int, "OMNITRACE_DL_VERBOSE",
-                                 "Verbosity within the omnitrace-dl library", 0,
+    OMNITRACE_CONFIG_EXT_SETTING(int, "ROCPROFSYS_DL_VERBOSE",
+                                 "Verbosity within the rocprof-sys-dl library", 0,
                                  "debugging", "librocprof-sys-dl", "advanced");
 
     OMNITRACE_CONFIG_SETTING(
-        size_t, "OMNITRACE_NUM_THREADS_HINT",
+        size_t, "ROCPROFSYS_NUM_THREADS_HINT",
         "This is hint for how many threads are expected to be created in the "
-        "application. Setting this value allows omnitrace to preallocate resources "
+        "application. Setting this value allows rocprof-sys to preallocate resources "
         "during initialization and warn about any potential issues. For example, when "
         "call-stack sampling, each thread has a unique sampler instance which "
         "communicates with an allocator instance running in a background thread. Each "
         "allocator only handles N sampling instances (where N is the value of "
-        "OMNITRACE_SAMPLING_ALLOCATOR_SIZE). When this hint is set to >= the number of "
-        "threads that get sampled, omnitrace can start all the background threads during "
+        "ROCPROFSYS_SAMPLING_ALLOCATOR_SIZE). When this hint is set to >= the number of "
+        "threads that get sampled, rocprof-sys can start all the background threads during "
         "initialization",
-        get_env<size_t>("OMNITRACE_NUM_THREADS", 1), "threading", "performance",
+        get_env<size_t>("ROCPROFSYS_NUM_THREADS", 1), "threading", "performance",
         "sampling", "parallelism", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_TRACE", "Enable perfetto backend",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_TRACE", "Enable perfetto backend",
                              _default_perfetto_v, "backend", "perfetto");
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_USE_PERFETTO",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_USE_PERFETTO",
                              "[DEPRECATED] Renamed to OMNITRACE_TRACE",
                              _default_perfetto_v, "backend", "perfetto", "deprecated");
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_PROFILE", "Enable timemory backend",
-                             !_config->get<bool>("OMNITRACE_TRACE"), "backend",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_PROFILE", "Enable timemory backend",
+                             !_config->get<bool>("ROCPROFSYS_TRACE"), "backend",
                              "timemory");
 
     OMNITRACE_CONFIG_SETTING(
-        bool, "OMNITRACE_USE_TIMEMORY", "[DEPRECATED] Renamed to OMNITRACE_PROFILE",
-        !_config->get<bool>("OMNITRACE_TRACE"), "backend", "timemory", "deprecated");
+        bool, "ROCPROFSYS_USE_TIMEMORY", "[DEPRECATED] Renamed to OMNITRACE_PROFILE",
+        !_config->get<bool>("ROCPROFSYS_TRACE"), "backend", "timemory", "deprecated");
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_USE_CAUSAL",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_USE_CAUSAL",
                              "Enable causal profiling analysis", false, "backend",
                              "causal", "analysis");
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_USE_ROCTRACER",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_USE_ROCTRACER",
                              "Enable ROCm API and kernel tracing", true, "backend",
                              "roctracer", "rocm");
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_USE_ROCPROFILER",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_USE_ROCPROFILER",
                              "Enable ROCm hardware counters", true, "backend",
                              "rocprofiler", "rocm");
 
     OMNITRACE_CONFIG_SETTING(
-        bool, "OMNITRACE_USE_ROCM_SMI",
+        bool, "ROCPROFSYS_USE_ROCM_SMI",
         "Enable sampling GPU power, temp, utilization, and memory usage", true, "backend",
         "rocm_smi", "rocm", "process_sampling");
 
     OMNITRACE_CONFIG_SETTING(
-        bool, "OMNITRACE_USE_ROCTX",
+        bool, "ROCPROFSYS_USE_ROCTX",
         "Enable ROCtx API. Warning! Out-of-order ranges may corrupt perfetto flamegraph",
         false, "backend", "roctracer", "rocm", "roctx");
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_USE_SAMPLING",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_USE_SAMPLING",
                              "Enable statistical sampling of call-stack", false,
                              "backend", "sampling");
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_USE_THREAD_SAMPLING",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_USE_THREAD_SAMPLING",
                              "[DEPRECATED] Renamed to OMNITRACE_USE_PROCESS_SAMPLING",
                              true, "backend", "sampling", "process_sampling",
                              "deprecated", "advanced");
 
     OMNITRACE_CONFIG_SETTING(
-        bool, "OMNITRACE_USE_PROCESS_SAMPLING",
+        bool, "ROCPROFSYS_USE_PROCESS_SAMPLING",
         "Enable a background thread which samples process-level and system metrics "
         "such as the CPU/GPU freq, power, memory usage, etc.",
         true, "backend", "sampling", "process_sampling");
 
     OMNITRACE_CONFIG_SETTING(
-        bool, "OMNITRACE_USE_PID",
+        bool, "ROCPROFSYS_USE_PID",
         "Enable tagging filenames with process identifier (either MPI rank or pid)", true,
         "io", "filename");
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_USE_KOKKOSP",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_USE_KOKKOSP",
                              "Enable support for Kokkos Tools", false, "kokkos",
                              "backend");
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_USE_MPIP",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_USE_MPIP",
                              "Enable support for MPI functions", true, "mpi", "backend",
                              "parallelism");
 
     OMNITRACE_CONFIG_SETTING(
-        bool, "OMNITRACE_USE_RCCLP",
+        bool, "ROCPROFSYS_USE_RCCLP",
         "Enable support for ROCm Communication Collectives Library (RCCL) Performance",
         false, "rocm", "rccl", "backend");
 
     OMNITRACE_CONFIG_CL_SETTING(
-        bool, "OMNITRACE_KOKKOSP_KERNEL_LOGGER", "Enables kernel logging", false,
+        bool, "ROCPROFSYS_KOKKOSP_KERNEL_LOGGER", "Enables kernel logging", false,
         "--omnitrace-kokkos-kernel-logger", "kokkos", "debugging", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(int64_t, "OMNITRACE_KOKKOSP_NAME_LENGTH_MAX",
+    OMNITRACE_CONFIG_SETTING(int64_t, "ROCPROFSYS_KOKKOSP_NAME_LENGTH_MAX",
                              "Set this to a value > 0 to help avoid unnamed Kokkos Tools "
                              "callbacks. Generally, unnamed callbacks are the demangled "
                              "name of the function, which is very long",
                              0, "kokkos", "debugging", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(std::string, "OMNITRACE_KOKKOSP_PREFIX",
+    OMNITRACE_CONFIG_SETTING(std::string, "ROCPROFSYS_KOKKOSP_PREFIX",
                              "Set to [kokkos] to maintain old naming convention", "",
                              "kokkos", "debugging", "advanced");
 
     OMNITRACE_CONFIG_SETTING(
-        bool, "OMNITRACE_KOKKOSP_DEEP_COPY",
+        bool, "ROCPROFSYS_KOKKOSP_DEEP_COPY",
         "Enable tracking deep copies (warning: may corrupt flamegraph in perfetto)",
         false, "kokkos", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_USE_OMPT",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_USE_OMPT",
                              "Enable support for OpenMP-Tools", false, "openmp", "ompt",
                              "backend");
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_USE_CODE_COVERAGE",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_USE_CODE_COVERAGE",
                              "Enable support for code coverage", false, "coverage",
                              "backend", "advanced");
 
     OMNITRACE_CONFIG_SETTING(
-        double, "OMNITRACE_TRACE_DELAY",
+        double, "ROCPROFSYS_TRACE_DELAY",
         "Time in seconds to wait before enabling trace/profile data collection. If "
         "multiple delays + durations are needed, see OMNITRACE_TRACE_PERIODS.",
         0.0, "trace", "profile", "perfetto", "timemory");
 
     OMNITRACE_CONFIG_SETTING(
-        double, "OMNITRACE_TRACE_DURATION",
+        double, "ROCPROFSYS_TRACE_DURATION",
         "If > 0.0, time (in seconds) to collect trace/profile data. If multiple delays + "
         "durations are needed, see OMNITRACE_TRACE_PERIODS.",
         0.0, "trace", "profile", "perfetto", "timemory");
@@ -388,14 +388,14 @@ configure_settings(bool _init)
             join("", "(", join('|', itr.name, itr.value, itr.raw_name), ")"));
     }
 
-    OMNITRACE_CONFIG_SETTING(std::string, "OMNITRACE_TRACE_PERIODS",
+    OMNITRACE_CONFIG_SETTING(std::string, "ROCPROFSYS_TRACE_PERIODS",
                              "Similar to specify trace delay and/or duration except in "
                              "the form <DELAY>:<DURATION>, <DELAY>:<DURATION>:<REPEAT>, "
                              "and/or <DELAY>:<DURATION>:<REPEAT>:<CLOCK_ID>",
                              std::string{}, "trace", "profile", "perfetto", "timemory");
 
     OMNITRACE_CONFIG_SETTING(
-        std::string, "OMNITRACE_TRACE_PERIOD_CLOCK_ID",
+        std::string, "ROCPROFSYS_TRACE_PERIOD_CLOCK_ID",
         "Set the default clock ID for OMNITRACE_TRACE_DELAY, OMNITRACE_TRACE_DURATION, "
         "and/or OMNITRACE_TRACE_PERIODS. E.g. \"realtime\" == the delay/duration is "
         "governed by the elapsed realtime, \"cputime\" == the delay/duration is governed "
@@ -406,80 +406,80 @@ configure_settings(bool _init)
         ->set_choices(_clock_choices);
 
     OMNITRACE_CONFIG_SETTING(
-        double, "OMNITRACE_SAMPLING_FREQ",
+        double, "ROCPROFSYS_SAMPLING_FREQ",
         "Number of software interrupts per second when OMNITTRACE_USE_SAMPLING=ON", 300.0,
         "sampling", "process_sampling");
 
-    OMNITRACE_CONFIG_SETTING(double, "OMNITRACE_SAMPLING_CPUTIME_FREQ",
+    OMNITRACE_CONFIG_SETTING(double, "ROCPROFSYS_SAMPLING_CPUTIME_FREQ",
                              "Number of software interrupts per second of CPU-time. "
                              "Defaults to OMNITRACE_SAMPLING_FREQ when <= 0.0",
                              -1.0, "sampling", "advanced");
 
     OMNITRACE_CONFIG_SETTING(
-        double, "OMNITRACE_SAMPLING_REALTIME_FREQ",
+        double, "ROCPROFSYS_SAMPLING_REALTIME_FREQ",
         "Number of software interrupts per second of real (wall) time. "
         "Defaults to OMNITRACE_SAMPLING_FREQ when <= 0.0",
         -1.0, "sampling", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(double, "OMNITRACE_SAMPLING_OVERFLOW_FREQ",
+    OMNITRACE_CONFIG_SETTING(double, "ROCPROFSYS_SAMPLING_OVERFLOW_FREQ",
                              "Number of events in between each sample. "
                              "Defaults to OMNITRACE_SAMPLING_FREQ when <= 0.0",
                              -1.0, "sampling", "advanced");
 
     OMNITRACE_CONFIG_SETTING(
-        double, "OMNITRACE_SAMPLING_DELAY",
+        double, "ROCPROFSYS_SAMPLING_DELAY",
         "Time (in seconds) to wait before the first sampling signal is delivered, "
         "increasing this value can fix deadlocks during init",
         0.5, "sampling", "process_sampling");
 
-    OMNITRACE_CONFIG_SETTING(double, "OMNITRACE_SAMPLING_CPUTIME_DELAY",
+    OMNITRACE_CONFIG_SETTING(double, "ROCPROFSYS_SAMPLING_CPUTIME_DELAY",
                              "Time (in seconds) to wait before the first CPU-time "
                              "sampling signal is delivered. "
                              "Defaults to OMNITRACE_SAMPLING_DELAY when <= 0.0",
                              -1.0, "sampling", "advanced");
 
     OMNITRACE_CONFIG_SETTING(
-        double, "OMNITRACE_SAMPLING_REALTIME_DELAY",
+        double, "ROCPROFSYS_SAMPLING_REALTIME_DELAY",
         "Time (in seconds) to wait before the first real (wall) time sampling signal is "
         "delivered. Defaults to OMNITRACE_SAMPLING_DELAY when <= 0.0",
         -1.0, "sampling", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(double, "OMNITRACE_SAMPLING_DURATION",
+    OMNITRACE_CONFIG_SETTING(double, "ROCPROFSYS_SAMPLING_DURATION",
                              "If > 0.0, time (in seconds) to sample before stopping", 0.0,
                              "sampling", "process_sampling");
 
     OMNITRACE_CONFIG_SETTING(
-        double, "OMNITRACE_PROCESS_SAMPLING_FREQ",
+        double, "ROCPROFSYS_PROCESS_SAMPLING_FREQ",
         "Number of measurements per second when OMNITTRACE_USE_PROCESS_SAMPLING=ON. If "
         "set to zero, uses OMNITRACE_SAMPLING_FREQ value",
         0.0, "process_sampling");
 
-    OMNITRACE_CONFIG_SETTING(double, "OMNITRACE_PROCESS_SAMPLING_DURATION",
+    OMNITRACE_CONFIG_SETTING(double, "ROCPROFSYS_PROCESS_SAMPLING_DURATION",
                              "If > 0.0, time (in seconds) to sample before stopping. If "
                              "less than zero, uses OMNITRACE_SAMPLING_DURATION",
                              -1.0, "sampling", "process_sampling");
 
     OMNITRACE_CONFIG_SETTING(
-        std::string, "OMNITRACE_SAMPLING_CPUS",
+        std::string, "ROCPROFSYS_SAMPLING_CPUS",
         "CPUs to collect frequency information for. Values should be separated by commas "
         "and can be explicit or ranges, e.g. 0,1,5-8. An empty value implies 'all' and "
         "'none' suppresses all CPU frequency sampling",
         std::string{}, "process_sampling");
 
-    OMNITRACE_CONFIG_SETTING(std::string, "OMNITRACE_ROCM_SMI_DEVICES",
+    OMNITRACE_CONFIG_SETTING(std::string, "ROCPROFSYS_ROCM_SMI_DEVICES",
                              "[DEPRECATED] Renamed to OMNITRACE_SAMPLING_GPUS",
                              std::string{ "all" }, "rocm_smi", "rocm", "process_sampling",
                              "deprecated", "advanced");
 
     OMNITRACE_CONFIG_SETTING(
-        std::string, "OMNITRACE_SAMPLING_GPUS",
+        std::string, "ROCPROFSYS_SAMPLING_GPUS",
         "Devices to query when OMNITRACE_USE_ROCM_SMI=ON. Values should be separated by "
         "commas and can be explicit or ranges, e.g. 0,1,5-8. An empty value implies "
         "'all' and 'none' suppresses all GPU sampling",
         std::string{ "all" }, "rocm_smi", "rocm", "process_sampling");
 
     OMNITRACE_CONFIG_SETTING(
-        std::string, "OMNITRACE_SAMPLING_TIDS",
+        std::string, "ROCPROFSYS_SAMPLING_TIDS",
         "Limit call-stack sampling to specific thread IDs, starting at zero for the main "
         "thread. Be aware that some libraries, such as ROCm may create additional "
         "threads which increment the TID count. However, no threads started by omnitrace "
@@ -488,76 +488,76 @@ configure_settings(bool _init)
         std::string{}, "sampling", "advanced");
 
     OMNITRACE_CONFIG_SETTING(
-        std::string, "OMNITRACE_SAMPLING_CPUTIME_TIDS",
+        std::string, "ROCPROFSYS_SAMPLING_CPUTIME_TIDS",
         "Same as OMNITRACE_SAMPLING_TIDS but applies specifically to samplers whose "
         "timers are based on the CPU-time. This is useful when you want to restrict "
         "samples to particular threads.",
         std::string{}, "sampling", "advanced");
 
     OMNITRACE_CONFIG_SETTING(
-        std::string, "OMNITRACE_SAMPLING_REALTIME_TIDS",
+        std::string, "ROCPROFSYS_SAMPLING_REALTIME_TIDS",
         "Same as OMNITRACE_SAMPLING_TIDS but applies specifically to samplers whose "
         "timers are based on the real (wall) time. This is useful when you want to "
         "restrict samples to particular threads.",
         std::string{}, "sampling", "advanced");
 
     OMNITRACE_CONFIG_SETTING(
-        std::string, "OMNITRACE_SAMPLING_OVERFLOW_TIDS",
+        std::string, "ROCPROFSYS_SAMPLING_OVERFLOW_TIDS",
         "Same as OMNITRACE_SAMPLING_TIDS but applies specifically to samplers whose "
         "samples are based on the overflow of a particular event. This is useful when "
         "you want to restrict samples to particular threads.",
         std::string{}, "sampling", "advanced");
 
     auto _backend = tim::get_env_choice<std::string>(
-        "OMNITRACE_PERFETTO_BACKEND",
+        "ROCPROFSYS_PERFETTO_BACKEND",
         (_system_backend) ? "system"      // if OMNITRACE_PERFETTO_BACKEND_SYSTEM is true,
                                           // default to system.
                           : "inprocess",  // Otherwise, default to inprocess
         { "inprocess", "system", "all" }, false);
 
-    OMNITRACE_CONFIG_SETTING(std::string, "OMNITRACE_PERFETTO_BACKEND",
+    OMNITRACE_CONFIG_SETTING(std::string, "ROCPROFSYS_PERFETTO_BACKEND",
                              "Specify the perfetto backend to activate. Options are: "
                              "'inprocess', 'system', or 'all'",
                              _backend, "perfetto")
         ->set_choices({ "inprocess", "system", "all" });
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_TRACE_THREAD_LOCKS",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_TRACE_THREAD_LOCKS",
                              "Enable tracing calls to pthread_mutex_lock, "
                              "pthread_mutex_unlock, pthread_mutex_trylock",
                              false, "backend", "parallelism", "gotcha", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_TRACE_THREAD_RW_LOCKS",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_TRACE_THREAD_RW_LOCKS",
                              "Enable tracing calls to pthread_rwlock_* functions. May "
                              "cause deadlocks with ROCm-enabled OpenMPI.",
                              false, "backend", "parallelism", "gotcha", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_TRACE_THREAD_SPIN_LOCKS",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_TRACE_THREAD_SPIN_LOCKS",
                              "Enable tracing calls to pthread_spin_* functions. May "
                              "cause deadlocks with MPI distributions.",
                              false, "backend", "parallelism", "gotcha", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_TRACE_THREAD_BARRIERS",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_TRACE_THREAD_BARRIERS",
                              "Enable tracing calls to pthread_barrier functions.", true,
                              "backend", "parallelism", "gotcha", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_TRACE_THREAD_JOIN",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_TRACE_THREAD_JOIN",
                              "Enable tracing calls to pthread_join functions.", true,
                              "backend", "parallelism", "gotcha", "advanced");
 
     OMNITRACE_CONFIG_SETTING(
-        bool, "OMNITRACE_SAMPLING_KEEP_INTERNAL",
+        bool, "ROCPROFSYS_SAMPLING_KEEP_INTERNAL",
         "Configure whether the statistical samples should include call-stack entries "
-        "from internal routines in omnitrace. E.g. when ON, the call-stack will show "
-        "functions like omnitrace_push_trace. If disabled, omnitrace will attempt to "
+        "from internal routines in rocprof-sys. E.g. when ON, the call-stack will show "
+        "functions like omnitrace_push_trace. If disabled, rocprof-sys will attempt to "
         "filter out internal routines from the sampling call-stacks",
         true, "sampling", "data", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_SAMPLING_INCLUDE_INLINES",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_SAMPLING_INCLUDE_INLINES",
                              "Create entries for inlined functions when available", false,
                              "sampling", "data", "advanced");
 
     OMNITRACE_CONFIG_SETTING(
-        size_t, "OMNITRACE_SAMPLING_ALLOCATOR_SIZE",
+        size_t, "ROCPROFSYS_SAMPLING_ALLOCATOR_SIZE",
         "The number of sampled threads handled by an allocator running in a background "
         "thread. Each thread that is sampled communicates with an allocator running in a "
         "background thread which handles storing/caching the data when it's buffer is "
@@ -568,114 +568,114 @@ configure_settings(bool _init)
         "thread started by the application.",
         8, "sampling", "debugging", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_SAMPLING_OVERFLOW",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_SAMPLING_OVERFLOW",
                              "Enable sampling via an overflow of a HW counter. This "
                              "requires Linux perf (/proc/sys/kernel/perf_event_paranoid "
                              "created by OS) with a value of 2 or less in that file",
                              false, "sampling", "advanced");
 
     OMNITRACE_CONFIG_SETTING(
-        bool, "OMNITRACE_SAMPLING_REALTIME",
+        bool, "ROCPROFSYS_SAMPLING_REALTIME",
         "Enable sampling frequency via a wall-clock timer. This may result in typically "
         "idle child threads consuming an unnecessary large amount of CPU time.",
         false, "sampling", "advanced");
 
     OMNITRACE_CONFIG_SETTING(
-        bool, "OMNITRACE_SAMPLING_CPUTIME",
+        bool, "ROCPROFSYS_SAMPLING_CPUTIME",
         "Enable sampling frequency via a timer that measures both CPU time used by the "
         "current process, and CPU time expended on behalf of the process by the system. "
         "This is recommended.",
         false, "sampling", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(int, "OMNITRACE_SAMPLING_CPUTIME_SIGNAL",
+    OMNITRACE_CONFIG_SETTING(int, "ROCPROFSYS_SAMPLING_CPUTIME_SIGNAL",
                              "Modify this value only if the target process is also using "
                              "the same signal (SIGPROF)",
                              SIGPROF, "sampling", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(int, "OMNITRACE_SAMPLING_REALTIME_SIGNAL",
+    OMNITRACE_CONFIG_SETTING(int, "ROCPROFSYS_SAMPLING_REALTIME_SIGNAL",
                              "Modify this value only if the target process is also using "
                              "the same signal (SIGRTMIN)",
                              SIGRTMIN, "sampling", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(int, "OMNITRACE_SAMPLING_OVERFLOW_SIGNAL",
+    OMNITRACE_CONFIG_SETTING(int, "ROCPROFSYS_SAMPLING_OVERFLOW_SIGNAL",
                              "Modify this value only if the target process is also using "
                              "the same signal (SIGRTMIN + 1)",
                              SIGRTMIN + 1, "sampling", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(std::string, "OMNITRACE_SAMPLING_OVERFLOW_EVENT",
+    OMNITRACE_CONFIG_SETTING(std::string, "ROCPROFSYS_SAMPLING_OVERFLOW_EVENT",
                              "Metric for overflow sampling",
                              std::string{ "perf::PERF_COUNT_HW_CACHE_REFERENCES" },
                              "sampling", "hardware_counters")
         ->set_choices(perf::get_config_choices());
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_ROCTRACER_HIP_API",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_ROCTRACER_HIP_API",
                              "Enable HIP API tracing support", true, "roctracer", "rocm",
                              "advanced");
 
     OMNITRACE_CONFIG_SETTING(
-        bool, "OMNITRACE_ROCTRACER_HIP_API_BACKTRACE",
+        bool, "ROCPROFSYS_ROCTRACER_HIP_API_BACKTRACE",
         "Enable annotating the perfetto debug annotation with backtraces", false,
         "roctracer", "rocm", "perfetto", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_ROCTRACER_HIP_ACTIVITY",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_ROCTRACER_HIP_ACTIVITY",
                              "Enable HIP activity tracing support", true, "roctracer",
                              "rocm", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_ROCTRACER_HSA_ACTIVITY",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_ROCTRACER_HSA_ACTIVITY",
                              "Enable HSA activity tracing support", false, "roctracer",
                              "rocm", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_ROCTRACER_HSA_API",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_ROCTRACER_HSA_API",
                              "Enable HSA API tracing support", false, "roctracer", "rocm",
                              "advanced");
 
-    OMNITRACE_CONFIG_SETTING(std::string, "OMNITRACE_ROCTRACER_HSA_API_TYPES",
+    OMNITRACE_CONFIG_SETTING(std::string, "ROCPROFSYS_ROCTRACER_HSA_API_TYPES",
                              "HSA API type to collect", "", "roctracer", "rocm",
                              "advanced");
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_ROCTRACER_DISCARD_BARRIERS",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_ROCTRACER_DISCARD_BARRIERS",
                              "Skip barrier marker events in traces", false, "roctracer",
                              "rocm", "advanced");
 
     OMNITRACE_CONFIG_SETTING(
-        std::string, "OMNITRACE_ROCM_EVENTS",
+        std::string, "ROCPROFSYS_ROCM_EVENTS",
         "ROCm hardware counters. Use ':device=N' syntax to specify collection on device "
         "number N, e.g. ':device=0'. If no device specification is provided, the event "
         "is collected on every available device",
         "", "rocprofiler", "rocm", "hardware_counters");
 
-    OMNITRACE_CONFIG_SETTING(std::string, "OMNITRACE_ROCM_SMI_METRICS",
+    OMNITRACE_CONFIG_SETTING(std::string, "ROCPROFSYS_ROCM_SMI_METRICS",
                              "rocm-smi metrics to collect: busy, temp, power, mem_usage",
                              "busy,temp,power,mem_usage", "backend", "rocm_smi", "rocm",
                              "process_sampling", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(size_t, "OMNITRACE_PERFETTO_SHMEM_SIZE_HINT_KB",
+    OMNITRACE_CONFIG_SETTING(size_t, "ROCPROFSYS_PERFETTO_SHMEM_SIZE_HINT_KB",
                              "Hint for shared-memory buffer size in perfetto (in KB)",
                              size_t{ 4096 }, "perfetto", "data", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(size_t, "OMNITRACE_PERFETTO_BUFFER_SIZE_KB",
+    OMNITRACE_CONFIG_SETTING(size_t, "ROCPROFSYS_PERFETTO_BUFFER_SIZE_KB",
                              "Size of perfetto buffer (in KB)", size_t{ 1024000 },
                              "perfetto", "data");
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_PERFETTO_COMBINE_TRACES",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_PERFETTO_COMBINE_TRACES",
                              "Combine Perfetto traces. If not explicitly set, it will "
                              "default to the value of OMNITRACE_COLLAPSE_PROCESSES",
                              false, "perfetto", "data", "advanced");
 
     OMNITRACE_CONFIG_SETTING(
-        bool, "OMNITRACE_PERFETTO_ROCTRACER_PER_STREAM",
+        bool, "ROCPROFSYS_PERFETTO_ROCTRACER_PER_STREAM",
         "Separate roctracer GPU side traces (copies, kernels) into separate "
         "tracks based on the stream they're enqueued into",
         true, "perfetto", "roctracer", "rocm", "advanced");
 
     OMNITRACE_CONFIG_SETTING(
-        std::string, "OMNITRACE_PERFETTO_FILL_POLICY",
+        std::string, "ROCPROFSYS_PERFETTO_FILL_POLICY",
         "Behavior when perfetto buffer is full. 'discard' will ignore new entries, "
         "'ring_buffer' will overwrite old entries",
         "discard", "perfetto", "data")
         ->set_choices({ "fill", "discard" });
 
-    OMNITRACE_CONFIG_SETTING(std::string, "OMNITRACE_ENABLE_CATEGORIES",
+    OMNITRACE_CONFIG_SETTING(std::string, "ROCPROFSYS_ENABLE_CATEGORIES",
                              "Enable collecting profiling and trace data for these "
                              "categories and disable all other categories",
                              "", "trace", "profile", "perfetto", "timemory", "data",
@@ -683,12 +683,12 @@ configure_settings(bool _init)
         ->set_choices(get_available_categories<std::vector<std::string>>());
 
     OMNITRACE_CONFIG_SETTING(
-        std::string, "OMNITRACE_DISABLE_CATEGORIES",
+        std::string, "ROCPROFSYS_DISABLE_CATEGORIES",
         "Disable collecting profiling and trace data for these categories", "", "trace",
         "profile", "perfetto", "timemory", "data", "category", "advanced")
         ->set_choices(get_available_categories<std::vector<std::string>>());
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_PERFETTO_ANNOTATIONS",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_PERFETTO_ANNOTATIONS",
                              "Include debug annotations in perfetto trace. When enabled, "
                              "this feature will encode information such as the values of "
                              "the function arguments (when available). Disabling this "
@@ -696,7 +696,7 @@ configure_settings(bool _init)
                              true, "perfetto", "data", "debugging", "advanced");
 
     OMNITRACE_CONFIG_SETTING(
-        bool, "OMNITRACE_PERFETTO_COMPACT_ROCTRACER_ANNOTATIONS",
+        bool, "ROCPROFSYS_PERFETTO_COMPACT_ROCTRACER_ANNOTATIONS",
         "When PERFETTO_ANNOTATIONS, USE_ROCTRACER, and ROCTRACER_HIP_API are all "
         "enabled, enabling this option will result in the arg information for HIP API "
         "calls to all be within one annotation (e.g., args=\"stream=0x0, dst=0x1F, "
@@ -708,46 +708,46 @@ configure_settings(bool _init)
         false, "perfetto", "data", "debugging", "roctracer", "rocm", "advanced");
 
     OMNITRACE_CONFIG_SETTING(
-        uint64_t, "OMNITRACE_THREAD_POOL_SIZE",
+        uint64_t, "ROCPROFSYS_THREAD_POOL_SIZE",
         "Max number of threads for processing background tasks",
         std::max<uint64_t>(std::min<uint64_t>(4, std::thread::hardware_concurrency() / 2),
                            1),
         "parallelism", "advanced");
 
     OMNITRACE_CONFIG_SETTING(
-        std::string, "OMNITRACE_TIMEMORY_COMPONENTS",
+        std::string, "ROCPROFSYS_TIMEMORY_COMPONENTS",
         "List of components to collect via timemory (see `rocprof-sys-avail -C`)",
         "wall_clock", "timemory", "component");
 
-    OMNITRACE_CONFIG_SETTING(std::string, "OMNITRACE_OUTPUT_FILE",
+    OMNITRACE_CONFIG_SETTING(std::string, "ROCPROFSYS_OUTPUT_FILE",
                              "[DEPRECATED] See OMNITRACE_PERFETTO_FILE", std::string{},
                              "perfetto", "io", "filename", "deprecated", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(std::string, "OMNITRACE_PERFETTO_FILE", "Perfetto filename",
+    OMNITRACE_CONFIG_SETTING(std::string, "ROCPROFSYS_PERFETTO_FILE", "Perfetto filename",
                              std::string{ "perfetto-trace.proto" }, "perfetto", "io",
                              "filename", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(bool, "OMNITRACE_USE_TEMPORARY_FILES",
+    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_USE_TEMPORARY_FILES",
                              "Write data to temporary files to minimize the memory usage "
-                             "of omnitrace, e.g. call-stack samples will be periodically "
+                             "of rocprof-sys, e.g. call-stack samples will be periodically "
                              "written to a file and re-loaded during finalization",
                              true, "io", "data", "advanced");
 
     OMNITRACE_CONFIG_SETTING(
-        std::string, "OMNITRACE_TMPDIR", "Base directory for temporary files",
+        std::string, "ROCPROFSYS_TMPDIR", "Base directory for temporary files",
         get_env<std::string>("TMPDIR", "/tmp"), "io", "data", "advanced");
 
     OMNITRACE_CONFIG_SETTING(
-        std::string, "OMNITRACE_CAUSAL_BACKEND",
+        std::string, "ROCPROFSYS_CAUSAL_BACKEND",
         "Backend for call-stack sampling. See "
-        "https://rocm.github.io/omnitrace/causal_profiling.html#backends for more "
-        "info. If set to \"auto\", omnitrace will attempt to use the perf backend and "
+        "https://rocm.docs.amd.com/projects/omnitrace/en/latest/how-to/performing-causal-profiling.html#backends for more "
+        "info. If set to \"auto\", rocprof-sys will attempt to use the perf backend and "
         "fallback on the timer backend if unavailable",
         std::string{ "auto" }, "causal", "analysis")
         ->set_choices({ "auto", "perf", "timer" });
 
     OMNITRACE_CONFIG_SETTING(
-        std::string, "OMNITRACE_CAUSAL_MODE",
+        std::string, "ROCPROFSYS_CAUSAL_MODE",
         "Perform causal experiments at the function-scope or line-scope. Ideally, use "
         "function first to locate function with highest impact and then switch to line "
         "mode + OMNITRACE_CAUSAL_FUNCTION_SCOPE set to the function being targeted.",
@@ -755,12 +755,12 @@ configure_settings(bool _init)
         ->set_choices({ "func", "line", "function" });
 
     OMNITRACE_CONFIG_SETTING(
-        double, "OMNITRACE_CAUSAL_DELAY",
+        double, "ROCPROFSYS_CAUSAL_DELAY",
         "Length of time to wait (in seconds) before starting the first causal experiment",
         0.0, "causal", "analysis");
 
     OMNITRACE_CONFIG_SETTING(
-        double, "OMNITRACE_CAUSAL_DURATION",
+        double, "ROCPROFSYS_CAUSAL_DURATION",
         "Length of time to perform causal experimentation (in seconds) after the first "
         "experiment has started. After this amount of time has elapsed, no more causal "
         "experiments will be performed and the application will continue without any "
@@ -769,73 +769,73 @@ configure_settings(bool _init)
         0.0, "causal", "analysis");
 
     OMNITRACE_CONFIG_SETTING(
-        bool, "OMNITRACE_CAUSAL_END_TO_END",
+        bool, "ROCPROFSYS_CAUSAL_END_TO_END",
         "Perform causal experiment over the length of the entire application", false,
         "causal", "analysis", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(std::string, "OMNITRACE_CAUSAL_FILE",
+    OMNITRACE_CONFIG_SETTING(std::string, "ROCPROFSYS_CAUSAL_FILE",
                              "Name of causal output filename (w/o extension)",
                              std::string{ "experiments" }, "causal", "analysis",
                              "advanced", "io");
 
     OMNITRACE_CONFIG_SETTING(
-        bool, "OMNITRACE_CAUSAL_FILE_RESET",
+        bool, "ROCPROFSYS_CAUSAL_FILE_RESET",
         "Overwrite any existing causal output file instead of appending to it", false,
         "causal", "analysis", "advanced", "io");
 
     OMNITRACE_CONFIG_SETTING(
-        uint64_t, "OMNITRACE_CAUSAL_RANDOM_SEED",
+        uint64_t, "ROCPROFSYS_CAUSAL_RANDOM_SEED",
         "Seed for random number generator which selects speedups and experiments -- "
         "please note that the lines selected for experimentation are not reproducible "
         "but the speedup selection is. If set to zero, std::random_device{}() will be "
         "used.",
         0, "causal", "analysis");
 
-    OMNITRACE_CONFIG_SETTING(std::string, "OMNITRACE_CAUSAL_FIXED_SPEEDUP",
+    OMNITRACE_CONFIG_SETTING(std::string, "ROCPROFSYS_CAUSAL_FIXED_SPEEDUP",
                              "List of virtual speedups between 0 and 100 (inclusive) to "
                              "sample from for causal profiling",
                              std::string{}, "causal", "analysis", "advanced");
 
     OMNITRACE_CONFIG_SETTING(
-        std::string, "OMNITRACE_CAUSAL_BINARY_SCOPE",
+        std::string, "ROCPROFSYS_CAUSAL_BINARY_SCOPE",
         "Limits causal experiments to the binaries matching the provided list of regular "
         "expressions (separated by tab, semi-colon, and/or quotes (single or double))",
         std::string{ "%MAIN%" }, "causal", "analysis");
 
     OMNITRACE_CONFIG_SETTING(
-        std::string, "OMNITRACE_CAUSAL_SOURCE_SCOPE",
+        std::string, "ROCPROFSYS_CAUSAL_SOURCE_SCOPE",
         "Limits causal experiments to the source files or source file + lineno pair "
         "(i.e. <file> or <file>:<line>) matching the provided list of regular "
         "expressions (separated by tab, semi-colon, and/or quotes (single or double))",
         std::string{}, "causal", "analysis");
 
     OMNITRACE_CONFIG_SETTING(
-        std::string, "OMNITRACE_CAUSAL_FUNCTION_SCOPE",
+        std::string, "ROCPROFSYS_CAUSAL_FUNCTION_SCOPE",
         "List of <function> regex entries for causal profiling (separated by tab, "
         "semi-colon, and/or quotes (single or double))",
         std::string{}, "causal", "analysis");
 
     OMNITRACE_CONFIG_SETTING(
-        std::string, "OMNITRACE_CAUSAL_BINARY_EXCLUDE",
+        std::string, "ROCPROFSYS_CAUSAL_BINARY_EXCLUDE",
         "Excludes binaries matching the list of provided regexes from causal experiments "
         "(separated by tab, semi-colon, and/or quotes (single or double))",
         std::string{}, "causal", "analysis");
 
     OMNITRACE_CONFIG_SETTING(
-        std::string, "OMNITRACE_CAUSAL_SOURCE_EXCLUDE",
+        std::string, "ROCPROFSYS_CAUSAL_SOURCE_EXCLUDE",
         "Excludes source files or source file + lineno pair (i.e. <file> or "
         "<file>:<line>) matching the list of provided regexes from causal experiments "
         "(separated by tab, semi-colon, and/or quotes (single or double))",
         std::string{}, "causal", "analysis");
 
     OMNITRACE_CONFIG_SETTING(
-        std::string, "OMNITRACE_CAUSAL_FUNCTION_EXCLUDE",
+        std::string, "ROCPROFSYS_CAUSAL_FUNCTION_EXCLUDE",
         "Excludes functions matching the list of provided regexes from causal "
         "experiments (separated by tab, semi-colon, and/or quotes (single or double))",
         std::string{}, "causal", "analysis");
 
     OMNITRACE_CONFIG_SETTING(
-        bool, "OMNITRACE_CAUSAL_FUNCTION_EXCLUDE_DEFAULTS",
+        bool, "ROCPROFSYS_CAUSAL_FUNCTION_EXCLUDE_DEFAULTS",
         "This controls adding a series of function exclude regexes to avoid "
         "experimenting on STL implementation functions, etc. which are, "
         "generally, not helpful. Details: excludes demangled function names "
@@ -859,23 +859,23 @@ configure_settings(bool _init)
     _config->get_timing_units()          = "sec";
     _config->get_memory_units()          = "MB";
 
-    // settings native to timemory but critically and/or extensively used by omnitrace
+    // settings native to timemory but critically and/or extensively used by rocprof-sys
     auto _add_omnitrace_category = [&_config](auto itr) {
         if(itr != _config->end())
         {
             auto _categories = itr->second->get_categories();
-            _categories.emplace("omnitrace");
+            _categories.emplace("rocprofsys");
             _categories.emplace("librocprof-sys");
             itr->second->set_categories(_categories);
         }
     };
 
-    _add_omnitrace_category(_config->find("OMNITRACE_CONFIG_FILE"));
-    _add_omnitrace_category(_config->find("OMNITRACE_DEBUG"));
-    _add_omnitrace_category(_config->find("OMNITRACE_VERBOSE"));
-    _add_omnitrace_category(_config->find("OMNITRACE_TIME_OUTPUT"));
-    _add_omnitrace_category(_config->find("OMNITRACE_OUTPUT_PREFIX"));
-    _add_omnitrace_category(_config->find("OMNITRACE_OUTPUT_PATH"));
+    _add_omnitrace_category(_config->find("ROCPROFSYS_CONFIG_FILE"));
+    _add_omnitrace_category(_config->find("ROCPROFSYS_DEBUG"));
+    _add_omnitrace_category(_config->find("ROCPROFSYS_VERBOSE"));
+    _add_omnitrace_category(_config->find("ROCPROFSYS_TIME_OUTPUT"));
+    _add_omnitrace_category(_config->find("ROCPROFSYS_OUTPUT_PREFIX"));
+    _add_omnitrace_category(_config->find("ROCPROFSYS_OUTPUT_PATH"));
 
     auto _add_advanced_category = [&_config](const std::string& _name) {
         auto itr = _config->find(_name);
@@ -887,52 +887,52 @@ configure_settings(bool _init)
         }
         else
         {
-            if(_config->get<bool>("OMNITRACE_CI"))
+            if(_config->get<bool>("ROCPROFSYS_CI"))
             {
                 OMNITRACE_THROW("Error! Setting '%s' not found!", _name.c_str());
             }
         }
     };
 
-    _add_advanced_category("OMNITRACE_CPU_AFFINITY");
-    _add_advanced_category("OMNITRACE_COUT_OUTPUT");
-    _add_advanced_category("OMNITRACE_FILE_OUTPUT");
-    _add_advanced_category("OMNITRACE_JSON_OUTPUT");
-    _add_advanced_category("OMNITRACE_TREE_OUTPUT");
-    _add_advanced_category("OMNITRACE_TEXT_OUTPUT");
-    _add_advanced_category("OMNITRACE_DIFF_OUTPUT");
-    _add_advanced_category("OMNITRACE_DEBUG");
-    _add_advanced_category("OMNITRACE_ENABLE_SIGNAL_HANDLER");
-    _add_advanced_category("OMNITRACE_FLAT_PROFILE");
-    _add_advanced_category("OMNITRACE_INPUT_EXTENSIONS");
-    _add_advanced_category("OMNITRACE_INPUT_PATH");
-    _add_advanced_category("OMNITRACE_INPUT_PREFIX");
-    _add_advanced_category("OMNITRACE_MAX_DEPTH");
-    _add_advanced_category("OMNITRACE_MAX_WIDTH");
-    _add_advanced_category("OMNITRACE_MEMORY_PRECISION");
-    _add_advanced_category("OMNITRACE_MEMORY_SCIENTIFIC");
-    _add_advanced_category("OMNITRACE_MEMORY_UNITS");
-    _add_advanced_category("OMNITRACE_MEMORY_WIDTH");
-    _add_advanced_category("OMNITRACE_NETWORK_INTERFACE");
-    _add_advanced_category("OMNITRACE_NODE_COUNT");
-    _add_advanced_category("OMNITRACE_PAPI_FAIL_ON_ERROR");
-    _add_advanced_category("OMNITRACE_PAPI_OVERFLOW");
-    _add_advanced_category("OMNITRACE_PAPI_MULTIPLEXING");
-    _add_advanced_category("OMNITRACE_PAPI_QUIET");
-    _add_advanced_category("OMNITRACE_PAPI_THREADING");
-    _add_advanced_category("OMNITRACE_PRECISION");
-    _add_advanced_category("OMNITRACE_SCIENTIFIC");
-    _add_advanced_category("OMNITRACE_STRICT_CONFIG");
-    _add_advanced_category("OMNITRACE_TIMELINE_PROFILE");
-    _add_advanced_category("OMNITRACE_SCIENTIFIC");
-    _add_advanced_category("OMNITRACE_TIME_FORMAT");
-    _add_advanced_category("OMNITRACE_TIMING_PRECISION");
-    _add_advanced_category("OMNITRACE_TIMING_SCIENTIFIC");
-    _add_advanced_category("OMNITRACE_TIMING_UNITS");
-    _add_advanced_category("OMNITRACE_TIMING_WIDTH");
-    _add_advanced_category("OMNITRACE_WIDTH");
-    _add_advanced_category("OMNITRACE_COLLAPSE_THREADS");
-    _add_advanced_category("OMNITRACE_COLLAPSE_PROCESSES");
+    _add_advanced_category("ROCPROFSYS_CPU_AFFINITY");
+    _add_advanced_category("ROCPROFSYS_COUT_OUTPUT");
+    _add_advanced_category("ROCPROFSYS_FILE_OUTPUT");
+    _add_advanced_category("ROCPROFSYS_JSON_OUTPUT");
+    _add_advanced_category("ROCPROFSYS_TREE_OUTPUT");
+    _add_advanced_category("ROCPROFSYS_TEXT_OUTPUT");
+    _add_advanced_category("ROCPROFSYS_DIFF_OUTPUT");
+    _add_advanced_category("ROCPROFSYS_DEBUG");
+    _add_advanced_category("ROCPROFSYS_ENABLE_SIGNAL_HANDLER");
+    _add_advanced_category("ROCPROFSYS_FLAT_PROFILE");
+    _add_advanced_category("ROCPROFSYS_INPUT_EXTENSIONS");
+    _add_advanced_category("ROCPROFSYS_INPUT_PATH");
+    _add_advanced_category("ROCPROFSYS_INPUT_PREFIX");
+    _add_advanced_category("ROCPROFSYS_MAX_DEPTH");
+    _add_advanced_category("ROCPROFSYS_MAX_WIDTH");
+    _add_advanced_category("ROCPROFSYS_MEMORY_PRECISION");
+    _add_advanced_category("ROCPROFSYS_MEMORY_SCIENTIFIC");
+    _add_advanced_category("ROCPROFSYS_MEMORY_UNITS");
+    _add_advanced_category("ROCPROFSYS_MEMORY_WIDTH");
+    _add_advanced_category("ROCPROFSYS_NETWORK_INTERFACE");
+    _add_advanced_category("ROCPROFSYS_NODE_COUNT");
+    _add_advanced_category("ROCPROFSYS_PAPI_FAIL_ON_ERROR");
+    _add_advanced_category("ROCPROFSYS_PAPI_OVERFLOW");
+    _add_advanced_category("ROCPROFSYS_PAPI_MULTIPLEXING");
+    _add_advanced_category("ROCPROFSYS_PAPI_QUIET");
+    _add_advanced_category("ROCPROFSYS_PAPI_THREADING");
+    _add_advanced_category("ROCPROFSYS_PRECISION");
+    _add_advanced_category("ROCPROFSYS_SCIENTIFIC");
+    _add_advanced_category("ROCPROFSYS_STRICT_CONFIG");
+    _add_advanced_category("ROCPROFSYS_TIMELINE_PROFILE");
+    _add_advanced_category("ROCPROFSYS_SCIENTIFIC");
+    _add_advanced_category("ROCPROFSYS_TIME_FORMAT");
+    _add_advanced_category("ROCPROFSYS_TIMING_PRECISION");
+    _add_advanced_category("ROCPROFSYS_TIMING_SCIENTIFIC");
+    _add_advanced_category("ROCPROFSYS_TIMING_UNITS");
+    _add_advanced_category("ROCPROFSYS_TIMING_WIDTH");
+    _add_advanced_category("ROCPROFSYS_WIDTH");
+    _add_advanced_category("ROCPROFSYS_COLLAPSE_THREADS");
+    _add_advanced_category("ROCPROFSYS_COLLAPSE_PROCESSES");
 
 #if defined(TIMEMORY_USE_PAPI)
     int _paranoid = 2;
@@ -967,7 +967,7 @@ configure_settings(bool _init)
     }
     else
     {
-        auto _papi_events = _config->find("OMNITRACE_PAPI_EVENTS");
+        auto _papi_events = _config->find("ROCPROFSYS_PAPI_EVENTS");
         _add_omnitrace_category(_papi_events);
         std::vector<std::string> _papi_choices = {};
         for(auto itr : tim::papi::available_events_info())
@@ -977,13 +977,13 @@ configure_settings(bool _init)
         _papi_events->second->set_choices(_papi_choices);
     }
 #else
-    _config->find("OMNITRACE_PAPI_EVENTS")->second->set_hidden(true);
+    _config->find("ROCPROFSYS_PAPI_EVENTS")->second->set_hidden(true);
     _config->get_papi_quiet() = true;
 #endif
 
     // always initialize timemory because gotcha wrappers are always used
     auto _cmd     = tim::read_command_line(process::get_id());
-    auto _cmd_env = tim::get_env<std::string>("OMNITRACE_COMMAND_LINE", "");
+    auto _cmd_env = tim::get_env<std::string>("ROCPROFSYS_COMMAND_LINE", "");
     if(!_cmd_env.empty()) _cmd = tim::delimit(_cmd_env, " ");
     auto _exe          = (_cmd.empty()) ? "exe" : _cmd.front();
     get_exe_realpath() = filepath::realpath(_exe, nullptr, false);
@@ -1005,13 +1005,13 @@ configure_settings(bool _init)
     bool _main_proc = (_proc.size() < 2 || *_proc.begin() == _pid);
 
     for(auto&& itr :
-        tim::delimit(_config->get<std::string>("OMNITRACE_CONFIG_FILE"), ";:"))
+        tim::delimit(_config->get<std::string>("ROCPROFSYS_CONFIG_FILE"), ";:"))
     {
         if(_config->get_suppress_config()) continue;
 
         OMNITRACE_BASIC_VERBOSE(1, "Reading config file %s\n", itr.c_str());
         if(_config->read(itr) && _main_proc &&
-           ((_config->get<bool>("OMNITRACE_CI") && settings::verbose() >= 0) ||
+           ((_config->get<bool>("ROCPROFSYS_CI") && settings::verbose() >= 0) ||
             settings::verbose() >= 1 || settings::debug()))
         {
             auto              fitr = settings::format(itr, _config->get_tag());
@@ -1033,7 +1033,7 @@ configure_settings(bool _init)
 
     settings::suppress_config() = true;
 
-    if(get_env("OMNITRACE_MONOCHROME", _config->get<bool>("OMNITRACE_MONOCHROME")))
+    if(get_env("ROCPROFSYS_MONOCHROME", _config->get<bool>("ROCPROFSYS_MONOCHROME")))
         tim::log::monochrome() = true;
 
     if(_init)
@@ -1044,38 +1044,38 @@ configure_settings(bool _init)
     }
 
 #if !defined(OMNITRACE_USE_MPI) && !defined(OMNITRACE_USE_MPI_HEADERS)
-    set_setting_value("OMNITRACE_USE_MPIP", false);
+    set_setting_value("ROCPROFSYS_USE_MPIP", false);
 #endif
 
     _config->get_global_components() =
-        _config->get<std::string>("OMNITRACE_TIMEMORY_COMPONENTS");
+        _config->get<std::string>("ROCPROFSYS_TIMEMORY_COMPONENTS");
 
-    auto _combine_perfetto_traces = _config->find("OMNITRACE_PERFETTO_COMBINE_TRACES");
+    auto _combine_perfetto_traces = _config->find("ROCPROFSYS_PERFETTO_COMBINE_TRACES");
     if(!_combine_perfetto_traces->second->get_environ_updated() &&
        _combine_perfetto_traces->second->get_config_updated())
     {
         _combine_perfetto_traces->second->set(_config->get<bool>("collapse_processes"));
     }
 
-    handle_deprecated_setting("OMNITRACE_ROCM_SMI_DEVICES", "OMNITRACE_SAMPLING_GPUS");
-    handle_deprecated_setting("OMNITRACE_USE_THREAD_SAMPLING",
-                              "OMNITRACE_USE_PROCESS_SAMPLING");
-    handle_deprecated_setting("OMNITRACE_OUTPUT_FILE", "OMNITRACE_PERFETTO_FILE");
-    handle_deprecated_setting("OMNITRACE_USE_PERFETTO", "OMNITRACE_TRACE");
-    handle_deprecated_setting("OMNITRACE_USE_TIMEMORY", "OMNITRACE_PROFILE");
+    handle_deprecated_setting("ROCPROFSYS_ROCM_SMI_DEVICES", "ROCPROFSYS_SAMPLING_GPUS");
+    handle_deprecated_setting("ROCPROFSYS_USE_THREAD_SAMPLING",
+                              "ROCPROFSYS_USE_PROCESS_SAMPLING");
+    handle_deprecated_setting("ROCPROFSYS_OUTPUT_FILE", "ROCPROFSYS_PERFETTO_FILE");
+    handle_deprecated_setting("ROCPROFSYS_USE_PERFETTO", "ROCPROFSYS_TRACE");
+    handle_deprecated_setting("ROCPROFSYS_USE_TIMEMORY", "ROCPROFSYS_PROFILE");
 
     scope::get_fields()[scope::flat::value]     = _config->get_flat_profile();
     scope::get_fields()[scope::timeline::value] = _config->get_timeline_profile();
 
     settings::suppress_parsing()  = true;
-    settings::use_output_suffix() = _config->get<bool>("OMNITRACE_USE_PID");
+    settings::use_output_suffix() = _config->get<bool>("ROCPROFSYS_USE_PID");
     if(settings::use_output_suffix())
         settings::default_process_suffix() = process::get_id();
 #if !defined(TIMEMORY_USE_MPI) && defined(TIMEMORY_USE_MPI_HEADERS)
     if(tim::dmp::is_initialized()) settings::default_process_suffix() = tim::dmp::rank();
 #endif
 
-    auto _dl_verbose = _config->find("OMNITRACE_DL_VERBOSE");
+    auto _dl_verbose = _config->find("ROCPROFSYS_DL_VERBOSE");
     if(_dl_verbose->second->get_config_updated())
         tim::set_env(std::string{ _dl_verbose->first }, _dl_verbose->second->as_string(),
                      0);
@@ -1118,36 +1118,36 @@ configure_mode_settings(const std::shared_ptr<settings>& _config)
         }
     };
 
-    auto _use_causal = get_setting_value<bool>("OMNITRACE_USE_CAUSAL");
-    if(_use_causal && *_use_causal) set_env("OMNITRACE_MODE", "causal", 1);
+    auto _use_causal = get_setting_value<bool>("ROCPROFSYS_USE_CAUSAL");
+    if(_use_causal && *_use_causal) set_env("ROCPROFSYS_MODE", "causal", 1);
 
     if(get_mode() == Mode::Coverage)
     {
-        set_default_setting_value("OMNITRACE_USE_CODE_COVERAGE", true);
-        _set("OMNITRACE_TRACE", false);
-        _set("OMNITRACE_PROFILE", false);
-        _set("OMNITRACE_USE_CAUSAL", false);
-        _set("OMNITRACE_USE_ROCM_SMI", false);
-        _set("OMNITRACE_USE_ROCTRACER", false);
-        _set("OMNITRACE_USE_ROCPROFILER", false);
-        _set("OMNITRACE_USE_KOKKOSP", false);
-        _set("OMNITRACE_USE_RCCLP", false);
-        _set("OMNITRACE_USE_OMPT", false);
-        _set("OMNITRACE_USE_SAMPLING", false);
-        _set("OMNITRACE_USE_PROCESS_SAMPLING", false);
+        set_default_setting_value("ROCPROFSYS_USE_CODE_COVERAGE", true);
+        _set("ROCPROFSYS_TRACE", false);
+        _set("ROCPROFSYS_PROFILE", false);
+        _set("ROCPROFSYS_USE_CAUSAL", false);
+        _set("ROCPROFSYS_USE_ROCM_SMI", false);
+        _set("ROCPROFSYS_USE_ROCTRACER", false);
+        _set("ROCPROFSYS_USE_ROCPROFILER", false);
+        _set("ROCPROFSYS_USE_KOKKOSP", false);
+        _set("ROCPROFSYS_USE_RCCLP", false);
+        _set("ROCPROFSYS_USE_OMPT", false);
+        _set("ROCPROFSYS_USE_SAMPLING", false);
+        _set("ROCPROFSYS_USE_PROCESS_SAMPLING", false);
     }
     else if(get_mode() == Mode::Causal)
     {
-        _set("OMNITRACE_USE_CAUSAL", true);
-        _set("OMNITRACE_TRACE", false);
-        _set("OMNITRACE_PROFILE", false);
-        _set("OMNITRACE_USE_SAMPLING", false);
-        _set("OMNITRACE_USE_PROCESS_SAMPLING", false);
+        _set("ROCPROFSYS_USE_CAUSAL", true);
+        _set("ROCPROFSYS_TRACE", false);
+        _set("ROCPROFSYS_PROFILE", false);
+        _set("ROCPROFSYS_USE_SAMPLING", false);
+        _set("ROCPROFSYS_USE_PROCESS_SAMPLING", false);
     }
     else if(get_mode() == Mode::Sampling)
     {
-        set_default_setting_value("OMNITRACE_USE_SAMPLING", true);
-        set_default_setting_value("OMNITRACE_USE_PROCESS_SAMPLING", true);
+        set_default_setting_value("ROCPROFSYS_USE_SAMPLING", true);
+        set_default_setting_value("ROCPROFSYS_USE_PROCESS_SAMPLING", true);
     }
 
     if(gpu::device_count() == 0)
@@ -1156,12 +1156,12 @@ configure_mode_settings(const std::shared_ptr<settings>& _config)
         OMNITRACE_BASIC_VERBOSE(1, "No HIP devices were found: disabling roctracer, "
                                    "rocprofiler, and rocm_smi...\n");
 #endif
-        _set("OMNITRACE_USE_ROCPROFILER", false);
-        _set("OMNITRACE_USE_ROCTRACER", false);
-        _set("OMNITRACE_USE_ROCM_SMI", false);
+        _set("ROCPROFSYS_USE_ROCPROFILER", false);
+        _set("ROCPROFSYS_USE_ROCTRACER", false);
+        _set("ROCPROFSYS_USE_ROCM_SMI", false);
     }
 
-    if(_config->get<bool>("OMNITRACE_USE_KOKKOSP"))
+    if(_config->get<bool>("ROCPROFSYS_USE_KOKKOSP"))
     {
         auto _current_kokkosp_lib = tim::get_env<std::string>("KOKKOS_PROFILE_LIBRARY");
         if(_current_kokkosp_lib.find("librocprof-sys-dl.so") == std::string::npos &&
@@ -1183,24 +1183,24 @@ configure_mode_settings(const std::shared_ptr<settings>& _config)
 
     // recycle all subsequent thread ids
     threading::recycle_ids() = tim::get_env<bool>(
-        "OMNITRACE_RECYCLE_TIDS", !_config->get<bool>("OMNITRACE_USE_SAMPLING"));
+        "ROCPROFSYS_RECYCLE_TIDS", !_config->get<bool>("ROCPROFSYS_USE_SAMPLING"));
 
     if(!_config->get_enabled())
     {
-        _set("OMNITRACE_USE_TRACE", false);
-        _set("OMNITRACE_PROFILE", false);
-        _set("OMNITRACE_USE_CAUSAL", false);
-        _set("OMNITRACE_USE_ROCM_SMI", false);
-        _set("OMNITRACE_USE_ROCTRACER", false);
-        _set("OMNITRACE_USE_ROCPROFILER", false);
-        _set("OMNITRACE_USE_KOKKOSP", false);
-        _set("OMNITRACE_USE_RCCLP", false);
-        _set("OMNITRACE_USE_OMPT", false);
-        _set("OMNITRACE_USE_SAMPLING", false);
-        _set("OMNITRACE_USE_PROCESS_SAMPLING", false);
-        _set("OMNITRACE_USE_CODE_COVERAGE", false);
-        set_setting_value("OMNITRACE_TIMEMORY_COMPONENTS", std::string{});
-        set_setting_value("OMNITRACE_PAPI_EVENTS", std::string{});
+        _set("ROCPROFSYS_USE_TRACE", false);
+        _set("ROCPROFSYS_PROFILE", false);
+        _set("ROCPROFSYS_USE_CAUSAL", false);
+        _set("ROCPROFSYS_USE_ROCM_SMI", false);
+        _set("ROCPROFSYS_USE_ROCTRACER", false);
+        _set("ROCPROFSYS_USE_ROCPROFILER", false);
+        _set("ROCPROFSYS_USE_KOKKOSP", false);
+        _set("ROCPROFSYS_USE_RCCLP", false);
+        _set("ROCPROFSYS_USE_OMPT", false);
+        _set("ROCPROFSYS_USE_SAMPLING", false);
+        _set("ROCPROFSYS_USE_PROCESS_SAMPLING", false);
+        _set("ROCPROFSYS_USE_CODE_COVERAGE", false);
+        set_setting_value("ROCPROFSYS_TIMEMORY_COMPONENTS", std::string{});
+        set_setting_value("ROCPROFSYS_PAPI_EVENTS", std::string{});
     }
 }
 
@@ -1270,7 +1270,7 @@ void
 configure_signal_handler(const std::shared_ptr<settings>& _config)
 {
     auto _ignore_dyninst_trampoline =
-        tim::get_env("OMNITRACE_IGNORE_DYNINST_TRAMPOLINE", false);
+        tim::get_env("ROCPROFSYS_IGNORE_DYNINST_TRAMPOLINE", false);
     // this is how dyninst looks up the env variable
     static auto _dyninst_trampoline_signal =
         getenv("DYNINST_SIGNAL_TRAMPOLINE_SIGILL") ? SIGILL : SIGTRAP;
@@ -1303,21 +1303,21 @@ configure_signal_handler(const std::shared_ptr<settings>& _config)
 bool
 get_use_sampling_overflow()
 {
-    static auto _v = get_config()->find("OMNITRACE_SAMPLING_OVERFLOW");
+    static auto _v = get_config()->find("ROCPROFSYS_SAMPLING_OVERFLOW");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
 bool
 get_use_sampling_realtime()
 {
-    static auto _v = get_config()->find("OMNITRACE_SAMPLING_REALTIME");
+    static auto _v = get_config()->find("ROCPROFSYS_SAMPLING_REALTIME");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
 bool
 get_use_sampling_cputime()
 {
-    static auto _v = get_config()->find("OMNITRACE_SAMPLING_CPUTIME");
+    static auto _v = get_config()->find("ROCPROFSYS_SAMPLING_CPUTIME");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
@@ -1336,7 +1336,7 @@ std::set<int> get_sampling_signals(int64_t)
         {
             OMNITRACE_VERBOSE_F(1, "sampling enabled by cputime/realtime/overflow not "
                                    "specified. defaulting to cputime...\n");
-            set_setting_value("OMNITRACE_SAMPLING_CPUTIME", true);
+            set_setting_value("ROCPROFSYS_SAMPLING_CPUTIME", true);
         }
 
         if(get_use_sampling_cputime()) _v.emplace(get_sampling_cputime_signal());
@@ -1368,47 +1368,47 @@ configure_disabled_settings(const std::shared_ptr<settings>& _config)
         return true;
     };
 
-    _handle_use_option("OMNITRACE_USE_SAMPLING", "sampling");
-    _handle_use_option("OMNITRACE_USE_PROCESS_SAMPLING", "process_sampling");
-    _handle_use_option("OMNITRACE_USE_CAUSAL", "causal");
-    _handle_use_option("OMNITRACE_USE_KOKKOSP", "kokkos");
-    _handle_use_option("OMNITRACE_USE_TRACE", "perfetto");
-    _handle_use_option("OMNITRACE_PROFILE", "timemory");
-    _handle_use_option("OMNITRACE_USE_OMPT", "ompt");
-    _handle_use_option("OMNITRACE_USE_RCCLP", "rcclp");
-    _handle_use_option("OMNITRACE_USE_ROCM_SMI", "rocm_smi");
-    _handle_use_option("OMNITRACE_USE_ROCTRACER", "roctracer");
-    _handle_use_option("OMNITRACE_USE_ROCPROFILER", "rocprofiler");
+    _handle_use_option("ROCPROFSYS_USE_SAMPLING", "sampling");
+    _handle_use_option("ROCPROFSYS_USE_PROCESS_SAMPLING", "process_sampling");
+    _handle_use_option("ROCPROFSYS_USE_CAUSAL", "causal");
+    _handle_use_option("ROCPROFSYS_USE_KOKKOSP", "kokkos");
+    _handle_use_option("ROCPROFSYS_USE_TRACE", "perfetto");
+    _handle_use_option("ROCPROFSYS_PROFILE", "timemory");
+    _handle_use_option("ROCPROFSYS_USE_OMPT", "ompt");
+    _handle_use_option("ROCPROFSYS_USE_RCCLP", "rcclp");
+    _handle_use_option("ROCPROFSYS_USE_ROCM_SMI", "rocm_smi");
+    _handle_use_option("ROCPROFSYS_USE_ROCTRACER", "roctracer");
+    _handle_use_option("ROCPROFSYS_USE_ROCPROFILER", "rocprofiler");
 
 #if !defined(OMNITRACE_USE_ROCTRACER) || OMNITRACE_USE_ROCTRACER == 0
-    _config->find("OMNITRACE_USE_ROCTRACER")->second->set_hidden(true);
+    _config->find("ROCPROFSYS_USE_ROCTRACER")->second->set_hidden(true);
     for(const auto& itr : _config->disable_category("roctracer"))
         _config->find(itr)->second->set_hidden(true);
 #endif
 
 #if !defined(OMNITRACE_USE_ROCPROFILER) || OMNITRACE_USE_ROCPROFILER == 0
-    _config->find("OMNITRACE_USE_ROCPROFILER")->second->set_hidden(true);
+    _config->find("ROCPROFSYS_USE_ROCPROFILER")->second->set_hidden(true);
     for(const auto& itr : _config->disable_category("rocprofiler"))
         _config->find(itr)->second->set_hidden(true);
 #endif
 
 #if !defined(OMNITRACE_USE_ROCM_SMI) || OMNITRACE_USE_ROCM_SMI == 0
-    _config->find("OMNITRACE_USE_ROCM_SMI")->second->set_hidden(true);
+    _config->find("ROCPROFSYS_USE_ROCM_SMI")->second->set_hidden(true);
     for(const auto& itr : _config->disable_category("rocm_smi"))
         _config->find(itr)->second->set_hidden(true);
 #endif
 
 #if defined(OMNITRACE_USE_OMPT) || OMNITRACE_USE_OMPT == 0
-    _config->find("OMNITRACE_USE_OMPT")->second->set_hidden(true);
+    _config->find("ROCPROFSYS_USE_OMPT")->second->set_hidden(true);
     for(const auto& itr : _config->disable_category("ompt"))
         _config->find(itr)->second->set_hidden(true);
 #endif
 
 #if !defined(TIMEMORY_USE_MPI) || TIMEMORY_USE_MPI == 0
-    _config->disable("OMNITRACE_PERFETTO_COMBINE_TRACES");
-    _config->disable("OMNITRACE_COLLAPSE_PROCESSES");
-    _config->find("OMNITRACE_PERFETTO_COMBINE_TRACES")->second->set_hidden(true);
-    _config->find("OMNITRACE_COLLAPSE_PROCESSES")->second->set_hidden(true);
+    _config->disable("ROCPROFSYS_PERFETTO_COMBINE_TRACES");
+    _config->disable("ROCPROFSYS_COLLAPSE_PROCESSES");
+    _config->find("ROCPROFSYS_PERFETTO_COMBINE_TRACES")->second->set_hidden(true);
+    _config->find("ROCPROFSYS_COLLAPSE_PROCESSES")->second->set_hidden(true);
 #endif
 
     _config->disable_category("throttle");
@@ -1434,10 +1434,10 @@ configure_disabled_settings(const std::shared_ptr<settings>& _config)
     _config->disable("flamegraph_output");
     _config->disable("separator_freq");
 
-    // exclude some timemory settings which are not relevant to omnitrace
+    // exclude some timemory settings which are not relevant to rocprof-sys
     //  exact matches, e.g. OMNITRACE_BANNER
     std::string _hidden_exact_re =
-        "^OMNITRACE_(BANNER|DESTRUCTOR_REPORT|COMPONENTS|(GLOBAL|MPIP|NCCLP|OMPT|"
+        "^ROCPROFSYS_(BANNER|DESTRUCTOR_REPORT|COMPONENTS|(GLOBAL|MPIP|NCCLP|OMPT|"
         "PROFILER|TRACE|KOKKOS)_COMPONENTS|PYTHON_EXE|PAPI_ATTACH|PLOT_OUTPUT|SEPARATOR_"
         "FREQ|STACK_CLEARING|TARGET_PID|THROTTLE_(COUNT|VALUE)|(AUTO|FLAMEGRAPH)_OUTPUT|"
         "(ENABLE|DISABLE)_ALL_SIGNALS|ALLOW_SIGNAL_HANDLER|CTEST_NOTES|INSTRUCTION_"
@@ -1445,12 +1445,12 @@ configure_disabled_settings(const std::shared_ptr<settings>& _config)
 
     //  leading matches, e.g. OMNITRACE_MPI_[A-Z_]+
     std::string _hidden_begin_re =
-        "^OMNITRACE_(ERT|DART|MPI|UPCXX|ROOFLINE|CUDA|NVTX|CUPTI)_[A-Z_]+$";
+        "^ROCPROFSYS_(ERT|DART|MPI|UPCXX|ROOFLINE|CUDA|NVTX|CUPTI)_[A-Z_]+$";
 
     auto _hidden_exact = std::set<std::string>{};
 
 #if !defined(TIMEMORY_USE_CRAYPAT)
-    _hidden_exact.emplace("OMNITRACE_CRAYPAT");
+    _hidden_exact.emplace("ROCPROFSYS_CRAYPAT");
 #endif
 
     for(const auto& itr : *_config)
@@ -1522,17 +1522,17 @@ print_banner(std::ostream& _os)
 {
     static const char* _banner = R"banner(
 
-      ______   .___  ___. .__   __.  __  .___________..______          ___       ______  _______
-     /  __  \  |   \/   | |  \ |  | |  | |           ||   _  \        /   \     /      ||   ____|
-    |  |  |  | |  \  /  | |   \|  | |  | `---|  |----`|  |_)  |      /  ^  \   |  ,----'|  |__
-    |  |  |  | |  |\/|  | |  . `  | |  |     |  |     |      /      /  /_\  \  |  |     |   __|
-    |  `--'  | |  |  |  | |  |\   | |  |     |  |     |  |\  \----./  _____  \ |  `----.|  |____
-     \______/  |__|  |__| |__| \__| |__|     |__|     | _| `._____/__/     \__\ \______||_______|
+                                                   __
+     _ __    ___     ___   _ __    _ __    ___    / _|          ___   _   _   ___
+    | '__|  / _ \   / __| | '_ \  | '__|  / _ \  | |_   _____  / __| | | | | / __|
+    | |    | (_) | | (__  | |_) | | |    | (_) | |  _| |_____| \__ \ | |_| | \__ \
+    |_|     \___/   \___| | .__/  |_|     \___/  |_|           |___/  \__, | |___/
+                          |_|                                         |___/
 
     )banner";
 
     std::stringstream _version_info{};
-    _version_info << "omnitrace v" << OMNITRACE_VERSION_STRING;
+    _version_info << "rocprof-sys v" << OMNITRACE_VERSION_STRING;
 
     namespace join = ::timemory::join;
 
@@ -1575,8 +1575,8 @@ print_settings(
 
     std::stringstream _os{};
 
-    bool _print_desc = get_debug() || tim::get_env("OMNITRACE_SETTINGS_DESC", false);
-    bool _md         = tim::get_env<bool>("OMNITRACE_SETTINGS_DESC_MARKDOWN", false);
+    bool _print_desc = get_debug() || tim::get_env("ROCPROFSYS_SETTINGS_DESC", false);
+    bool _md         = tim::get_env<bool>("ROCPROFSYS_SETTINGS_DESC_MARKDOWN", false);
 
     constexpr size_t nfields = 3;
     using str_array_t        = std::array<std::string, nfields>;
@@ -1604,14 +1604,14 @@ print_settings(
     std::sort(_data.begin(), _data.end(), [](const auto& lhs, const auto& rhs) {
         auto _npos = std::string::npos;
         // OMNITRACE_CONFIG_FILE always first
-        if(lhs.at(0) == "OMNITRACE_MODE") return true;
-        if(rhs.at(0) == "OMNITRACE_MODE") return false;
+        if(lhs.at(0) == "ROCPROFSYS_MODE") return true;
+        if(rhs.at(0) == "ROCPROFSYS_MODE") return false;
         // OMNITRACE_CONFIG_FILE always second
-        if(lhs.at(0).find("OMNITRACE_CONFIG") != _npos) return true;
-        if(rhs.at(0).find("OMNITRACE_CONFIG") != _npos) return false;
+        if(lhs.at(0).find("ROCPROFSYS_CONFIG") != _npos) return true;
+        if(rhs.at(0).find("ROCPROFSYS_CONFIG") != _npos) return false;
         // OMNITRACE_USE_* prioritized
-        auto _lhs_use = lhs.at(0).find("OMNITRACE_USE_");
-        auto _rhs_use = rhs.at(0).find("OMNITRACE_USE_");
+        auto _lhs_use = lhs.at(0).find("ROCPROFSYS_USE_");
+        auto _rhs_use = rhs.at(0).find("ROCPROFSYS_USE_");
         if(_lhs_use != _rhs_use && _lhs_use < _rhs_use) return true;
         if(_lhs_use != _rhs_use && _lhs_use > _rhs_use) return false;
         // alphabetical sort
@@ -1679,7 +1679,7 @@ print_settings(bool _include_env)
 
     // generic filter for filtering relevant options
     auto _is_omnitrace_option = [](const auto& _v, const auto&) {
-        return (_v.find("OMNITRACE_") == 0);
+        return (_v.find("ROCPROFSYS_") == 0);
     };
 
     if(_include_env)
@@ -1688,7 +1688,7 @@ print_settings(bool _include_env)
         tim::print_env(std::cerr, [_is_omnitrace_option](const std::string& _v) {
             auto _is_omni_opt = _is_omnitrace_option(_v, std::set<std::string>{});
             if(settings::verbose() >= 2 || settings::debug()) return _is_omni_opt;
-            return (_is_omni_opt && _v.find("OMNITRACE_SIGNAL_") != 0);
+            return (_is_omni_opt && _v.find("ROCPROFSYS_SIGNAL_") != 0);
         });
         std::cerr << tim::log::flush;
     }
@@ -1720,7 +1720,7 @@ get_exe_realpath()
 std::string
 get_config_file()
 {
-    static auto _v = get_config()->find("OMNITRACE_CONFIG_FILE");
+    static auto _v = get_config()->find("ROCPROFSYS_CONFIG_FILE");
     return static_cast<tim::tsettings<std::string>&>(*_v->second).get();
 }
 
@@ -1730,7 +1730,7 @@ get_mode()
     if(!settings_are_configured())
     {
         auto _mode = tim::get_env_choice<std::string>(
-            "OMNITRACE_MODE", "trace", { "trace", "sampling", "causal", "coverage" });
+            "ROCPROFSYS_MODE", "trace", { "trace", "sampling", "causal", "coverage" });
         if(_mode == "sampling")
             return Mode::Sampling;
         else if(_mode == "causal")
@@ -1744,7 +1744,7 @@ get_mode()
                                                     { "causal", Mode::Causal },
                                                     { "sampling", Mode::Sampling },
                                                     { "coverage", Mode::Coverage } };
-    static auto _v = get_config()->find("OMNITRACE_MODE");
+    static auto _v = get_config()->find("ROCPROFSYS_MODE");
     try
     {
         return _m.at(static_cast<tim::tsettings<std::string>&>(*_v->second).get());
@@ -1780,34 +1780,34 @@ get_debug_env()
 {
     return (settings_are_configured())
                ? get_debug()
-               : tim::get_env<bool>("OMNITRACE_DEBUG", false, false);
+               : tim::get_env<bool>("ROCPROFSYS_DEBUG", false, false);
 }
 
 bool
 get_is_continuous_integration()
 {
     if(!settings_are_configured())
-        return tim::get_env<bool>("OMNITRACE_CI", false, false);
-    static auto _v = get_config()->find("OMNITRACE_CI");
+        return tim::get_env<bool>("ROCPROFSYS_CI", false, false);
+    static auto _v = get_config()->find("ROCPROFSYS_CI");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
 bool
 get_debug_init()
 {
-    return tim::get_env<bool>("OMNITRACE_DEBUG_INIT", get_debug_env());
+    return tim::get_env<bool>("ROCPROFSYS_DEBUG_INIT", get_debug_env());
 }
 
 bool
 get_debug_finalize()
 {
-    return tim::get_env<bool>("OMNITRACE_DEBUG_FINALIZE", false);
+    return tim::get_env<bool>("ROCPROFSYS_DEBUG_FINALIZE", false);
 }
 
 bool
 get_debug()
 {
-    static auto _v = get_config()->find("OMNITRACE_DEBUG");
+    static auto _v = get_config()->find("ROCPROFSYS_DEBUG");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
@@ -1815,7 +1815,7 @@ bool
 get_debug_sampling()
 {
     static bool _v =
-        tim::get_env<bool>("OMNITRACE_DEBUG_SAMPLING",
+        tim::get_env<bool>("ROCPROFSYS_DEBUG_SAMPLING",
                            (settings_are_configured() ? get_debug() : get_debug_env()));
     return _v;
 }
@@ -1824,34 +1824,34 @@ int
 get_verbose_env()
 {
     return (settings_are_configured()) ? get_verbose()
-                                       : tim::get_env<int>("OMNITRACE_VERBOSE", 0, false);
+                                       : tim::get_env<int>("ROCPROFSYS_VERBOSE", 0, false);
 }
 
 int
 get_verbose()
 {
-    static auto _v = get_config()->find("OMNITRACE_VERBOSE");
+    static auto _v = get_config()->find("ROCPROFSYS_VERBOSE");
     return static_cast<tim::tsettings<int>&>(*_v->second).get();
 }
 
 bool&
 get_use_perfetto()
 {
-    static auto _v = get_config()->find("OMNITRACE_TRACE");
+    static auto _v = get_config()->find("ROCPROFSYS_TRACE");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
 bool&
 get_use_timemory()
 {
-    static auto _v = get_config()->find("OMNITRACE_PROFILE");
+    static auto _v = get_config()->find("ROCPROFSYS_PROFILE");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
 bool&
 get_use_causal()
 {
-    static auto _v = get_config()->find("OMNITRACE_USE_CAUSAL");
+    static auto _v = get_config()->find("ROCPROFSYS_USE_CAUSAL");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
@@ -1859,7 +1859,7 @@ bool
 get_use_roctracer()
 {
 #if defined(OMNITRACE_USE_ROCTRACER) && OMNITRACE_USE_ROCTRACER > 0
-    static auto _v = get_config()->find("OMNITRACE_USE_ROCTRACER");
+    static auto _v = get_config()->find("ROCPROFSYS_USE_ROCTRACER");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 #else
     return false;
@@ -1870,7 +1870,7 @@ bool
 get_perfetto_roctracer_per_stream()
 {
 #if defined(OMNITRACE_USE_ROCTRACER) && OMNITRACE_USE_ROCTRACER > 0
-    static auto _v = get_config()->find("OMNITRACE_PERFETTO_ROCTRACER_PER_STREAM");
+    static auto _v = get_config()->find("ROCPROFSYS_PERFETTO_ROCTRACER_PER_STREAM");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 #else
     return false;
@@ -1881,7 +1881,7 @@ bool
 get_use_rocprofiler()
 {
 #if defined(OMNITRACE_USE_ROCPROFILER) && OMNITRACE_USE_ROCPROFILER > 0
-    static auto _v = get_config()->find("OMNITRACE_USE_ROCPROFILER");
+    static auto _v = get_config()->find("ROCPROFSYS_USE_ROCPROFILER");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 #else
     return false;
@@ -1892,7 +1892,7 @@ bool
 get_use_rocm_smi()
 {
 #if defined(OMNITRACE_USE_ROCM_SMI) && OMNITRACE_USE_ROCM_SMI > 0
-    static auto _v = get_config()->find("OMNITRACE_USE_ROCM_SMI");
+    static auto _v = get_config()->find("ROCPROFSYS_USE_ROCM_SMI");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 #else
     return false;
@@ -1903,7 +1903,7 @@ bool
 get_use_roctx()
 {
 #if defined(OMNITRACE_USE_ROCTRACER) && OMNITRACE_USE_ROCTRACER > 0
-    static auto _v = get_config()->find("OMNITRACE_USE_ROCTX");
+    static auto _v = get_config()->find("ROCPROFSYS_USE_ROCTX");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 #else
     return false;
@@ -1914,11 +1914,11 @@ bool&
 get_use_sampling()
 {
 #if defined(TIMEMORY_USE_LIBUNWIND)
-    static auto _v = get_config()->find("OMNITRACE_USE_SAMPLING");
+    static auto _v = get_config()->find("ROCPROFSYS_USE_SAMPLING");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 #else
     OMNITRACE_THROW(
-        "Error! sampling was enabled but omnitrace was not built with libunwind support");
+        "Error! sampling was enabled but rocprof-sys was not built with libunwind support");
     static bool _v = false;
     return _v;
 #endif
@@ -1927,35 +1927,35 @@ get_use_sampling()
 bool&
 get_use_process_sampling()
 {
-    static auto _v = get_config()->find("OMNITRACE_USE_PROCESS_SAMPLING");
+    static auto _v = get_config()->find("ROCPROFSYS_USE_PROCESS_SAMPLING");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
 bool&
 get_use_pid()
 {
-    static auto _v = get_config()->find("OMNITRACE_USE_PID");
+    static auto _v = get_config()->find("ROCPROFSYS_USE_PID");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
 bool&
 get_use_mpip()
 {
-    static auto _v = get_config()->find("OMNITRACE_USE_MPIP");
+    static auto _v = get_config()->find("ROCPROFSYS_USE_MPIP");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
 bool
 get_use_kokkosp()
 {
-    static auto _v = get_config()->find("OMNITRACE_USE_KOKKOSP");
+    static auto _v = get_config()->find("ROCPROFSYS_USE_KOKKOSP");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
 bool
 get_use_kokkosp_kernel_logger()
 {
-    static auto _v = get_config()->find("OMNITRACE_KOKKOSP_KERNEL_LOGGER");
+    static auto _v = get_config()->find("ROCPROFSYS_KOKKOSP_KERNEL_LOGGER");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
@@ -1963,7 +1963,7 @@ bool
 get_use_ompt()
 {
 #if defined(TIMEMORY_USE_OMPT)
-    static auto _v = get_config()->find("OMNITRACE_USE_OMPT");
+    static auto _v = get_config()->find("ROCPROFSYS_USE_OMPT");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 #else
     return false;
@@ -1973,91 +1973,91 @@ get_use_ompt()
 bool
 get_use_code_coverage()
 {
-    static auto _v = get_config()->find("OMNITRACE_USE_CODE_COVERAGE");
+    static auto _v = get_config()->find("ROCPROFSYS_USE_CODE_COVERAGE");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
 bool
 get_use_rcclp()
 {
-    static auto _v = get_config()->find("OMNITRACE_USE_RCCLP");
+    static auto _v = get_config()->find("ROCPROFSYS_USE_RCCLP");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
 size_t
 get_num_threads_hint()
 {
-    static auto _v = get_config()->find("OMNITRACE_NUM_THREADS_HINT");
+    static auto _v = get_config()->find("ROCPROFSYS_NUM_THREADS_HINT");
     return static_cast<tim::tsettings<size_t>&>(*_v->second).get();
 }
 
 bool
 get_sampling_keep_internal()
 {
-    static auto _v = get_config()->find("OMNITRACE_SAMPLING_KEEP_INTERNAL");
+    static auto _v = get_config()->find("ROCPROFSYS_SAMPLING_KEEP_INTERNAL");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
 int
 get_sampling_overflow_signal()
 {
-    static auto _v = get_config()->find("OMNITRACE_SAMPLING_OVERFLOW_SIGNAL");
+    static auto _v = get_config()->find("ROCPROFSYS_SAMPLING_OVERFLOW_SIGNAL");
     return static_cast<tim::tsettings<int>&>(*_v->second).get();
 }
 
 int
 get_sampling_realtime_signal()
 {
-    static auto _v = get_config()->find("OMNITRACE_SAMPLING_REALTIME_SIGNAL");
+    static auto _v = get_config()->find("ROCPROFSYS_SAMPLING_REALTIME_SIGNAL");
     return static_cast<tim::tsettings<int>&>(*_v->second).get();
 }
 
 int
 get_sampling_cputime_signal()
 {
-    static auto _v = get_config()->find("OMNITRACE_SAMPLING_CPUTIME_SIGNAL");
+    static auto _v = get_config()->find("ROCPROFSYS_SAMPLING_CPUTIME_SIGNAL");
     return static_cast<tim::tsettings<int>&>(*_v->second).get();
 }
 
 bool
 get_trace_hip_api()
 {
-    static auto _v = get_config()->find("OMNITRACE_ROCTRACER_HIP_API");
+    static auto _v = get_config()->find("ROCPROFSYS_ROCTRACER_HIP_API");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
 bool
 get_trace_hip_activity()
 {
-    static auto _v = get_config()->find("OMNITRACE_ROCTRACER_HIP_ACTIVITY");
+    static auto _v = get_config()->find("ROCPROFSYS_ROCTRACER_HIP_ACTIVITY");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
 bool
 get_trace_hsa_api()
 {
-    static auto _v = get_config()->find("OMNITRACE_ROCTRACER_HSA_API");
+    static auto _v = get_config()->find("ROCPROFSYS_ROCTRACER_HSA_API");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
 bool
 get_trace_hsa_activity()
 {
-    static auto _v = get_config()->find("OMNITRACE_ROCTRACER_HSA_ACTIVITY");
+    static auto _v = get_config()->find("ROCPROFSYS_ROCTRACER_HSA_ACTIVITY");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
 size_t
 get_perfetto_shmem_size_hint()
 {
-    static auto _v = get_config()->find("OMNITRACE_PERFETTO_SHMEM_SIZE_HINT_KB");
+    static auto _v = get_config()->find("ROCPROFSYS_PERFETTO_SHMEM_SIZE_HINT_KB");
     return static_cast<tim::tsettings<size_t>&>(*_v->second).get();
 }
 
 size_t
 get_perfetto_buffer_size()
 {
-    static auto _v = get_config()->find("OMNITRACE_PERFETTO_BUFFER_SIZE_KB");
+    static auto _v = get_config()->find("ROCPROFSYS_PERFETTO_BUFFER_SIZE_KB");
     return static_cast<tim::tsettings<size_t>&>(*_v->second).get();
 }
 
@@ -2065,7 +2065,7 @@ bool
 get_perfetto_combined_traces()
 {
 #if defined(TIMEMORY_USE_MPI) && TIMEMORY_USE_MPI > 0
-    static auto _v = get_config()->find("OMNITRACE_PERFETTO_COMBINE_TRACES");
+    static auto _v = get_config()->find("ROCPROFSYS_PERFETTO_COMBINE_TRACES");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 #else
     return false;
@@ -2075,7 +2075,7 @@ get_perfetto_combined_traces()
 std::string
 get_perfetto_fill_policy()
 {
-    static auto _v = get_config()->find("OMNITRACE_PERFETTO_FILL_POLICY");
+    static auto _v = get_config()->find("ROCPROFSYS_PERFETTO_FILL_POLICY");
     return static_cast<tim::tsettings<std::string>&>(*_v->second).get();
 }
 
@@ -2099,8 +2099,8 @@ get_category_config()
             return _ret;
         };
 
-        auto _enabled  = _parse(get_config()->find("OMNITRACE_ENABLE_CATEGORIES"));
-        auto _disabled = _parse(get_config()->find("OMNITRACE_DISABLE_CATEGORIES"));
+        auto _enabled  = _parse(get_config()->find("ROCPROFSYS_ENABLE_CATEGORIES"));
+        auto _disabled = _parse(get_config()->find("ROCPROFSYS_DISABLE_CATEGORIES"));
 
         if(_enabled.empty() && _disabled.empty())
         {
@@ -2122,8 +2122,8 @@ get_category_config()
         }
         else
         {
-            OMNITRACE_ABORT("Error! Conflicting options OMNITRACE_ENABLE_CATEGORIES and "
-                            "OMNITRACE_DISABLE_CATEGORIES were both provided.");
+            OMNITRACE_ABORT("Error! Conflicting options ROCPROFSYS_ENABLE_CATEGORIES and "
+                            "ROCPROFSYS_DISABLE_CATEGORIES were both provided.");
         }
 
         OMNITRACE_CI_THROW(_enabled.size() + _disabled.size() != _avail.size(),
@@ -2152,14 +2152,14 @@ get_disabled_categories()
 bool
 get_perfetto_annotations()
 {
-    static auto _v = get_config()->find("OMNITRACE_PERFETTO_ANNOTATIONS");
+    static auto _v = get_config()->find("ROCPROFSYS_PERFETTO_ANNOTATIONS");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
 uint64_t
 get_thread_pool_size()
 {
-    static uint64_t _v = get_config()->get<uint64_t>("OMNITRACE_THREAD_POOL_SIZE");
+    static uint64_t _v = get_config()->get<uint64_t>("ROCPROFSYS_THREAD_POOL_SIZE");
     return _v;
 }
 
@@ -2167,7 +2167,7 @@ std::string
 get_trace_hsa_api_types()
 {
     static std::string _v =
-        get_config()->get<std::string>("OMNITRACE_ROCTRACER_HSA_API_TYPES");
+        get_config()->get<std::string>("ROCPROFSYS_ROCTRACER_HSA_API_TYPES");
     return _v;
 }
 
@@ -2175,14 +2175,14 @@ std::string&
 get_perfetto_backend()
 {
     // select inprocess, system, or both (i.e. all)
-    static auto _v = get_config()->find("OMNITRACE_PERFETTO_BACKEND");
+    static auto _v = get_config()->find("ROCPROFSYS_PERFETTO_BACKEND");
     return static_cast<tim::tsettings<std::string>&>(*_v->second).get();
 }
 
 std::string
 get_perfetto_output_filename()
 {
-    static auto _v       = get_config()->find("OMNITRACE_PERFETTO_FILE");
+    static auto _v       = get_config()->find("ROCPROFSYS_PERFETTO_FILE");
     auto        _val     = static_cast<tim::tsettings<std::string>&>(*_v->second).get();
     auto        _pos_dir = _val.find_last_of('/');
     auto        _dir     = std::string{};
@@ -2211,14 +2211,14 @@ get_perfetto_output_filename()
 double
 get_sampling_freq()
 {
-    static auto _v = get_config()->find("OMNITRACE_SAMPLING_FREQ");
+    static auto _v = get_config()->find("ROCPROFSYS_SAMPLING_FREQ");
     return static_cast<tim::tsettings<double>&>(*_v->second).get();
 }
 
 double
 get_sampling_cputime_freq()
 {
-    static auto _v   = get_config()->find("OMNITRACE_SAMPLING_CPUTIME_FREQ");
+    static auto _v   = get_config()->find("ROCPROFSYS_SAMPLING_CPUTIME_FREQ");
     auto&       _val = static_cast<tim::tsettings<double>&>(*_v->second).get();
     if(_val <= 0.0) _val = get_sampling_freq();
     return _val;
@@ -2227,7 +2227,7 @@ get_sampling_cputime_freq()
 double
 get_sampling_realtime_freq()
 {
-    static auto _v   = get_config()->find("OMNITRACE_SAMPLING_REALTIME_FREQ");
+    static auto _v   = get_config()->find("ROCPROFSYS_SAMPLING_REALTIME_FREQ");
     auto&       _val = static_cast<tim::tsettings<double>&>(*_v->second).get();
     if(_val <= 0.0) _val = get_sampling_freq();
     return _val;
@@ -2236,7 +2236,7 @@ get_sampling_realtime_freq()
 double
 get_sampling_overflow_freq()
 {
-    static auto _v   = get_config()->find("OMNITRACE_SAMPLING_OVERFLOW_FREQ");
+    static auto _v   = get_config()->find("ROCPROFSYS_SAMPLING_OVERFLOW_FREQ");
     auto&       _val = static_cast<tim::tsettings<double>&>(*_v->second).get();
     if(_val <= 0.0) _val = get_sampling_freq();
     return _val;
@@ -2245,14 +2245,14 @@ get_sampling_overflow_freq()
 double
 get_sampling_delay()
 {
-    static auto _v = get_config()->find("OMNITRACE_SAMPLING_DELAY");
+    static auto _v = get_config()->find("ROCPROFSYS_SAMPLING_DELAY");
     return static_cast<tim::tsettings<double>&>(*_v->second).get();
 }
 
 double
 get_sampling_cputime_delay()
 {
-    static auto _v   = get_config()->find("OMNITRACE_SAMPLING_CPUTIME_DELAY");
+    static auto _v   = get_config()->find("ROCPROFSYS_SAMPLING_CPUTIME_DELAY");
     auto&       _val = static_cast<tim::tsettings<double>&>(*_v->second).get();
     if(_val <= 0.0) _val = get_sampling_delay();
     return _val;
@@ -2261,7 +2261,7 @@ get_sampling_cputime_delay()
 double
 get_sampling_realtime_delay()
 {
-    static auto _v   = get_config()->find("OMNITRACE_SAMPLING_REALTIME_DELAY");
+    static auto _v   = get_config()->find("ROCPROFSYS_SAMPLING_REALTIME_DELAY");
     auto&       _val = static_cast<tim::tsettings<double>&>(*_v->second).get();
     if(_val <= 0.0) _val = get_sampling_delay();
     return _val;
@@ -2270,21 +2270,21 @@ get_sampling_realtime_delay()
 double
 get_sampling_duration()
 {
-    static auto _v = get_config()->find("OMNITRACE_SAMPLING_DURATION");
+    static auto _v = get_config()->find("ROCPROFSYS_SAMPLING_DURATION");
     return static_cast<tim::tsettings<double>&>(*_v->second).get();
 }
 
 std::string
 get_sampling_cpus()
 {
-    auto _v = get_config()->find("OMNITRACE_SAMPLING_CPUS");
+    auto _v = get_config()->find("ROCPROFSYS_SAMPLING_CPUS");
     return static_cast<tim::tsettings<std::string>&>(*_v->second).get();
 }
 
 std::set<int64_t>
 get_sampling_tids()
 {
-    auto _v = get_config()->find("OMNITRACE_SAMPLING_TIDS");
+    auto _v = get_config()->find("ROCPROFSYS_SAMPLING_TIDS");
     return parse_numeric_range<>(
         static_cast<tim::tsettings<std::string>&>(*_v->second).get(), "thread IDs", 1L);
 }
@@ -2292,7 +2292,7 @@ get_sampling_tids()
 std::set<int64_t>
 get_sampling_cputime_tids()
 {
-    auto _v = get_config()->find("OMNITRACE_SAMPLING_CPUTIME_TIDS");
+    auto _v = get_config()->find("ROCPROFSYS_SAMPLING_CPUTIME_TIDS");
     return parse_numeric_range<>(
         static_cast<tim::tsettings<std::string>&>(*_v->second).get(), "thread IDs", 1L);
 }
@@ -2300,7 +2300,7 @@ get_sampling_cputime_tids()
 std::set<int64_t>
 get_sampling_realtime_tids()
 {
-    auto _v = get_config()->find("OMNITRACE_SAMPLING_REALTIME_TIDS");
+    auto _v = get_config()->find("ROCPROFSYS_SAMPLING_REALTIME_TIDS");
     return parse_numeric_range<>(
         static_cast<tim::tsettings<std::string>&>(*_v->second).get(), "thread IDs", 1L);
 }
@@ -2308,7 +2308,7 @@ get_sampling_realtime_tids()
 std::set<int64_t>
 get_sampling_overflow_tids()
 {
-    auto _v = get_config()->find("OMNITRACE_SAMPLING_OVERFLOW_TIDS");
+    auto _v = get_config()->find("ROCPROFSYS_SAMPLING_OVERFLOW_TIDS");
     return parse_numeric_range<>(
         static_cast<tim::tsettings<std::string>&>(*_v->second).get(), "thread IDs", 1L);
 }
@@ -2316,21 +2316,21 @@ get_sampling_overflow_tids()
 bool
 get_sampling_include_inlines()
 {
-    static auto _v = get_config()->find("OMNITRACE_SAMPLING_INCLUDE_INLINES");
+    static auto _v = get_config()->find("ROCPROFSYS_SAMPLING_INCLUDE_INLINES");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
 size_t
 get_sampling_allocator_size()
 {
-    static auto _v = get_config()->find("OMNITRACE_SAMPLING_ALLOCATOR_SIZE");
+    static auto _v = get_config()->find("ROCPROFSYS_SAMPLING_ALLOCATOR_SIZE");
     return std::max<size_t>(static_cast<tim::tsettings<size_t>&>(*_v->second).get(), 1);
 }
 
 double
 get_process_sampling_freq()
 {
-    static auto _v = get_config()->find("OMNITRACE_PROCESS_SAMPLING_FREQ");
+    static auto _v = get_config()->find("ROCPROFSYS_PROCESS_SAMPLING_FREQ");
     auto        _val =
         std::min<double>(static_cast<tim::tsettings<double>&>(*_v->second).get(), 1000.0);
     if(_val < 1.0e-9) return std::min<double>(get_sampling_freq(), 100.0);
@@ -2340,7 +2340,7 @@ get_process_sampling_freq()
 double
 get_process_sampling_duration()
 {
-    static auto _v = get_config()->find("OMNITRACE_PROCESS_SAMPLING_DURATION");
+    static auto _v = get_config()->find("ROCPROFSYS_PROCESS_SAMPLING_DURATION");
     return static_cast<tim::tsettings<double>&>(*_v->second).get();
 }
 
@@ -2348,7 +2348,7 @@ std::string
 get_sampling_gpus()
 {
 #if defined(OMNITRACE_USE_ROCM_SMI) && OMNITRACE_USE_ROCM_SMI > 0
-    static auto _v = get_config()->find("OMNITRACE_SAMPLING_GPUS");
+    static auto _v = get_config()->find("ROCPROFSYS_SAMPLING_GPUS");
     return static_cast<tim::tsettings<std::string>&>(*_v->second).get();
 #else
     return std::string{};
@@ -2358,42 +2358,42 @@ get_sampling_gpus()
 bool
 get_trace_thread_locks()
 {
-    static auto _v = get_config()->find("OMNITRACE_TRACE_THREAD_LOCKS");
+    static auto _v = get_config()->find("ROCPROFSYS_TRACE_THREAD_LOCKS");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
 std::string
 get_rocm_events()
 {
-    static auto _v = get_config()->find("OMNITRACE_ROCM_EVENTS");
+    static auto _v = get_config()->find("ROCPROFSYS_ROCM_EVENTS");
     return static_cast<tim::tsettings<std::string>&>(*_v->second).get();
 }
 
 bool
 get_trace_thread_rwlocks()
 {
-    static auto _v = get_config()->find("OMNITRACE_TRACE_THREAD_RW_LOCKS");
+    static auto _v = get_config()->find("ROCPROFSYS_TRACE_THREAD_RW_LOCKS");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
 bool
 get_trace_thread_spin_locks()
 {
-    static auto _v = get_config()->find("OMNITRACE_TRACE_THREAD_SPIN_LOCKS");
+    static auto _v = get_config()->find("ROCPROFSYS_TRACE_THREAD_SPIN_LOCKS");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
 bool
 get_trace_thread_barriers()
 {
-    static auto _v = get_config()->find("OMNITRACE_TRACE_THREAD_BARRIERS");
+    static auto _v = get_config()->find("ROCPROFSYS_TRACE_THREAD_BARRIERS");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
 bool
 get_trace_thread_join()
 {
-    static auto _v = get_config()->find("OMNITRACE_TRACE_THREAD_JOIN");
+    static auto _v = get_config()->find("ROCPROFSYS_TRACE_THREAD_JOIN");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
@@ -2401,7 +2401,7 @@ bool
 get_debug_tid()
 {
     static auto _vlist = parse_numeric_range<int64_t, std::unordered_set<int64_t>>(
-        tim::get_env<std::string>("OMNITRACE_DEBUG_TIDS", ""), "debug tids", 1L);
+        tim::get_env<std::string>("ROCPROFSYS_DEBUG_TIDS", ""), "debug tids", 1L);
     static thread_local bool _v =
         _vlist.empty() || _vlist.count(tim::threading::get_id()) > 0;
     return _v;
@@ -2411,7 +2411,7 @@ bool
 get_debug_pid()
 {
     static auto _vlist = parse_numeric_range<int64_t, std::unordered_set<int64_t>>(
-        tim::get_env<std::string>("OMNITRACE_DEBUG_PIDS", ""), "debug pids", 1L);
+        tim::get_env<std::string>("ROCPROFSYS_DEBUG_PIDS", ""), "debug pids", 1L);
     static bool _v = _vlist.empty() || _vlist.count(tim::process::get_id()) > 0 ||
                      _vlist.count(dmp::rank()) > 0;
     return _v;
@@ -2420,14 +2420,14 @@ get_debug_pid()
 bool
 get_use_tmp_files()
 {
-    static auto _v = get_config()->find("OMNITRACE_USE_TEMPORARY_FILES");
+    static auto _v = get_config()->find("ROCPROFSYS_USE_TEMPORARY_FILES");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
 std::string
 get_tmpdir()
 {
-    static auto _v = get_config()->find("OMNITRACE_TMPDIR");
+    static auto _v = get_config()->find("ROCPROFSYS_TMPDIR");
     return static_cast<tim::tsettings<std::string>&>(*_v->second).get();
 }
 
@@ -2596,7 +2596,7 @@ get_causal_backend()
         { "timer", CausalBackend::Timer },
     };
 
-    auto _v = get_config()->find("OMNITRACE_CAUSAL_BACKEND");
+    auto _v = get_config()->find("ROCPROFSYS_CAUSAL_BACKEND");
     try
     {
         return _m.at(static_cast<tim::tsettings<std::string>&>(*_v->second).get());
@@ -2617,7 +2617,7 @@ get_causal_mode()
 {
     if(!settings_are_configured())
     {
-        auto _mode = tim::get_env_choice<std::string>("OMNITRACE_CAUSAL_MODE", "function",
+        auto _mode = tim::get_env_choice<std::string>("ROCPROFSYS_CAUSAL_MODE", "function",
                                                       { "line", "function" });
         if(_mode == "line") return CausalMode::Line;
         return CausalMode::Function;
@@ -2628,7 +2628,7 @@ get_causal_mode()
             { "func", CausalMode::Function },
             { "function", CausalMode::Function }
         };
-        auto _v = get_config()->find("OMNITRACE_CAUSAL_MODE");
+        auto _v = get_config()->find("ROCPROFSYS_CAUSAL_MODE");
         try
         {
             return _m.at(static_cast<tim::tsettings<std::string>&>(*_v->second).get());
@@ -2649,14 +2649,14 @@ get_causal_mode()
 bool
 get_causal_end_to_end()
 {
-    static auto _v = get_config()->find("OMNITRACE_CAUSAL_END_TO_END");
+    static auto _v = get_config()->find("ROCPROFSYS_CAUSAL_END_TO_END");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
 std::vector<int64_t>
 get_causal_fixed_speedup()
 {
-    static auto _v = get_config()->find("OMNITRACE_CAUSAL_FIXED_SPEEDUP");
+    static auto _v = get_config()->find("ROCPROFSYS_CAUSAL_FIXED_SPEEDUP");
     return parse_numeric_range<int64_t, std::vector<int64_t>>(
         static_cast<tim::tsettings<std::string>&>(*_v->second).get(),
         "causal fixed speedup", 5L);
@@ -2665,7 +2665,7 @@ get_causal_fixed_speedup()
 std::string
 get_causal_output_filename()
 {
-    static auto _v     = get_config()->find("OMNITRACE_CAUSAL_FILE");
+    static auto _v     = get_config()->find("ROCPROFSYS_CAUSAL_FILE");
     auto        _fname = static_cast<tim::tsettings<std::string>&>(*_v->second).get();
     for(auto&& itr : std::initializer_list<std::string>{ ".txt", ".json", ".xml" })
     {
@@ -2708,7 +2708,7 @@ std::vector<std::string>
 get_causal_binary_scope()
 {
     auto&&      _config = get_config();
-    static auto _v      = _config->find("OMNITRACE_CAUSAL_BINARY_SCOPE");
+    static auto _v      = _config->find("ROCPROFSYS_CAUSAL_BINARY_SCOPE");
     return format_causal_scopes(
         tim::delimit(static_cast<tim::tsettings<std::string>&>(*_v->second).get(),
                      "\t\"';"),
@@ -2718,7 +2718,7 @@ get_causal_binary_scope()
 std::vector<std::string>
 get_causal_source_scope()
 {
-    static auto _v = get_config()->find("OMNITRACE_CAUSAL_SOURCE_SCOPE");
+    static auto _v = get_config()->find("ROCPROFSYS_CAUSAL_SOURCE_SCOPE");
     return tim::delimit(static_cast<tim::tsettings<std::string>&>(*_v->second).get(),
                         "\t\"';");
 }
@@ -2726,7 +2726,7 @@ get_causal_source_scope()
 std::vector<std::string>
 get_causal_function_scope()
 {
-    static auto _v = get_config()->find("OMNITRACE_CAUSAL_FUNCTION_SCOPE");
+    static auto _v = get_config()->find("ROCPROFSYS_CAUSAL_FUNCTION_SCOPE");
     return tim::delimit(static_cast<tim::tsettings<std::string>&>(*_v->second).get(),
                         "\t\"';");
 }
@@ -2735,7 +2735,7 @@ std::vector<std::string>
 get_causal_binary_exclude()
 {
     auto&&      _config = get_config();
-    static auto _v      = _config->find("OMNITRACE_CAUSAL_BINARY_EXCLUDE");
+    static auto _v      = _config->find("ROCPROFSYS_CAUSAL_BINARY_EXCLUDE");
     return format_causal_scopes(
         tim::delimit(static_cast<tim::tsettings<std::string>&>(*_v->second).get(),
                      "\t\"';"),
@@ -2745,7 +2745,7 @@ get_causal_binary_exclude()
 std::vector<std::string>
 get_causal_source_exclude()
 {
-    static auto _v = get_config()->find("OMNITRACE_CAUSAL_SOURCE_EXCLUDE");
+    static auto _v = get_config()->find("ROCPROFSYS_CAUSAL_SOURCE_EXCLUDE");
     return tim::delimit(static_cast<tim::tsettings<std::string>&>(*_v->second).get(),
                         "\t\"';");
 }
@@ -2753,7 +2753,7 @@ get_causal_source_exclude()
 std::vector<std::string>
 get_causal_function_exclude()
 {
-    static auto _v = get_config()->find("OMNITRACE_CAUSAL_FUNCTION_EXCLUDE");
+    static auto _v = get_config()->find("ROCPROFSYS_CAUSAL_FUNCTION_EXCLUDE");
     return tim::delimit(static_cast<tim::tsettings<std::string>&>(*_v->second).get(),
                         "\t\"';");
 }

@@ -63,14 +63,14 @@
         if(VARNAME == nullptr && _omnitrace_dl_verbose >= _warn_verbose)                 \
         {                                                                                \
             OMNITRACE_COMMON_LIBRARY_LOG_START                                           \
-            fprintf(stderr, "[omnitrace][dl][pid=%i]> %s :: %s\n", getpid(), FUNCNAME,   \
+            fprintf(stderr, "[rocprof-sys][dl][pid=%i]> %s :: %s\n", getpid(), FUNCNAME,   \
                     dlerror());                                                          \
             OMNITRACE_COMMON_LIBRARY_LOG_END                                             \
         }                                                                                \
         else if(_omnitrace_dl_verbose > _info_verbose)                                   \
         {                                                                                \
             OMNITRACE_COMMON_LIBRARY_LOG_START                                           \
-            fprintf(stderr, "[omnitrace][dl][pid=%i]> %s :: success\n", getpid(),        \
+            fprintf(stderr, "[rocprof-sys][dl][pid=%i]> %s :: success\n", getpid(),        \
                     FUNCNAME);                                                           \
             OMNITRACE_COMMON_LIBRARY_LOG_END                                             \
         }                                                                                \
@@ -96,16 +96,16 @@ namespace
 inline int
 get_omnitrace_env()
 {
-    auto&& _debug = get_env("OMNITRACE_DEBUG", false);
-    return get_env("OMNITRACE_VERBOSE", (_debug) ? 100 : 0);
+    auto&& _debug = get_env("ROCPROFSYS_DEBUG", false);
+    return get_env("ROCPROFSYS_VERBOSE", (_debug) ? 100 : 0);
 }
 
 inline int
 get_omnitrace_dl_env()
 {
-    return get_env("OMNITRACE_DL_DEBUG", false)
+    return get_env("ROCPROFSYS_DL_DEBUG", false)
                ? 100
-               : get_env("OMNITRACE_DL_VERBOSE", get_omnitrace_env());
+               : get_env("ROCPROFSYS_DL_VERBOSE", get_omnitrace_env());
 }
 
 inline bool&
@@ -122,7 +122,7 @@ inline bool
 get_omnitrace_preload()
 {
     static bool _v = []() {
-        auto&& _preload      = get_env("OMNITRACE_PRELOAD", true);
+        auto&& _preload      = get_env("ROCPROFSYS_PRELOAD", true);
         auto&& _preload_libs = get_env("LD_PRELOAD", std::string{});
         return (_preload &&
                 _preload_libs.find("librocprof-sys-dl.so") != std::string::npos);
@@ -155,8 +155,8 @@ inline pid_t
 get_omnitrace_root_pid()
 {
     auto _pid = getpid();
-    setenv("OMNITRACE_ROOT_PROCESS", std::to_string(_pid).c_str(), 0);
-    return get_env("OMNITRACE_ROOT_PROCESS", _pid);
+    setenv("ROCPROFSYS_ROOT_PROCESS", std::to_string(_pid).c_str(), 0);
+    return get_env("ROCPROFSYS_ROOT_PROCESS", _pid);
 }
 
 void
@@ -229,11 +229,11 @@ struct OMNITRACE_INTERNAL_API indirect
         if(_omnitrace_dl_verbose >= 1)
         {
             OMNITRACE_COMMON_LIBRARY_LOG_START
-            fprintf(stderr, "[omnitrace][dl][pid=%i] %s resolved to '%s'\n", getpid(),
+            fprintf(stderr, "[rocprof-sys][dl][pid=%i] %s resolved to '%s'\n", getpid(),
                     ::basename(_omnilib.c_str()), m_omnilib.c_str());
-            fprintf(stderr, "[omnitrace][dl][pid=%i] %s resolved to '%s'\n", getpid(),
+            fprintf(stderr, "[rocprof-sys][dl][pid=%i] %s resolved to '%s'\n", getpid(),
                     ::basename(_dllib.c_str()), m_dllib.c_str());
-            fprintf(stderr, "[omnitrace][dl][pid=%i] %s resolved to '%s'\n", getpid(),
+            fprintf(stderr, "[rocprof-sys][dl][pid=%i] %s resolved to '%s'\n", getpid(),
                     ::basename(_userlib.c_str()), m_userlib.c_str());
             OMNITRACE_COMMON_LIBRARY_LOG_END
         }
@@ -258,7 +258,7 @@ struct OMNITRACE_INTERNAL_API indirect
             if(_omnitrace_dl_verbose >= 2)
             {
                 OMNITRACE_COMMON_LIBRARY_LOG_START
-                fprintf(stderr, "[omnitrace][dl][pid=%i] dlopen(\"%s\", %s) :: success\n",
+                fprintf(stderr, "[rocprof-sys][dl][pid=%i] dlopen(\"%s\", %s) :: success\n",
                         getpid(), _lib.c_str(), _omnitrace_dl_dlopen_descr);
                 OMNITRACE_COMMON_LIBRARY_LOG_END
             }
@@ -269,7 +269,7 @@ struct OMNITRACE_INTERNAL_API indirect
             {
                 perror("dlopen");
                 OMNITRACE_COMMON_LIBRARY_LOG_START
-                fprintf(stderr, "[omnitrace][dl][pid=%i] dlopen(\"%s\", %s) :: %s\n",
+                fprintf(stderr, "[rocprof-sys][dl][pid=%i] dlopen(\"%s\", %s) :: %s\n",
                         getpid(), _lib.c_str(), _omnitrace_dl_dlopen_descr, dlerror());
                 OMNITRACE_COMMON_LIBRARY_LOG_END
             }
@@ -492,9 +492,9 @@ get_indirect()
 {
     omnitrace_preinit_library();
 
-    static auto  _libomni = get_env("OMNITRACE_LIBRARY", "librocprof-sys.so");
-    static auto  _libuser = get_env("OMNITRACE_USER_LIBRARY", "librocprof-sys-user.so");
-    static auto  _libdlib = get_env("OMNITRACE_DL_LIBRARY", "librocprof-sys-dl.so");
+    static auto  _libomni = get_env("ROCPROFSYS_LIBRARY", "librocprof-sys.so");
+    static auto  _libuser = get_env("ROCPROFSYS_USER_LIBRARY", "librocprof-sys-user.so");
+    static auto  _libdlib = get_env("ROCPROFSYS_DL_LIBRARY", "librocprof-sys-dl.so");
     static auto* _v       = new indirect{ _libomni, _libuser, _libdlib };
     return *_v;
 }
@@ -523,7 +523,7 @@ get_active()
 auto&
 get_enabled()
 {
-    static auto* _v = new std::atomic<bool>{ get_env("OMNITRACE_INIT_ENABLED", true) };
+    static auto* _v = new std::atomic<bool>{ get_env("ROCPROFSYS_INIT_ENABLED", true) };
     return *_v;
 }
 
@@ -551,7 +551,7 @@ get_thread_status()
 InstrumentMode&
 get_instrumented()
 {
-    static auto _v = get_env("OMNITRACE_INSTRUMENT_MODE", InstrumentMode::None);
+    static auto _v = get_env("ROCPROFSYS_INSTRUMENT_MODE", InstrumentMode::None);
     return _v;
 }
 
@@ -584,7 +584,7 @@ bool _omnitrace_dl_fini = (std::atexit([]() {
     {                                                                                    \
         fflush(stderr);                                                                  \
         OMNITRACE_COMMON_LIBRARY_LOG_START                                               \
-        fprintf(stderr, "[omnitrace][" OMNITRACE_COMMON_LIBRARY_NAME "][%i] ",           \
+        fprintf(stderr, "[rocprof-sys][" OMNITRACE_COMMON_LIBRARY_NAME "][%i] ",           \
                 getpid());                                                               \
         fprintf(stderr, __VA_ARGS__);                                                    \
         OMNITRACE_COMMON_LIBRARY_LOG_END                                                 \
@@ -598,7 +598,7 @@ extern "C"
 {
     void omnitrace_preinit_library(void)
     {
-        if(omnitrace::common::get_env("OMNITRACE_MONOCHROME", tim::log::monochrome()))
+        if(omnitrace::common::get_env("ROCPROFSYS_MONOCHROME", tim::log::monochrome()))
             tim::log::monochrome() = true;
     }
 
@@ -1171,7 +1171,7 @@ get_link_map(const char* _name, std::vector<int>&& _open_modes)
 const char*
 get_default_mode()
 {
-    if(get_env("OMNITRACE_USE_CAUSAL", false)) return "causal";
+    if(get_env("ROCPROFSYS_USE_CAUSAL", false)) return "causal";
 
     auto _link_map = get_link_map(nullptr);
     for(const auto& itr : _link_map)
@@ -1194,10 +1194,10 @@ omnitrace_preinit()
         case InstrumentMode::ProcessCreate:
         case InstrumentMode::ProcessAttach:
         {
-            auto _use_mpip = get_env("OMNITRACE_USE_MPIP", false);
-            auto _use_mpi  = get_env("OMNITRACE_USE_MPI", _use_mpip);
-            auto _causal   = get_env("OMNITRACE_USE_CAUSAL", false);
-            auto _mode     = get_env("OMNITRACE_MODE", get_default_mode());
+            auto _use_mpip = get_env("ROCPROFSYS_USE_MPIP", false);
+            auto _use_mpi  = get_env("ROCPROFSYS_USE_MPI", _use_mpip);
+            auto _causal   = get_env("ROCPROFSYS_USE_CAUSAL", false);
+            auto _mode     = get_env("ROCPROFSYS_MODE", get_default_mode());
 
             if(_use_mpi && !(_causal && _mode == "causal"))
             {
@@ -1250,11 +1250,11 @@ bool
 omnitrace_preload()
 {
     auto _preload = get_omnitrace_is_preloaded() && get_omnitrace_preload() &&
-                    get_env("OMNITRACE_ENABLED", true);
+                    get_env("ROCPROFSYS_ENABLED", true);
 
     auto _link_map = get_link_map(nullptr);
     auto _instr_mode =
-        get_env("OMNITRACE_INSTRUMENT_MODE", dl::InstrumentMode::BinaryRewrite);
+        get_env("ROCPROFSYS_INSTRUMENT_MODE", dl::InstrumentMode::BinaryRewrite);
     for(const auto& itr : _link_map)
     {
         if(itr.find("librocprof-sys-rt.so") != std::string::npos ||
@@ -1366,9 +1366,9 @@ verify_instrumented_preloaded()
     and/or any configuration values specified to 'rocprof-sys-instrument' via the '--config' or '--env' options.
     E.g.:
 
-        $ rocprof-sys-instrument -o ./sleep.inst --env OMNITRACE_SAMPLING_DELAY=5.0 -- sleep
-        $ echo "OMNITRACE_SAMPLING_FREQ = 500" > omnitrace.cfg
-        $ export OMNITRACE_CONFIG_FILE=omnitrace.cfg
+        $ rocprof-sys-instrument -o ./sleep.inst --env ROCPROFSYS_SAMPLING_DELAY=5.0 -- sleep
+        $ echo "ROCPROFSYS_SAMPLING_FREQ = 500" > omnitrace.cfg
+        $ export ROCPROFSYS_CONFIG_FILE=rocprof-sys.cfg
         $ rocprof-sys-run --sampling-freq=100 --sampling-delay=1.0 -- ./sleep.inst 10
 
     In the first command, a default sampling delay of 5 seconds in embedded into the instrumented 'sleep.inst'.
@@ -1412,7 +1412,7 @@ extern "C"
         _reentry = 1;
 
         if(!::omnitrace::dl::main_real)
-            throw std::runtime_error("[omnitrace][dl] Unsuccessful wrapping of main: "
+            throw std::runtime_error("[rocprof-sys][dl] Unsuccessful wrapping of main: "
                                      "nullptr to real main function");
 
         if(envp)
@@ -1421,7 +1421,7 @@ extern "C"
             while(envp[_idx] != nullptr)
             {
                 auto _env_v = std::string_view{ envp[_idx++] };
-                if(_env_v.find("OMNITRACE") != 0 &&
+                if(_env_v.find("ROCPROFSYS") != 0 &&
                    _env_v.find("librocprof-sys") == std::string_view::npos)
                     continue;
                 auto _pos = _env_v.find('=');
@@ -1436,7 +1436,7 @@ extern "C"
             }
         }
 
-        auto _mode = get_env("OMNITRACE_MODE", get_default_mode());
+        auto _mode = get_env("ROCPROFSYS_MODE", get_default_mode());
         omnitrace_init(_mode.c_str(),
                        dl::get_instrumented() == dl::InstrumentMode::BinaryRewrite,
                        argv[0]);

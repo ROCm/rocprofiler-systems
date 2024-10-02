@@ -70,7 +70,7 @@ auto    experiment_history        = std::vector<experiment>{};
 int64_t global_scaling            = 1;
 int64_t global_scaling_increments = 0;
 bool    use_exp_speedup_scaling =
-    get_env<bool>("OMNITRACE_CAUSAL_SCALE_EXPERIMENT_TIME_BY_SPEEDUP", false);
+    get_env<bool>("ROCPROFSYS_CAUSAL_SCALE_EXPERIMENT_TIME_BY_SPEEDUP", false);
 }  // namespace
 
 experiment::sample::sample(const base_type& _b, uint64_t _c)
@@ -537,7 +537,7 @@ experiment::save_experiments(std::string _fname_base, const filename_config_t& _
     }
 
     bool _causal_output_reset =
-        config::get_setting_value<bool>("OMNITRACE_CAUSAL_FILE_RESET").value_or(false);
+        config::get_setting_value<bool>("ROCPROFSYS_CAUSAL_FILE_RESET").value_or(false);
 
     {
         auto _saved_experiments = (_causal_output_reset)
@@ -549,7 +549,7 @@ experiment::save_experiments(std::string _fname_base, const filename_config_t& _
             auto ar =
                 tim::policy::output_archive<cereal::PrettyJSONOutputArchive>::get(oss);
 
-            ar->setNextName("omnitrace");
+            ar->setNextName("rocprofsys");
             ar->startNode();
             ar->setNextName("causal");
             ar->startNode();
@@ -691,7 +691,7 @@ experiment::load_experiments(std::string _fname, const filename_config_t& _cfg,
     {
         auto ar = tim::policy::input_archive<cereal::JSONInputArchive>::get(ifs);
 
-        ar->setNextName("omnitrace");
+        ar->setNextName("rocprofsys");
         ar->startNode();
         ar->setNextName("causal");
         ar->startNode();

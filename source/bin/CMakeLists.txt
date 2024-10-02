@@ -21,6 +21,6 @@ add_subdirectory(omnitrace-instrument)
 add_subdirectory(omnitrace-run)
 
 # tests
-if(OMNITRACE_BUILD_TESTING OR "$ENV{OMNITRACE_CI}" MATCHES "[1-9]+|ON|on|y|yes")
+if(OMNITRACE_BUILD_TESTING OR "$ENV{ROCPROFSYS_CI}" MATCHES "[1-9]+|ON|on|y|yes")
     add_subdirectory(tests)
 endif()

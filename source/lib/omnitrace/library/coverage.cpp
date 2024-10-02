@@ -225,8 +225,8 @@ post_process()
         return _b.value_or(true);
     };
 
-    auto _text_output = _get_setting("OMNITRACE_TEXT_OUTPUT");
-    auto _json_output = _get_setting("OMNITRACE_JSON_OUTPUT");
+    auto _text_output = _get_setting("ROCPROFSYS_TEXT_OUTPUT");
+    auto _json_output = _get_setting("ROCPROFSYS_JSON_OUTPUT");
 
     if(_text_output)
     {
@@ -266,7 +266,7 @@ post_process()
             auto ar =
                 tim::policy::output_archive<cereal::PrettyJSONOutputArchive>::get(oss);
 
-            ar->setNextName("omnitrace");
+            ar->setNextName("rocprofsys");
             ar->startNode();
             ar->setNextName("coverage");
             ar->startNode();

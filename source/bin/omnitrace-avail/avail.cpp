@@ -137,7 +137,7 @@ main(int argc, char** argv)
     (void) timemory_hash_aliases;  //
 
     tim::unwind::set_bfd_verbose(3);
-    tim::set_env("OMNITRACE_INIT_TOOLING", "OFF", 1);
+    tim::set_env("ROCPROFSYS_INIT_TOOLING", "OFF", 1);
     omnitrace_init_library();
 
     std::set<std::string> _category_options = component_categories{}();

@@ -87,7 +87,7 @@ using category_type_id_t = typename category_type_id<Idx>::type;
 
 // clang-format off
 // these are defined by omnitrace
-OMNITRACE_DEFINE_CATEGORY(project, omnitrace, OMNITRACE_CATEGORY_NONE, "omnitrace", "Omnitrace project")
+OMNITRACE_DEFINE_CATEGORY(project, omnitrace, OMNITRACE_CATEGORY_NONE, "rocprofsys", "ROCm Systems Profiler project")
 OMNITRACE_DEFINE_CATEGORY(category, host, OMNITRACE_CATEGORY_HOST, "host", "Host-side function tracing")
 OMNITRACE_DEFINE_CATEGORY(category, user, OMNITRACE_CATEGORY_USER, "user", "User-defined regions")
 OMNITRACE_DEFINE_CATEGORY(category, python, OMNITRACE_CATEGORY_PYTHON, "python", "Python regions")

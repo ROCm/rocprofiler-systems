@@ -10,9 +10,9 @@ if(OMNITRACE_USE_PAPI
         OR omnitrace_cap_perfmon EQUAL 0))
     set(_annotate_environment
         "${_base_environment}"
-        "OMNITRACE_TIMEMORY_COMPONENTS=thread_cpu_clock papi_array"
-        "OMNITRACE_PAPI_EVENTS=perf::PERF_COUNT_SW_CPU_CLOCK"
-        "OMNITRACE_USE_SAMPLING=OFF")
+        "ROCPROFSYS_TIMEMORY_COMPONENTS=thread_cpu_clock papi_array"
+        "ROCPROFSYS_PAPI_EVENTS=perf::PERF_COUNT_SW_CPU_CLOCK"
+        "ROCPROFSYS_USE_SAMPLING=OFF")
 
     omnitrace_add_test(
         SKIP_BASELINE SKIP_RUNTIME
@@ -51,8 +51,8 @@ if(OMNITRACE_USE_PAPI
         ARGS --key-names thread_cpu_clock --key-counts 6)
 else()
     set(_annotate_environment
-        "${_base_environment}" "OMNITRACE_TIMEMORY_COMPONENTS=thread_cpu_clock"
-        "OMNITRACE_USE_SAMPLING=OFF")
+        "${_base_environment}" "ROCPROFSYS_TIMEMORY_COMPONENTS=thread_cpu_clock"
+        "ROCPROFSYS_USE_SAMPLING=OFF")
 
     omnitrace_add_test(
         SKIP_BASELINE SKIP_RUNTIME

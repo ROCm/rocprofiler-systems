@@ -160,7 +160,7 @@ get_hip_activity_mutex(int64_t _tid = threading::get_id())
 int64_t
 get_clock_skew()
 {
-    static auto _use = tim::get_env("OMNITRACE_USE_ROCTRACER_CLOCK_SKEW", true);
+    static auto _use = tim::get_env("ROCPROFSYS_USE_ROCTRACER_CLOCK_SKEW", true);
     if(!_use) return 0;
     static auto _v = []() {
         namespace cpu = tim::cpu;
@@ -639,11 +639,11 @@ hip_api_callback(uint32_t domain, uint32_t cid, const void* callback_data, void*
         {
             static auto _compact_annotations =
                 config::get_setting_value<bool>(
-                    "OMNITRACE_PERFETTO_COMPACT_ROCTRACER_ANNOTATIONS")
+                    "ROCPROFSYS_PERFETTO_COMPACT_ROCTRACER_ANNOTATIONS")
                     .value_or(false);
 
             static auto _enable_backtraces =
-                config::get_setting_value<bool>("OMNITRACE_ROCTRACER_HIP_API_BACKTRACE")
+                config::get_setting_value<bool>("ROCPROFSYS_ROCTRACER_HIP_API_BACKTRACE")
                     .value_or(false);
 
             constexpr size_t bt_stack_depth       = 16;
@@ -815,7 +815,7 @@ hip_activity_callback(const char* begin, const char* end, void* arg)
     static auto _kernel_names = std::unordered_map<const char*, std::string>{};
     static auto _indexes      = std::unordered_map<uint64_t, int>{};
     static auto _skip_barrier_packets =
-        config::get_setting_value<bool>("OMNITRACE_ROCTRACER_DISCARD_BARRIERS")
+        config::get_setting_value<bool>("ROCPROFSYS_ROCTRACER_DISCARD_BARRIERS")
             .value_or(false);
     const roctracer_record_t* record = reinterpret_cast<const roctracer_record_t*>(begin);
     const roctracer_record_t* end_record =
@@ -884,7 +884,7 @@ hip_activity_callback(const char* begin, const char* end, void* arg)
             auto          _verbose = []() { return get_verbose() >= 0 || get_debug(); };
             static size_t _n       = 0;
             static size_t _nmax =
-                get_env<size_t>("OMNITRACE_ROCTRACER_DISCARD_INVALID", 0);
+                get_env<size_t>("ROCPROFSYS_ROCTRACER_DISCARD_INVALID", 0);
             if(_nmax == 0) std::swap(_end_ns, _beg_ns);
             OMNITRACE_WARNING_IF_F(
                 _n < _nmax && _verbose(),
@@ -898,7 +898,7 @@ hip_activity_callback(const char* begin, const char* end, void* arg)
                 _nmax > 0 && _n == _nmax && _verbose(),
                 "Suppressing future messages about discarding kernel roctracer activity "
                 "record which ended before it started. Set "
-                "OMNITRACE_ROCTRACER_DISCARD_INVALID=N to increase/decrease the number "
+                "ROCPROFSYS_ROCTRACER_DISCARD_INVALID=N to increase/decrease the number "
                 "of messages. If N is set to 0, data will be included after swapping the "
                 "begin and end values\n");
             if(_end_ns < _beg_ns)
@@ -975,7 +975,7 @@ hip_activity_callback(const char* begin, const char* end, void* arg)
 bool&
 roctracer_is_init()
 {
-    static bool _v = tim::get_env("OMNITRACE_ROCTRACER_IS_INIT", false);
+    static bool _v = tim::get_env("ROCPROFSYS_ROCTRACER_IS_INIT", false);
     return _v;
 }
 

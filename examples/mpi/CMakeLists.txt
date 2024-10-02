@@ -13,7 +13,7 @@ endif()
 
 find_package(MPI)
 if(NOT MPI_FOUND)
-    if("${CMAKE_PROJECT_NAME}" STREQUAL "rocprofsys" AND "$ENV{OMNITRACE_CI}")
+    if("${CMAKE_PROJECT_NAME}" STREQUAL "rocprofsys" AND "$ENV{ROCPROFSYS_CI}")
         set(_MSG_TYPE STATUS) # don't generate warnings during CI
     else()
         set(_MSG_TYPE AUTHOR_WARNING)

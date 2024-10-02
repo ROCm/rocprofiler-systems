@@ -52,14 +52,14 @@ str_vec_t         category_regex_keys = {};
 str_set_t         category_view       = {};
 std::stringstream lerr{};
 
-bool    debug_msg = tim::get_env<bool>("OMNITRACE_DEBUG_AVAIL", settings::debug());
+bool    debug_msg = tim::get_env<bool>("ROCPROFSYS_DEBUG_AVAIL", settings::debug());
 int32_t verbose_level =
-    tim::get_env<int32_t>("OMNITRACE_VERBOSE_AVAIL", settings::verbose());
+    tim::get_env<int32_t>("ROCPROFSYS_VERBOSE_AVAIL", settings::verbose());
 
 // explicit setting names to exclude
 std::set<std::string> settings_exclude = {
-    "OMNITRACE_ENVIRONMENT",
-    "OMNITRACE_COMMAND_LINE",
+    "ROCPROFSYS_ENVIRONMENT",
+    "ROCPROFSYS_COMMAND_LINE",
     "cereal_class_version",
     "settings",
 };

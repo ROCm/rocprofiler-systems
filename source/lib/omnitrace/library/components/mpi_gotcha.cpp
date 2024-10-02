@@ -308,7 +308,7 @@ mpi_gotcha::audit(const gotcha_data_t& _data, audit::outgoing, int _retval)
     if(_retval == tim::mpi::success_v && _data.tool_id.find("MPI_Init") == 0)
     {
         omnitrace_mpi_set_attr();
-        // omnitrace will set this environement variable to true in binary rewrite mode
+        // rocprof-sys will set this environement variable to true in binary rewrite mode
         // when it detects MPI. Hides this env variable from the user to avoid this
         // being activated unwaringly during runtime instrumentation because that
         // will result in double instrumenting the MPI functions (unless the MPI functions
@@ -372,7 +372,7 @@ mpi_gotcha::audit(const gotcha_data_t& _data, audit::outgoing, int _retval)
             {
                 static thread_local int _num_updates = 0;
                 static int              _disable_after =
-                    tim::get_env<int>("OMNITRACE_MPI_MAX_COMM_UPDATES", 4);
+                    tim::get_env<int>("ROCPROFSYS_MPI_MAX_COMM_UPDATES", 4);
                 if(_num_updates++ < _disable_after) update();
             }
         }

@@ -36,8 +36,8 @@ add_test(
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 
 set(_parallel_overhead_attach_environ
-    "${_attach_environment}" "OMNITRACE_OUTPUT_PATH=rocprofsys-tests-output"
-    "OMNITRACE_OUTPUT_PREFIX=parallel-overhead-attach/")
+    "${_attach_environment}" "ROCPROFSYS_OUTPUT_PATH=rocprofsys-tests-output"
+    "ROCPROFSYS_OUTPUT_PREFIX=parallel-overhead-attach/")
 
 set_tests_properties(
     parallel-overhead-attach

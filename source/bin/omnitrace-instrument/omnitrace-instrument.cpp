@@ -79,7 +79,7 @@ auto
 get_default_min_instructions()
 {
     // default to 1024
-    return tim::get_env<size_t>("OMNITRACE_DEFAULT_MIN_INSTRUCTIONS", (1 << 10), false);
+    return tim::get_env<size_t>("ROCPROFSYS_DEFAULT_MIN_INSTRUCTIONS", (1 << 10), false);
 }
 auto
 get_default_min_address_range()
@@ -111,9 +111,9 @@ bool   instr_print                  = false;
 bool   simulate                     = false;
 bool   include_uninstr              = false;
 bool   include_internal_linked_libs = false;
-int    verbose_level   = tim::get_env<int>("OMNITRACE_VERBOSE_INSTRUMENT", 0);
+int    verbose_level   = tim::get_env<int>("ROCPROFSYS_VERBOSE_INSTRUMENT", 0);
 int    num_log_entries = tim::get_env<int>(
-    "OMNITRACE_LOG_COUNT", tim::get_env<bool>("OMNITRACE_CI", false) ? 20 : 50);
+    "ROCPROFSYS_LOG_COUNT", tim::get_env<bool>("ROCPROFSYS_CI", false) ? 20 : 50);
 string_t main_fname     = "main";
 string_t argv0          = {};
 string_t cmdv0          = {};
@@ -250,7 +250,7 @@ activate_signal_handlers(const std::vector<sys_signal>& _signals)
         if(_protect) return;
         _protect = true;
         TIMEMORY_PRINTF_FATAL(
-            stderr, "omnitrace exited with signal %i :: %s\n", nsig,
+            stderr, "rocprof-sys exited with signal %i :: %s\n", nsig,
             signal_settings::str(static_cast<sys_signal>(nsig)).c_str());
 
         // print any forced entries
@@ -258,7 +258,7 @@ activate_signal_handlers(const std::vector<sys_signal>& _signals)
             std::cerr, -1, [](const auto& _v) { return _v.forced(); },
             []() {
                 tim::log::stream(std::cerr, tim::log::color::info())
-                    << "\n[omnitrace][exe] Potentially important log entries:\n\n";
+                    << "\n[rocprof-sys][exe] Potentially important log entries:\n\n";
             });
 
         // print the last log entries
@@ -267,7 +267,7 @@ activate_signal_handlers(const std::vector<sys_signal>& _signals)
         TIMEMORY_PRINTF_FATAL(stderr, "\n");
         TIMEMORY_PRINTF_FATAL(
             stderr,
-            "These were the last %i log entries from omnitrace. You can control the "
+            "These were the last %i log entries from rocprof-sys. You can control the "
             "number of log entries via the '--log <N>' option or OMNITRACE_LOG_COUNT "
             "env variable.\n",
             num_log_entries);
@@ -311,7 +311,7 @@ main(int argc, char** argv)
     argv0 = argv[0];
 
     auto _omni_root = tim::get_env<std::string>(
-        "omnitrace_ROOT", tim::get_env<std::string>("OMNITRACE_ROOT", ""));
+        "rocprof-sys_ROOT", tim::get_env<std::string>("ROCPROFSYS_ROOT", ""));
     if(!_omni_root.empty() && exists(_omni_root))
     {
         bin_search_paths.emplace_back(JOIN('/', _omni_root, "bin"));
@@ -1262,25 +1262,25 @@ main(int argc, char** argv)
                 regex_array.emplace_back(std::regex(regex_expr, regex_opts));
         };
 
-        add_regex(func_include, tim::get_env<string_t>("OMNITRACE_REGEX_INCLUDE", ""));
-        add_regex(func_exclude, tim::get_env<string_t>("OMNITRACE_REGEX_EXCLUDE", ""));
-        add_regex(func_restrict, tim::get_env<string_t>("OMNITRACE_REGEX_RESTRICT", ""));
+        add_regex(func_include, tim::get_env<string_t>("ROCPROFSYS_REGEX_INCLUDE", ""));
+        add_regex(func_exclude, tim::get_env<string_t>("ROCPROFSYS_REGEX_EXCLUDE", ""));
+        add_regex(func_restrict, tim::get_env<string_t>("ROCPROFSYS_REGEX_RESTRICT", ""));
         add_regex(caller_include,
-                  tim::get_env<string_t>("OMNITRACE_REGEX_CALLER_INCLUDE"));
+                  tim::get_env<string_t>("ROCPROFSYS_REGEX_CALLER_INCLUDE"));
         add_regex(func_internal_include,
-                  tim::get_env<string_t>("OMNITRACE_REGEX_INTERNAL_INCLUDE", ""));
+                  tim::get_env<string_t>("ROCPROFSYS_REGEX_INTERNAL_INCLUDE", ""));
 
         add_regex(file_include,
-                  tim::get_env<string_t>("OMNITRACE_REGEX_MODULE_INCLUDE", ""));
+                  tim::get_env<string_t>("ROCPROFSYS_REGEX_MODULE_INCLUDE", ""));
         add_regex(file_exclude,
-                  tim::get_env<string_t>("OMNITRACE_REGEX_MODULE_EXCLUDE", ""));
+                  tim::get_env<string_t>("ROCPROFSYS_REGEX_MODULE_EXCLUDE", ""));
         add_regex(file_restrict,
-                  tim::get_env<string_t>("OMNITRACE_REGEX_MODULE_RESTRICT", ""));
+                  tim::get_env<string_t>("ROCPROFSYS_REGEX_MODULE_RESTRICT", ""));
         add_regex(file_internal_include,
-                  tim::get_env<string_t>("OMNITRACE_REGEX_MODULE_INTERNAL_INCLUDE", ""));
+                  tim::get_env<string_t>("ROCPROFSYS_REGEX_MODULE_INTERNAL_INCLUDE", ""));
 
         add_regex(instruction_exclude,
-                  tim::get_env<string_t>("OMNITRACE_REGEX_INSTRUCTION_EXCLUDE", ""));
+                  tim::get_env<string_t>("ROCPROFSYS_REGEX_INSTRUCTION_EXCLUDE", ""));
 
         //  Helper function for parsing the regex options
         auto _parse_regex_option = [&parser, &add_regex](const string_t& _option,
@@ -1364,8 +1364,8 @@ main(int argc, char** argv)
     {
         parser.print_help(extra_help);
         fprintf(stderr, "\nError! No command for dynamic instrumentation. Use "
-                        "\n\tomnitrace <OPTIONS> -- <COMMAND> <ARGS>\nE.g. "
-                        "\n\tomnitrace -o foo.inst -- ./foo\nwill output an "
+                        "\n\trocprof-sys-instrument <OPTIONS> -- <COMMAND> <ARGS>\nE.g. "
+                        "\n\trocprof-sys-instrument -o foo.inst -- ./foo\nwill output an "
                         "instrumented version of 'foo' executable to 'foo.inst'\n");
         return EXIT_FAILURE;
     }
@@ -1405,12 +1405,12 @@ main(int argc, char** argv)
     env_vars.reserve(env_vars.size() + env_config_variables.size());
     for(auto&& itr : env_config_variables)
         env_vars.emplace_back(itr);
-    env_vars.emplace_back(TIMEMORY_JOIN('=', "OMNITRACE_MODE", instr_mode));
+    env_vars.emplace_back(TIMEMORY_JOIN('=', "ROCPROFSYS_MODE", instr_mode));
     env_vars.emplace_back(
-        TIMEMORY_JOIN('=', "OMNITRACE_INSTRUMENT_MODE", instr_mode_v_int));
-    env_vars.emplace_back(TIMEMORY_JOIN('=', "OMNITRACE_MPI_INIT", "OFF"));
-    env_vars.emplace_back(TIMEMORY_JOIN('=', "OMNITRACE_MPI_FINALIZE", "OFF"));
-    env_vars.emplace_back(TIMEMORY_JOIN('=', "OMNITRACE_USE_CODE_COVERAGE",
+        TIMEMORY_JOIN('=', "ROCPROFSYS_INSTRUMENT_MODE", instr_mode_v_int));
+    env_vars.emplace_back(TIMEMORY_JOIN('=', "ROCPROFSYS_MPI_INIT", "OFF"));
+    env_vars.emplace_back(TIMEMORY_JOIN('=', "ROCPROFSYS_MPI_FINALIZE", "OFF"));
+    env_vars.emplace_back(TIMEMORY_JOIN('=', "ROCPROFSYS_USE_CODE_COVERAGE",
                                         (coverage_mode != CODECOV_NONE) ? "ON" : "OFF"));
 
     addr_space = omnitrace_get_address_space(bpatch, _cmdc, _cmdv, env_vars,
@@ -1934,11 +1934,11 @@ main(int argc, char** argv)
     if(!binary_rewrite && !is_attached) env_vars.clear();
 
     env_vars.emplace_back(
-        TIMEMORY_JOIN('=', "OMNITRACE_INIT_ENABLED",
+        TIMEMORY_JOIN('=', "ROCPROFSYS_INIT_ENABLED",
                       (user_start_func && user_stop_func) ? "OFF" : "ON"));
-    env_vars.emplace_back(TIMEMORY_JOIN('=', "OMNITRACE_USE_MPIP",
+    env_vars.emplace_back(TIMEMORY_JOIN('=', "ROCPROFSYS_USE_MPIP",
                                         (binary_rewrite && use_mpi) ? "ON" : "OFF"));
-    if(use_mpi) env_vars.emplace_back(TIMEMORY_JOIN('=', "OMNITRACE_USE_PID", "ON"));
+    if(use_mpi) env_vars.emplace_back(TIMEMORY_JOIN('=', "ROCPROFSYS_USE_PID", "ON"));
 
     for(auto& itr : env_vars)
     {

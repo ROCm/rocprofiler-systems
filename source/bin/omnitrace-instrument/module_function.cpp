@@ -447,16 +447,16 @@ module_function::is_internal_constrained() const
     if(std::regex_search(
            module_name,
            std::regex{ "lib(rocprof-sys|rocprofsys|omnitrace|timemory|perfetto)" }))
-        return _report("Excluding", "module", "omnitrace", 3);
+        return _report("Excluding", "module", "rocprofsys", 3);
     else if(std::regex_match(module_name,
                              std::regex{ ".*/source/lib/"
                                          "(core|common|binary|omnitrace|omnitrace-dl|"
                                          "omnitrace-user|rocprofsys|rocprofsys-dl|"
                                          "rocprofsys-user)/.*/.*\\.(h|c|cpp|hpp)$" }))
-        return _report("Excluding", "module", "omnitrace", 3);
+        return _report("Excluding", "module", "rocprofsys", 3);
 
-    if(std::regex_search(function_name, std::regex{ "9omnitrace|omnitrace(::|_)" }))
-        return _report("Excluding", "function", "omnitrace", 3);
+    if(std::regex_search(function_name, std::regex{ "9omnitrace|omnitrace|rocprofsys(::|_)" }))
+        return _report("Excluding", "function", "rocprofsys", 3);
     else if(std::regex_search(function_name, std::regex{ "3tim|tim::|timemory(::|_)" }))
         return _report("Excluding", "function", "timemory", 3);
     else if(std::regex_search(function_name, std::regex{ "9perfetto|perfetto(::|_)" }))
@@ -533,12 +533,12 @@ module_function::is_module_constrained() const
     if(std::regex_search(module_name, dyninst_regex))
         return _report("Excluding", "dyninst module", 3);
 
-    // modules used by omnitrace and dependent libraries
+    // modules used by rocprof-sys and dependent libraries
     if(std::regex_search(module_name, core_lib_regex) ||
        std::regex_search(module_name, core_cmod_regex))
         return _report("Excluding", "core module", 3);
 
-    // modules used by omnitrace and dependent libraries
+    // modules used by rocprof-sys and dependent libraries
     if(std::regex_search(module_name, dependlib_regex))
         return _report("Excluding", "dependency module", 3);
 
@@ -560,9 +560,10 @@ module_function::is_routine_constrained() const
     };
 
     auto npos = std::string::npos;
-    if(function_name.find("omnitrace") != npos)
+    if(function_name.find("omnitrace") != npos ||
+       function_name.find("rocprofsys") != npos)
     {
-        return _report("Skipping", "omnitrace-function", 1);
+        return _report("Skipping", "rocprofsys-function", 1);
     }
 
     if(function_name.find("FunctionInfo") != npos ||
@@ -572,7 +573,7 @@ module_function::is_routine_constrained() const
     }
 
     static std::regex exclude(
-        "(omnitrace|tim::|MPI_Init|MPI_Finalize|dyninst|DYNINST|tm_clones)", regex_opts);
+        "(rocprofsys|rocprof-sys|omnitrace|tim::|MPI_Init|MPI_Finalize|dyninst|DYNINST|tm_clones)", regex_opts);
     // static std::regex exclude_printf("(|v|f)printf$", regex_opts);
     static std::regex exclude_cxx(
         "(std::_Sp_counted_base|std::(use|has)_facet|std::locale|::sentry|^std::_|::_(M|"

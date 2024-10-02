@@ -54,7 +54,7 @@ omnitrace_add_causal_test(
         3
         -b
         timer
-    ENVIRONMENT "OMNITRACE_STRICT_CONFIG=OFF"
+    ENVIRONMENT "ROCPROFSYS_STRICT_CONFIG=OFF"
     CAUSAL_PASS_REGEX
         "Starting causal experiment #1(.*)causal/experiments.json(.*)causal/experiments.coz"
     )
@@ -130,7 +130,7 @@ causal_e2e_args_and_validation(_causal_line_110 line-110 "-S" "causal.cpp:110" 0
 if(OMNITRACE_BUILD_NUMBER GREATER 1)
     set(_causal_e2e_environment)
 else()
-    set(_causal_e2e_environment "OMNITRACE_VERBOSE=0")
+    set(_causal_e2e_environment "ROCPROFSYS_VERBOSE=0")
 endif()
 
 omnitrace_add_causal_test(

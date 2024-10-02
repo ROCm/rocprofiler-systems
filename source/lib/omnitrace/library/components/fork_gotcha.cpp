@@ -72,8 +72,8 @@ prefork_setup()
     if(get_state() < State::Active && !config::settings_are_configured())
         omnitrace_init_library_hidden();
 
-    tim::set_env("OMNITRACE_PRELOAD", "0", 1);
-    tim::set_env("OMNITRACE_ROOT_PROCESS", process::get_id(), 0);
+    tim::set_env("ROCPROFSYS_PRELOAD", "0", 1);
+    tim::set_env("ROCPROFSYS_ROOT_PROCESS", process::get_id(), 0);
     omnitrace_reset_preload_hidden();
     OMNITRACE_BASIC_VERBOSE(0, "fork() called on PID %i (rank: %i), TID %li\n",
                             process::get_id(), dmp::rank(), threading::get_id());

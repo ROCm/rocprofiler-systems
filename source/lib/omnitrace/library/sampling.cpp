@@ -580,7 +580,7 @@ configure(bool _setup, int64_t _tid)
 
         OMNITRACE_DEBUG("Configuring sampler for thread %lu...\n", _tid);
         sampling::sampler_instances::construct(construct_on_thread{ _tid }, _alloc,
-                                               "omnitrace", _tid, _verbose);
+                                               "rocprofsys", _tid, _verbose);
 
         _sampler->set_flags(SA_RESTART);
         _sampler->set_verbose(_verbose);
@@ -613,7 +613,7 @@ configure(bool _setup, int64_t _tid)
 
             auto _freq = get_sampling_overflow_freq();
             auto _overflow_event =
-                get_setting_value<std::string>("OMNITRACE_SAMPLING_OVERFLOW_EVENT")
+                get_setting_value<std::string>("ROCPROFSYS_SAMPLING_OVERFLOW_EVENT")
                     .value_or("perf::PERF_COUNT_HW_CACHE_REFERENCES");
 
             perf::config_overflow_sampling(_pe, _overflow_event, _freq);
@@ -688,7 +688,7 @@ configure(bool _setup, int64_t _tid)
             {
                 auto _freq = get_sampling_overflow_freq();
                 auto _overflow_event =
-                    get_setting_value<std::string>("OMNITRACE_SAMPLING_OVERFLOW_EVENT")
+                    get_setting_value<std::string>("ROCPROFSYS_SAMPLING_OVERFLOW_EVENT")
                         .value_or("perf::PERF_COUNT_HW_CACHE_REFERENCES");
                 OMNITRACE_VERBOSE(2,
                                   "[SIG%i] Sampler for thread %lu will be triggered "
@@ -1140,7 +1140,7 @@ post_process_perfetto(int64_t _tid, const std::vector<timer_sampling_data>& _tim
     if(!_thread_info) return;
 
     auto _overflow_event =
-        get_setting_value<std::string>("OMNITRACE_SAMPLING_OVERFLOW_EVENT").value_or("");
+        get_setting_value<std::string>("ROCPROFSYS_SAMPLING_OVERFLOW_EVENT").value_or("");
 
     if(!_overflow_event.empty() && !_overflow_data.empty())
     {
@@ -1154,7 +1154,7 @@ post_process_perfetto(int64_t _tid, const std::vector<timer_sampling_data>& _tim
                 _overflow_event.substr(_overflow_pos + _overflow_prefix.length());
 
         const auto* _main_name =
-            static_strings.emplace(join(" ", _overflow_event, "samples [omnitrace]"))
+            static_strings.emplace(join(" ", _overflow_event, "samples [rocprof-sys]"))
                 .first->c_str();
 
         auto _track = tracing::get_perfetto_track(
@@ -1239,7 +1239,7 @@ post_process_perfetto(int64_t _tid, const std::vector<timer_sampling_data>& _tim
             _thread_info->index_data->sequent_value,
             _thread_info->index_data->system_value);
 
-        tracing::push_perfetto_track(category::timer_sampling{}, "samples [omnitrace]",
+        tracing::push_perfetto_track(category::timer_sampling{}, "samples [rocprof-sys]",
                                      _track, _beg_ns, [&](::perfetto::EventContext ctx) {
                                          if(config::get_perfetto_annotations())
                                          {

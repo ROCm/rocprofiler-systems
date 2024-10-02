@@ -77,7 +77,7 @@ using random_engine_t    = std::mt19937_64;
 using progress_bundles_t = component_bundle_cache<component::progress_point>;
 
 auto speedup_seeds     = std::vector<size_t>{};
-auto speedup_divisions = get_env<uint16_t>("OMNITRACE_CAUSAL_SPEEDUP_DIVISIONS", 5);
+auto speedup_divisions = get_env<uint16_t>("ROCPROFSYS_CAUSAL_SPEEDUP_DIVISIONS", 5);
 auto speedup_dist      = []() {
     size_t                _n = std::max<size_t>(1, 100 / speedup_divisions);
     std::vector<uint16_t> _v(_n, uint16_t{ 0 });
@@ -106,7 +106,7 @@ auto&
 get_engine()
 {
     static auto _seed = []() -> hash_value_t {
-        auto _seed_v = config::get_setting_value<uint64_t>("OMNITRACE_CAUSAL_RANDOM_SEED")
+        auto _seed_v = config::get_setting_value<uint64_t>("ROCPROFSYS_CAUSAL_RANDOM_SEED")
                            .value_or(0);
         if(_seed_v == 0) _seed_v = std::random_device{}();
         return _seed_v;
@@ -132,11 +132,11 @@ get_filters(const std::set<binary::scope_filter::filter_scope>& _scopes = {
 {
     auto _filters = std::vector<binary::scope_filter>{};
 
-    // exclude internal libraries used by omnitrace
+    // exclude internal libraries used by rocprof-sys
     if(_scopes.count(sf::BINARY_FILTER) > 0)
         _filters.emplace_back(
             sf{ sf::FILTER_EXCLUDE, sf::BINARY_FILTER,
-                "lib(omnitrace[-\\.]|dyninst|tbbmalloc|gotcha\\.|unwind\\.so\\.99)" });
+                "lib(omnitrace[-\\.]|rocprof-sys[-\\.]|dyninst|tbbmalloc|gotcha\\.|unwind\\.so\\.99)" });
 
     // in function mode, it generally doesn't help to experiment on main function since
     // telling the user to "make the main function" faster is literally useless since it
@@ -147,7 +147,7 @@ get_filters(const std::set<binary::scope_filter::filter_scope>& _scopes = {
                                   "( main\\(|^main$|^main\\.cold$)" });
 
     bool _use_default_excludes =
-        config::get_setting_value<bool>("OMNITRACE_CAUSAL_FUNCTION_EXCLUDE_DEFAULTS")
+        config::get_setting_value<bool>("ROCPROFSYS_CAUSAL_FUNCTION_EXCLUDE_DEFAULTS")
             .value_or(true);
 
     if(_use_default_excludes && _scopes.count(sf::FUNCTION_FILTER) > 0)
@@ -496,9 +496,9 @@ perform_experiment_impl(std::shared_ptr<std::promise<void>> _started)  // NOLINT
     std::this_thread::sleep_for(std::chrono::milliseconds{ 10 });
 
     double _delay_sec =
-        config::get_setting_value<double>("OMNITRACE_CAUSAL_DELAY").value_or(0.0);
+        config::get_setting_value<double>("ROCPROFSYS_CAUSAL_DELAY").value_or(0.0);
     double _duration_sec =
-        config::get_setting_value<double>("OMNITRACE_CAUSAL_DURATION").value_or(0.0);
+        config::get_setting_value<double>("ROCPROFSYS_CAUSAL_DURATION").value_or(0.0);
     auto _duration_nsec = duration_nsec_t{ _duration_sec * units::sec };
 
     if(_delay_sec > 0.0)
@@ -637,7 +637,7 @@ perform_experiment_impl(std::shared_ptr<std::promise<void>> _started)  // NOLINT
                 // if launched via rocprof-sys-causal, allow end-to-end runs that do not
                 // start experiments
                 auto _omni_causal_launcher =
-                    get_env<std::string>("OMNITRACE_LAUNCHER", "", false) ==
+                    get_env<std::string>("ROCPROFSYS_LAUNCHER", "", false) ==
                     "rocprof-sys-causal";
 
                 if(!(get_causal_end_to_end() && _omni_causal_launcher))

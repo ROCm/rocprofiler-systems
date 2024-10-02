@@ -136,9 +136,9 @@ get_initial_environment()
     update_env(_env, "LD_PRELOAD", _dl_libpath, UPD_APPEND);
     update_env(_env, "LD_LIBRARY_PATH", tim::filepath::dirname(_dl_libpath), UPD_APPEND);
 
-    auto _mode = get_env<std::string>("OMNITRACE_MODE", "sampling", false);
+    auto _mode = get_env<std::string>("ROCPROFSYS_MODE", "sampling", false);
 
-    update_env(_env, "OMNITRACE_USE_SAMPLING", (_mode != "causal"));
+    update_env(_env, "ROCPROFSYS_USE_SAMPLING", (_mode != "causal"));
 
 #if defined(OMNITRACE_USE_ROCTRACER) || defined(OMNITRACE_USE_ROCPROFILER)
     update_env(_env, "HSA_TOOLS_LIB", _dl_libpath);
@@ -172,7 +172,7 @@ get_internal_libpath(const std::string& _lib)
 void
 print_updated_environment(std::vector<char*> _env)
 {
-    if(get_env<int>("OMNITRACE_VERBOSE", 0) < 0) return;
+    if(get_env<int>("ROCPROFSYS_VERBOSE", 0) < 0) return;
 
     std::sort(_env.begin(), _env.end(), [](auto* _lhs, auto* _rhs) {
         if(!_lhs) return false;
@@ -387,20 +387,20 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
             auto _monochrome = p.get<bool>("monochrome");
             monochrome()     = _monochrome;
             p.set_use_color(!_monochrome);
-            update_env(_env, "OMNITRACE_MONOCHROME", (_monochrome) ? "1" : "0");
+            update_env(_env, "ROCPROFSYS_MONOCHROME", (_monochrome) ? "1" : "0");
             update_env(_env, "MONOCHROME", (_monochrome) ? "1" : "0");
         });
     parser.add_argument({ "--debug" }, "Debug output")
         .max_count(1)
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_DEBUG", p.get<bool>("debug"));
+            update_env(_env, "ROCPROFSYS_DEBUG", p.get<bool>("debug"));
         });
     parser.add_argument({ "-v", "--verbose" }, "Verbose output")
         .count(1)
         .action([&](parser_t& p) {
             auto _v = p.get<int>("verbose");
             verbose = _v;
-            update_env(_env, "OMNITRACE_VERBOSE", _v);
+            update_env(_env, "ROCPROFSYS_VERBOSE", _v);
         });
 
     parser.start_group("GENERAL OPTIONS",
@@ -410,7 +410,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
         .dtype("filepath")
         .action([&](parser_t& p) {
             update_env(
-                _env, "OMNITRACE_CONFIG_FILE",
+                _env, "ROCPROFSYS_CONFIG_FILE",
                 join(array_config{ ":" }, p.get<std::vector<std::string>>("config")));
         });
     parser
@@ -421,14 +421,14 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
         .max_count(2)
         .action([&](parser_t& p) {
             auto _v = p.get<std::vector<std::string>>("output");
-            update_env(_env, "OMNITRACE_OUTPUT_PATH", _v.at(0));
-            if(_v.size() > 1) update_env(_env, "OMNITRACE_OUTPUT_PREFIX", _v.at(1));
+            update_env(_env, "ROCPROFSYS_OUTPUT_PATH", _v.at(0));
+            if(_v.size() > 1) update_env(_env, "ROCPROFSYS_OUTPUT_PREFIX", _v.at(1));
         });
     parser
         .add_argument({ "-T", "--trace" }, "Generate a detailed trace (perfetto output)")
         .max_count(1)
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_TRACE", p.get<bool>("trace"));
+            update_env(_env, "ROCPROFSYS_TRACE", p.get<bool>("trace"));
         });
     parser
         .add_argument(
@@ -437,7 +437,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
         .max_count(1)
         .conflicts({ "flat-profile" })
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_PROFILE", p.get<bool>("profile"));
+            update_env(_env, "ROCPROFSYS_PROFILE", p.get<bool>("profile"));
         });
     parser
         .add_argument({ "-F", "--flat-profile" },
@@ -445,8 +445,8 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
         .max_count(1)
         .conflicts({ "profile" })
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_PROFILE", p.get<bool>("flat-profile"));
-            update_env(_env, "OMNITRACE_FLAT_PROFILE", p.get<bool>("flat-profile"));
+            update_env(_env, "ROCPROFSYS_PROFILE", p.get<bool>("flat-profile"));
+            update_env(_env, "ROCPROFSYS_FLAT_PROFILE", p.get<bool>("flat-profile"));
         });
     parser
         .add_argument({ "-H", "--host" },
@@ -456,8 +456,8 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
         .action([&](parser_t& p) {
             auto _h = p.get<bool>("host");
             auto _d = p.get<bool>("device");
-            update_env(_env, "OMNITRACE_USE_PROCESS_SAMPLING", _h || _d);
-            update_env(_env, "OMNITRACE_CPU_FREQ_ENABLED", _h);
+            update_env(_env, "ROCPROFSYS_USE_PROCESS_SAMPLING", _h || _d);
+            update_env(_env, "ROCPROFSYS_CPU_FREQ_ENABLED", _h);
         });
     parser
         .add_argument({ "-D", "--device" },
@@ -467,8 +467,8 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
         .action([&](parser_t& p) {
             auto _h = p.get<bool>("host");
             auto _d = p.get<bool>("device");
-            update_env(_env, "OMNITRACE_USE_PROCESS_SAMPLING", _h || _d);
-            update_env(_env, "OMNITRACE_USE_ROCM_SMI", _d);
+            update_env(_env, "ROCPROFSYS_USE_PROCESS_SAMPLING", _h || _d);
+            update_env(_env, "ROCPROFSYS_USE_ROCM_SMI", _d);
         });
     parser
         .add_argument({ "-w", "--wait" },
@@ -476,8 +476,8 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
                       "'--sampling-wait'. See the descriptions for those two options.")
         .count(1)
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_TRACE_DELAY", p.get<double>("wait"));
-            update_env(_env, "OMNITRACE_SAMPLING_DELAY", p.get<double>("wait"));
+            update_env(_env, "ROCPROFSYS_TRACE_DELAY", p.get<double>("wait"));
+            update_env(_env, "ROCPROFSYS_SAMPLING_DELAY", p.get<double>("wait"));
         });
     parser
         .add_argument(
@@ -486,8 +486,8 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
             "'--sampling-duration'. See the descriptions for those two options.")
         .count(1)
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_TRACE_DURATION", p.get<double>("duration"));
-            update_env(_env, "OMNITRACE_SAMPLING_DURATION", p.get<double>("duration"));
+            update_env(_env, "ROCPROFSYS_TRACE_DURATION", p.get<double>("duration"));
+            update_env(_env, "ROCPROFSYS_SAMPLING_DURATION", p.get<double>("duration"));
         });
 
     parser.start_group("TRACING OPTIONS", "Specific options controlling tracing (i.e. "
@@ -499,7 +499,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
         .count(1)
         .dtype("filepath")
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_PERFETTO_FILE", p.get<std::string>("trace-file"));
+            update_env(_env, "ROCPROFSYS_PERFETTO_FILE", p.get<std::string>("trace-file"));
         });
     parser
         .add_argument({ "--trace-buffer-size" },
@@ -507,14 +507,14 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
         .count(1)
         .dtype("KB")
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_PERFETTO_BUFFER_SIZE_KB",
+            update_env(_env, "ROCPROFSYS_PERFETTO_BUFFER_SIZE_KB",
                        p.get<int64_t>("trace-buffer-size"));
         });
     parser.add_argument({ "--trace-fill-policy" }, _trace_policy_desc)
         .count(1)
         .choices({ "discard", "ring_buffer" })
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_PERFETTO_FILL_POLICY",
+            update_env(_env, "ROCPROFSYS_PERFETTO_FILL_POLICY",
                        p.get<std::string>("trace-fill-policy"));
         });
     parser
@@ -525,7 +525,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
                       "but that can changed via --trace-clock-id.")
         .count(1)
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_TRACE_DELAY", p.get<double>("trace-wait"));
+            update_env(_env, "ROCPROFSYS_TRACE_DELAY", p.get<double>("trace-wait"));
         });
     parser
         .add_argument({ "--trace-duration" },
@@ -534,7 +534,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
                       "that can changed via --trace-clock-id.")
         .count(1)
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_TRACE_DURATION", p.get<double>("trace-duration"));
+            update_env(_env, "ROCPROFSYS_TRACE_DURATION", p.get<double>("trace-duration"));
         });
     parser
         .add_argument(
@@ -544,7 +544,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
             "and/or <DELAY>:<DURATION>:<REPEAT>:<CLOCK_ID>.")
         .min_count(1)
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_TRACE_PERIODS",
+            update_env(_env, "ROCPROFSYS_TRACE_PERIODS",
                        join(array_config{ ",", "", "" },
                             p.get<std::vector<std::string>>("trace-periods")));
         });
@@ -556,10 +556,10 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
             "threads, i.e. 4 seconds of CPU-time for an application with 4 fully active "
             "threads would equate to ~1 second of realtime. If this proves to be "
             "difficult to handle in practice, please file a feature request for "
-            "omnitrace to auto-scale based on the number of threads.")
+            "rocprof-sys to auto-scale based on the number of threads.")
         .count(1)
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_TRACE_PERIOD_CLOCK_ID",
+            update_env(_env, "ROCPROFSYS_TRACE_PERIOD_CLOCK_ID",
                        p.get<double>("trace-clock-id"));
         })
         .choices(clock_id_choices.first)
@@ -575,12 +575,12 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
         .choices({ "text", "json", "console" })
         .action([&](parser_t& p) {
             auto _v = p.get<std::set<std::string>>("profile");
-            update_env(_env, "OMNITRACE_PROFILE", true);
+            update_env(_env, "ROCPROFSYS_PROFILE", true);
             if(!_v.empty())
             {
-                update_env(_env, "OMNITRACE_TEXT_OUTPUT", _v.count("text") != 0);
-                update_env(_env, "OMNITRACE_JSON_OUTPUT", _v.count("json") != 0);
-                update_env(_env, "OMNITRACE_COUT_OUTPUT", _v.count("console") != 0);
+                update_env(_env, "ROCPROFSYS_TEXT_OUTPUT", _v.count("text") != 0);
+                update_env(_env, "ROCPROFSYS_JSON_OUTPUT", _v.count("json") != 0);
+                update_env(_env, "ROCPROFSYS_COUT_OUTPUT", _v.count("console") != 0);
             }
         });
 
@@ -593,9 +593,9 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
         .max_count(2)
         .action([&](parser_t& p) {
             auto _v = p.get<std::vector<std::string>>("profile-diff");
-            update_env(_env, "OMNITRACE_DIFF_OUTPUT", true);
-            update_env(_env, "OMNITRACE_INPUT_PATH", _v.at(0));
-            if(_v.size() > 1) update_env(_env, "OMNITRACE_INPUT_PREFIX", _v.at(1));
+            update_env(_env, "ROCPROFSYS_DIFF_OUTPUT", true);
+            update_env(_env, "ROCPROFSYS_INPUT_PATH", _v.at(0));
+            if(_v.size() > 1) update_env(_env, "ROCPROFSYS_INPUT_PREFIX", _v.at(1));
         });
 
     parser.start_group(
@@ -608,7 +608,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
                       "(number of interrupts per second)")
         .count(1)
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_PROCESS_SAMPLING_FREQ",
+            update_env(_env, "ROCPROFSYS_PROCESS_SAMPLING_FREQ",
                        p.get<double>("process-freq"));
         });
     parser
@@ -617,7 +617,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
                                             "(in seconds of realtime)")
         .count(1)
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_PROCESS_SAMPLING_DELAY",
+            update_env(_env, "ROCPROFSYS_PROCESS_SAMPLING_DELAY",
                        p.get<double>("process-wait"));
         });
     parser
@@ -626,7 +626,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
             "Set the duration of the host/device sampling (in seconds of realtime)")
         .count(1)
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_SAMPLING_PROCESS_DURATION",
+            update_env(_env, "ROCPROFSYS_SAMPLING_PROCESS_DURATION",
                        p.get<double>("process-duration"));
         });
     parser
@@ -636,7 +636,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
         .required({ "host" })
         .action([&](parser_t& p) {
             update_env(
-                _env, "OMNITRACE_SAMPLING_CPUS",
+                _env, "ROCPROFSYS_SAMPLING_CPUS",
                 join(array_config{ "," }, p.get<std::vector<std::string>>("cpus")));
         });
     parser
@@ -646,7 +646,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
         .required({ "device" })
         .action([&](parser_t& p) {
             update_env(
-                _env, "OMNITRACE_SAMPLING_GPUS",
+                _env, "ROCPROFSYS_SAMPLING_GPUS",
                 join(array_config{ "," }, p.get<std::vector<std::string>>("gpus")));
         });
 
@@ -657,7 +657,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
                                           "(number of interrupts per second)")
         .count(1)
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_SAMPLING_FREQ", p.get<double>("freq"));
+            update_env(_env, "ROCPROFSYS_SAMPLING_FREQ", p.get<double>("freq"));
         });
     parser
         .add_argument(
@@ -667,7 +667,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
             "delay of 1 second for CPU-clock sampler may not equal 1 second of realtime")
         .count(1)
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_SAMPLING_DELAY", p.get<double>("sampling-wait"));
+            update_env(_env, "ROCPROFSYS_SAMPLING_DELAY", p.get<double>("sampling-wait"));
         });
     parser
         .add_argument(
@@ -677,7 +677,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
             "real-time duration... resulting in zero samples being taken")
         .count(1)
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_SAMPLING_DURATION",
+            update_env(_env, "ROCPROFSYS_SAMPLING_DURATION",
                        p.get<double>("sampling-duration"));
         });
     parser
@@ -687,7 +687,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
                       "is assigned an atomically incrementing value.")
         .min_count(1)
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_SAMPLING_TIDS",
+            update_env(_env, "ROCPROFSYS_SAMPLING_TIDS",
                        join(array_config{ ", " }, p.get<std::vector<int64_t>>("tids")));
         });
 
@@ -698,20 +698,20 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
         .min_count(0)
         .action([&](parser_t& p) {
             auto _v = p.get<std::deque<std::string>>("cputime");
-            update_env(_env, "OMNITRACE_SAMPLING_CPUTIME", true);
+            update_env(_env, "ROCPROFSYS_SAMPLING_CPUTIME", true);
             if(!_v.empty())
             {
-                update_env(_env, "OMNITRACE_SAMPLING_CPUTIME_FREQ", _v.front());
+                update_env(_env, "ROCPROFSYS_SAMPLING_CPUTIME_FREQ", _v.front());
                 _v.pop_front();
             }
             if(!_v.empty())
             {
-                update_env(_env, "OMNITRACE_SAMPLING_CPUTIME_DELAY", _v.front());
+                update_env(_env, "ROCPROFSYS_SAMPLING_CPUTIME_DELAY", _v.front());
                 _v.pop_front();
             }
             if(!_v.empty())
             {
-                update_env(_env, "OMNITRACE_SAMPLING_CPUTIME_TIDS",
+                update_env(_env, "ROCPROFSYS_SAMPLING_CPUTIME_TIDS",
                            join(array_config{ "," }, _v));
             }
         });
@@ -721,20 +721,20 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
         .required(std::move(_realtime_reqs))
         .action([&](parser_t& p) {
             auto _v = p.get<std::deque<std::string>>("realtime");
-            update_env(_env, "OMNITRACE_SAMPLING_REALTIME", true);
+            update_env(_env, "ROCPROFSYS_SAMPLING_REALTIME", true);
             if(!_v.empty())
             {
-                update_env(_env, "OMNITRACE_SAMPLING_REALTIME_FREQ", _v.front());
+                update_env(_env, "ROCPROFSYS_SAMPLING_REALTIME_FREQ", _v.front());
                 _v.pop_front();
             }
             if(!_v.empty())
             {
-                update_env(_env, "OMNITRACE_SAMPLING_REALTIME_DELAY", _v.front());
+                update_env(_env, "ROCPROFSYS_SAMPLING_REALTIME_DELAY", _v.front());
                 _v.pop_front();
             }
             if(!_v.empty())
             {
-                update_env(_env, "OMNITRACE_SAMPLING_REALTIME_TIDS",
+                update_env(_env, "ROCPROFSYS_SAMPLING_REALTIME_TIDS",
                            join(array_config{ "," }, _v));
             }
         });
@@ -779,17 +779,17 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
             auto _update = [&](const auto& _opt, bool _cond) {
                 if(_cond || _v.count("all") > 0) update_env(_env, _opt, true);
             };
-            _update("OMNITRACE_USE_KOKKOSP", _v.count("kokkosp") > 0);
-            _update("OMNITRACE_USE_MPIP", _v.count("mpip") > 0);
-            _update("OMNITRACE_USE_OMPT", _v.count("ompt") > 0);
-            _update("OMNITRACE_USE_RCCLP", _v.count("rcclp") > 0);
-            _update("OMNITRACE_USE_ROCTX", _v.count("roctx") > 0);
-            _update("OMNITRACE_USE_ROCM_SMI", _v.count("rocm-smi") > 0);
-            _update("OMNITRACE_USE_ROCTRACER", _v.count("roctracer") > 0);
-            _update("OMNITRACE_USE_ROCPROFILER", _v.count("rocprofiler") > 0);
-            _update("OMNITRACE_TRACE_THREAD_LOCKS", _v.count("mutex-locks") > 0);
-            _update("OMNITRACE_TRACE_THREAD_RW_LOCKS", _v.count("rw-locks") > 0);
-            _update("OMNITRACE_TRACE_THREAD_SPIN_LOCKS", _v.count("spin-locks") > 0);
+            _update("ROCPROFSYS_USE_KOKKOSP", _v.count("kokkosp") > 0);
+            _update("ROCPROFSYS_USE_MPIP", _v.count("mpip") > 0);
+            _update("ROCPROFSYS_USE_OMPT", _v.count("ompt") > 0);
+            _update("ROCPROFSYS_USE_RCCLP", _v.count("rcclp") > 0);
+            _update("ROCPROFSYS_USE_ROCTX", _v.count("roctx") > 0);
+            _update("ROCPROFSYS_USE_ROCM_SMI", _v.count("rocm-smi") > 0);
+            _update("ROCPROFSYS_USE_ROCTRACER", _v.count("roctracer") > 0);
+            _update("ROCPROFSYS_USE_ROCPROFILER", _v.count("rocprofiler") > 0);
+            _update("ROCPROFSYS_TRACE_THREAD_LOCKS", _v.count("mutex-locks") > 0);
+            _update("ROCPROFSYS_TRACE_THREAD_RW_LOCKS", _v.count("rw-locks") > 0);
+            _update("ROCPROFSYS_TRACE_THREAD_SPIN_LOCKS", _v.count("spin-locks") > 0);
 
             if(_v.count("all") > 0 || _v.count("ompt") > 0)
                 update_env(_env, "OMP_TOOL_LIBRARIES", _dl_libpath, UPD_APPEND);
@@ -805,17 +805,17 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
             auto _update = [&](const auto& _opt, bool _cond) {
                 if(_cond || _v.count("all") > 0) update_env(_env, _opt, false);
             };
-            _update("OMNITRACE_USE_KOKKOSP", _v.count("kokkosp") > 0);
-            _update("OMNITRACE_USE_MPIP", _v.count("mpip") > 0);
-            _update("OMNITRACE_USE_OMPT", _v.count("ompt") > 0);
-            _update("OMNITRACE_USE_RCCLP", _v.count("rcclp") > 0);
-            _update("OMNITRACE_USE_ROCTX", _v.count("roctx") > 0);
-            _update("OMNITRACE_USE_ROCM_SMI", _v.count("rocm-smi") > 0);
-            _update("OMNITRACE_USE_ROCTRACER", _v.count("roctracer") > 0);
-            _update("OMNITRACE_USE_ROCPROFILER", _v.count("rocprofiler") > 0);
-            _update("OMNITRACE_TRACE_THREAD_LOCKS", _v.count("mutex-locks") > 0);
-            _update("OMNITRACE_TRACE_THREAD_RW_LOCKS", _v.count("rw-locks") > 0);
-            _update("OMNITRACE_TRACE_THREAD_SPIN_LOCKS", _v.count("spin-locks") > 0);
+            _update("ROCPROFSYS_USE_KOKKOSP", _v.count("kokkosp") > 0);
+            _update("ROCPROFSYS_USE_MPIP", _v.count("mpip") > 0);
+            _update("ROCPROFSYS_USE_OMPT", _v.count("ompt") > 0);
+            _update("ROCPROFSYS_USE_RCCLP", _v.count("rcclp") > 0);
+            _update("ROCPROFSYS_USE_ROCTX", _v.count("roctx") > 0);
+            _update("ROCPROFSYS_USE_ROCM_SMI", _v.count("rocm-smi") > 0);
+            _update("ROCPROFSYS_USE_ROCTRACER", _v.count("roctracer") > 0);
+            _update("ROCPROFSYS_USE_ROCPROFILER", _v.count("rocprofiler") > 0);
+            _update("ROCPROFSYS_TRACE_THREAD_LOCKS", _v.count("mutex-locks") > 0);
+            _update("ROCPROFSYS_TRACE_THREAD_RW_LOCKS", _v.count("rw-locks") > 0);
+            _update("ROCPROFSYS_TRACE_THREAD_SPIN_LOCKS", _v.count("spin-locks") > 0);
 
             if(_v.count("all") > 0 ||
                (_v.count("roctracer") > 0 && _v.count("rocprofiler") > 0))
@@ -845,7 +845,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
         .action([&](parser_t& p) {
             auto _events =
                 join(array_config{ "," }, p.get<std::vector<std::string>>("cpu-events"));
-            update_env(_env, "OMNITRACE_PAPI_EVENTS", _events);
+            update_env(_env, "ROCPROFSYS_PAPI_EVENTS", _events);
         });
 
 #if defined(OMNITRACE_USE_ROCPROFILER)
@@ -856,7 +856,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
         .action([&](parser_t& p) {
             auto _events =
                 join(array_config{ "," }, p.get<std::vector<std::string>>("gpu-events"));
-            update_env(_env, "OMNITRACE_ROCM_EVENTS", _events);
+            update_env(_env, "ROCPROFSYS_ROCM_EVENTS", _events);
         });
 #endif
 
@@ -866,7 +866,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
                       "Include inline info in output when available")
         .max_count(1)
         .action([&](parser_t& p) {
-            update_env(_env, "OMNITRACE_SAMPLING_INCLUDE_INLINES",
+            update_env(_env, "ROCPROFSYS_SAMPLING_INCLUDE_INLINES",
                        p.get<bool>("inlines"));
         });
 
@@ -906,7 +906,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
         throw std::runtime_error(_cerr.what());
 
     if(parser.exists("realtime") && !parser.exists("cputime"))
-        update_env(_env, "OMNITRACE_SAMPLING_CPUTIME", false);
+        update_env(_env, "ROCPROFSYS_SAMPLING_CPUTIME", false);
     if(parser.exists("profile") && parser.exists("flat-profile"))
         throw std::runtime_error(
             "Error! '--profile' argument conflicts with '--flat-profile' argument");

@@ -84,7 +84,7 @@ done
 
 remove-pycache()
 {
-    rm -rf ${1}/lib/python/site-packages/omnitrace/__pycache__
+    rm -rf ${1}/lib/python/site-packages/rocprofsys/__pycache__
 }
 
 setup-env()
@@ -100,7 +100,7 @@ test-install()
     verbose-run rocprof-sys-avail --help
     verbose-run rocprof-sys-avail --all
     if [ -d "${1}/lib/python/site-packages/rocprofsys" ]; then
-        verbose-run omnitrace-python --help
+        verbose-run rocprof-sys-python --help
     fi
 }
 

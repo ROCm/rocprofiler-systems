@@ -83,7 +83,7 @@ get_thread_status()
     return get_thread_state();
 }
 
-// timemory component which calls omnitrace functions
+// timemory component which calls rocprof-sys functions
 // (used in gotcha wrappers)
 template <typename CategoryT>
 struct category_region : comp::base<category_region<CategoryT>, void>
@@ -92,7 +92,7 @@ struct category_region : comp::base<category_region<CategoryT>, void>
 
     static constexpr auto category_name = trait::name<CategoryT>::value;
 
-    static std::string label() { return JOIN('_', "omnitrace", category_name, "region"); }
+    static std::string label() { return JOIN('_', "rocprofsys", category_name, "region"); }
 
     template <typename... OptsT, typename... Args>
     static void start(std::string_view name, Args&&...);

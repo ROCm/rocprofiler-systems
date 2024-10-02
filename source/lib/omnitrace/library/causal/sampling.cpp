@@ -258,7 +258,7 @@ configure(bool _setup, int64_t _tid)
         assert(_tid == threading::get_id());
 
         auto _causal_alloc = get_causal_sampler_allocator(true);
-        _causal = std::make_unique<causal_sampler_t>(_causal_alloc, "omnitrace", _tid,
+        _causal = std::make_unique<causal_sampler_t>(_causal_alloc, "rocprofsys", _tid,
                                                      _verbose);
 
         auto _activate_perf_backend = [&_causal, &_causal_perf, &_info, &_tid]() {
@@ -328,7 +328,7 @@ configure(bool _setup, int64_t _tid)
             auto _perf_error = _activate_perf_backend();
             if(!_perf_error)
             {
-                config::set_setting_value("OMNITRACE_CAUSAL_BACKEND",
+                config::set_setting_value("ROCPROFSYS_CAUSAL_BACKEND",
                                           std::string{ "perf" });
             }
             else
@@ -340,7 +340,7 @@ configure(bool _setup, int64_t _tid)
                 OMNITRACE_REQUIRE(_activate_timer_backend())
                     << "timer backend for causal profiling failed to activate\n";
 
-                config::set_setting_value("OMNITRACE_CAUSAL_BACKEND",
+                config::set_setting_value("ROCPROFSYS_CAUSAL_BACKEND",
                                           std::string{ "timer" });
             }
         }

@@ -199,7 +199,7 @@ get_library_search_paths_impl()
     for(const auto& itr : delimit(get_env("LD_LIBRARY_PATH", std::string{}, false), ":"))
         _emplace_if_exists(itr);
 
-    for(const auto& itr : { get_env<std::string>("OMNITRACE_ROCM_PATH", ""),
+    for(const auto& itr : { get_env<std::string>("ROCPROFSYS_ROCM_PATH", ""),
                             get_env<std::string>("ROCM_PATH", ""),
                             std::string{ OMNITRACE_DEFAULT_ROCM_PATH } })
     {
@@ -311,7 +311,7 @@ get_internal_basic_libs_impl()
                                            "libbz2.so",
                                            "liblzma.so" };
 
-    // shared libraries used by omnitrace
+    // shared libraries used by rocprof-sys
     const auto _omni_libs = strview_init_t{
         "libstdc++.so.6",       "libgotcha.so",        "libunwind-coredump.so",
         "libunwind-generic.so", "libunwind-ptrace.so", "libunwind-setjmp.so",

@@ -25,11 +25,11 @@ omnitrace_add_test(
         args
         --min-instructions
         0
-    ENVIRONMENT "${_base_environment};OMNITRACE_VERBOSE=1"
+    ENVIRONMENT "${_base_environment};ROCPROFSYS_VERBOSE=1"
     REWRITE_RUN_PASS_REGEX
         "(/[A-Za-z-]+/perfetto-trace-0.proto).*(/[A-Za-z-]+/wall_clock-0.txt')"
     REWRITE_RUN_FAIL_REGEX
-        "(perfetto-trace|trip_count|sampling_percent|sampling_cpu_clock|sampling_wall_clock|wall_clock)-[0-9][0-9]+.(json|txt|proto)|OMNITRACE_ABORT_FAIL_REGEX"
+        "(perfetto-trace|trip_count|sampling_percent|sampling_cpu_clock|sampling_wall_clock|wall_clock)-[0-9][0-9]+.(json|txt|proto)|ROCPROFSYS_ABORT_FAIL_REGEX"
     )
 
 omnitrace_add_test(
@@ -50,7 +50,7 @@ omnitrace_add_test(
         --min-instructions
         0
     ENVIRONMENT
-        "${_flat_environment};OMNITRACE_USE_SAMPLING=OFF;OMNITRACE_STRICT_CONFIG=OFF;OMNITRACE_USE_MPIP=ON"
+        "${_flat_environment};ROCPROFSYS_USE_SAMPLING=OFF;ROCPROFSYS_STRICT_CONFIG=OFF;ROCPROFSYS_USE_MPIP=ON"
     REWRITE_RUN_PASS_REGEX
         ">>> mpi-flat-mpip.inst(.*\n.*)>>> MPI_Init_thread(.*\n.*)>>> pthread_create(.*\n.*)>>> MPI_Comm_size(.*\n.*)>>> MPI_Comm_rank(.*\n.*)>>> MPI_Barrier(.*\n.*)>>> MPI_Alltoall"
     )
@@ -72,36 +72,36 @@ omnitrace_add_test(
         args
         --min-instructions
         0
-    ENVIRONMENT "${_flat_environment};OMNITRACE_USE_SAMPLING=OFF"
+    ENVIRONMENT "${_flat_environment};ROCPROFSYS_USE_SAMPLING=OFF"
     REWRITE_RUN_PASS_REGEX
         ">>> mpi-flat.inst(.*\n.*)>>> MPI_Init_thread(.*\n.*)>>> pthread_create(.*\n.*)>>> MPI_Comm_size(.*\n.*)>>> MPI_Comm_rank(.*\n.*)>>> MPI_Barrier(.*\n.*)>>> MPI_Alltoall"
     )
 
 set(_mpip_environment
-    "OMNITRACE_TRACE=ON"
-    "OMNITRACE_PROFILE=ON"
-    "OMNITRACE_USE_SAMPLING=OFF"
-    "OMNITRACE_USE_PROCESS_SAMPLING=OFF"
-    "OMNITRACE_TIME_OUTPUT=OFF"
-    "OMNITRACE_FILE_OUTPUT=ON"
-    "OMNITRACE_USE_MPIP=ON"
-    "OMNITRACE_DEBUG=OFF"
-    "OMNITRACE_VERBOSE=2"
-    "OMNITRACE_DL_VERBOSE=2"
+    "ROCPROFSYS_TRACE=ON"
+    "ROCPROFSYS_PROFILE=ON"
+    "ROCPROFSYS_USE_SAMPLING=OFF"
+    "ROCPROFSYS_USE_PROCESS_SAMPLING=OFF"
+    "ROCPROFSYS_TIME_OUTPUT=OFF"
+    "ROCPROFSYS_FILE_OUTPUT=ON"
+    "ROCPROFSYS_USE_MPIP=ON"
+    "ROCPROFSYS_DEBUG=OFF"
+    "ROCPROFSYS_VERBOSE=2"
+    "ROCPROFSYS_DL_VERBOSE=2"
     "${_test_openmp_env}"
     "${_test_library_path}")
 
 set(_mpip_all2all_environment
-    "OMNITRACE_TRACE=ON"
-    "OMNITRACE_PROFILE=ON"
-    "OMNITRACE_USE_SAMPLING=OFF"
-    "OMNITRACE_USE_PROCESS_SAMPLING=OFF"
-    "OMNITRACE_TIME_OUTPUT=OFF"
-    "OMNITRACE_FILE_OUTPUT=ON"
-    "OMNITRACE_USE_MPIP=ON"
-    "OMNITRACE_DEBUG=ON"
-    "OMNITRACE_VERBOSE=3"
-    "OMNITRACE_DL_VERBOSE=3"
+    "ROCPROFSYS_TRACE=ON"
+    "ROCPROFSYS_PROFILE=ON"
+    "ROCPROFSYS_USE_SAMPLING=OFF"
+    "ROCPROFSYS_USE_PROCESS_SAMPLING=OFF"
+    "ROCPROFSYS_TIME_OUTPUT=OFF"
+    "ROCPROFSYS_FILE_OUTPUT=ON"
+    "ROCPROFSYS_USE_MPIP=ON"
+    "ROCPROFSYS_DEBUG=ON"
+    "ROCPROFSYS_VERBOSE=3"
+    "ROCPROFSYS_DL_VERBOSE=3"
     "${_test_openmp_env}"
     "${_test_library_path}")
 

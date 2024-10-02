@@ -36,7 +36,7 @@ if(NUM_THREADS GREATER 12)
     set(NUM_THREADS 12)
 endif()
 
-math(EXPR MAX_CAUSAL_ITERATIONS "(${OMNITRACE_MAX_THREADS} - 1) / 2")
+math(EXPR MAX_CAUSAL_ITERATIONS "(${ROCPROFSYS_MAX_THREADS} - 1) / 2")
 if(MAX_CAUSAL_ITERATIONS GREATER 100)
     set(MAX_CAUSAL_ITERATIONS 100)
 endif()
@@ -46,118 +46,118 @@ set(_test_library_path
 set(_test_openmp_env "OMP_PROC_BIND=spread" "OMP_PLACES=threads" "OMP_NUM_THREADS=2")
 
 set(_base_environment
-    "OMNITRACE_TRACE=ON" "OMNITRACE_PROFILE=ON" "OMNITRACE_USE_SAMPLING=ON"
-    "OMNITRACE_USE_PROCESS_SAMPLING=ON" "OMNITRACE_TIME_OUTPUT=OFF"
-    "OMNITRACE_FILE_OUTPUT=ON" "${_test_openmp_env}" "${_test_library_path}")
+    "ROCPROFSYS_TRACE=ON" "ROCPROFSYS_PROFILE=ON" "ROCPROFSYS_USE_SAMPLING=ON"
+    "ROCPROFSYS_USE_PROCESS_SAMPLING=ON" "ROCPROFSYS_TIME_OUTPUT=OFF"
+    "ROCPROFSYS_FILE_OUTPUT=ON" "${_test_openmp_env}" "${_test_library_path}")
 
 set(_flat_environment
-    "OMNITRACE_TRACE=ON"
-    "OMNITRACE_PROFILE=ON"
-    "OMNITRACE_TIME_OUTPUT=OFF"
-    "OMNITRACE_COUT_OUTPUT=ON"
-    "OMNITRACE_FLAT_PROFILE=ON"
-    "OMNITRACE_TIMELINE_PROFILE=OFF"
-    "OMNITRACE_COLLAPSE_PROCESSES=ON"
-    "OMNITRACE_COLLAPSE_THREADS=ON"
-    "OMNITRACE_SAMPLING_FREQ=50"
-    "OMNITRACE_TIMEMORY_COMPONENTS=wall_clock,trip_count"
+    "ROCPROFSYS_TRACE=ON"
+    "ROCPROFSYS_PROFILE=ON"
+    "ROCPROFSYS_TIME_OUTPUT=OFF"
+    "ROCPROFSYS_COUT_OUTPUT=ON"
+    "ROCPROFSYS_FLAT_PROFILE=ON"
+    "ROCPROFSYS_TIMELINE_PROFILE=OFF"
+    "ROCPROFSYS_COLLAPSE_PROCESSES=ON"
+    "ROCPROFSYS_COLLAPSE_THREADS=ON"
+    "ROCPROFSYS_SAMPLING_FREQ=50"
+    "ROCPROFSYS_TIMEMORY_COMPONENTS=wall_clock,trip_count"
     "${_test_openmp_env}"
     "${_test_library_path}")
 
 set(_lock_environment
-    "OMNITRACE_USE_SAMPLING=ON"
-    "OMNITRACE_USE_PROCESS_SAMPLING=OFF"
-    "OMNITRACE_SAMPLING_FREQ=750"
-    "OMNITRACE_COLLAPSE_THREADS=ON"
-    "OMNITRACE_TRACE_THREAD_LOCKS=ON"
-    "OMNITRACE_TRACE_THREAD_SPIN_LOCKS=ON"
-    "OMNITRACE_TRACE_THREAD_RW_LOCKS=ON"
-    "OMNITRACE_COUT_OUTPUT=ON"
-    "OMNITRACE_TIME_OUTPUT=OFF"
-    "OMNITRACE_TIMELINE_PROFILE=OFF"
-    "OMNITRACE_VERBOSE=2"
+    "ROCPROFSYS_USE_SAMPLING=ON"
+    "ROCPROFSYS_USE_PROCESS_SAMPLING=OFF"
+    "ROCPROFSYS_SAMPLING_FREQ=750"
+    "ROCPROFSYS_COLLAPSE_THREADS=ON"
+    "ROCPROFSYS_TRACE_THREAD_LOCKS=ON"
+    "ROCPROFSYS_TRACE_THREAD_SPIN_LOCKS=ON"
+    "ROCPROFSYS_TRACE_THREAD_RW_LOCKS=ON"
+    "ROCPROFSYS_COUT_OUTPUT=ON"
+    "ROCPROFSYS_TIME_OUTPUT=OFF"
+    "ROCPROFSYS_TIMELINE_PROFILE=OFF"
+    "ROCPROFSYS_VERBOSE=2"
     "${_test_library_path}")
 
 set(_ompt_environment
-    "OMNITRACE_TRACE=ON"
-    "OMNITRACE_PROFILE=ON"
-    "OMNITRACE_TIME_OUTPUT=OFF"
-    "OMNITRACE_USE_OMPT=ON"
-    "OMNITRACE_TIMEMORY_COMPONENTS=wall_clock,trip_count,peak_rss"
+    "ROCPROFSYS_TRACE=ON"
+    "ROCPROFSYS_PROFILE=ON"
+    "ROCPROFSYS_TIME_OUTPUT=OFF"
+    "ROCPROFSYS_USE_OMPT=ON"
+    "ROCPROFSYS_TIMEMORY_COMPONENTS=wall_clock,trip_count,peak_rss"
     "${_test_openmp_env}"
     "${_test_library_path}")
 
 set(_perfetto_environment
-    "OMNITRACE_TRACE=ON"
-    "OMNITRACE_PROFILE=OFF"
-    "OMNITRACE_USE_SAMPLING=ON"
-    "OMNITRACE_USE_PROCESS_SAMPLING=ON"
-    "OMNITRACE_TIME_OUTPUT=OFF"
-    "OMNITRACE_PERFETTO_BACKEND=inprocess"
-    "OMNITRACE_PERFETTO_FILL_POLICY=ring_buffer"
+    "ROCPROFSYS_TRACE=ON"
+    "ROCPROFSYS_PROFILE=OFF"
+    "ROCPROFSYS_USE_SAMPLING=ON"
+    "ROCPROFSYS_USE_PROCESS_SAMPLING=ON"
+    "ROCPROFSYS_TIME_OUTPUT=OFF"
+    "ROCPROFSYS_PERFETTO_BACKEND=inprocess"
+    "ROCPROFSYS_PERFETTO_FILL_POLICY=ring_buffer"
     "${_test_openmp_env}"
     "${_test_library_path}")
 
 set(_timemory_environment
-    "OMNITRACE_TRACE=OFF"
-    "OMNITRACE_PROFILE=ON"
-    "OMNITRACE_USE_SAMPLING=ON"
-    "OMNITRACE_USE_PROCESS_SAMPLING=ON"
-    "OMNITRACE_TIME_OUTPUT=OFF"
-    "OMNITRACE_TIMEMORY_COMPONENTS=wall_clock,trip_count,peak_rss"
+    "ROCPROFSYS_TRACE=OFF"
+    "ROCPROFSYS_PROFILE=ON"
+    "ROCPROFSYS_USE_SAMPLING=ON"
+    "ROCPROFSYS_USE_PROCESS_SAMPLING=ON"
+    "ROCPROFSYS_TIME_OUTPUT=OFF"
+    "ROCPROFSYS_TIMEMORY_COMPONENTS=wall_clock,trip_count,peak_rss"
     "${_test_openmp_env}"
     "${_test_library_path}")
 
 set(_test_environment ${_base_environment})
 
 set(_causal_environment
-    "${_test_openmp_env}" "${_test_library_path}" "OMNITRACE_TIME_OUTPUT=OFF"
-    "OMNITRACE_FILE_OUTPUT=ON" "OMNITRACE_CAUSAL_RANDOM_SEED=1342342")
+    "${_test_openmp_env}" "${_test_library_path}" "ROCPROFSYS_TIME_OUTPUT=OFF"
+    "ROCPROFSYS_FILE_OUTPUT=ON" "ROCPROFSYS_CAUSAL_RANDOM_SEED=1342342")
 
 set(_python_environment
-    "OMNITRACE_TRACE=ON"
-    "OMNITRACE_PROFILE=ON"
-    "OMNITRACE_USE_SAMPLING=OFF"
-    "OMNITRACE_USE_PROCESS_SAMPLING=ON"
-    "OMNITRACE_TIME_OUTPUT=OFF"
-    "OMNITRACE_TREE_OUTPUT=OFF"
-    "OMNITRACE_USE_PID=OFF"
-    "OMNITRACE_TIMEMORY_COMPONENTS=wall_clock,trip_count"
+    "ROCPROFSYS_TRACE=ON"
+    "ROCPROFSYS_PROFILE=ON"
+    "ROCPROFSYS_USE_SAMPLING=OFF"
+    "ROCPROFSYS_USE_PROCESS_SAMPLING=ON"
+    "ROCPROFSYS_TIME_OUTPUT=OFF"
+    "ROCPROFSYS_TREE_OUTPUT=OFF"
+    "ROCPROFSYS_USE_PID=OFF"
+    "ROCPROFSYS_TIMEMORY_COMPONENTS=wall_clock,trip_count"
     "${_test_library_path}"
     "PYTHONPATH=${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_PYTHONDIR}")
 
 set(_attach_environment
-    "OMNITRACE_TRACE=ON"
-    "OMNITRACE_PROFILE=ON"
-    "OMNITRACE_USE_SAMPLING=OFF"
-    "OMNITRACE_USE_PROCESS_SAMPLING=ON"
-    "OMNITRACE_USE_OMPT=ON"
-    "OMNITRACE_USE_KOKKOSP=ON"
-    "OMNITRACE_TIME_OUTPUT=OFF"
-    "OMNITRACE_USE_PID=OFF"
-    "OMNITRACE_TIMEMORY_COMPONENTS=wall_clock,trip_count"
+    "ROCPROFSYS_TRACE=ON"
+    "ROCPROFSYS_PROFILE=ON"
+    "ROCPROFSYS_USE_SAMPLING=OFF"
+    "ROCPROFSYS_USE_PROCESS_SAMPLING=ON"
+    "ROCPROFSYS_USE_OMPT=ON"
+    "ROCPROFSYS_USE_KOKKOSP=ON"
+    "ROCPROFSYS_TIME_OUTPUT=OFF"
+    "ROCPROFSYS_USE_PID=OFF"
+    "ROCPROFSYS_TIMEMORY_COMPONENTS=wall_clock,trip_count"
     "OMP_NUM_THREADS=${NUM_PROCS_REAL}"
     "${_test_library_path}")
 
 set(_rccl_environment
-    "OMNITRACE_TRACE=ON"
-    "OMNITRACE_PROFILE=ON"
-    "OMNITRACE_USE_SAMPLING=OFF"
-    "OMNITRACE_USE_PROCESS_SAMPLING=ON"
-    "OMNITRACE_USE_RCCLP=ON"
-    "OMNITRACE_TIME_OUTPUT=OFF"
-    "OMNITRACE_USE_PID=OFF"
+    "ROCPROFSYS_TRACE=ON"
+    "ROCPROFSYS_PROFILE=ON"
+    "ROCPROFSYS_USE_SAMPLING=OFF"
+    "ROCPROFSYS_USE_PROCESS_SAMPLING=ON"
+    "ROCPROFSYS_USE_RCCLP=ON"
+    "ROCPROFSYS_TIME_OUTPUT=OFF"
+    "ROCPROFSYS_USE_PID=OFF"
     "${_test_openmp_env}"
     "${_test_library_path}")
 
 set(_window_environment
-    "OMNITRACE_TRACE=ON"
-    "OMNITRACE_PROFILE=ON"
-    "OMNITRACE_USE_SAMPLING=OFF"
-    "OMNITRACE_USE_PROCESS_SAMPLING=OFF"
-    "OMNITRACE_TIME_OUTPUT=OFF"
-    "OMNITRACE_FILE_OUTPUT=ON"
-    "OMNITRACE_VERBOSE=2"
+    "ROCPROFSYS_TRACE=ON"
+    "ROCPROFSYS_PROFILE=ON"
+    "ROCPROFSYS_USE_SAMPLING=OFF"
+    "ROCPROFSYS_USE_PROCESS_SAMPLING=OFF"
+    "ROCPROFSYS_TIME_OUTPUT=OFF"
+    "ROCPROFSYS_FILE_OUTPUT=ON"
+    "ROCPROFSYS_VERBOSE=2"
     "${_test_openmp_env}"
     "${_test_library_path}")
 
@@ -263,18 +263,18 @@ endif()
 macro(OMNITRACE_CHECK_PASS_FAIL_REGEX NAME PASS FAIL)
     if(NOT "${${PASS}}" STREQUAL ""
        AND NOT "${${FAIL}}" STREQUAL ""
-       AND NOT "${${FAIL}}" MATCHES "\\|OMNITRACE_ABORT_FAIL_REGEX"
-       AND NOT "${${FAIL}}" MATCHES "${OMNITRACE_ABORT_FAIL_REGEX}")
+       AND NOT "${${FAIL}}" MATCHES "\\|ROCPROFSYS_ABORT_FAIL_REGEX"
+       AND NOT "${${FAIL}}" MATCHES "${ROCPROFSYS_ABORT_FAIL_REGEX}")
         omnitrace_message(
             FATAL_ERROR
-            "${NAME} has set pass and fail regexes but fail regex does not include '|OMNITRACE_ABORT_FAIL_REGEX'"
+            "${NAME} has set pass and fail regexes but fail regex does not include '|ROCPROFSYS_ABORT_FAIL_REGEX'"
             )
     endif()
 
     if("${${FAIL}}" STREQUAL "")
-        set(${FAIL} "(${OMNITRACE_ABORT_FAIL_REGEX})")
+        set(${FAIL} "(${ROCPROFSYS_ABORT_FAIL_REGEX})")
     else()
-        string(REPLACE "|OMNITRACE_ABORT_FAIL_REGEX" "|${OMNITRACE_ABORT_FAIL_REGEX}"
+        string(REPLACE "|ROCPROFSYS_ABORT_FAIL_REGEX" "|${ROCPROFSYS_ABORT_FAIL_REGEX}"
                        ${FAIL} "${${FAIL}}")
     endif()
 endmacro()
@@ -283,17 +283,17 @@ endmacro()
 
 function(OMNITRACE_WRITE_TEST_CONFIG _FILE _ENV)
     set(_ENV_ONLY
-        "OMNITRACE_(CI|CI_TIMEOUT|MODE|USE_MPIP|DEBUG_[A-Z_]+|FORCE_ROCPROFILER_INIT|DEFAULT_MIN_INSTRUCTIONS|MONOCHROME|VERBOSE)="
+        "ROCPROFSYS_(CI|CI_TIMEOUT|MODE|USE_MPIP|DEBUG_[A-Z_]+|FORCE_ROCPROFILER_INIT|DEFAULT_MIN_INSTRUCTIONS|MONOCHROME|VERBOSE)="
         )
     set(_FILE_CONTENTS)
     set(_ENV_CONTENTS)
 
     set(_DEBUG_SETTINGS ON)
     foreach(_VAL ${${_ENV}})
-        if("${_VAL}" MATCHES "^OMNITRACE_DEBUG_SETTINGS=")
+        if("${_VAL}" MATCHES "^ROCPROFSYS_DEBUG_SETTINGS=")
             set(_DEBUG_SETTINGS OFF)
         endif()
-        if("${_VAL}" MATCHES "^OMNITRACE_" AND NOT "${_VAL}" MATCHES "${_ENV_ONLY}")
+        if("${_VAL}" MATCHES "^ROCPROFSYS_" AND NOT "${_VAL}" MATCHES "${_ENV_ONLY}")
             set(_FILE_CONTENTS "${_FILE_CONTENTS}${_VAL}\n")
         else()
             list(APPEND _ENV_CONTENTS "${_VAL}")
@@ -306,22 +306,22 @@ function(OMNITRACE_WRITE_TEST_CONFIG _FILE _ENV)
         "# auto-generated by cmake
 
 # default values
-OMNITRACE_CI                     = ON
-OMNITRACE_VERBOSE                = 1
-OMNITRACE_DL_VERBOSE             = 1
-OMNITRACE_SAMPLING_FREQ          = 300
-OMNITRACE_SAMPLING_DELAY         = 0.05
-OMNITRACE_SAMPLING_CPUS          = 0-${NUM_SAMPLING_PROCS}
-OMNITRACE_SAMPLING_GPUS          = $env:HIP_VISIBLE_DEVICES
-OMNITRACE_ROCTRACER_HSA_API      = ON
-OMNITRACE_ROCTRACER_HSA_ACTIVITY = ON
+ROCPROFSYS_CI                     = ON
+ROCPROFSYS_VERBOSE                = 1
+ROCPROFSYS_DL_VERBOSE             = 1
+ROCPROFSYS_SAMPLING_FREQ          = 300
+ROCPROFSYS_SAMPLING_DELAY         = 0.05
+ROCPROFSYS_SAMPLING_CPUS          = 0-${NUM_SAMPLING_PROCS}
+ROCPROFSYS_SAMPLING_GPUS          = $env:HIP_VISIBLE_DEVICES
+ROCPROFSYS_ROCTRACER_HSA_API      = ON
+ROCPROFSYS_ROCTRACER_HSA_ACTIVITY = ON
 
 # test-specific values
 ${_FILE_CONTENTS}
 ")
-    list(APPEND _ENV_CONTENTS "OMNITRACE_CONFIG_FILE=${_CONFIG_FILE}")
+    list(APPEND _ENV_CONTENTS "ROCPROFSYS_CONFIG_FILE=${_CONFIG_FILE}")
     if(_DEBUG_SETTINGS)
-        list(APPEND _ENV_CONTENTS "OMNITRACE_DEBUG_SETTINGS=1")
+        list(APPEND _ENV_CONTENTS "ROCPROFSYS_DEBUG_SETTINGS=1")
     endif()
     set(${_ENV}
         "${_ENV_CONTENTS}"
@@ -383,7 +383,7 @@ function(OMNITRACE_ADD_TEST)
 
     foreach(_PREFIX SAMPLING RUNTIME REWRITE REWRITE_RUN BASELINE)
         if("${${_PREFIX}_FAIL_REGEX}" STREQUAL "")
-            set(${_PREFIX}_FAIL_REGEX "(${OMNITRACE_ABORT_FAIL_REGEX})")
+            set(${_PREFIX}_FAIL_REGEX "(${ROCPROFSYS_ABORT_FAIL_REGEX})")
         endif()
     endforeach()
 
@@ -424,31 +424,31 @@ function(OMNITRACE_ADD_TEST)
         set(TEST_ENVIRONMENT "${_test_environment}")
     endif()
 
-    list(APPEND TEST_ENVIRONMENT "OMNITRACE_CI=ON")
+    list(APPEND TEST_ENVIRONMENT "ROCPROFSYS_CI=ON")
 
     if(TEST_GPU)
         list(APPEND TEST_LABELS "gpu")
 
-        if(NOT "OMNITRACE_USE_ROCTRACER=OFF" IN_LIST TEST_ENVIRONMENT)
+        if(NOT "ROCPROFSYS_USE_ROCTRACER=OFF" IN_LIST TEST_ENVIRONMENT)
             list(APPEND TEST_LABELS "roctracer")
         endif()
 
-        if(NOT "OMNITRACE_USE_ROCM_SMI=OFF" IN_LIST TEST_ENVIRONMENT)
+        if(NOT "ROCPROFSYS_USE_ROCM_SMI=OFF" IN_LIST TEST_ENVIRONMENT)
             list(APPEND TEST_LABELS "rocm-smi")
         endif()
     endif()
 
-    if("OMNITRACE_USE_ROCTRACER=ON" IN_LIST TEST_ENVIRONMENT AND NOT "roctracer" IN_LIST
+    if("ROCPROFSYS_USE_ROCTRACER=ON" IN_LIST TEST_ENVIRONMENT AND NOT "roctracer" IN_LIST
                                                                  TEST_ENVIRONMENT)
         list(APPEND TEST_LABELS "roctracer")
     endif()
 
-    if("OMNITRACE_USE_ROCM_SMI=ON" IN_LIST TEST_ENVIRONMENT AND NOT "rocm-smi" IN_LIST
+    if("ROCPROFSYS_USE_ROCM_SMI=ON" IN_LIST TEST_ENVIRONMENT AND NOT "rocm-smi" IN_LIST
                                                                 TEST_ENVIRONMENT)
         list(APPEND TEST_LABELS "rocm-smi")
     endif()
 
-    if("OMNITRACE_USE_ROCPROFILER=ON" IN_LIST TEST_ENVIRONMENT
+    if("ROCPROFSYS_USE_ROCPROFILER=ON" IN_LIST TEST_ENVIRONMENT
        AND NOT "rocprofiler" IN_LIST TEST_ENVIRONMENT)
         list(APPEND TEST_LABELS "rocprofiler")
     endif()
@@ -467,7 +467,7 @@ function(OMNITRACE_ADD_TEST)
                                    ${MPIEXEC_NUMPROC_FLAG} 1)
             endif()
         else()
-            list(APPEND TEST_ENVIRONMENT "OMNITRACE_USE_PID=OFF")
+            list(APPEND TEST_ENVIRONMENT "ROCPROFSYS_USE_PID=OFF")
         endif()
 
         if(NOT TEST_SKIP_BASELINE AND NOT OMNITRACE_USE_SANITIZER)
@@ -529,9 +529,9 @@ function(OMNITRACE_ADD_TEST)
             endif()
 
             set(_environ
-                "OMNITRACE_DEFAULT_MIN_INSTRUCTIONS=64" "${TEST_ENVIRONMENT}"
-                "OMNITRACE_OUTPUT_PATH=${PROJECT_BINARY_DIR}/rocprofsys-tests-output"
-                "OMNITRACE_OUTPUT_PREFIX=${_prefix}")
+                "ROCPROFSYS_DEFAULT_MIN_INSTRUCTIONS=64" "${TEST_ENVIRONMENT}"
+                "ROCPROFSYS_OUTPUT_PATH=${PROJECT_BINARY_DIR}/rocprofsys-tests-output"
+                "ROCPROFSYS_OUTPUT_PREFIX=${_prefix}")
 
             set(_timeout ${TEST_REWRITE_TIMEOUT})
             if("${_TEST}" MATCHES "sampling")
@@ -576,7 +576,7 @@ function(OMNITRACE_ADD_TEST)
                 endif()
             endforeach()
 
-            list(APPEND _environ "OMNITRACE_CI_TIMEOUT=${_timeout}")
+            list(APPEND _environ "ROCPROFSYS_CI_TIMEOUT=${_timeout}")
 
             omnitrace_check_pass_fail_regex("${TEST_NAME}-${_TEST}" "${_PASS_REGEX}"
                                             "${_FAIL_REGEX}")
@@ -632,7 +632,7 @@ function(OMNITRACE_ADD_CAUSAL_TEST)
     endif()
 
     if("${TEST_CAUSAL_FAIL_REGEX}" STREQUAL "")
-        set(TEST_CAUSAL_FAIL_REGEX "(${OMNITRACE_ABORT_FAIL_REGEX})")
+        set(TEST_CAUSAL_FAIL_REGEX "(${ROCPROFSYS_ABORT_FAIL_REGEX})")
     endif()
 
     if(TARGET ${TEST_TARGET})
@@ -652,7 +652,7 @@ function(OMNITRACE_ADD_CAUSAL_TEST)
             WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 
         if(NOT "${TEST_CAUSAL_VALIDATE_ARGS}" STREQUAL "")
-            if("$ENV{OMNITRACE_CI}" MATCHES "ON|on|1|true|TRUE"
+            if("$ENV{ROCPROFSYS_CI}" MATCHES "ON|on|1|true|TRUE"
                OR "$ENV{CI}" MATCHES "true"
                OR NOT "$ENV{GITHUB_RUN_ID}" STREQUAL "")
                 set(_VALIDATE_EXTRA "--ci")
@@ -697,14 +697,14 @@ function(OMNITRACE_ADD_CAUSAL_TEST)
 
             set(_environ
                 "${_causal_environment}"
-                "OMNITRACE_OUTPUT_PATH=${PROJECT_BINARY_DIR}/rocprofsys-tests-output"
-                "OMNITRACE_OUTPUT_PREFIX=${_prefix}"
-                "OMNITRACE_CI=ON"
-                "OMNITRACE_USE_PID=OFF"
-                "OMNITRACE_THREAD_POOL_SIZE=0"
-                "OMNITRACE_VERBOSE=1"
-                "OMNITRACE_DL_VERBOSE=0"
-                "OMNITRACE_DEBUG_SETTINGS=0"
+                "ROCPROFSYS_OUTPUT_PATH=${PROJECT_BINARY_DIR}/rocprofsys-tests-output"
+                "ROCPROFSYS_OUTPUT_PREFIX=${_prefix}"
+                "ROCPROFSYS_CI=ON"
+                "ROCPROFSYS_USE_PID=OFF"
+                "ROCPROFSYS_THREAD_POOL_SIZE=0"
+                "ROCPROFSYS_VERBOSE=1"
+                "ROCPROFSYS_DL_VERBOSE=0"
+                "ROCPROFSYS_DEBUG_SETTINGS=0"
                 "${TEST_ENVIRONMENT}")
 
             set(_timeout ${TEST_CAUSAL_TIMEOUT})
@@ -733,7 +733,7 @@ function(OMNITRACE_ADD_CAUSAL_TEST)
                 endif()
             endforeach()
 
-            list(APPEND _environ "OMNITRACE_CI_TIMEOUT=${_timeout}")
+            list(APPEND _environ "ROCPROFSYS_CI_TIMEOUT=${_timeout}")
             omnitrace_write_test_config(${_NAME}.cfg _environ)
             omnitrace_check_pass_fail_regex("${_NAME}" "${_PASS_REGEX}" "${_FAIL_REGEX}")
             set_tests_properties(
@@ -785,8 +785,8 @@ function(OMNITRACE_ADD_PYTHON_TEST)
     list(APPEND TEST_LABELS "python" "python-${TEST_PYTHON_VERSION}")
 
     if(NOT TEST_COMMAND)
-        list(APPEND TEST_ENVIRONMENT "OMNITRACE_CI=ON"
-             "OMNITRACE_OUTPUT_PATH=${PROJECT_BINARY_DIR}/rocprofsys-tests-output")
+        list(APPEND TEST_ENVIRONMENT "ROCPROFSYS_CI=ON"
+             "ROCPROFSYS_OUTPUT_PATH=${PROJECT_BINARY_DIR}/rocprofsys-tests-output")
         get_filename_component(_TEST_FILE "${TEST_FILE}" NAME)
         set(_TEST_FILE
             ${PROJECT_BINARY_DIR}/python/tests/${TEST_PYTHON_VERSION}/${_TEST_FILE})
@@ -827,8 +827,8 @@ function(OMNITRACE_ADD_PYTHON_TEST)
                        "${_TEST}")
         set(_TEST_ENV
             "${TEST_ENVIRONMENT}"
-            "OMNITRACE_OUTPUT_PREFIX=${_TEST_DIR}/${TEST_PYTHON_VERSION}/"
-            "OMNITRACE_CI_TIMEOUT=${TEST_TIMEOUT}")
+            "ROCPROFSYS_OUTPUT_PREFIX=${_TEST_DIR}/${TEST_PYTHON_VERSION}/"
+            "ROCPROFSYS_CI_TIMEOUT=${TEST_TIMEOUT}")
 
         set(_TEST_PROPERTIES "${TEST_PROPERTIES}")
         # assign pass variable to pass regex
@@ -989,7 +989,7 @@ function(OMNITRACE_ADD_VALIDATION_TEST)
             WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
     endif()
 
-    list(APPEND TEST_ENVIRONMENT "OMNITRACE_CI_TIMEOUT=${TEST_TIMEOUT}")
+    list(APPEND TEST_ENVIRONMENT "ROCPROFSYS_CI_TIMEOUT=${TEST_TIMEOUT}")
 
     foreach(_TEST validate-${TEST_NAME}-timemory validate-${TEST_NAME}-perfetto)
 

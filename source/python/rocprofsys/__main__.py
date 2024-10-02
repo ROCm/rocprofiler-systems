@@ -305,11 +305,11 @@ def main(main_args=sys.argv):
                     break
 
     if argv:
-        os.environ["OMNITRACE_COMMAND_LINE"] = " ".join(argv)
+        os.environ["ROCPROFSYS_COMMAND_LINE"] = " ".join(argv)
 
     if opts.config is not None:
-        os.environ["OMNITRACE_CONFIG_FILE"] = ":".join(
-            [os.environ.get("OMNITRACE_CONFIG_FILE", ""), opts.config]
+        os.environ["ROCPROFSYS_CONFIG_FILE"] = ":".join(
+            [os.environ.get("ROCPROFSYS_CONFIG_FILE", ""), opts.config]
         )
 
     from .libpyrocprofsys import initialize
@@ -358,7 +358,7 @@ def main(main_args=sys.argv):
     sys.path.insert(0, os.path.dirname(script_file))
 
     _OMNITRACE_PYTHON_SCRIPT_FILE = script_file
-    os.environ["OMNITRACE_PYTHON_SCRIPT_FILE"] = script_file
+    os.environ["ROCPROFSYS_PYTHON_SCRIPT_FILE"] = script_file
 
     prof = Profiler()
     fake = FakeProfiler()
@@ -400,12 +400,12 @@ if __name__ == "__main__":
     args = sys.argv
     if _OMNITRACE_PYTHON_SCRIPT_FILE is None:
         _OMNITRACE_PYTHON_SCRIPT_FILE = os.environ.get(
-            "OMNITRACE_PYTHON_SCRIPT_FILE", None
+            "ROCPROFSYS_PYTHON_SCRIPT_FILE", None
         )
 
     if "--" not in args and _OMNITRACE_PYTHON_SCRIPT_FILE is not None:
         args = [args[0]] + ["--", _OMNITRACE_PYTHON_SCRIPT_FILE] + args[1:]
-        os.environ["OMNITRACE_USE_PID"] = "ON"
+        os.environ["ROCPROFSYS_USE_PID"] = "ON"
 
     main(args)
     from .libpyrocprofsys import finalize

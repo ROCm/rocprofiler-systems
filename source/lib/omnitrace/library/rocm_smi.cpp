@@ -392,7 +392,7 @@ setup()
 
     data::device_list = _devices;
 
-    auto _metrics = get_setting_value<std::string>("OMNITRACE_ROCM_SMI_METRICS");
+    auto _metrics = get_setting_value<std::string>("ROCPROFSYS_ROCM_SMI_METRICS");
 
     try
     {

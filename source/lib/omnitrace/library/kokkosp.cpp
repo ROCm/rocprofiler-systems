@@ -185,7 +185,7 @@ extern "C"
                 _command_line.append(" ").append(argv[i]);
             }
             if(_command_line.length() > 1) _command_line = _command_line.substr(1);
-            tim::set_env("OMNITRACE_COMMAND_LINE", _command_line, 0);
+            tim::set_env("ROCPROFSYS_COMMAND_LINE", _command_line, 0);
         }
     }
 
@@ -208,7 +208,7 @@ extern "C"
         tim::consume_parameters(devInfoCount, deviceInfo);
 
         OMNITRACE_BASIC_VERBOSE_F(
-            0, "Initializing omnitrace kokkos connector (sequence %d, version: %llu)... ",
+            0, "Initializing rocprof-sys kokkos connector (sequence %d, version: %llu)... ",
             loadSeq, (unsigned long long) interfaceVer);
 
         if(_standalone_initialized || (!omnitrace::config::settings_are_configured() &&
@@ -246,8 +246,8 @@ extern "C"
                 }
             }
 
-            OMNITRACE_BASIC_VERBOSE_F(0, "Initializing omnitrace (standalone)... ");
-            auto _mode = tim::get_env<std::string>("OMNITRACE_MODE", "trace");
+            OMNITRACE_BASIC_VERBOSE_F(0, "Initializing rocprof-sys (standalone)... ");
+            auto _mode = tim::get_env<std::string>("ROCPROFSYS_MODE", "trace");
             auto _arg0 = (_initialize_arguments.empty()) ? std::string{ "unknown" }
                                                          : _initialize_arguments.at(0);
 
@@ -269,14 +269,14 @@ extern "C"
         }
 
         _name_len_limit = omnitrace::config::get_setting_value<int64_t>(
-                              "OMNITRACE_KOKKOSP_NAME_LENGTH_MAX")
+                              "ROCPROFSYS_KOKKOSP_NAME_LENGTH_MAX")
                               .value_or(_name_len_limit);
         _kp_prefix =
-            omnitrace::config::get_setting_value<std::string>("OMNITRACE_KOKKOSP_PREFIX")
+            omnitrace::config::get_setting_value<std::string>("ROCPROFSYS_KOKKOSP_PREFIX")
                 .value_or(_kp_prefix);
 
         _kp_deep_copy =
-            omnitrace::config::get_setting_value<bool>("OMNITRACE_KOKKOSP_DEEP_COPY")
+            omnitrace::config::get_setting_value<bool>("ROCPROFSYS_KOKKOSP_DEEP_COPY")
                 .value_or(_kp_deep_copy);
     }
 
@@ -287,12 +287,12 @@ extern "C"
         {
             omnitrace_pop_trace_hidden("kokkos_main");
             OMNITRACE_VERBOSE_F(
-                0, "Finalizing kokkos omnitrace connector (standalone)...\n");
+                0, "Finalizing kokkos rocprof-sys connector (standalone)...\n");
             omnitrace_finalize_hidden();
         }
         else
         {
-            OMNITRACE_VERBOSE_F(0, "Finalizing kokkos omnitrace connector... ");
+            OMNITRACE_VERBOSE_F(0, "Finalizing kokkos rocprof-sys connector... ");
             kokkosp::cleanup();
             if(omnitrace::get_verbose() >= 0) fprintf(stderr, "Done\n");
         }

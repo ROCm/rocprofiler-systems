@@ -26,7 +26,7 @@ omnitrace_add_test(
     LABELS "kokkos;kokkos-profile-library"
     RUN_ARGS -i 25 -s 20 -p
     ENVIRONMENT
-        "${_base_environment};OMNITRACE_USE_KOKKOSP=ON;OMNITRACE_COUT_OUTPUT=ON;OMNITRACE_SAMPLING_FREQ=50;OMNITRACE_KOKKOSP_PREFIX=[kokkos];KOKKOS_PROFILE_LIBRARY=librocprof-sys-dl.so"
+        "${_base_environment};ROCPROFSYS_USE_KOKKOSP=ON;ROCPROFSYS_COUT_OUTPUT=ON;ROCPROFSYS_SAMPLING_FREQ=50;ROCPROFSYS_KOKKOSP_PREFIX=[kokkos];KOKKOS_PROFILE_LIBRARY=librocprof-sys-dl.so"
     REWRITE_RUN_PASS_REGEX "\\|_\\[kokkos\\] [a-zA-Z]"
     RUNTIME_PASS_REGEX "\\|_\\[kokkos\\] [a-zA-Z]")
 
@@ -40,7 +40,7 @@ omnitrace_add_test(
     LABELS "kokkos;kokkos-profile-library"
     RUN_ARGS -i 10 -s 20 -p
     ENVIRONMENT
-        "${_base_environment};OMNITRACE_USE_KOKKOSP=ON;OMNITRACE_COUT_OUTPUT=ON;OMNITRACE_SAMPLING_FREQ=50;OMNITRACE_KOKKOSP_PREFIX=[kokkos];KOKKOS_PROFILE_LIBRARY=librocprof-sys.so"
+        "${_base_environment};ROCPROFSYS_USE_KOKKOSP=ON;ROCPROFSYS_COUT_OUTPUT=ON;ROCPROFSYS_SAMPLING_FREQ=50;ROCPROFSYS_KOKKOSP_PREFIX=[kokkos];KOKKOS_PROFILE_LIBRARY=librocprof-sys.so"
     BASELINE_PASS_REGEX "\\|_\\[kokkos\\] [a-zA-Z]")
 
 omnitrace_add_test(
@@ -53,7 +53,7 @@ omnitrace_add_test(
     LABELS "kokkos;kokkos-profile-library"
     RUN_ARGS -i 10 -s 20 -p
     ENVIRONMENT
-        "${_base_environment};OMNITRACE_USE_KOKKOSP=ON;OMNITRACE_COUT_OUTPUT=ON;OMNITRACE_SAMPLING_FREQ=50;OMNITRACE_KOKKOSP_PREFIX=[kokkos];KOKKOS_PROFILE_LIBRARY=librocprof-sys-dl.so"
+        "${_base_environment};ROCPROFSYS_USE_KOKKOSP=ON;ROCPROFSYS_COUT_OUTPUT=ON;ROCPROFSYS_SAMPLING_FREQ=50;ROCPROFSYS_KOKKOSP_PREFIX=[kokkos];KOKKOS_PROFILE_LIBRARY=librocprof-sys-dl.so"
     BASELINE_PASS_REGEX "\\|_\\[kokkos\\] [a-zA-Z]")
 
 omnitrace_add_test(
@@ -77,7 +77,7 @@ omnitrace_add_test(
         -ME
         [==[lib(gomp|m-)]==]
     RUN_ARGS -i 10 -s 20 -p
-    ENVIRONMENT "${_base_environment};OMNITRACE_USE_KOKKOSP=ON")
+    ENVIRONMENT "${_base_environment};ROCPROFSYS_USE_KOKKOSP=ON")
 
 omnitrace_add_test(
     SKIP_BASELINE
@@ -99,7 +99,7 @@ omnitrace_add_test(
         -ME
         [==[libgomp]==]
     RUN_ARGS -i 10 -s 20 -p
-    ENVIRONMENT "${_perfetto_environment};OMNITRACE_USE_KOKKOSP=OFF")
+    ENVIRONMENT "${_perfetto_environment};ROCPROFSYS_USE_KOKKOSP=OFF")
 
 omnitrace_add_test(
     NAME lulesh-timemory
@@ -118,7 +118,7 @@ omnitrace_add_test(
         -ME
         [==[libgomp]==]
         --env
-        OMNITRACE_TIMEMORY_COMPONENTS="wall_clock peak_rss"
+        ROCPROFSYS_TIMEMORY_COMPONENTS="wall_clock peak_rss"
     RUN_ARGS -i 10 -s 20 -p
-    ENVIRONMENT "${_timemory_environment};OMNITRACE_USE_KOKKOSP=OFF"
+    ENVIRONMENT "${_timemory_environment};ROCPROFSYS_USE_KOKKOSP=OFF"
     REWRITE_FAIL_REGEX "0 instrumented loops in procedure")
