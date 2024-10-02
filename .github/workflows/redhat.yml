@@ -162,9 +162,9 @@ jobs:
       with:
         name: data-${{ github.job }}-${{ strategy.job-index }}-files
         path: |
-          build/omnitrace-tests-config/*.cfg
-          build/omnitrace-tests-output/**/*.txt
-          build/omnitrace-tests-output/**/*-instr*.json
+          build/rocprofsys-tests-config/*.cfg
+          build/rocprofsys-tests-output/**/*.txt
+          build/rocprofsys-tests-output/**/*-instr*.json
 
     - name: Kill Perfetto
       if: success() || failure()

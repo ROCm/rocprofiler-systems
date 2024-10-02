@@ -286,7 +286,7 @@ jobs:
         timeout-minutes: 10
         uses: actions/upload-artifact@v4
         with:
-          name: omnitrace-stgz-${{ matrix.os-distro }}-${{ matrix.os-version }}-rocm-${{ matrix.rocm-version }}-installer
+          name: rocprof-sys-stgz-${{ matrix.os-distro }}-${{ matrix.os-version }}-rocm-${{ matrix.rocm-version }}-installer
           path: |
             build-release/stgz/*.sh
 
@@ -303,7 +303,7 @@ jobs:
         timeout-minutes: 20
         run: |
           set -v
-          for i in omnitrace-*.sh
+          for i in rocprof-sys-*.sh
           do
             ./docker/test-docker-release.sh --distro ${{ matrix.os-distro }} --versions ${{ matrix.os-version }} --rocm-versions ${{ matrix.rocm-version }} -- --stgz ${i}
           done
@@ -314,4 +314,4 @@ jobs:
         with:
           fail_on_unmatched_files: True
           files: |
-            omnitrace-*.sh
+            rocprof-sys-*.sh
