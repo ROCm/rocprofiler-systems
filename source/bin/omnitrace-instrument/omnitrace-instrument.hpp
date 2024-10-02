@@ -293,7 +293,7 @@ omnitrace_thread_exit(thread_t* thread, BPatch_exitType exit_type)
 
     if(!terminate_expr)
     {
-        fprintf(stderr, "[omnitrace][exe] continuing execution\n");
+        fprintf(stderr, "[rocprof-sys][exe] continuing execution\n");
         app->continueExecution();
         return;
     }
@@ -302,18 +302,18 @@ omnitrace_thread_exit(thread_t* thread, BPatch_exitType exit_type)
     {
         case ExitedNormally:
         {
-            fprintf(stderr, "[omnitrace][exe] Thread exited normally\n");
+            fprintf(stderr, "[rocprof-sys][exe] Thread exited normally\n");
             break;
         }
         case ExitedViaSignal:
         {
-            fprintf(stderr, "[omnitrace][exe] Thread terminated unexpectedly\n");
+            fprintf(stderr, "[rocprof-sys][exe] Thread terminated unexpectedly\n");
             break;
         }
         case NoExit:
         default:
         {
-            fprintf(stderr, "[omnitrace][exe] %s invoked with NoExit\n", __FUNCTION__);
+            fprintf(stderr, "[rocprof-sys][exe] %s invoked with NoExit\n", __FUNCTION__);
             break;
         }
     }
@@ -321,7 +321,7 @@ omnitrace_thread_exit(thread_t* thread, BPatch_exitType exit_type)
     // terminate_expr = nullptr;
     thread->oneTimeCode(*terminate_expr);
 
-    fprintf(stderr, "[omnitrace][exe] continuing execution\n");
+    fprintf(stderr, "[rocprof-sys][exe] continuing execution\n");
     app->continueExecution();
 }
 //

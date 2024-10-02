@@ -77,7 +77,7 @@ ignore(const char* _name, int _verbose, int _value, const char* _reason, Args...
     {
         fflush(stderr);
         fprintf(stderr,
-                "[omnitrace][" OMNITRACE_COMMON_LIBRARY_NAME
+                "[rocprof-sys][" OMNITRACE_COMMON_LIBRARY_NAME
                 "][%i][%li] %s(%s) was ignored :: %s\n",
                 getpid(), get_thread_index(), _name,
                 join(QuoteStrings{}, ", ", _args...).c_str(), _reason);
@@ -109,7 +109,7 @@ invoke(const char* _name, int _verbose, bool& _toggle, FuncT&& _func, Args... _a
                 fflush(stderr);
                 OMNITRACE_COMMON_LIBRARY_LOG_START
                 fprintf(stderr,
-                        "[omnitrace][" OMNITRACE_COMMON_LIBRARY_NAME
+                        "[rocprof-sys][" OMNITRACE_COMMON_LIBRARY_NAME
                         "][%i][%li][%i] %s(%s)\n",
                         getpid(), get_thread_index(), _lk, _name,
                         join(QuoteStrings{}, ", ", _args...).c_str());
@@ -123,7 +123,7 @@ invoke(const char* _name, int _verbose, bool& _toggle, FuncT&& _func, Args... _a
             fflush(stderr);
             OMNITRACE_COMMON_LIBRARY_LOG_START
             fprintf(stderr,
-                    "[omnitrace][" OMNITRACE_COMMON_LIBRARY_NAME
+                    "[rocprof-sys][" OMNITRACE_COMMON_LIBRARY_NAME
                     "][%i][%li] %s(%s) was guarded :: value = %i\n",
                     getpid(), get_thread_index(), _name,
                     join(QuoteStrings{}, ", ", _args...).c_str(), _lk);
@@ -135,7 +135,7 @@ invoke(const char* _name, int _verbose, bool& _toggle, FuncT&& _func, Args... _a
     {
         OMNITRACE_COMMON_LIBRARY_LOG_START
         fprintf(stderr,
-                "[omnitrace][" OMNITRACE_COMMON_LIBRARY_NAME
+                "[rocprof-sys][" OMNITRACE_COMMON_LIBRARY_NAME
                 "][%i][%li] %s(%s) ignored :: null function pointer\n",
                 getpid(), get_thread_index(), _name,
                 join(QuoteStrings{}, ", ", _args...).c_str());

@@ -156,12 +156,12 @@ file_exists(const std::string&);
             if(debug_msg || verbose_level >= LEVEL)                                      \
             {                                                                            \
                 fprintf(stderr, "%s", tim::log::color::fatal());                         \
-                fprintf(stderr, "[omnitrace][avail] Error! " __VA_ARGS__);               \
+                fprintf(stderr, "[rocprof-sys][avail] Error! " __VA_ARGS__);             \
                 fprintf(stderr, "%s", tim::log::color::end());                           \
             }                                                                            \
             char _buff[max_error_message_buffer_length];                                 \
             snprintf(_buff, max_error_message_buffer_length,                             \
-                     "[omnitrace][avail] Error! " __VA_ARGS__);                          \
+                     "[rocprof-sys][avail] Error! " __VA_ARGS__);                        \
             throw std::runtime_error(std::string{ _buff });                              \
         }                                                                                \
         else                                                                             \
@@ -169,7 +169,7 @@ file_exists(const std::string&);
             if(debug_msg || verbose_level >= LEVEL)                                      \
             {                                                                            \
                 fprintf(stderr, "%s", tim::log::color::warning());                       \
-                fprintf(stderr, "[omnitrace][avail] Warning! " __VA_ARGS__);             \
+                fprintf(stderr, "[rocprof-sys][avail] Warning! " __VA_ARGS__);           \
                 fprintf(stderr, "%s", tim::log::color::end());                           \
             }                                                                            \
         }                                                                                \
@@ -182,7 +182,7 @@ file_exists(const std::string&);
         if(debug_msg || verbose_level >= LEVEL)                                          \
         {                                                                                \
             fprintf(stderr, "%s", tim::log::color::info());                              \
-            fprintf(stderr, "[omnitrace][avail] " __VA_ARGS__);                          \
+            fprintf(stderr, "[rocprof-sys][avail] " __VA_ARGS__);                        \
             fprintf(stderr, "%s", tim::log::color::end());                               \
         }                                                                                \
         fflush(stderr);                                                                  \

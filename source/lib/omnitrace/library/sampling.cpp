@@ -1355,7 +1355,7 @@ post_process_perfetto(int64_t _tid, const std::vector<timer_sampling_data>& _tim
             }
         }
 
-        tracing::pop_perfetto_track(category::timer_sampling{}, "samples [omnitrace]",
+        tracing::pop_perfetto_track(category::timer_sampling{}, "samples [rocprof-sys]",
                                     _track, _end_ns, [&](::perfetto::EventContext ctx) {
                                         if(config::get_perfetto_annotations())
                                         {

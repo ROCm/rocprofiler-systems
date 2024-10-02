@@ -225,7 +225,7 @@ as_hex<void*>(void*, size_t);
         ::omnitrace::debug::flush();                                                     \
         ::omnitrace::debug::lock _debug_lk{};                                            \
         OMNITRACE_FPRINTF_STDERR_COLOR(COLOR);                                           \
-        fprintf(::omnitrace::debug::get_file(), "[omnitrace][%i][%li]%s",                \
+        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%li]%s",              \
                 OMNITRACE_DEBUG_PROCESS_IDENTIFIER, OMNITRACE_DEBUG_THREAD_IDENTIFIER,   \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
         fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
@@ -239,7 +239,7 @@ as_hex<void*>(void*, size_t);
         ::omnitrace::debug::flush();                                                     \
         ::omnitrace::debug::lock _debug_lk{};                                            \
         OMNITRACE_FPRINTF_STDERR_COLOR(COLOR);                                           \
-        fprintf(::omnitrace::debug::get_file(), "[omnitrace][%i][%li][%s]%s",            \
+        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%li][%s]%s",          \
                 OMNITRACE_DEBUG_PROCESS_IDENTIFIER, OMNITRACE_DEBUG_THREAD_IDENTIFIER,   \
                 OMNITRACE_FUNCTION,                                                      \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
@@ -262,7 +262,7 @@ as_hex<void*>(void*, size_t);
         ::omnitrace::debug::flush();                                                     \
         ::omnitrace::debug::lock _debug_lk{};                                            \
         OMNITRACE_FPRINTF_STDERR_COLOR(info);                                            \
-        fprintf(::omnitrace::debug::get_file(), "[omnitrace][%i][%li]%s",                \
+        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%li]%s",              \
                 OMNITRACE_DEBUG_PROCESS_IDENTIFIER, OMNITRACE_DEBUG_THREAD_IDENTIFIER,   \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
         fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
@@ -276,7 +276,7 @@ as_hex<void*>(void*, size_t);
         ::omnitrace::debug::flush();                                                     \
         ::omnitrace::debug::lock _debug_lk{};                                            \
         OMNITRACE_FPRINTF_STDERR_COLOR(info);                                            \
-        fprintf(::omnitrace::debug::get_file(), "[omnitrace][%i]%s",                     \
+        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i]%s",                   \
                 OMNITRACE_DEBUG_PROCESS_IDENTIFIER,                                      \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
         fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
@@ -290,7 +290,7 @@ as_hex<void*>(void*, size_t);
         ::omnitrace::debug::flush();                                                     \
         ::omnitrace::debug::lock _debug_lk{};                                            \
         OMNITRACE_FPRINTF_STDERR_COLOR(info);                                            \
-        fprintf(::omnitrace::debug::get_file(), "[omnitrace][%i][%li][%s]%s",            \
+        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%li][%s]%s",          \
                 OMNITRACE_DEBUG_PROCESS_IDENTIFIER, OMNITRACE_DEBUG_THREAD_IDENTIFIER,   \
                 OMNITRACE_FUNCTION,                                                      \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
@@ -305,7 +305,7 @@ as_hex<void*>(void*, size_t);
         ::omnitrace::debug::flush();                                                     \
         ::omnitrace::debug::lock _debug_lk{};                                            \
         OMNITRACE_FPRINTF_STDERR_COLOR(info);                                            \
-        fprintf(::omnitrace::debug::get_file(), "[omnitrace][%i][%s]%s",                 \
+        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%s]%s",               \
                 OMNITRACE_DEBUG_PROCESS_IDENTIFIER, OMNITRACE_FUNCTION,                  \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
         fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
@@ -321,7 +321,7 @@ as_hex<void*>(void*, size_t);
         ::omnitrace::debug::flush();                                                     \
         ::omnitrace::debug::lock _debug_lk{};                                            \
         OMNITRACE_FPRINTF_STDERR_COLOR(warning);                                         \
-        fprintf(::omnitrace::debug::get_file(), "[omnitrace][%i][%li]%s",                \
+        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%li]%s",              \
                 OMNITRACE_DEBUG_PROCESS_IDENTIFIER, OMNITRACE_DEBUG_THREAD_IDENTIFIER,   \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
         fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
@@ -335,7 +335,7 @@ as_hex<void*>(void*, size_t);
         ::omnitrace::debug::flush();                                                     \
         ::omnitrace::debug::lock _debug_lk{};                                            \
         OMNITRACE_FPRINTF_STDERR_COLOR(warning);                                         \
-        fprintf(::omnitrace::debug::get_file(), "[omnitrace][%i]%s",                     \
+        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i]%s",                   \
                 OMNITRACE_DEBUG_PROCESS_IDENTIFIER,                                      \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
         fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
@@ -349,7 +349,7 @@ as_hex<void*>(void*, size_t);
         ::omnitrace::debug::flush();                                                     \
         ::omnitrace::debug::lock _debug_lk{};                                            \
         OMNITRACE_FPRINTF_STDERR_COLOR(warning);                                         \
-        fprintf(::omnitrace::debug::get_file(), "[omnitrace][%i][%li][%s]%s",            \
+        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%li][%s]%s",          \
                 OMNITRACE_DEBUG_PROCESS_IDENTIFIER, OMNITRACE_DEBUG_THREAD_IDENTIFIER,   \
                 OMNITRACE_FUNCTION,                                                      \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
@@ -364,7 +364,7 @@ as_hex<void*>(void*, size_t);
         ::omnitrace::debug::flush();                                                     \
         ::omnitrace::debug::lock _debug_lk{};                                            \
         OMNITRACE_FPRINTF_STDERR_COLOR(warning);                                         \
-        fprintf(::omnitrace::debug::get_file(), "[omnitrace][%i][%s]%s",                 \
+        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%s]%s",               \
                 OMNITRACE_DEBUG_PROCESS_IDENTIFIER, OMNITRACE_FUNCTION,                  \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
         fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
@@ -377,9 +377,9 @@ as_hex<void*>(void*, size_t);
     if(OMNITRACE_UNLIKELY((COND)))                                                       \
     {                                                                                    \
         char _msg_buffer[OMNITRACE_DEBUG_BUFFER_LEN];                                    \
-        snprintf(_msg_buffer, OMNITRACE_DEBUG_BUFFER_LEN, "[omnitrace][%i][%li][%s]%s",  \
-                 OMNITRACE_DEBUG_PROCESS_IDENTIFIER, OMNITRACE_DEBUG_THREAD_IDENTIFIER,  \
-                 OMNITRACE_FUNCTION,                                                     \
+        snprintf(_msg_buffer, OMNITRACE_DEBUG_BUFFER_LEN,                                \
+                 "[rocprof-sys][%i][%li][%s]%s", OMNITRACE_DEBUG_PROCESS_IDENTIFIER,     \
+                 OMNITRACE_DEBUG_THREAD_IDENTIFIER, OMNITRACE_FUNCTION,                  \
                  ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                \
         auto len = strlen(_msg_buffer);                                                  \
         snprintf(_msg_buffer + len, OMNITRACE_DEBUG_BUFFER_LEN - len, __VA_ARGS__);      \
@@ -391,7 +391,7 @@ as_hex<void*>(void*, size_t);
     if(OMNITRACE_UNLIKELY((COND)))                                                       \
     {                                                                                    \
         char _msg_buffer[OMNITRACE_DEBUG_BUFFER_LEN];                                    \
-        snprintf(_msg_buffer, OMNITRACE_DEBUG_BUFFER_LEN, "[omnitrace][%i][%s]%s",       \
+        snprintf(_msg_buffer, OMNITRACE_DEBUG_BUFFER_LEN, "[rocprof-sys][%i][%s]%s",     \
                  OMNITRACE_DEBUG_PROCESS_IDENTIFIER, OMNITRACE_FUNCTION,                 \
                  ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                \
         auto len = strlen(_msg_buffer);                                                  \
@@ -429,7 +429,7 @@ as_hex<void*>(void*, size_t);
     {                                                                                    \
         ::omnitrace::debug::flush();                                                     \
         OMNITRACE_FPRINTF_STDERR_COLOR(fatal);                                           \
-        fprintf(::omnitrace::debug::get_file(), "[omnitrace][%i][%li]%s",                \
+        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%li]%s",              \
                 OMNITRACE_DEBUG_PROCESS_IDENTIFIER, OMNITRACE_DEBUG_THREAD_IDENTIFIER,   \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
         fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
@@ -444,7 +444,7 @@ as_hex<void*>(void*, size_t);
     {                                                                                    \
         ::omnitrace::debug::flush();                                                     \
         OMNITRACE_FPRINTF_STDERR_COLOR(fatal);                                           \
-        fprintf(::omnitrace::debug::get_file(), "[omnitrace][%i]%s",                     \
+        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i]%s",                   \
                 OMNITRACE_DEBUG_PROCESS_IDENTIFIER,                                      \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
         fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
@@ -459,7 +459,7 @@ as_hex<void*>(void*, size_t);
     {                                                                                    \
         ::omnitrace::debug::flush();                                                     \
         OMNITRACE_FPRINTF_STDERR_COLOR(fatal);                                           \
-        fprintf(::omnitrace::debug::get_file(), "[omnitrace][%i][%li][%s]%s",            \
+        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%li][%s]%s",          \
                 OMNITRACE_DEBUG_PROCESS_IDENTIFIER, OMNITRACE_DEBUG_THREAD_IDENTIFIER,   \
                 OMNITRACE_FUNCTION,                                                      \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
@@ -475,7 +475,7 @@ as_hex<void*>(void*, size_t);
     {                                                                                    \
         ::omnitrace::debug::flush();                                                     \
         OMNITRACE_FPRINTF_STDERR_COLOR(fatal);                                           \
-        fprintf(::omnitrace::debug::get_file(), "[omnitrace][%i][%s]%s",                 \
+        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%s]%s",               \
                 OMNITRACE_DEBUG_PROCESS_IDENTIFIER, OMNITRACE_FUNCTION,                  \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
         fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \

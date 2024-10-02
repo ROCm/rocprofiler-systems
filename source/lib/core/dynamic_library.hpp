@@ -77,7 +77,7 @@ dynamic_library::invoke(std::string_view _name, RetT (*&_func)(Args...), Args...
         }
         else
         {
-            fprintf(stderr, "[omnitrace][pid=%i]> %s :: %s\n", getpid(), _name.data(),
+            fprintf(stderr, "[rocprof-sys][pid=%i]> %s :: %s\n", getpid(), _name.data(),
                     dlerror());
         }
     }

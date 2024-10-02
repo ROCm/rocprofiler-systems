@@ -68,7 +68,7 @@
     {                                                                                    \
         fflush(stderr);                                                                  \
         OMNITRACE_ENVIRON_LOG_START                                                      \
-        fprintf(stderr, "[omnitrace]" OMNITRACE_ENVIRON_LOG_NAME "[%i] ", getpid());     \
+        fprintf(stderr, "[rocprof-sys]" OMNITRACE_ENVIRON_LOG_NAME "[%i] ", getpid());   \
         fprintf(stderr, __VA_ARGS__);                                                    \
         OMNITRACE_ENVIRON_LOG_END                                                        \
         fflush(stderr);                                                                  \
@@ -108,7 +108,7 @@ get_env_impl(std::string_view env_id, int _default)
         } catch(std::exception& _e)
         {
             fprintf(stderr,
-                    "[omnitrace][get_env] Exception thrown converting getenv(\"%s\") = "
+                    "[rocprof-sys][get_env] Exception thrown converting getenv(\"%s\") = "
                     "%s to integer :: %s. Using default value of %i\n",
                     env_id.data(), env_var, _e.what(), _default);
         }

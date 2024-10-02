@@ -454,9 +454,9 @@ main(int argc, char** argv)
 
     if(verbose_level > 1)
     {
-        std::cout << "[omnitrace][exe][original]: " << cmd_string(argc, argv)
+        std::cout << "[rocprof-sys][exe][original]: " << cmd_string(argc, argv)
                   << std::endl;
-        std::cout << "[omnitrace][exe][cfg-args]: " << cmd_string(_argc, _argv)
+        std::cout << "[rocprof-sys][exe][cfg-args]: " << cmd_string(_argc, _argv)
                   << std::endl;
     }
 

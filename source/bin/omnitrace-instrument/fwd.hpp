@@ -272,15 +272,15 @@ extern std::unique_ptr<std::ofstream> log_ofs;
         if(werror || LEVEL < 0)                                                          \
         {                                                                                \
             if(debug_print || verbose_level >= LEVEL)                                    \
-                fprintf(stderr, "[omnitrace][exe] Error! " __VA_ARGS__);                 \
+                fprintf(stderr, "[rocprof-sys][exe] Error! " __VA_ARGS__);               \
             char _buff[FUNCNAMELEN];                                                     \
-            sprintf(_buff, "[omnitrace][exe] Error! " __VA_ARGS__);                      \
+            sprintf(_buff, "[rocprof-sys][exe] Error! " __VA_ARGS__);                    \
             throw std::runtime_error(std::string{ _buff });                              \
         }                                                                                \
         else                                                                             \
         {                                                                                \
             if(debug_print || verbose_level >= LEVEL)                                    \
-                fprintf(stderr, "[omnitrace][exe] Warning! " __VA_ARGS__);               \
+                fprintf(stderr, "[rocprof-sys][exe] Warning! " __VA_ARGS__);             \
         }                                                                                \
         fflush(stderr);                                                                  \
     }
@@ -292,7 +292,7 @@ extern std::unique_ptr<std::ofstream> log_ofs;
         snprintf(_logmsgbuff, FUNCNAMELEN, __VA_ARGS__);                                 \
         OMNITRACE_ADD_LOG_ENTRY(_logmsgbuff);                                            \
         if(debug_print || verbose_level >= LEVEL)                                        \
-            fprintf(stdout, "[omnitrace][exe] " __VA_ARGS__);                            \
+            fprintf(stdout, "[rocprof-sys][exe] " __VA_ARGS__);                          \
         fflush(stdout);                                                                  \
     }
 
