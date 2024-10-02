@@ -39,7 +39,7 @@ def generate_custom(args, cmake_args, ctest_args):
     NAME = re.sub(r"(.*)-([0-9]+)/merge", "PR_\\2_\\1", NAME)
 
     return f"""
-        set(CTEST_PROJECT_NAME "Omnitrace")
+        set(CTEST_PROJECT_NAME "rocprofiler-systems")
         set(CTEST_NIGHTLY_START_TIME "05:00:00 UTC")
 
         set(CTEST_DROP_METHOD "http")
@@ -138,7 +138,7 @@ def parse_cdash_args(args):
     BINARY_DIR = os.path.join(SOURCE_DIR, "build")
     SITE = socket.gethostname()
     NAME = None
-    SUBMIT_URL = "my.cdash.org/submit.php?project=Omnitrace"
+    SUBMIT_URL = "my.cdash.org/submit.php?project=rocprofiler-systems"
     CODECOV = False
 
     parser = argparse.ArgumentParser()
