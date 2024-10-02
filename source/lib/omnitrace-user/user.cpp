@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#if !defined(OMNITRACE_USER_SOURCE)
-#    define OMNITRACE_USER_SOURCE 1
+#if !defined(ROCPROFSYS_USER_SOURCE)
+#    define ROCPROFSYS_USER_SOURCE 1
 #endif
 
 #include "omnitrace/user.h"
@@ -42,15 +42,15 @@ using region_func_t           = omnitrace_region_func_t;
 using annotated_region_func_t = omnitrace_annotated_region_func_t;
 using user_callbacks_t        = omnitrace_user_callbacks_t;
 
-user_callbacks_t _callbacks = OMNITRACE_USER_CALLBACKS_INIT;
+user_callbacks_t _callbacks = ROCPROFSYS_USER_CALLBACKS_INIT;
 
 template <typename... Args>
 inline auto
 invoke(int (*_func)(Args...), Args... args)
 {
-    if(!_func) return OMNITRACE_USER_ERROR_NO_BINDING;
-    if((*_func)(args...) != 0) return OMNITRACE_USER_ERROR_INTERNAL;
-    return OMNITRACE_USER_SUCCESS;
+    if(!_func) return ROCPROFSYS_USER_ERROR_NO_BINDING;
+    if((*_func)(args...) != 0) return ROCPROFSYS_USER_ERROR_INTERNAL;
+    return ROCPROFSYS_USER_SUCCESS;
 }
 }  // namespace
 
@@ -113,12 +113,12 @@ extern "C"
 
         switch(mode)
         {
-            case OMNITRACE_USER_REPLACE_CONFIG:
+            case ROCPROFSYS_USER_REPLACE_CONFIG:
             {
                 _callbacks = inp;
                 break;
             }
-            case OMNITRACE_USER_UNION_CONFIG:
+            case ROCPROFSYS_USER_UNION_CONFIG:
             {
                 auto _update = [](auto& _lhs, auto _rhs) {
                     if(_rhs) _lhs = _rhs;
@@ -140,7 +140,7 @@ extern "C"
                 _callbacks = _v;
                 break;
             }
-            case OMNITRACE_USER_INTERSECT_CONFIG:
+            case ROCPROFSYS_USER_INTERSECT_CONFIG:
             {
                 auto _update = [](auto& _lhs, auto _rhs) {
                     if(_lhs != _rhs) _lhs = nullptr;
@@ -165,25 +165,25 @@ extern "C"
             default:
             {
                 if(out) *out = _former;
-                return OMNITRACE_USER_ERROR_INVALID_CATEGORY;
+                return ROCPROFSYS_USER_ERROR_INVALID_CATEGORY;
             }
         }
 
         if(out) *out = _former;
 
-        return OMNITRACE_USER_SUCCESS;
+        return ROCPROFSYS_USER_SUCCESS;
     }
 
     const char* omnitrace_user_error_string(int error_category)
     {
         switch(error_category)
         {
-            case OMNITRACE_USER_SUCCESS: return "Success";
-            case OMNITRACE_USER_ERROR_NO_BINDING: return "Function pointer not assigned";
-            case OMNITRACE_USER_ERROR_BAD_VALUE: return "Invalid value was provided";
-            case OMNITRACE_USER_ERROR_INVALID_CATEGORY:
+            case ROCPROFSYS_USER_SUCCESS: return "Success";
+            case ROCPROFSYS_USER_ERROR_NO_BINDING: return "Function pointer not assigned";
+            case ROCPROFSYS_USER_ERROR_BAD_VALUE: return "Invalid value was provided";
+            case ROCPROFSYS_USER_ERROR_INVALID_CATEGORY:
                 return "Invalid user binding category";
-            case OMNITRACE_USER_ERROR_INTERNAL:
+            case ROCPROFSYS_USER_ERROR_INTERNAL:
                 return "An unknown error occurred within omnitrace library";
             default: break;
         }

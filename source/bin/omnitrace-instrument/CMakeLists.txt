@@ -38,17 +38,17 @@ target_link_libraries(
 set_target_properties(
     rocprofsys-instrument
     PROPERTIES BUILD_RPATH "\$ORIGIN:\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
-               INSTALL_RPATH "${OMNITRACE_EXE_INSTALL_RPATH}"
+               INSTALL_RPATH "${ROCPROFSYS_EXE_INSTALL_RPATH}"
                INSTALL_RPATH_USE_LINK_PATH ON
                OUTPUT_NAME "rocprof-sys-instrument")
 
-if(OMNITRACE_BUILD_DYNINST)
-    target_compile_definitions(rocprofsys-instrument PRIVATE OMNITRACE_BUILD_DYNINST=1)
+if(ROCPROFSYS_BUILD_DYNINST)
+    target_compile_definitions(rocprofsys-instrument PRIVATE ROCPROFSYS_BUILD_DYNINST=1)
 endif()
 
 add_target_flag_if_avail(rocprofsys-instrument "-Wno-deprecated-declarations")
 
-omnitrace_strip_target(rocprofsys-instrument)
+rocprofsys_strip_target(rocprofsys-instrument)
 
 if(CMAKE_BUILD_TYPE MATCHES "^(DEBUG|Debug)")
     string(REPLACE " " ";" _FLAGS "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")

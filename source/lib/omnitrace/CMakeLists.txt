@@ -54,9 +54,9 @@ set_target_properties(
     PROPERTIES OUTPUT_NAME rocprof-sys
                VERSION ${PROJECT_VERSION}
                SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-               INSTALL_RPATH "${OMNITRACE_LIB_INSTALL_RPATH}")
+               INSTALL_RPATH "${ROCPROFSYS_LIB_INSTALL_RPATH}")
 
-omnitrace_strip_target(rocprofsys-shared-library)
+rocprofsys_strip_target(rocprofsys-shared-library)
 
 install(
     TARGETS rocprofsys-shared-library

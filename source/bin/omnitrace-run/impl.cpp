@@ -293,7 +293,7 @@ parse_args(int argc, char** argv, parser_data_t& _parser_data, bool& _fork_exec)
     });
 
     parser.enable_help("", "Usage: rocprof-sys-run <OPTIONS> -- <COMMAND> <ARGS>");
-    parser.enable_version("rocprof-sys-run", OMNITRACE_ARGPARSE_VERSION_INFO);
+    parser.enable_version("rocprof-sys-run", ROCPROFSYS_ARGPARSE_VERSION_INFO);
 
     auto _cols = std::get<0>(console::get_columns());
     if(_cols > parser.get_help_width() + 8)

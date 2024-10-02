@@ -34,26 +34,26 @@ set(library_headers
 
 target_sources(rocprofsys-object-library PRIVATE ${library_sources} ${library_headers})
 
-if(OMNITRACE_USE_ROCTRACER OR OMNITRACE_USE_ROCPROFILER)
+if(ROCPROFSYS_USE_ROCTRACER OR ROCPROFSYS_USE_ROCPROFILER)
     target_sources(rocprofsys-object-library PRIVATE ${CMAKE_CURRENT_LIST_DIR}/rocm.cpp)
 endif()
 
-if(OMNITRACE_USE_ROCTRACER)
+if(ROCPROFSYS_USE_ROCTRACER)
     target_sources(rocprofsys-object-library
                    PRIVATE ${CMAKE_CURRENT_LIST_DIR}/roctracer.cpp)
 endif()
 
-if(OMNITRACE_USE_RCCL)
+if(ROCPROFSYS_USE_RCCL)
     target_sources(rocprofsys-object-library PRIVATE ${CMAKE_CURRENT_LIST_DIR}/rcclp.cpp)
 endif()
 
-if(OMNITRACE_USE_ROCPROFILER)
+if(ROCPROFSYS_USE_ROCPROFILER)
     target_sources(
         rocprofsys-object-library PRIVATE ${CMAKE_CURRENT_LIST_DIR}/rocprofiler.cpp
                                           ${CMAKE_CURRENT_LIST_DIR}/rocprofiler.hpp)
 endif()
 
-if(OMNITRACE_USE_ROCM_SMI)
+if(ROCPROFSYS_USE_ROCM_SMI)
     target_sources(rocprofsys-object-library
                    PRIVATE ${CMAKE_CURRENT_LIST_DIR}/rocm_smi.cpp)
 endif()

@@ -164,20 +164,20 @@ bool backtrace_metrics::operator()(Tp) const
 }  // namespace component
 }  // namespace omnitrace
 
-#if !defined(OMNITRACE_EXTERN_COMPONENTS) ||                                             \
-    (defined(OMNITRACE_EXTERN_COMPONENTS) && OMNITRACE_EXTERN_COMPONENTS > 0)
+#if !defined(ROCPROFSYS_EXTERN_COMPONENTS) ||                                             \
+    (defined(ROCPROFSYS_EXTERN_COMPONENTS) && ROCPROFSYS_EXTERN_COMPONENTS > 0)
 
 #    include <timemory/operations.hpp>
 
-OMNITRACE_DECLARE_EXTERN_COMPONENT(
+ROCPROFSYS_DECLARE_EXTERN_COMPONENT(
     TIMEMORY_ESC(data_tracker<double, omnitrace::component::backtrace_wall_clock>), true,
     double)
 
-OMNITRACE_DECLARE_EXTERN_COMPONENT(
+ROCPROFSYS_DECLARE_EXTERN_COMPONENT(
     TIMEMORY_ESC(data_tracker<double, omnitrace::component::backtrace_cpu_clock>), true,
     double)
 
-OMNITRACE_DECLARE_EXTERN_COMPONENT(
+ROCPROFSYS_DECLARE_EXTERN_COMPONENT(
     TIMEMORY_ESC(data_tracker<double, omnitrace::component::backtrace_fraction>), true,
     double)
 

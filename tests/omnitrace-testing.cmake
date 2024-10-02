@@ -15,7 +15,7 @@ if(EXISTS /etc/os-release AND NOT IS_DIRECTORY /etc/os-release)
     unset(_OS_RELEASE_RAW)
 endif()
 
-omnitrace_message(STATUS "OS release: ${_OS_RELEASE}")
+rocprofsys_message(STATUS "OS release: ${_OS_RELEASE}")
 
 include(ProcessorCount)
 if(NOT DEFINED NUM_PROCS_REAL)
@@ -165,11 +165,11 @@ set(_window_environment
 
 set(MPIEXEC_EXECUTABLE_ARGS)
 option(
-    OMNITRACE_CI_MPI_RUN_AS_ROOT
+    ROCPROFSYS_CI_MPI_RUN_AS_ROOT
     "Enabled --allow-run-as-root in MPI tests with OpenMPI. Enable with care! Should only be in docker containers"
     OFF)
-mark_as_advanced(OMNITRACE_CI_MPI_RUN_AS_ROOT)
-if(OMNITRACE_CI_MPI_RUN_AS_ROOT)
+mark_as_advanced(ROCPROFSYS_CI_MPI_RUN_AS_ROOT)
+if(ROCPROFSYS_CI_MPI_RUN_AS_ROOT)
     execute_process(
         COMMAND ${MPIEXEC_EXECUTABLE} --allow-run-as-root --help
         RESULT_VARIABLE _mpiexec_allow_run_as_root
@@ -184,12 +184,12 @@ execute_process(
     RESULT_VARIABLE _mpiexec_oversubscribe
     OUTPUT_QUIET ERROR_QUIET)
 
-set(omnitrace_perf_event_paranoid "4")
-set(omnitrace_cap_sys_admin "1")
-set(omnitrace_cap_perfmon "1")
+set(rocprofsys_perf_event_paranoid "4")
+set(rocprofsys_cap_sys_admin "1")
+set(rocprofsys_cap_perfmon "1")
 
 if(EXISTS "/proc/sys/kernel/perf_event_paranoid")
-    file(STRINGS "/proc/sys/kernel/perf_event_paranoid" omnitrace_perf_event_paranoid
+    file(STRINGS "/proc/sys/kernel/perf_event_paranoid" rocprofsys_perf_event_paranoid
          LIMIT_COUNT 1)
 endif()
 
@@ -204,19 +204,19 @@ if(_capchk_compile EQUAL 0)
     execute_process(
         COMMAND ${PROJECT_BINARY_DIR}/bin/rocprof-sys-capchk CAP_SYS_ADMIN effective
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-        RESULT_VARIABLE omnitrace_cap_sys_admin
+        RESULT_VARIABLE rocprofsys_cap_sys_admin
         OUTPUT_QUIET ERROR_QUIET)
 
     execute_process(
         COMMAND ${PROJECT_BINARY_DIR}/bin/rocprof-sys-capchk CAP_PERFMON effective
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-        RESULT_VARIABLE omnitrace_cap_perfmon
+        RESULT_VARIABLE rocprofsys_cap_perfmon
         OUTPUT_QUIET ERROR_QUIET)
 endif()
 
-omnitrace_message(STATUS "perf_event_paranoid: ${omnitrace_perf_event_paranoid}")
-omnitrace_message(STATUS "CAP_SYS_ADMIN: ${omnitrace_cap_sys_admin}")
-omnitrace_message(STATUS "CAP_PERFMON: ${omnitrace_cap_perfmon}")
+rocprofsys_message(STATUS "perf_event_paranoid: ${rocprofsys_perf_event_paranoid}")
+rocprofsys_message(STATUS "CAP_SYS_ADMIN: ${rocprofsys_cap_sys_admin}")
+rocprofsys_message(STATUS "CAP_PERFMON: ${rocprofsys_cap_perfmon}")
 
 if(_mpiexec_oversubscribe EQUAL 0)
     list(APPEND MPIEXEC_EXECUTABLE_ARGS --oversubscribe)
@@ -225,17 +225,17 @@ endif()
 # -------------------------------------------------------------------------------------- #
 
 set(_VALID_GPU OFF)
-if(OMNITRACE_USE_HIP AND (NOT DEFINED OMNITRACE_CI_GPU OR OMNITRACE_CI_GPU))
+if(ROCPROFSYS_USE_HIP AND (NOT DEFINED ROCPROFSYS_CI_GPU OR ROCPROFSYS_CI_GPU))
     set(_VALID_GPU ON)
     find_program(
-        OMNITRACE_ROCM_SMI_EXE
+        ROCPROFSYS_ROCM_SMI_EXE
         NAMES rocm-smi
         HINTS ${ROCmVersion_DIR}
         PATHS ${ROCmVersion_DIR}
         PATH_SUFFIXES bin)
-    if(OMNITRACE_ROCM_SMI_EXE)
+    if(ROCPROFSYS_ROCM_SMI_EXE)
         execute_process(
-            COMMAND ${OMNITRACE_ROCM_SMI_EXE}
+            COMMAND ${ROCPROFSYS_ROCM_SMI_EXE}
             OUTPUT_VARIABLE _RSMI_OUT
             ERROR_VARIABLE _RSMI_ERR
             RESULT_VARIABLE _RSMI_RET)
@@ -248,7 +248,7 @@ if(OMNITRACE_USE_HIP AND (NOT DEFINED OMNITRACE_CI_GPU OR OMNITRACE_CI_GPU))
         endif()
     endif()
     if(NOT _VALID_GPU)
-        omnitrace_message(AUTHOR_WARNING
+        rocprofsys_message(AUTHOR_WARNING
                           "rocm-smi did not successfully run. Disabling GPU tests...")
     endif()
 endif()
@@ -260,12 +260,12 @@ endif()
 
 # -------------------------------------------------------------------------------------- #
 
-macro(OMNITRACE_CHECK_PASS_FAIL_REGEX NAME PASS FAIL)
+macro(ROCPROFSYS_CHECK_PASS_FAIL_REGEX NAME PASS FAIL)
     if(NOT "${${PASS}}" STREQUAL ""
        AND NOT "${${FAIL}}" STREQUAL ""
        AND NOT "${${FAIL}}" MATCHES "\\|ROCPROFSYS_ABORT_FAIL_REGEX"
        AND NOT "${${FAIL}}" MATCHES "${ROCPROFSYS_ABORT_FAIL_REGEX}")
-        omnitrace_message(
+        rocprofsys_message(
             FATAL_ERROR
             "${NAME} has set pass and fail regexes but fail regex does not include '|ROCPROFSYS_ABORT_FAIL_REGEX'"
             )
@@ -281,7 +281,7 @@ endmacro()
 
 # -------------------------------------------------------------------------------------- #
 
-function(OMNITRACE_WRITE_TEST_CONFIG _FILE _ENV)
+function(ROCPROFSYS_WRITE_TEST_CONFIG _FILE _ENV)
     set(_ENV_ONLY
         "ROCPROFSYS_(CI|CI_TIMEOUT|MODE|USE_MPIP|DEBUG_[A-Z_]+|FORCE_ROCPROFILER_INIT|DEFAULT_MIN_INSTRUCTIONS|MONOCHROME|VERBOSE)="
         )
@@ -330,8 +330,8 @@ endfunction()
 
 # -------------------------------------------------------------------------------------- #
 # extends the timeout when sanitizers are used due to slowdown
-function(OMNITRACE_ADJUST_TIMEOUT_FOR_SANITIZER _VAR)
-    if(OMNITRACE_USE_SANITIZER)
+function(ROCPROFSYS_ADJUST_TIMEOUT_FOR_SANITIZER _VAR)
+    if(ROCPROFSYS_USE_SANITIZER)
         math(EXPR _timeout_v "2 * ${${_VAR}}")
         set(${_VAR}
             "${_timeout_v}"
@@ -341,20 +341,20 @@ endfunction()
 
 # -------------------------------------------------------------------------------------- #
 # extends the timeout when sanitizers are used due to slowdown
-macro(OMNITRACE_PATCH_SANITIZER_ENVIRONMENT _VAR)
-    if(OMNITRACE_USE_SANITIZER)
-        if(OMNITRACE_USE_SANITIZER)
-            if(OMNITRACE_SANITIZER_TYPE MATCHES "address")
+macro(ROCPROFSYS_PATCH_SANITIZER_ENVIRONMENT _VAR)
+    if(ROCPROFSYS_USE_SANITIZER)
+        if(ROCPROFSYS_USE_SANITIZER)
+            if(ROCPROFSYS_SANITIZER_TYPE MATCHES "address")
                 if(NOT ASAN_LIBRARY)
-                    omnitrace_message(
+                    rocprofsys_message(
                         FATAL_ERROR
                         "Please define the realpath to the address sanitizer library in variable ASAN_LIBRARY"
                         )
                 endif()
                 list(APPEND ${_VAR} "LD_PRELOAD=${ASAN_LIBRARY}")
-            elseif(OMNITRACE_SANITIZER_TYPE MATCHES "thread")
+            elseif(ROCPROFSYS_SANITIZER_TYPE MATCHES "thread")
                 if(NOT TSAN_LIBRARY)
-                    omnitrace_message(
+                    rocprofsys_message(
                         FATAL_ERROR
                         "Please define the realpath to the thread sanitizer library in variable TSAN_LIBRARY"
                         )
@@ -367,7 +367,7 @@ endmacro()
 
 # -------------------------------------------------------------------------------------- #
 
-function(OMNITRACE_ADD_TEST)
+function(ROCPROFSYS_ADD_TEST)
     foreach(_PREFIX SAMPLING RUNTIME REWRITE REWRITE_RUN BASELINE)
         foreach(_TYPE PASS FAIL SKIP)
             list(APPEND _REGEX_OPTS "${_PREFIX}_${_TYPE}_REGEX")
@@ -388,7 +388,7 @@ function(OMNITRACE_ADD_TEST)
     endforeach()
 
     if(TEST_GPU AND NOT _VALID_GPU)
-        omnitrace_message(STATUS
+        rocprofsys_message(STATUS
                           "${TEST_NAME} requires a GPU and no valid GPUs were found")
         return()
     endif()
@@ -470,7 +470,7 @@ function(OMNITRACE_ADD_TEST)
             list(APPEND TEST_ENVIRONMENT "ROCPROFSYS_USE_PID=OFF")
         endif()
 
-        if(NOT TEST_SKIP_BASELINE AND NOT OMNITRACE_USE_SANITIZER)
+        if(NOT TEST_SKIP_BASELINE AND NOT ROCPROFSYS_USE_SANITIZER)
             add_test(
                 NAME ${TEST_NAME}-baseline
                 COMMAND ${COMMAND_PREFIX} $<TARGET_FILE:${TEST_TARGET}> ${TEST_RUN_ARGS}
@@ -503,7 +503,7 @@ function(OMNITRACE_ADD_TEST)
                 WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
         endif()
 
-        if(NOT TEST_SKIP_RUNTIME AND NOT OMNITRACE_USE_SANITIZER)
+        if(NOT TEST_SKIP_RUNTIME AND NOT ROCPROFSYS_USE_SANITIZER)
             add_test(
                 NAME ${TEST_NAME}-runtime-instrument
                 COMMAND $<TARGET_FILE:rocprofsys-instrument> ${TEST_RUNTIME_ARGS} --
@@ -563,10 +563,10 @@ function(OMNITRACE_ADD_TEST)
             endif()
 
             if("${_TEST}" MATCHES "binary-rewrite-run|runtime-instrument|sampling")
-                omnitrace_patch_sanitizer_environment(_environ)
+                rocprofsys_patch_sanitizer_environment(_environ)
             endif()
 
-            omnitrace_adjust_timeout_for_sanitizer(_timeout)
+            rocprofsys_adjust_timeout_for_sanitizer(_timeout)
 
             foreach(_TYPE PASS FAIL SKIP)
                 if(_REGEX_VAR)
@@ -578,10 +578,10 @@ function(OMNITRACE_ADD_TEST)
 
             list(APPEND _environ "ROCPROFSYS_CI_TIMEOUT=${_timeout}")
 
-            omnitrace_check_pass_fail_regex("${TEST_NAME}-${_TEST}" "${_PASS_REGEX}"
+            rocprofsys_check_pass_fail_regex("${TEST_NAME}-${_TEST}" "${_PASS_REGEX}"
                                             "${_FAIL_REGEX}")
             if(TEST ${TEST_NAME}-${_TEST})
-                omnitrace_write_test_config(${TEST_NAME}-${_TEST}.cfg _environ)
+                rocprofsys_write_test_config(${TEST_NAME}-${_TEST}.cfg _environ)
                 set_tests_properties(
                     ${TEST_NAME}-${_TEST}
                     PROPERTIES ENVIRONMENT
@@ -604,7 +604,7 @@ endfunction()
 
 # -------------------------------------------------------------------------------------- #
 
-function(OMNITRACE_ADD_CAUSAL_TEST)
+function(ROCPROFSYS_ADD_CAUSAL_TEST)
     foreach(_PREFIX CAUSAL CAUSAL_VALIDATE)
         foreach(_TYPE PASS FAIL SKIP)
             list(APPEND _REGEX_OPTS "${_PREFIX}_${_TYPE}_REGEX")
@@ -620,7 +620,7 @@ function(OMNITRACE_ADD_CAUSAL_TEST)
         ${ARGN})
 
     if(NOT DEFINED TEST_CAUSAL_MODE)
-        omnitrace_message(FATAL_ERROR "${TEST_NAME} :: CAUSAL_MODE must be defined")
+        rocprofsys_message(FATAL_ERROR "${TEST_NAME} :: CAUSAL_MODE must be defined")
     endif()
 
     if(NOT TEST_CAUSAL_TIMEOUT)
@@ -709,7 +709,7 @@ function(OMNITRACE_ADD_CAUSAL_TEST)
 
             set(_timeout ${TEST_CAUSAL_TIMEOUT})
 
-            omnitrace_adjust_timeout_for_sanitizer(_timeout)
+            rocprofsys_adjust_timeout_for_sanitizer(_timeout)
 
             if("${_TEST}" MATCHES "validate-causal")
                 set(_timeout ${TEST_CAUSAL_VALIDATE_TIMEOUT})
@@ -734,8 +734,8 @@ function(OMNITRACE_ADD_CAUSAL_TEST)
             endforeach()
 
             list(APPEND _environ "ROCPROFSYS_CI_TIMEOUT=${_timeout}")
-            omnitrace_write_test_config(${_NAME}.cfg _environ)
-            omnitrace_check_pass_fail_regex("${_NAME}" "${_PASS_REGEX}" "${_FAIL_REGEX}")
+            rocprofsys_write_test_config(${_NAME}.cfg _environ)
+            rocprofsys_check_pass_fail_regex("${_NAME}" "${_PASS_REGEX}" "${_FAIL_REGEX}")
             set_tests_properties(
                 ${_NAME}
                 PROPERTIES ENVIRONMENT
@@ -757,8 +757,8 @@ endfunction()
 
 # -------------------------------------------------------------------------------------- #
 
-function(OMNITRACE_ADD_PYTHON_TEST)
-    if(NOT OMNITRACE_USE_PYTHON)
+function(ROCPROFSYS_ADD_PYTHON_TEST)
+    if(NOT ROCPROFSYS_USE_PYTHON)
         return()
     endif()
 
@@ -774,7 +774,7 @@ function(OMNITRACE_ADD_PYTHON_TEST)
         set(TEST_TIMEOUT 120)
     endif()
 
-    omnitrace_adjust_timeout_for_sanitizer(TEST_TIMEOUT)
+    rocprofsys_adjust_timeout_for_sanitizer(TEST_TIMEOUT)
 
     set(PYTHON_EXECUTABLE "${TEST_PYTHON_EXECUTABLE}")
 
@@ -836,7 +836,7 @@ function(OMNITRACE_ADD_PYTHON_TEST)
         # assign fail variable to fail regex
         set(_FAIL_REGEX TEST_FAIL_REGEX)
 
-        omnitrace_check_pass_fail_regex("${_TEST}" "${_PASS_REGEX}" "${_FAIL_REGEX}")
+        rocprofsys_check_pass_fail_regex("${_TEST}" "${_PASS_REGEX}" "${_FAIL_REGEX}")
         set_tests_properties(
             ${_TEST}
             PROPERTIES ENVIRONMENT
@@ -865,43 +865,43 @@ endfunction()
 #
 # -------------------------------------------------------------------------------------- #
 
-if(NOT OMNITRACE_USE_PYTHON)
+if(NOT ROCPROFSYS_USE_PYTHON)
     find_package(Python3 QUIET COMPONENTS Interpreter)
 
     if(Python3_FOUND)
-        set(OMNITRACE_VALIDATION_PYTHON ${Python3_EXECUTABLE})
+        set(ROCPROFSYS_VALIDATION_PYTHON ${Python3_EXECUTABLE})
         execute_process(COMMAND ${Python3_EXECUTABLE} -c "import perfetto"
-                        RESULT_VARIABLE OMNITRACE_VALIDATION_PYTHON_PERFETTO)
+                        RESULT_VARIABLE ROCPROFSYS_VALIDATION_PYTHON_PERFETTO)
 
-        if(NOT OMNITRACE_VALIDATION_PYTHON_PERFETTO EQUAL 0)
-            omnitrace_message(AUTHOR_WARNING
+        if(NOT ROCPROFSYS_VALIDATION_PYTHON_PERFETTO EQUAL 0)
+            rocprofsys_message(AUTHOR_WARNING
                               "Python3 found but perfetto support is disabled")
         endif()
     endif()
 else()
     set(_INDEX 0)
-    foreach(_VERSION ${OMNITRACE_PYTHON_VERSIONS})
-        if(NOT OMNITRACE_USE_PYTHON)
+    foreach(_VERSION ${ROCPROFSYS_PYTHON_VERSIONS})
+        if(NOT ROCPROFSYS_USE_PYTHON)
             continue()
         endif()
 
-        list(GET OMNITRACE_PYTHON_ROOT_DIRS ${_INDEX} _PYTHON_ROOT_DIR)
+        list(GET ROCPROFSYS_PYTHON_ROOT_DIRS ${_INDEX} _PYTHON_ROOT_DIR)
 
-        omnitrace_find_python(
+        rocprofsys_find_python(
             _PYTHON
             ROOT_DIR "${_PYTHON_ROOT_DIR}"
             COMPONENTS Interpreter)
 
         if(_PYTHON_EXECUTABLE)
-            set(OMNITRACE_VALIDATION_PYTHON ${_PYTHON_EXECUTABLE})
+            set(ROCPROFSYS_VALIDATION_PYTHON ${_PYTHON_EXECUTABLE})
             execute_process(COMMAND ${_PYTHON_EXECUTABLE} -c "import perfetto"
-                            RESULT_VARIABLE OMNITRACE_VALIDATION_PYTHON_PERFETTO)
+                            RESULT_VARIABLE ROCPROFSYS_VALIDATION_PYTHON_PERFETTO)
 
             # prefer Python3 with perfetto support
-            if(OMNITRACE_VALIDATION_PYTHON_PERFETTO EQUAL 0)
+            if(ROCPROFSYS_VALIDATION_PYTHON_PERFETTO EQUAL 0)
                 break()
             else()
-                omnitrace_message(
+                rocprofsys_message(
                     AUTHOR_WARNING
                     "${_PYTHON_EXECUTABLE} found but perfetto support is disabled")
             endif()
@@ -911,8 +911,8 @@ else()
     endforeach()
 endif()
 
-if(NOT OMNITRACE_VALIDATION_PYTHON)
-    omnitrace_message(AUTHOR_WARNING
+if(NOT ROCPROFSYS_VALIDATION_PYTHON)
+    rocprofsys_message(AUTHOR_WARNING
                       "Python3 interpreter not found. Validation tests will be disabled")
 endif()
 
@@ -922,9 +922,9 @@ endif()
 #
 # -------------------------------------------------------------------------------------- #
 
-function(OMNITRACE_ADD_VALIDATION_TEST)
+function(ROCPROFSYS_ADD_VALIDATION_TEST)
 
-    if(NOT OMNITRACE_VALIDATION_PYTHON)
+    if(NOT ROCPROFSYS_VALIDATION_PYTHON)
         return()
     endif()
 
@@ -936,7 +936,7 @@ function(OMNITRACE_ADD_VALIDATION_TEST)
         ${ARGN})
 
     if(NOT TEST "${TEST_NAME}")
-        omnitrace_message(
+        rocprofsys_message(
             AUTHOR_WARNING
             "No validation test(s) for ${TEST_NAME} because test does not exist")
         return()
@@ -946,9 +946,9 @@ function(OMNITRACE_ADD_VALIDATION_TEST)
         set(TEST_TIMEOUT 30)
     endif()
 
-    omnitrace_adjust_timeout_for_sanitizer(TEST_TIMEOUT)
+    rocprofsys_adjust_timeout_for_sanitizer(TEST_TIMEOUT)
 
-    set(PYTHON_EXECUTABLE "${OMNITRACE_VALIDATION_PYTHON}")
+    set(PYTHON_EXECUTABLE "${ROCPROFSYS_VALIDATION_PYTHON}")
 
     list(APPEND TEST_LABELS "validate")
     foreach(_DEP ${TEST_DEPENDS})
@@ -970,18 +970,18 @@ function(OMNITRACE_ADD_VALIDATION_TEST)
         add_test(
             NAME validate-${TEST_NAME}-timemory
             COMMAND
-                ${OMNITRACE_VALIDATION_PYTHON}
+                ${ROCPROFSYS_VALIDATION_PYTHON}
                 ${CMAKE_CURRENT_LIST_DIR}/validate-timemory-json.py -m
                 "${TEST_TIMEMORY_METRIC}" ${TEST_ARGS} -i
                 ${PROJECT_BINARY_DIR}/rocprofsys-tests-output/${TEST_NAME}/${TEST_TIMEMORY_FILE}
             WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
     endif()
 
-    if(OMNITRACE_VALIDATION_PYTHON_PERFETTO EQUAL 0 AND TEST_PERFETTO_FILE)
+    if(ROCPROFSYS_VALIDATION_PYTHON_PERFETTO EQUAL 0 AND TEST_PERFETTO_FILE)
         add_test(
             NAME validate-${TEST_NAME}-perfetto
             COMMAND
-                ${OMNITRACE_VALIDATION_PYTHON}
+                ${ROCPROFSYS_VALIDATION_PYTHON}
                 ${CMAKE_CURRENT_LIST_DIR}/validate-perfetto-proto.py -m
                 "${TEST_PERFETTO_METRIC}" ${TEST_ARGS} -i
                 ${PROJECT_BINARY_DIR}/rocprofsys-tests-output/${TEST_NAME}/${TEST_PERFETTO_FILE}
@@ -997,7 +997,7 @@ function(OMNITRACE_ADD_VALIDATION_TEST)
             continue()
         endif()
 
-        omnitrace_check_pass_fail_regex("${_TEST}" "TEST_PASS_REGEX" "TEST_FAIL_REGEX")
+        rocprofsys_check_pass_fail_regex("${_TEST}" "TEST_PASS_REGEX" "TEST_FAIL_REGEX")
         set_tests_properties(
             ${_TEST}
             PROPERTIES ENVIRONMENT

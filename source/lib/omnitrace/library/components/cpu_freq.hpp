@@ -44,7 +44,7 @@ struct cpu_freq
     using storage_type = tim::storage<cpu_freq, value_type>;
     using cpu_id_set_t = std::set<uint64_t>;
 
-    OMNITRACE_DEFAULT_OBJECT(cpu_freq)
+    ROCPROFSYS_DEFAULT_OBJECT(cpu_freq)
 
     // string id for component
     static std::string label();

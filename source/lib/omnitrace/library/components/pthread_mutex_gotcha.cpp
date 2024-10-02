@@ -76,12 +76,12 @@ pthread_mutex_gotcha::get_hashes()
             else
             {
                 if(_skip.count(i) > 0) continue;
-                OMNITRACE_VERBOSE(
+                ROCPROFSYS_VERBOSE(
                     1,
                     "WARNING!!! pthread_mutex_gotcha tool id at index %zu was empty!\n",
                     i);
             }
-            OMNITRACE_CI_FAIL(
+            ROCPROFSYS_CI_FAIL(
                 _id.empty() || _init.at(i) == 0,
                 "pthread_mutex_gotcha tool id at index %zu has no hash value\n", i);
         }
@@ -183,7 +183,7 @@ pthread_mutex_gotcha::operator()(uintptr_t&&, int (*_callee)(Args...),
         {
             if(m_data)
             {
-                OMNITRACE_PRINT("Warning! nullptr to %s\n", m_data->tool_id.c_str());
+                ROCPROFSYS_PRINT("Warning! nullptr to %s\n", m_data->tool_id.c_str());
             }
             return EINVAL;
         }

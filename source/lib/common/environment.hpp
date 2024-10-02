@@ -34,43 +34,43 @@
 #include <type_traits>
 #include <unistd.h>
 
-#if !defined(OMNITRACE_ENVIRON_LOG_NAME)
-#    if defined(OMNITRACE_COMMON_LIBRARY_NAME)
-#        define OMNITRACE_ENVIRON_LOG_NAME "[" OMNITRACE_COMMON_LIBRARY_NAME "]"
+#if !defined(ROCPROFSYS_ENVIRON_LOG_NAME)
+#    if defined(ROCPROFSYS_COMMON_LIBRARY_NAME)
+#        define ROCPROFSYS_ENVIRON_LOG_NAME "[" ROCPROFSYS_COMMON_LIBRARY_NAME "]"
 #    else
-#        define OMNITRACE_ENVIRON_LOG_NAME
+#        define ROCPROFSYS_ENVIRON_LOG_NAME
 #    endif
 #endif
 
-#if !defined(OMNITRACE_ENVIRON_LOG_START)
-#    if defined(OMNITRACE_COMMON_LIBRARY_LOG_START)
-#        define OMNITRACE_ENVIRON_LOG_START OMNITRACE_COMMON_LIBRARY_LOG_START
+#if !defined(ROCPROFSYS_ENVIRON_LOG_START)
+#    if defined(ROCPROFSYS_COMMON_LIBRARY_LOG_START)
+#        define ROCPROFSYS_ENVIRON_LOG_START ROCPROFSYS_COMMON_LIBRARY_LOG_START
 #    elif defined(TIMEMORY_LOG_COLORS_AVAILABLE)
-#        define OMNITRACE_ENVIRON_LOG_START                                              \
+#        define ROCPROFSYS_ENVIRON_LOG_START                                              \
             fprintf(stderr, "%s", ::tim::log::color::info());
 #    else
-#        define OMNITRACE_ENVIRON_LOG_START
+#        define ROCPROFSYS_ENVIRON_LOG_START
 #    endif
 #endif
 
-#if !defined(OMNITRACE_ENVIRON_LOG_END)
-#    if defined(OMNITRACE_COMMON_LIBRARY_LOG_END)
-#        define OMNITRACE_ENVIRON_LOG_END OMNITRACE_COMMON_LIBRARY_LOG_END
+#if !defined(ROCPROFSYS_ENVIRON_LOG_END)
+#    if defined(ROCPROFSYS_COMMON_LIBRARY_LOG_END)
+#        define ROCPROFSYS_ENVIRON_LOG_END ROCPROFSYS_COMMON_LIBRARY_LOG_END
 #    elif defined(TIMEMORY_LOG_COLORS_AVAILABLE)
-#        define OMNITRACE_ENVIRON_LOG_END fprintf(stderr, "%s", ::tim::log::color::end());
+#        define ROCPROFSYS_ENVIRON_LOG_END fprintf(stderr, "%s", ::tim::log::color::end());
 #    else
-#        define OMNITRACE_ENVIRON_LOG_END
+#        define ROCPROFSYS_ENVIRON_LOG_END
 #    endif
 #endif
 
-#define OMNITRACE_ENVIRON_LOG(CONDITION, ...)                                            \
+#define ROCPROFSYS_ENVIRON_LOG(CONDITION, ...)                                            \
     if(CONDITION)                                                                        \
     {                                                                                    \
         fflush(stderr);                                                                  \
-        OMNITRACE_ENVIRON_LOG_START                                                      \
-        fprintf(stderr, "[rocprof-sys]" OMNITRACE_ENVIRON_LOG_NAME "[%i] ", getpid());   \
+        ROCPROFSYS_ENVIRON_LOG_START                                                      \
+        fprintf(stderr, "[rocprof-sys]" ROCPROFSYS_ENVIRON_LOG_NAME "[%i] ", getpid());   \
         fprintf(stderr, __VA_ARGS__);                                                    \
-        OMNITRACE_ENVIRON_LOG_END                                                        \
+        ROCPROFSYS_ENVIRON_LOG_END                                                        \
         fflush(stderr);                                                                  \
     }
 
@@ -162,7 +162,7 @@ get_env(std::string_view env_id, Tp&& _default)
     }
 }
 
-struct OMNITRACE_INTERNAL_API env_config
+struct ROCPROFSYS_INTERNAL_API env_config
 {
     std::string env_name  = {};
     std::string env_value = {};
@@ -171,7 +171,7 @@ struct OMNITRACE_INTERNAL_API env_config
     auto operator()(bool _verbose = false) const
     {
         if(env_name.empty()) return -1;
-        OMNITRACE_ENVIRON_LOG(_verbose, "setenv(\"%s\", \"%s\", %i)\n", env_name.c_str(),
+        ROCPROFSYS_ENVIRON_LOG(_verbose, "setenv(\"%s\", \"%s\", %i)\n", env_name.c_str(),
                               env_value.c_str(), override);
         return setenv(env_name.c_str(), env_value.c_str(), override);
     }

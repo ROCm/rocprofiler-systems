@@ -2,11 +2,11 @@ cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
 project(rocprofsys-mpi-examples LANGUAGES C CXX)
 
-if(OMNITRACE_DISABLE_EXAMPLES)
+if(ROCPROFSYS_DISABLE_EXAMPLES)
     get_filename_component(_DIR ${CMAKE_CURRENT_LIST_DIR} NAME)
 
-    if(${PROJECT_NAME} IN_LIST OMNITRACE_DISABLE_EXAMPLES OR ${_DIR} IN_LIST
-                                                             OMNITRACE_DISABLE_EXAMPLES)
+    if(${PROJECT_NAME} IN_LIST ROCPROFSYS_DISABLE_EXAMPLES OR ${_DIR} IN_LIST
+                                                             ROCPROFSYS_DISABLE_EXAMPLES)
         return()
     endif()
 endif()
@@ -65,7 +65,7 @@ target_link_libraries(
 add_executable(mpi-example mpi.cpp)
 target_link_libraries(mpi-example PRIVATE mpi-cxx-interface-library)
 
-if(OMNITRACE_INSTALL_EXAMPLES)
+if(ROCPROFSYS_INSTALL_EXAMPLES)
     install(
         TARGETS mpi-example mpi-allgather mpi-bcast mpi-all2all mpi-reduce
                 mpi-scatter-gather mpi-send-recv

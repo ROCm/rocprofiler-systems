@@ -36,7 +36,7 @@ struct pthread_gotcha : tim::component::base<pthread_gotcha, void>
 {
     using native_handle_t = std::thread::native_handle_type;
 
-    OMNITRACE_DEFAULT_OBJECT(pthread_gotcha)
+    ROCPROFSYS_DEFAULT_OBJECT(pthread_gotcha)
 
     // string id for component
     static std::string label() { return "pthread_gotcha"; }

@@ -16,10 +16,10 @@ target_link_libraries(
 set_target_properties(
     rocprofsys-sample
     PROPERTIES BUILD_RPATH "\$ORIGIN:\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
-               INSTALL_RPATH "${OMNITRACE_EXE_INSTALL_RPATH}"
+               INSTALL_RPATH "${ROCPROFSYS_EXE_INSTALL_RPATH}"
                OUTPUT_NAME "rocprof-sys-sample")
 
-omnitrace_strip_target(rocprofsys-sample)
+rocprofsys_strip_target(rocprofsys-sample)
 
 install(
     TARGETS rocprofsys-sample

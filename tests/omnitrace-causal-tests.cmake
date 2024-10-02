@@ -4,7 +4,7 @@
 #
 # -------------------------------------------------------------------------------------- #
 
-omnitrace_add_causal_test(
+rocprofsys_add_causal_test(
     NAME cpu-omni-func
     TARGET causal-cpu-omni
     RUN_ARGS 70 10 432525 1000000000
@@ -13,7 +13,7 @@ omnitrace_add_causal_test(
         "Starting causal experiment #1(.*)causal/experiments.json(.*)causal/experiments.coz"
     )
 
-omnitrace_add_causal_test(
+rocprofsys_add_causal_test(
     SKIP_BASELINE
     NAME cpu-omni-func-ndebug
     TARGET causal-cpu-omni-ndebug
@@ -23,7 +23,7 @@ omnitrace_add_causal_test(
         "Starting causal experiment #1(.*)causal/experiments.json(.*)causal/experiments.coz"
     )
 
-omnitrace_add_causal_test(
+rocprofsys_add_causal_test(
     SKIP_BASELINE
     NAME cpu-omni-line
     TARGET causal-cpu-omni
@@ -33,7 +33,7 @@ omnitrace_add_causal_test(
         "Starting causal experiment #1(.*)causal/experiments.json(.*)causal/experiments.coz"
     )
 
-omnitrace_add_causal_test(
+rocprofsys_add_causal_test(
     NAME both-omni-func
     TARGET causal-both-omni
     RUN_ARGS 70 10 432525 400000000
@@ -59,7 +59,7 @@ omnitrace_add_causal_test(
         "Starting causal experiment #1(.*)causal/experiments.json(.*)causal/experiments.coz"
     )
 
-omnitrace_add_causal_test(
+rocprofsys_add_causal_test(
     NAME lulesh-func
     TARGET lulesh-omni
     RUN_ARGS -i 35 -s 50 -p
@@ -69,7 +69,7 @@ omnitrace_add_causal_test(
         "Starting causal experiment #1(.*)causal/experiments.json(.*)causal/experiments.coz"
     )
 
-omnitrace_add_causal_test(
+rocprofsys_add_causal_test(
     SKIP_BASELINE
     NAME lulesh-func-ndebug
     TARGET lulesh-omni-ndebug
@@ -80,7 +80,7 @@ omnitrace_add_causal_test(
         "Starting causal experiment #1(.*)causal/experiments.json(.*)causal/experiments.coz"
     )
 
-omnitrace_add_causal_test(
+rocprofsys_add_causal_test(
     SKIP_BASELINE
     NAME lulesh-line
     TARGET lulesh-omni
@@ -127,13 +127,13 @@ causal_e2e_args_and_validation(_causal_fast_func fast-func "-F" "cpu_fast_func" 
 causal_e2e_args_and_validation(_causal_line_100 line-100 "-S" "causal.cpp:100" 10 20 20 5)
 causal_e2e_args_and_validation(_causal_line_110 line-110 "-S" "causal.cpp:110" 0 0 0 5)
 
-if(OMNITRACE_BUILD_NUMBER GREATER 1)
+if(ROCPROFSYS_BUILD_NUMBER GREATER 1)
     set(_causal_e2e_environment)
 else()
     set(_causal_e2e_environment "ROCPROFSYS_VERBOSE=0")
 endif()
 
-omnitrace_add_causal_test(
+rocprofsys_add_causal_test(
     SKIP_BASELINE
     NAME cpu-omni-slow-func-e2e
     TARGET causal-cpu-omni
@@ -147,7 +147,7 @@ omnitrace_add_causal_test(
     ENVIRONMENT "${_causal_e2e_environment}"
     PROPERTIES PROCESSORS 2 PROCESSOR_AFFINITY OFF)
 
-omnitrace_add_causal_test(
+rocprofsys_add_causal_test(
     SKIP_BASELINE
     NAME cpu-omni-fast-func-e2e
     TARGET causal-cpu-omni
@@ -161,7 +161,7 @@ omnitrace_add_causal_test(
     ENVIRONMENT "${_causal_e2e_environment}"
     PROPERTIES PROCESSORS 2 PROCESSOR_AFFINITY OFF)
 
-omnitrace_add_causal_test(
+rocprofsys_add_causal_test(
     SKIP_BASELINE
     NAME cpu-omni-line-100-e2e
     TARGET causal-cpu-omni
@@ -175,7 +175,7 @@ omnitrace_add_causal_test(
     ENVIRONMENT "${_causal_e2e_environment}"
     PROPERTIES PROCESSORS 2 PROCESSOR_AFFINITY OFF)
 
-omnitrace_add_causal_test(
+rocprofsys_add_causal_test(
     SKIP_BASELINE
     NAME cpu-omni-line-110-e2e
     TARGET causal-cpu-omni

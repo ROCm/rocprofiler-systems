@@ -35,7 +35,7 @@ struct dwarf_entry
     using dwarf_tuple_t = std::tuple<std::deque<dwarf_entry>, std::vector<address_range>,
                                      std::vector<uintptr_t>>;
 
-    OMNITRACE_DEFAULT_OBJECT(dwarf_entry)
+    ROCPROFSYS_DEFAULT_OBJECT(dwarf_entry)
 
     bool          begin_statement = false;
     bool          end_sequence    = false;

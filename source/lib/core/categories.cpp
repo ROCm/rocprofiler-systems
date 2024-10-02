@@ -44,7 +44,7 @@ configure_categories(bool _enable, const std::set<std::string>& _categories)
     auto _name = trait::name<Tp>::value;
     if(_categories.count(_name) > 0)
     {
-        OMNITRACE_VERBOSE_F(3, "%s category: %s\n", (_enable) ? "Enabling" : "Disabling",
+        ROCPROFSYS_VERBOSE_F(3, "%s category: %s\n", (_enable) ? "Enabling" : "Disabling",
                             _name);
         trait::runtime_enabled<Tp>::set(_enable);
     }
@@ -61,11 +61,11 @@ configure_categories(bool _enable, const std::set<std::string>& _categories,
 void
 configure_categories(bool _enable, const std::set<std::string>& _categories)
 {
-    OMNITRACE_VERBOSE_F(1, "%s categories...\n", (_enable) ? "Enabling" : "Disabling");
+    ROCPROFSYS_VERBOSE_F(1, "%s categories...\n", (_enable) ? "Enabling" : "Disabling");
 
     configure_categories(
         _enable, _categories,
-        utility::make_index_sequence_range<1, OMNITRACE_CATEGORY_LAST>{});
+        utility::make_index_sequence_range<1, ROCPROFSYS_CATEGORY_LAST>{});
 }
 }  // namespace
 
@@ -74,7 +74,7 @@ enable_categories(const std::set<std::string>& _categories)
 {
     configure_categories(
         true, _categories,
-        utility::make_index_sequence_range<1, OMNITRACE_CATEGORY_LAST>{});
+        utility::make_index_sequence_range<1, ROCPROFSYS_CATEGORY_LAST>{});
 }
 
 void
@@ -82,7 +82,7 @@ disable_categories(const std::set<std::string>& _categories)
 {
     configure_categories(
         false, _categories,
-        utility::make_index_sequence_range<1, OMNITRACE_CATEGORY_LAST>{});
+        utility::make_index_sequence_range<1, ROCPROFSYS_CATEGORY_LAST>{});
 }
 
 void

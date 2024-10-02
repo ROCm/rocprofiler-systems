@@ -60,7 +60,7 @@ struct blocking_gotcha : comp::base<blocking_gotcha, void>
         indexes_max               = gotcha_capacity - 1,
     };
 
-    OMNITRACE_DEFAULT_OBJECT(blocking_gotcha)
+    ROCPROFSYS_DEFAULT_OBJECT(blocking_gotcha)
 
     // string id for component
     static std::string label();
@@ -95,9 +95,9 @@ using blocking_gotcha_t =
 }  // namespace causal
 }  // namespace omnitrace
 
-OMNITRACE_DEFINE_CONCRETE_TRAIT(prevent_reentry, causal::component::blocking_gotcha_t,
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(prevent_reentry, causal::component::blocking_gotcha_t,
                                 false_type)
-OMNITRACE_DEFINE_CONCRETE_TRAIT(static_data, causal::component::blocking_gotcha_t,
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(static_data, causal::component::blocking_gotcha_t,
                                 false_type)
-OMNITRACE_DEFINE_CONCRETE_TRAIT(fast_gotcha, causal::component::blocking_gotcha_t,
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(fast_gotcha, causal::component::blocking_gotcha_t,
                                 true_type)

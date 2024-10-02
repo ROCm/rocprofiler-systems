@@ -39,7 +39,7 @@ struct address_multirange
     struct coarse
     {};
 
-    OMNITRACE_DEFAULT_OBJECT(address_multirange)
+    ROCPROFSYS_DEFAULT_OBJECT(address_multirange)
 
     address_multirange& operator+=(std::pair<coarse, uintptr_t>&&);
     address_multirange& operator+=(std::pair<coarse, address_range>&& _v);
@@ -61,7 +61,7 @@ private:
 };
 
 template <typename Tp>
-OMNITRACE_INLINE bool
+ROCPROFSYS_INLINE bool
 address_multirange::contains(Tp&& _v) const
 {
     using type = concepts::unqualified_type_t<Tp>;

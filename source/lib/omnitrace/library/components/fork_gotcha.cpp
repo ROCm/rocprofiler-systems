@@ -66,8 +66,8 @@ prefork_setup()
 {
     if(prefork_lock) return;
 
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
-    OMNITRACE_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
 
     if(get_state() < State::Active && !config::settings_are_configured())
         omnitrace_init_library_hidden();
@@ -75,9 +75,9 @@ prefork_setup()
     tim::set_env("ROCPROFSYS_PRELOAD", "0", 1);
     tim::set_env("ROCPROFSYS_ROOT_PROCESS", process::get_id(), 0);
     omnitrace_reset_preload_hidden();
-    OMNITRACE_BASIC_VERBOSE(0, "fork() called on PID %i (rank: %i), TID %li\n",
+    ROCPROFSYS_BASIC_VERBOSE(0, "fork() called on PID %i (rank: %i), TID %li\n",
                             process::get_id(), dmp::rank(), threading::get_id());
-    OMNITRACE_BASIC_DEBUG(
+    ROCPROFSYS_BASIC_DEBUG(
         "Warning! Calling fork() within an OpenMPI application using libfabric "
         "may result is segmentation fault\n");
     TIMEMORY_CONDITIONAL_DEMANGLED_BACKTRACE(get_debug_env(), 16);
@@ -111,7 +111,7 @@ postfork_child()
 {
     if(postfork_child_lock) return;
 
-    OMNITRACE_REQUIRE(is_child_process())
+    ROCPROFSYS_REQUIRE(is_child_process())
         << "Error! child process " << process::get_id()
         << " believes it is the root process " << get_root_process_id() << "\n";
 
@@ -155,7 +155,7 @@ fork_gotcha::operator()(const gotcha_data_t&, pid_t (*_real_fork)()) const
 
     if(_pid != 0)
     {
-        OMNITRACE_BASIC_VERBOSE(0, "fork() called on PID %i created PID %i\n", getpid(),
+        ROCPROFSYS_BASIC_VERBOSE(0, "fork() called on PID %i created PID %i\n", getpid(),
                                 _pid);
 
         postfork_parent();
@@ -167,9 +167,9 @@ fork_gotcha::operator()(const gotcha_data_t&, pid_t (*_real_fork)()) const
 
     if(!settings::use_output_suffix())
     {
-        OMNITRACE_BASIC_VERBOSE(
+        ROCPROFSYS_BASIC_VERBOSE(
             0, "Application which make calls to fork() should enable using an process "
-               "identifier output suffix (i.e. set OMNITRACE_USE_PID=ON)\n");
+               "identifier output suffix (i.e. set ROCPROFSYS_USE_PID=ON)\n");
     }
 
     return _pid;

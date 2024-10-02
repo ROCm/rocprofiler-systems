@@ -287,7 +287,7 @@ omnitrace_thread_exit(thread_t* thread, BPatch_exitType exit_type)
 {
     if(!thread) return;
 
-    OMNITRACE_ADD_LOG_ENTRY("Executing the thread callback");
+    ROCPROFSYS_ADD_LOG_ENTRY("Executing the thread callback");
 
     BPatch_process* app = thread->getProcess();
 
@@ -330,7 +330,7 @@ omnitrace_thread_exit(thread_t* thread, BPatch_exitType exit_type)
 TIMEMORY_NOINLINE inline void
 omnitrace_fork_callback(thread_t* parent, thread_t* child)
 {
-    OMNITRACE_ADD_LOG_ENTRY("Executing the fork callback");
+    ROCPROFSYS_ADD_LOG_ENTRY("Executing the fork callback");
 
     if(child)
     {
@@ -388,7 +388,7 @@ insert_instr(address_space_t* mutatee, const std::vector<point_t*>& _points, Tp 
         return _v;
     }();
 
-    OMNITRACE_ADD_LOG_ENTRY("Inserting", _points.size(),
+    ROCPROFSYS_ADD_LOG_ENTRY("Inserting", _points.size(),
                             "instrumentation points into function(s)", _names);
 
     auto _trace = traceFunc.get();
@@ -401,7 +401,7 @@ insert_instr(address_space_t* mutatee, const std::vector<point_t*>& _points, Tp 
         }
     }
 
-    OMNITRACE_ADD_LOG_ENTRY("Found", _traps.size(),
+    ROCPROFSYS_ADD_LOG_ENTRY("Found", _traps.size(),
                             "instrumentation points using traps in function(s)", _names);
 
     size_t _n = 0;
@@ -412,7 +412,7 @@ insert_instr(address_space_t* mutatee, const std::vector<point_t*>& _points, Tp 
         ++_n;
     }
 
-    OMNITRACE_ADD_LOG_ENTRY("Inserted", _n, "instrumentation points in function(s)",
+    ROCPROFSYS_ADD_LOG_ENTRY("Inserted", _n, "instrumentation points in function(s)",
                             _names);
 
     return (_n > 0);
@@ -434,7 +434,7 @@ insert_instr(address_space_t* mutatee, procedure_t* funcToInstr, Tp traceFunc,
     std::vector<point_t*>* _points = nullptr;
     auto                   _trace  = traceFunc.get();
 
-    OMNITRACE_ADD_LOG_ENTRY("Searching for loop instrumentation points in function",
+    ROCPROFSYS_ADD_LOG_ENTRY("Searching for loop instrumentation points in function",
                             get_name(funcToInstr));
 
     if(!cfGraph) funcToInstr->getCFG();
@@ -453,7 +453,7 @@ insert_instr(address_space_t* mutatee, procedure_t* funcToInstr, Tp traceFunc,
     if(_points == nullptr) return false;
     if(_points->empty()) return false;
 
-    OMNITRACE_ADD_LOG_ENTRY("Inserting max of", _points->size(),
+    ROCPROFSYS_ADD_LOG_ENTRY("Inserting max of", _points->size(),
                             "loop instrumentation points in function",
                             get_name(funcToInstr));
 
@@ -466,7 +466,7 @@ insert_instr(address_space_t* mutatee, procedure_t* funcToInstr, Tp traceFunc,
         }
     }
 
-    OMNITRACE_ADD_LOG_ENTRY("Found", _traps.size(),
+    ROCPROFSYS_ADD_LOG_ENTRY("Found", _traps.size(),
                             "loop instrumentation points using traps in function",
                             get_name(funcToInstr));
 
@@ -478,7 +478,7 @@ insert_instr(address_space_t* mutatee, procedure_t* funcToInstr, Tp traceFunc,
         ++_n;
     }
 
-    OMNITRACE_ADD_LOG_ENTRY("Inserted", _n, "loop instrumentation points in function",
+    ROCPROFSYS_ADD_LOG_ENTRY("Inserted", _n, "loop instrumentation points in function",
                             get_name(funcToInstr));
 
     return (_n > 0);
@@ -497,7 +497,7 @@ insert_instr(address_space_t* mutatee, Tp traceFunc, procedure_loc_t traceLoc,
     point_t* _point = nullptr;
     auto     _trace = traceFunc.get();
 
-    OMNITRACE_ADD_LOG_ENTRY(
+    ROCPROFSYS_ADD_LOG_ENTRY(
         "Searching for basic-block entry and exit instrumentation points ::",
         *basicBlock);
 
@@ -514,14 +514,14 @@ insert_instr(address_space_t* mutatee, Tp traceFunc, procedure_loc_t traceLoc,
 
     if(_point == nullptr)
     {
-        OMNITRACE_ADD_LOG_ENTRY("No instrumentation points were found in basic-block ",
+        ROCPROFSYS_ADD_LOG_ENTRY("No instrumentation points were found in basic-block ",
                                 *basicBlock);
         return false;
     }
 
     if(!allow_traps && _point->usesTrap_NP())
     {
-        OMNITRACE_ADD_LOG_ENTRY("Basic-block", *basicBlock,
+        ROCPROFSYS_ADD_LOG_ENTRY("Basic-block", *basicBlock,
                                 "uses traps and traps are disallowed");
         return false;
     }

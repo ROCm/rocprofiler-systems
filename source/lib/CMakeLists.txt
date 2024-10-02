@@ -12,14 +12,14 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.20)
     cmake_policy(SET CMP0115 NEW)
 endif()
 
-if(OMNITRACE_USE_ROCPROFILER
+if(ROCPROFSYS_USE_ROCPROFILER
    AND rocprofiler_LIBRARY_DIR
    AND ROCmVersion_TRIPLE_VERSION VERSION_LESS 5.2.0
    AND NOT CMAKE_INSTALL_RPATH_USE_LINK_PATH)
-    set(OMNITRACE_LIB_INSTALL_RPATH
+    set(ROCPROFSYS_LIB_INSTALL_RPATH
         "\$ORIGIN:\$ORIGIN/${PACKAGE_NAME}:${rocprofiler_LIBRARY_DIR}")
 else()
-    set(OMNITRACE_LIB_INSTALL_RPATH "\$ORIGIN:\$ORIGIN/${PACKAGE_NAME}")
+    set(ROCPROFSYS_LIB_INSTALL_RPATH "\$ORIGIN:\$ORIGIN/${PACKAGE_NAME}")
 endif()
 
 # ------------------------------------------------------------------------------#
@@ -57,7 +57,7 @@ target_link_libraries(
         $<BUILD_INTERFACE:rocprofsys::rocprofsys-static-libgcc-optional>
         $<BUILD_INTERFACE:rocprofsys::rocprofsys-static-libstdcxx-optional>
         $<BUILD_INTERFACE:rocprofsys::rocprofsys-sanitizer>
-        $<BUILD_INTERFACE:$<IF:$<BOOL:${OMNITRACE_BUILD_LTO}>,rocprofsys::rocprofsys-lto,>>
+        $<BUILD_INTERFACE:$<IF:$<BOOL:${ROCPROFSYS_BUILD_LTO}>,rocprofsys::rocprofsys-lto,>>
     )
 
 # ------------------------------------------------------------------------------#

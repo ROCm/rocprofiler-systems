@@ -206,20 +206,20 @@ template <typename ArchiveT>
 void
 dwarf_entry::serialize(ArchiveT& ar, const unsigned int)
 {
-#define OMNITRACE_SERIALIZE_MEMBER(MEMBER) ar(::tim::cereal::make_nvp(#MEMBER, MEMBER));
+#define ROCPROFSYS_SERIALIZE_MEMBER(MEMBER) ar(::tim::cereal::make_nvp(#MEMBER, MEMBER));
 
-    OMNITRACE_SERIALIZE_MEMBER(file)
-    OMNITRACE_SERIALIZE_MEMBER(line)
-    OMNITRACE_SERIALIZE_MEMBER(col)
-    OMNITRACE_SERIALIZE_MEMBER(address)
-    OMNITRACE_SERIALIZE_MEMBER(discriminator)
-    // OMNITRACE_SERIALIZE_MEMBER(begin_statement)
-    // OMNITRACE_SERIALIZE_MEMBER(end_sequence)
-    // OMNITRACE_SERIALIZE_MEMBER(line_block)
-    // OMNITRACE_SERIALIZE_MEMBER(prologue_end)
-    // OMNITRACE_SERIALIZE_MEMBER(epilogue_begin)
-    // OMNITRACE_SERIALIZE_MEMBER(vliw_op_index)
-    // OMNITRACE_SERIALIZE_MEMBER(isa)
+    ROCPROFSYS_SERIALIZE_MEMBER(file)
+    ROCPROFSYS_SERIALIZE_MEMBER(line)
+    ROCPROFSYS_SERIALIZE_MEMBER(col)
+    ROCPROFSYS_SERIALIZE_MEMBER(address)
+    ROCPROFSYS_SERIALIZE_MEMBER(discriminator)
+    // ROCPROFSYS_SERIALIZE_MEMBER(begin_statement)
+    // ROCPROFSYS_SERIALIZE_MEMBER(end_sequence)
+    // ROCPROFSYS_SERIALIZE_MEMBER(line_block)
+    // ROCPROFSYS_SERIALIZE_MEMBER(prologue_end)
+    // ROCPROFSYS_SERIALIZE_MEMBER(epilogue_begin)
+    // ROCPROFSYS_SERIALIZE_MEMBER(vliw_op_index)
+    // ROCPROFSYS_SERIALIZE_MEMBER(isa)
 }
 
 template void

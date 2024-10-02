@@ -4,8 +4,8 @@
 #
 # ########################################################################################
 
-if(OMNITRACE_BUILD_STATIC_LIBSTDCXX)
-    # omnitrace_message(FATAL_ERROR "static libstdc++ is not compatible with python
+if(ROCPROFSYS_BUILD_STATIC_LIBSTDCXX)
+    # rocprofsys_message(FATAL_ERROR "static libstdc++ is not compatible with python
     # bindings")
 endif()
 
@@ -17,7 +17,7 @@ set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME python)
 
 # ########################################################################################
 
-function(OMNITRACE_CONFIGURE_PYTARGET _TARGET _VERSION)
+function(ROCPROFSYS_CONFIGURE_PYTARGET _TARGET _VERSION)
 
     add_library(rocprofsys::${_TARGET} ALIAS ${_TARGET})
     target_link_libraries(${_TARGET} PRIVATE libpyrocprofsys-interface)
@@ -87,8 +87,8 @@ target_link_libraries(
               rocprofsys::rocprofsys-python
               rocprofsys::rocprofsys-python-compile-options)
 
-omnitrace_target_compile_definitions(libpyrocprofsys-interface
-                                     INTERFACE OMNITRACE_PYBIND11_SOURCE)
+rocprofsys_target_compile_definitions(libpyrocprofsys-interface
+                                     INTERFACE ROCPROFSYS_PYBIND11_SOURCE)
 
 add_custom_target(libpyrocprofsys)
 
@@ -104,20 +104,20 @@ foreach(_IN ${PYTHON_FILES})
         OPTIONAL)
 endforeach()
 
-omnitrace_python_console_script("rocprof-sys-python" "rocprofsys")
+rocprofsys_python_console_script("rocprof-sys-python" "rocprofsys")
 
 set(_INDEX 0)
-foreach(_VERSION ${OMNITRACE_PYTHON_VERSIONS})
+foreach(_VERSION ${ROCPROFSYS_PYTHON_VERSIONS})
     # add_library(libpyrocprofsys MODULE ${pysources} ${pyheaders})
-    list(GET OMNITRACE_PYTHON_ROOT_DIRS ${_INDEX} Python3_ROOT_DIR)
-    omnitrace_pybind11_add_module(
+    list(GET ROCPROFSYS_PYTHON_ROOT_DIRS ${_INDEX} Python3_ROOT_DIR)
+    rocprofsys_pybind11_add_module(
         libpyrocprofsys-${_VERSION} MODULE
         PYTHON_VERSION ${_VERSION}
         VISIBILITY "hidden" ${pysources} ${pyheaders})
-    omnitrace_configure_pytarget(libpyrocprofsys-${_VERSION} ${_VERSION})
+    rocprofsys_configure_pytarget(libpyrocprofsys-${_VERSION} ${_VERSION})
 
-    if(OMNITRACE_USE_PYTHON)
-        omnitrace_python_console_script(
+    if(ROCPROFSYS_USE_PYTHON)
+        rocprofsys_python_console_script(
             "rocprof-sys-python" "rocprofsys"
             VERSION ${_VERSION}
             ROOT_DIR "${Python3_ROOT_DIR}")

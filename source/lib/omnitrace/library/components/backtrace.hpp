@@ -47,7 +47,7 @@ namespace component
 {
 struct backtrace : comp::empty_base
 {
-    static constexpr size_t stack_depth = OMNITRACE_MAX_UNWIND_DEPTH;
+    static constexpr size_t stack_depth = ROCPROFSYS_MAX_UNWIND_DEPTH;
 
     using data_t            = tim::unwind::stack<stack_depth>;
     using cache_type        = typename data_t::cache_type;

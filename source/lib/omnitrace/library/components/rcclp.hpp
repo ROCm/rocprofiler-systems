@@ -40,21 +40,21 @@
 #include <string>
 #include <utility>
 
-#if !defined(OMNITRACE_NUM_RCCLP_WRAPPERS)
-#    define OMNITRACE_NUM_RCCLP_WRAPPERS 25
+#if !defined(ROCPROFSYS_NUM_RCCLP_WRAPPERS)
+#    define ROCPROFSYS_NUM_RCCLP_WRAPPERS 25
 #endif
 
-OMNITRACE_COMPONENT_ALIAS(
+ROCPROFSYS_COMPONENT_ALIAS(
     rccl_toolset_t,
     ::tim::component_bundle<category::rocm_rccl,
                             omnitrace::component::category_region<category::rocm_rccl>,
                             comm_data>)
-OMNITRACE_COMPONENT_ALIAS(rcclp_gotcha_t,
-                          ::tim::component::gotcha<OMNITRACE_NUM_RCCLP_WRAPPERS,
+ROCPROFSYS_COMPONENT_ALIAS(rcclp_gotcha_t,
+                          ::tim::component::gotcha<ROCPROFSYS_NUM_RCCLP_WRAPPERS,
                                                    rccl_toolset_t, category::rocm_rccl>)
 
-#if !defined(OMNITRACE_USE_RCCL)
-OMNITRACE_DEFINE_CONCRETE_TRAIT(is_available, component::rcclp_gotcha_t, false_type)
+#if !defined(ROCPROFSYS_USE_RCCL)
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::rcclp_gotcha_t, false_type)
 #endif
 
 namespace omnitrace
@@ -73,7 +73,7 @@ configure_rcclp(const std::set<std::string>& permit = {},
 
 struct rcclp_handle : base<rcclp_handle, void>
 {
-    static constexpr size_t rcclp_wrapper_count = OMNITRACE_NUM_RCCLP_WRAPPERS;
+    static constexpr size_t rcclp_wrapper_count = ROCPROFSYS_NUM_RCCLP_WRAPPERS;
 
     using value_type = void;
     using this_type  = rcclp_handle;

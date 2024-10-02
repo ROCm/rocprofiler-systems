@@ -52,7 +52,7 @@ struct progress_point : comp::base<progress_point, void>
     static std::string label();
     static std::string description();
 
-    OMNITRACE_DEFAULT_OBJECT(progress_point)
+    ROCPROFSYS_DEFAULT_OBJECT(progress_point)
 
     void            start();
     void            stop();
@@ -112,13 +112,13 @@ private:
 }  // namespace causal
 }  // namespace omnitrace
 
-OMNITRACE_DEFINE_CONCRETE_TRAIT(uses_storage, causal::component::progress_point,
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(uses_storage, causal::component::progress_point,
                                 false_type)
-OMNITRACE_DEFINE_CONCRETE_TRAIT(flat_storage, causal::component::progress_point,
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(flat_storage, causal::component::progress_point,
                                 true_type)
-OMNITRACE_DEFINE_CONCRETE_TRAIT(uses_timing_units, causal::component::progress_point,
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(uses_timing_units, causal::component::progress_point,
                                 true_type)
-OMNITRACE_DEFINE_CONCRETE_TRAIT(is_timing_category, causal::component::progress_point,
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_timing_category, causal::component::progress_point,
                                 true_type)
 
 namespace tim
@@ -130,7 +130,7 @@ struct push_node<omnitrace::causal::component::progress_point>
 {
     using type = omnitrace::causal::component::progress_point;
 
-    OMNITRACE_DEFAULT_OBJECT(push_node)
+    ROCPROFSYS_DEFAULT_OBJECT(push_node)
 
     push_node(type& _obj, scope::config _scope, hash_value_t _hash,
               int64_t _tid = threading::get_id())
@@ -147,7 +147,7 @@ struct pop_node<omnitrace::causal::component::progress_point>
 {
     using type = omnitrace::causal::component::progress_point;
 
-    OMNITRACE_DEFAULT_OBJECT(pop_node)
+    ROCPROFSYS_DEFAULT_OBJECT(pop_node)
 
     pop_node(type& _obj, int64_t _tid = threading::get_id()) { (*this)(_obj, _tid); }
 

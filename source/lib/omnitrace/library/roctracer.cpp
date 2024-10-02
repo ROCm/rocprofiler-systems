@@ -48,18 +48,18 @@
 #include <roctracer_hip.h>
 #include <roctracer_roctx.h>
 
-#if OMNITRACE_HIP_VERSION < 50300
+#if ROCPROFSYS_HIP_VERSION < 50300
 #    include <roctracer_hcc.h>
 #endif
 
 #define AMD_INTERNAL_BUILD 1
 #include <roctracer_hsa.h>
 
-#if __has_include(<hip/amd_detail/hip_prof_str.h>) || (defined(OMNITRACE_USE_HIP) && OMNITRACE_USE_HIP > 0)
+#if __has_include(<hip/amd_detail/hip_prof_str.h>) || (defined(ROCPROFSYS_USE_HIP) && ROCPROFSYS_USE_HIP > 0)
 #    include <hip/amd_detail/hip_prof_str.h>
-#    define OMNITRACE_HIP_API_ARGS 1
+#    define ROCPROFSYS_HIP_API_ARGS 1
 #else
-#    define OMNITRACE_HIP_API_ARGS 0
+#    define ROCPROFSYS_HIP_API_ARGS 0
 #endif
 
 TIMEMORY_DEFINE_API(roctracer)
@@ -78,7 +78,7 @@ roctracer_type_mutex()
 std::string
 hip_api_string(hip_api_id_t id, const hip_api_data_t* data)
 {
-#if OMNITRACE_HIP_API_ARGS > 0
+#if ROCPROFSYS_HIP_API_ARGS > 0
     std::string _v = hipApiString(id, data);
     if(_v.empty()) return _v;
     auto _pbeg = _v.find('(');
@@ -176,7 +176,7 @@ get_clock_skew()
         static auto _gpu_now = []() {
             cpu::fence();
             uint64_t _ts = 0;
-            OMNITRACE_ROCTRACER_CALL(roctracer_get_timestamp(&_ts));
+            ROCPROFSYS_ROCTRACER_CALL(roctracer_get_timestamp(&_ts));
             return _ts;
         };
 
@@ -207,9 +207,9 @@ get_clock_skew()
             _cpu_ave += _cpu_ts / _n;
             _gpu_ave += _gpu_ts / _n;
         }
-        OMNITRACE_BASIC_VERBOSE(2, "CPU timestamp: %li\n", _cpu_ave);
-        OMNITRACE_BASIC_VERBOSE(2, "HIP timestamp: %li\n", _gpu_ave);
-        OMNITRACE_BASIC_VERBOSE(1, "CPU/HIP timestamp skew: %li (used: %s)\n", _diff,
+        ROCPROFSYS_BASIC_VERBOSE(2, "CPU timestamp: %li\n", _cpu_ave);
+        ROCPROFSYS_BASIC_VERBOSE(2, "HIP timestamp: %li\n", _gpu_ave);
+        ROCPROFSYS_BASIC_VERBOSE(1, "CPU/HIP timestamp skew: %li (used: %s)\n", _diff,
                                 _use ? "yes" : "no");
         _diff /= _n;
         return _diff;
@@ -224,11 +224,11 @@ hsa_api_callback(uint32_t domain, uint32_t cid, const void* callback_data, void*
     if(get_state() != State::Active || !trait::runtime_enabled<comp::roctracer>::get())
         return;
 
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
     (void) arg;
     const hsa_api_data_t* data = reinterpret_cast<const hsa_api_data_t*>(callback_data);
-    OMNITRACE_CONDITIONAL_PRINT_F(
+    ROCPROFSYS_CONDITIONAL_PRINT_F(
         get_debug() && get_verbose() >= 2, "<%-30s id(%u)\tcorrelation_id(%lu) %s>\n",
         roctracer_op_string(domain, cid, 0), cid, data->correlation_id,
         (data->phase == ACTIVITY_API_PHASE_ENTER) ? "on-enter" : "on-exit");
@@ -344,7 +344,7 @@ hsa_activity_callback(uint32_t op, const void* vrecord, void* arg)
     if(get_state() != State::Active || !trait::runtime_enabled<comp::roctracer>::get())
         return;
 
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
     auto&& _protect = comp::roctracer::protect_flush_activity();
     (void) _protect;
@@ -362,7 +362,7 @@ hsa_activity_callback(uint32_t op, const void* vrecord, void* arg)
         default: break;
     }
 
-    OMNITRACE_CI_FAIL(_name == nullptr, "Error! HSA operation type not handled: %u\n",
+    ROCPROFSYS_CI_FAIL(_name == nullptr, "Error! HSA operation type not handled: %u\n",
                       op);
 
     if(!_name) return;
@@ -414,7 +414,7 @@ hip_exec_activity_callbacks(int64_t _tid)
     // guard against initialization of structure when trying to exec
     if(static_cast<size_t>(_tid) >= get_hip_activity_callbacks_size()) return;
 
-    // OMNITRACE_ROCTRACER_CALL(roctracer_flush_activity());
+    // ROCPROFSYS_ROCTRACER_CALL(roctracer_flush_activity());
     locking::atomic_lock _lk{ get_hip_activity_mutex(_tid) };
     auto&                _async_ops = get_hip_activity_callbacks(_tid);
     if(!_async_ops) return;
@@ -437,7 +437,7 @@ roctx_api_callback(uint32_t domain, uint32_t cid, const void* callback_data,
     if(get_state() != State::Active || !trait::runtime_enabled<comp::roctracer>::get())
         return;
 
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
     if(domain != ACTIVITY_DOMAIN_ROCTX) return;
 
@@ -467,7 +467,7 @@ roctx_api_callback(uint32_t domain, uint32_t cid, const void* callback_data,
             }
             else
             {
-                OMNITRACE_THROW("Error! roctxRangePop stack is empty! Expected "
+                ROCPROFSYS_THROW("Error! roctxRangePop stack is empty! Expected "
                                 "roctxRangePush/roctxRangePop on same thread\n");
             }
             break;
@@ -491,12 +491,12 @@ roctx_api_callback(uint32_t domain, uint32_t cid, const void* callback_data,
                 locking::atomic_lock _lk{ _range_lock, std::defer_lock };
                 if(!_lk.owns_lock()) _lk.lock();
                 auto itr = _range_map.find(roctx_range_id_t{ _data->args.id });
-                OMNITRACE_CI_THROW(itr == _range_map.end(),
+                ROCPROFSYS_CI_THROW(itr == _range_map.end(),
                                    "Error! could not find range with id %lu\n",
                                    _data->args.id);
                 if(itr == _range_map.end())
                 {
-                    OMNITRACE_VERBOSE(0, "Warning! could not find range with id %lu\n",
+                    ROCPROFSYS_VERBOSE(0, "Warning! could not find range with id %lu\n",
                                       _data->args.id);
                     return;
                 }
@@ -533,7 +533,7 @@ hip_api_callback(uint32_t domain, uint32_t cid, const void* callback_data, void*
     if(get_state() != State::Active || !trait::runtime_enabled<comp::roctracer>::get())
         return;
 
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
     assert(domain == ACTIVITY_DOMAIN_HIP_API);
     const char* op_name = roctracer_op_string(domain, cid, 0);
@@ -546,8 +546,8 @@ hip_api_callback(uint32_t domain, uint32_t cid, const void* callback_data, void*
         case HIP_API_ID___hipPushCallConfiguration:
         case HIP_API_ID___hipPopCallConfiguration:
         case HIP_API_ID_hipDeviceEnablePeerAccess:
-#if OMNITRACE_HIP_VERSION_MAJOR > 4 ||                                                   \
-    (OMNITRACE_HIP_VERSION_MAJOR == 4 && OMNITRACE_HIP_VERSION_MINOR >= 3)
+#if ROCPROFSYS_HIP_VERSION_MAJOR > 4 ||                                                   \
+    (ROCPROFSYS_HIP_VERSION_MAJOR == 4 && ROCPROFSYS_HIP_VERSION_MINOR >= 3)
         case HIP_API_ID_hipImportExternalMemory:
         case HIP_API_ID_hipDestroyExternalMemory:
 #endif
@@ -556,7 +556,7 @@ hip_api_callback(uint32_t domain, uint32_t cid, const void* callback_data, void*
     }
 
     const hip_api_data_t* data = reinterpret_cast<const hip_api_data_t*>(callback_data);
-    OMNITRACE_CONDITIONAL_PRINT_F(
+    ROCPROFSYS_CONDITIONAL_PRINT_F(
         get_debug() && get_verbose() >= 2, "<%-30s id(%u)\tcorrelation_id(%lu) %s>\n",
         op_name, cid, data->correlation_id,
         (data->phase == ACTIVITY_API_PHASE_ENTER) ? "on-enter" : "on-exit");
@@ -806,7 +806,7 @@ hip_activity_callback(const char* begin, const char* end, void* arg)
     if(get_state() != State::Active || !trait::runtime_enabled<comp::roctracer>::get())
         return;
 
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
     auto&& _protect = comp::roctracer::protect_flush_activity();
     (void) _protect;
@@ -822,7 +822,7 @@ hip_activity_callback(const char* begin, const char* end, void* arg)
         reinterpret_cast<const roctracer_record_t*>(end);
 
     auto&& _advance_record = [&record]() {
-        OMNITRACE_ROCTRACER_CALL(roctracer_next_record(record, &record));
+        ROCPROFSYS_ROCTRACER_CALL(roctracer_next_record(record, &record));
     };
 
     while(record < end_record)
@@ -830,7 +830,7 @@ hip_activity_callback(const char* begin, const char* end, void* arg)
         // make sure every iteration advances regardless of where return point happens
         scope::destructor _next_dtor{ _advance_record };
 
-        // OMNITRACE_CI will enable these asserts and should fail if something relevant
+        // ROCPROFSYS_CI will enable these asserts and should fail if something relevant
         // changes
         assert(HIP_OP_ID_DISPATCH == 0);
         assert(HIP_OP_ID_COPY == 1);
@@ -886,7 +886,7 @@ hip_activity_callback(const char* begin, const char* end, void* arg)
             static size_t _nmax =
                 get_env<size_t>("ROCPROFSYS_ROCTRACER_DISCARD_INVALID", 0);
             if(_nmax == 0) std::swap(_end_ns, _beg_ns);
-            OMNITRACE_WARNING_IF_F(
+            ROCPROFSYS_WARNING_IF_F(
                 _n < _nmax && _verbose(),
                 "%4zu :: Discarding kernel roctracer activity record which ended before "
                 "it started :: %-20s :: %-20s :: cid=%lu, time_ns=(%12lu:%12lu) "
@@ -894,7 +894,7 @@ hip_activity_callback(const char* begin, const char* end, void* arg)
                 _n, op_name, _name, record->correlation_id, _beg_ns, _end_ns,
                 (static_cast<int64_t>(_end_ns) - static_cast<int64_t>(_beg_ns)), _devid,
                 _queid, record->process_id, _tid, _op_id_names.at(record->op));
-            OMNITRACE_WARNING_IF_F(
+            ROCPROFSYS_WARNING_IF_F(
                 _nmax > 0 && _n == _nmax && _verbose(),
                 "Suppressing future messages about discarding kernel roctracer activity "
                 "record which ended before it started. Set "

@@ -132,8 +132,8 @@ bool
 is_child_process();
 }  // namespace omnitrace
 
-#define OMNITRACE_SCOPED_SAMPLING_ON_CHILD_THREADS(VALUE)                                \
-    ::omnitrace::scoped_child_sampling OMNITRACE_VARIABLE(_scoped_child_sampling_,       \
+#define ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(VALUE)                                \
+    ::omnitrace::scoped_child_sampling ROCPROFSYS_VARIABLE(_scoped_child_sampling_,       \
                                                           __LINE__)                      \
     {                                                                                    \
         VALUE                                                                            \

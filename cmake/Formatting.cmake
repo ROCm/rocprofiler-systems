@@ -7,14 +7,14 @@ include_guard(DIRECTORY)
 # ----------------------------------------------------------------------------------------#
 
 # clang-tidy
-macro(OMNITRACE_ACTIVATE_CLANG_TIDY)
-    if(OMNITRACE_USE_CLANG_TIDY)
+macro(ROCPROFSYS_ACTIVATE_CLANG_TIDY)
+    if(ROCPROFSYS_USE_CLANG_TIDY)
         find_program(CLANG_TIDY_COMMAND NAMES clang-tidy)
-        omnitrace_add_feature(CLANG_TIDY_COMMAND "Path to clang-tidy command")
+        rocprofsys_add_feature(CLANG_TIDY_COMMAND "Path to clang-tidy command")
         if(NOT CLANG_TIDY_COMMAND)
             timemory_message(
-                WARNING "OMNITRACE_USE_CLANG_TIDY is ON but clang-tidy is not found!")
-            set(OMNITRACE_USE_CLANG_TIDY OFF)
+                WARNING "ROCPROFSYS_USE_CLANG_TIDY is ON but clang-tidy is not found!")
+            set(ROCPROFSYS_USE_CLANG_TIDY OFF)
         else()
             set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_COMMAND})
 
@@ -37,13 +37,13 @@ endmacro()
 #
 # ------------------------------------------------------------------------------#
 
-find_program(OMNITRACE_CLANG_FORMAT_EXE NAMES clang-format-11 clang-format-mp-11
+find_program(ROCPROFSYS_CLANG_FORMAT_EXE NAMES clang-format-11 clang-format-mp-11
                                               clang-format)
 
-find_program(OMNITRACE_CMAKE_FORMAT_EXE NAMES cmake-format)
-find_program(OMNITRACE_BLACK_FORMAT_EXE NAMES black)
+find_program(ROCPROFSYS_CMAKE_FORMAT_EXE NAMES cmake-format)
+find_program(ROCPROFSYS_BLACK_FORMAT_EXE NAMES black)
 
-add_custom_target(format-omnitrace)
+add_custom_target(format-rocprofsys)
 if(NOT TARGET format)
     add_custom_target(format)
 endif()
@@ -53,9 +53,9 @@ foreach(_TYPE source python cmake)
     endif()
 endforeach()
 
-if(OMNITRACE_CLANG_FORMAT_EXE
-   OR OMNITRACE_BLACK_FORMAT_EXE
-   OR OMNITRACE_CMAKE_FORMAT_EXE)
+if(ROCPROFSYS_CLANG_FORMAT_EXE
+   OR ROCPROFSYS_BLACK_FORMAT_EXE
+   OR ROCPROFSYS_CMAKE_FORMAT_EXE)
     file(GLOB_RECURSE sources ${PROJECT_SOURCE_DIR}/source/*.cpp
          ${PROJECT_SOURCE_DIR}/source/*.c)
     file(GLOB_RECURSE headers ${PROJECT_SOURCE_DIR}/source/*.hpp
@@ -84,32 +84,32 @@ if(OMNITRACE_CLANG_FORMAT_EXE
         list(REMOVE_ITEM cmake_files ${external})
     endif()
 
-    if(OMNITRACE_CLANG_FORMAT_EXE)
+    if(ROCPROFSYS_CLANG_FORMAT_EXE)
         add_custom_target(
             format-rocprofsys-source
-            ${OMNITRACE_CLANG_FORMAT_EXE} -i ${sources} ${headers} ${examples}
+            ${ROCPROFSYS_CLANG_FORMAT_EXE} -i ${sources} ${headers} ${examples}
             ${tests_source}
-            COMMENT "[rocprof-sys] Running C++ formatter ${OMNITRACE_CLANG_FORMAT_EXE}..."
+            COMMENT "[rocprof-sys] Running C++ formatter ${ROCPROFSYS_CLANG_FORMAT_EXE}..."
             )
     endif()
 
-    if(OMNITRACE_BLACK_FORMAT_EXE)
+    if(ROCPROFSYS_BLACK_FORMAT_EXE)
         add_custom_target(
             format-rocprofsys-python
-            ${OMNITRACE_BLACK_FORMAT_EXE} -q ${PROJECT_SOURCE_DIR}
+            ${ROCPROFSYS_BLACK_FORMAT_EXE} -q ${PROJECT_SOURCE_DIR}
             COMMENT
-                "[rocprof-sys] Running Python formatter ${OMNITRACE_BLACK_FORMAT_EXE}...")
+                "[rocprof-sys] Running Python formatter ${ROCPROFSYS_BLACK_FORMAT_EXE}...")
         if(NOT TARGET format-python)
             add_custom_target(format-python)
         endif()
     endif()
 
-    if(OMNITRACE_CMAKE_FORMAT_EXE)
+    if(ROCPROFSYS_CMAKE_FORMAT_EXE)
         add_custom_target(
             format-rocprofsys-cmake
-            ${OMNITRACE_CMAKE_FORMAT_EXE} -i ${cmake_files}
+            ${ROCPROFSYS_CMAKE_FORMAT_EXE} -i ${cmake_files}
             COMMENT
-                "[rocprof-sys] Running CMake formatter ${OMNITRACE_CMAKE_FORMAT_EXE}...")
+                "[rocprof-sys] Running CMake formatter ${ROCPROFSYS_CMAKE_FORMAT_EXE}...")
         if(NOT TARGET format-cmake)
             add_custom_target(format-cmake)
         endif()
@@ -117,7 +117,7 @@ if(OMNITRACE_CLANG_FORMAT_EXE
 
     foreach(_TYPE source python cmake)
         if(TARGET format-rocprofsys-${_TYPE})
-            add_dependencies(format-omnitrace format-rocprofsys-${_TYPE})
+            add_dependencies(format-rocprofsys format-rocprofsys-${_TYPE})
             add_dependencies(format-${_TYPE} format-rocprofsys-${_TYPE})
         endif()
     endforeach()

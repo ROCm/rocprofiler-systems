@@ -79,7 +79,7 @@ init_index_data(int64_t _tid, bool _offset = false)
         threading::offset_this_id(_offset);
         itr = thread_index_data{};
 
-        OMNITRACE_CONDITIONAL_THROW(itr->internal_value != _tid,
+        ROCPROFSYS_CONDITIONAL_THROW(itr->internal_value != _tid,
                                     "Error! thread_info::init_index_data was called for "
                                     "thread %zi on thread %zi\n",
                                     _tid, itr->internal_value);
@@ -89,7 +89,7 @@ init_index_data(int64_t _tid, bool _offset = false)
         if(get_state() >= State::Finalized && _offset) _verb += 2;
         if(!config::settings_are_configured())
         {
-            OMNITRACE_BASIC_VERBOSE_F(_verb,
+            ROCPROFSYS_BASIC_VERBOSE_F(_verb,
                                       "Thread %li on PID %i (rank: %i) assigned "
                                       "omnitrace TID %li (internal: %li)\n",
                                       itr->system_value, process::get_id(), dmp::rank(),
@@ -97,7 +97,7 @@ init_index_data(int64_t _tid, bool _offset = false)
         }
         else
         {
-            OMNITRACE_VERBOSE_F(_verb,
+            ROCPROFSYS_VERBOSE_F(_verb,
                                 "Thread %li on PID %i (rank: %i) assigned omnitrace TID "
                                 "%li (internal: %li)\n",
                                 itr->system_value, process::get_id(), dmp::rank(),
@@ -129,7 +129,7 @@ grow_data(int64_t _tid)
 
     if(_tid >= peak_num_threads)
     {
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         auto_lock_t _lk{ type_mutex<data_growth>() };
 
         // check again after locking
@@ -234,7 +234,7 @@ thread_info::get(native_handle_t&& _tid)
         }
     }
 
-    OMNITRACE_CI_THROW(unknown_thread, "Unknown thread has been assigned a value");
+    ROCPROFSYS_CI_THROW(unknown_thread, "Unknown thread has been assigned a value");
     return unknown_thread;
 }
 
@@ -250,7 +250,7 @@ thread_info::get(std::thread::id _tid)
         }
     }
 
-    OMNITRACE_CI_THROW(unknown_thread, "Unknown thread has been assigned a value");
+    ROCPROFSYS_CI_THROW(unknown_thread, "Unknown thread has been assigned a value");
     return unknown_thread;
 }
 
@@ -285,16 +285,16 @@ thread_info::get(int64_t _tid, ThreadIdType _type)
     }
     else if(_type == ThreadIdType::PthreadID)
     {
-        OMNITRACE_THROW("omnitrace does not support thread_info::get(int64_t, "
+        ROCPROFSYS_THROW("omnitrace does not support thread_info::get(int64_t, "
                         "ThreadIdType) with ThreadIdType::PthreadID\n");
     }
     else if(_type == ThreadIdType::StlThreadID)
     {
-        OMNITRACE_THROW("omnitrace does not support thread_info::get(int64_t, "
+        ROCPROFSYS_THROW("omnitrace does not support thread_info::get(int64_t, "
                         "ThreadIdType) with ThreadIdType::StlThreadID\n");
     }
 
-    OMNITRACE_CI_THROW(unknown_thread, "Unknown thread has been assigned a value");
+    ROCPROFSYS_CI_THROW(unknown_thread, "Unknown thread has been assigned a value");
     return unknown_thread;
 }
 

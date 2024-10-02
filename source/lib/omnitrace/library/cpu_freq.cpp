@@ -159,14 +159,14 @@ write_perfetto_counter_track(index&& _idx, Args... _args)
 void
 post_process()
 {
-    OMNITRACE_VERBOSE(1,
+    ROCPROFSYS_VERBOSE(1,
                       "Post-processing %zu cpu frequency and memory usage entries...\n",
                       data.size());
     auto _process_frequencies = [](size_t _idx, size_t _offset) {
         using freq_track = perfetto_counter_track<category::cpu_freq>;
 
         const auto& _thread_info = thread_info::get(0, InternalTID);
-        OMNITRACE_CI_THROW(!_thread_info, "Missing thread info for thread 0");
+        ROCPROFSYS_CI_THROW(!_thread_info, "Missing thread info for thread 0");
         if(!_thread_info) return;
 
         if(!freq_track::exists(_idx))
@@ -200,7 +200,7 @@ post_process()
             { "MB", "MB", "MB", "", "", "sec", "sec" });
 
         const auto& _thread_info = thread_info::get(0, InternalTID);
-        OMNITRACE_CI_THROW(!_thread_info, "Missing thread info for thread 0");
+        ROCPROFSYS_CI_THROW(!_thread_info, "Missing thread info for thread 0");
         if(!_thread_info) return;
 
         for(auto& itr : data)

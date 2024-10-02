@@ -132,8 +132,8 @@ get_thread_pool_state()
 void
 setup()
 {
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
-    OMNITRACE_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
     (void) get_thread_pool();
 }
 
@@ -142,18 +142,18 @@ join()
 {
     if(roctracer::get_thread_pool_state() == State::Active)
     {
-        OMNITRACE_DEBUG_F("waiting for all roctracer tasks to complete...\n");
+        ROCPROFSYS_DEBUG_F("waiting for all roctracer tasks to complete...\n");
         for(size_t i = 0; i < thread_info::get_peak_num_threads(); ++i)
             roctracer::get_task_group(i).join();
     }
     else
     {
-        OMNITRACE_DEBUG_F("roctracer thread-pool is not active...\n");
+        ROCPROFSYS_DEBUG_F("roctracer thread-pool is not active...\n");
     }
 
     if(general::get_thread_pool_state() == State::Active)
     {
-        OMNITRACE_DEBUG_F("waiting for all general tasks to complete...\n");
+        ROCPROFSYS_DEBUG_F("waiting for all general tasks to complete...\n");
         for(size_t i = 0; i < thread_info::get_peak_num_threads(); ++i)
             general::get_task_group(i).join();
     }
@@ -164,7 +164,7 @@ shutdown()
 {
     if(roctracer::get_thread_pool_state() == State::Active)
     {
-        OMNITRACE_DEBUG_F("Waiting on completion of roctracer tasks...\n");
+        ROCPROFSYS_DEBUG_F("Waiting on completion of roctracer tasks...\n");
         for(size_t i = 0; i < thread_info::get_peak_num_threads(); ++i)
         {
             roctracer::get_task_group(i).join();
@@ -175,12 +175,12 @@ shutdown()
     }
     else
     {
-        OMNITRACE_DEBUG_F("roctracer thread-pool is not active...\n");
+        ROCPROFSYS_DEBUG_F("roctracer thread-pool is not active...\n");
     }
 
     if(general::get_thread_pool_state() == State::Active)
     {
-        OMNITRACE_DEBUG_F("Waiting on completion of general tasks...\n");
+        ROCPROFSYS_DEBUG_F("Waiting on completion of general tasks...\n");
         for(size_t i = 0; i < thread_info::get_peak_num_threads(); ++i)
         {
             general::get_task_group(i).join();
@@ -192,13 +192,13 @@ shutdown()
 
     if(get_thread_pool_state() == State::Active)
     {
-        OMNITRACE_DEBUG_F("Destroying the rocprof-sys thread pool...\n");
+        ROCPROFSYS_DEBUG_F("Destroying the rocprof-sys thread pool...\n");
         get_thread_pool().destroy_threadpool();
         get_thread_pool_state() = State::Finalized;
     }
     else
     {
-        OMNITRACE_DEBUG_F("thread-pool is not active...\n");
+        ROCPROFSYS_DEBUG_F("thread-pool is not active...\n");
     }
 }
 

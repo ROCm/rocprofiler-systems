@@ -268,7 +268,7 @@ extern std::unique_ptr<std::ofstream> log_ofs;
     {                                                                                    \
         char _logmsgbuff[FUNCNAMELEN];                                                   \
         snprintf(_logmsgbuff, FUNCNAMELEN, __VA_ARGS__);                                 \
-        OMNITRACE_ADD_LOG_ENTRY(_logmsgbuff);                                            \
+        ROCPROFSYS_ADD_LOG_ENTRY(_logmsgbuff);                                            \
         if(werror || LEVEL < 0)                                                          \
         {                                                                                \
             if(debug_print || verbose_level >= LEVEL)                                    \
@@ -290,7 +290,7 @@ extern std::unique_ptr<std::ofstream> log_ofs;
     {                                                                                    \
         char _logmsgbuff[FUNCNAMELEN];                                                   \
         snprintf(_logmsgbuff, FUNCNAMELEN, __VA_ARGS__);                                 \
-        OMNITRACE_ADD_LOG_ENTRY(_logmsgbuff);                                            \
+        ROCPROFSYS_ADD_LOG_ENTRY(_logmsgbuff);                                            \
         if(debug_print || verbose_level >= LEVEL)                                        \
             fprintf(stdout, "[rocprof-sys][exe] " __VA_ARGS__);                          \
         fflush(stdout);                                                                  \
@@ -300,7 +300,7 @@ extern std::unique_ptr<std::ofstream> log_ofs;
     {                                                                                    \
         char _logmsgbuff[FUNCNAMELEN];                                                   \
         snprintf(_logmsgbuff, FUNCNAMELEN, __VA_ARGS__);                                 \
-        OMNITRACE_ADD_LOG_ENTRY(_logmsgbuff);                                            \
+        ROCPROFSYS_ADD_LOG_ENTRY(_logmsgbuff);                                            \
         if(debug_print || verbose_level >= LEVEL) fprintf(stdout, __VA_ARGS__);          \
         fflush(stdout);                                                                  \
     }

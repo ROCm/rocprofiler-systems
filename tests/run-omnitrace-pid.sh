@@ -7,7 +7,7 @@ cleanup()
 
 trap cleanup SIGABRT SIGQUIT
 
-OMNITRACE_COMMAND=""
+ROCPROFSYS_COMMAND=""
 APPLICATION_COMMAND=""
 
 while [[ $# -gt 0 ]]
@@ -16,7 +16,7 @@ do
         shift
         break
     else
-        OMNITRACE_COMMAND="${OMNITRACE_COMMAND}${1} "
+        ROCPROFSYS_COMMAND="${ROCPROFSYS_COMMAND}${1} "
         shift
     fi
 done
@@ -36,7 +36,7 @@ fi
 echo "PID: ${_PID}"
 echo ""
 
-${OMNITRACE_COMMAND} -p ${_PID} -- ${@}
+${ROCPROFSYS_COMMAND} -p ${_PID} -- ${@}
 RET=$?
 
 killall $(basename ${1}) &> /dev/null

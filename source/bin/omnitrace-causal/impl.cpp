@@ -451,7 +451,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env,
     });
 
     parser.enable_help();
-    parser.enable_version("rocprof-sys-causal", OMNITRACE_ARGPARSE_VERSION_INFO);
+    parser.enable_version("rocprof-sys-causal", ROCPROFSYS_ARGPARSE_VERSION_INFO);
 
     auto _cols = std::get<0>(console::get_columns());
     if(_cols > parser.get_help_width() + 8)
@@ -528,7 +528,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env,
                       "Do not activate default features which are recommended for causal "
                       "profiling. For example: PID-tagging of output files and "
                       "timestamped subdirectories are disabled by default. Kokkos tools "
-                      "support is added by default (OMNITRACE_USE_KOKKOSP=ON) because, "
+                      "support is added by default (ROCPROFSYS_USE_KOKKOSP=ON) because, "
                       "for Kokkos applications, the Kokkos-Tools callbacks are used for "
                       "progress points. Activation of OpenMP tools support is similar")
         .min_count(0)
@@ -752,7 +752,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env,
 
     parser.end_group();
 
-#if OMNITRACE_HIP_VERSION > 0 && OMNITRACE_HIP_VERSION < 50300
+#if ROCPROFSYS_HIP_VERSION > 0 && ROCPROFSYS_HIP_VERSION < 50300
     update_env(_env, "HSA_ENABLE_INTERRUPT", 0);
 #endif
 
@@ -815,21 +815,21 @@ parse_args(int argc, char** argv, std::vector<char*>& _env,
         add_default_env(_env, "ROCPROFSYS_USE_PID", false);
         add_default_env(_env, "ROCPROFSYS_USE_KOKKOSP", true);
 
-#if defined(OMNITRACE_USE_OMPT) && OMNITRACE_USE_OMPT > 0
+#if defined(ROCPROFSYS_USE_OMPT) && ROCPROFSYS_USE_OMPT > 0
         add_default_env(_env, "ROCPROFSYS_USE_OMPT", true);
 #endif
 
-#if(defined(OMNITRACE_USE_MPI) && OMNITRACE_USE_MPI > 0) ||                              \
-    (defined(OMNITRACE_USE_MPI_HEADERS) && OMNITRACE_USE_MPI_HEADERS > 0)
+#if(defined(ROCPROFSYS_USE_MPI) && ROCPROFSYS_USE_MPI > 0) ||                              \
+    (defined(ROCPROFSYS_USE_MPI_HEADERS) && ROCPROFSYS_USE_MPI_HEADERS > 0)
         add_default_env(_env, "ROCPROFSYS_USE_MPIP", true);
 #endif
 
-#if defined(OMNITRACE_USE_ROCTRACER) && OMNITRACE_USE_ROCTRACER > 0
+#if defined(ROCPROFSYS_USE_ROCTRACER) && ROCPROFSYS_USE_ROCTRACER > 0
         add_default_env(_env, "ROCPROFSYS_ROCTRACER_HIP_API", true);
         add_default_env(_env, "ROCPROFSYS_ROCTRACER_HSA_API", true);
 #endif
 
-#if defined(OMNITRACE_USE_RCCL) && OMNITRACE_USE_RCCL > 0
+#if defined(ROCPROFSYS_USE_RCCL) && ROCPROFSYS_USE_RCCL > 0
         add_default_env(_env, "ROCPROFSYS_USE_RCCLP", true);
 #endif
     }

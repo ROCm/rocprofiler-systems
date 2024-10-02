@@ -42,7 +42,7 @@ namespace unwind = ::tim::unwind;
 
 namespace causal
 {
-static constexpr size_t unwind_depth  = OMNITRACE_MAX_UNWIND_DEPTH;
+static constexpr size_t unwind_depth  = ROCPROFSYS_MAX_UNWIND_DEPTH;
 static constexpr size_t unwind_offset = 0;
 using unwind_stack_t                  = unwind::stack<unwind_depth>;
 using unwind_addr_t                   = container::static_vector<uintptr_t, unwind_depth>;

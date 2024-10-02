@@ -39,7 +39,7 @@
 #include <type_traits>
 #include <unordered_map>
 
-#define OMNITRACE_SERIALIZE(MEMBER_VARIABLE)                                             \
+#define ROCPROFSYS_SERIALIZE(MEMBER_VARIABLE)                                             \
     ar(::tim::cereal::make_nvp(#MEMBER_VARIABLE, MEMBER_VARIABLE))
 
 namespace omnitrace
@@ -108,7 +108,7 @@ post_process()
 
     if(_coverage.size == 0)
     {
-        OMNITRACE_VERBOSE_F(
+        ROCPROFSYS_VERBOSE_F(
             0,
             "Warning! Code coverage enabled but no code coverage data is available!\n");
         return;
@@ -150,7 +150,7 @@ post_process()
                         }
                         else
                         {
-                            OMNITRACE_VERBOSE_F(0,
+                            ROCPROFSYS_VERBOSE_F(0,
                                                 "Warning! No matching coverage data for "
                                                 "%s :: %s (0x%x)\n",
                                                 func.first.data(), file.first.data(),
@@ -208,10 +208,10 @@ post_process()
         std::swap(_coverage_data, _tmp);
     }
 
-    OMNITRACE_VERBOSE(0, "code coverage     :: %6.2f%s\n", _coverage() * 100.0, "%");
-    OMNITRACE_VERBOSE(0, "module coverage   :: %6.2f%s\n",
+    ROCPROFSYS_VERBOSE(0, "code coverage     :: %6.2f%s\n", _coverage() * 100.0, "%");
+    ROCPROFSYS_VERBOSE(0, "module coverage   :: %6.2f%s\n",
                       _coverage(code_coverage::MODULE) * 100.0, "%");
-    OMNITRACE_VERBOSE(0, "function coverage :: %6.2f%s\n",
+    ROCPROFSYS_VERBOSE(0, "function coverage :: %6.2f%s\n",
                       _coverage(code_coverage::FUNCTION) * 100.0, "%");
 
     if(get_verbose() >= 0) fprintf(stderr, "\n");
@@ -221,7 +221,7 @@ post_process()
 
     auto _get_setting = [](const std::string& _v) {
         auto&& _b = config::get_setting_value<bool>(_v);
-        OMNITRACE_CI_THROW(!_b, "Error! No configuration setting named '%s'", _v.c_str());
+        ROCPROFSYS_CI_THROW(!_b, "Error! No configuration setting named '%s'", _v.c_str());
         return _b.value_or(true);
     };
 
@@ -254,7 +254,7 @@ post_process()
         }
         else
         {
-            OMNITRACE_THROW("Error opening coverage output file: %s", _fname.c_str());
+            ROCPROFSYS_THROW("Error opening coverage output file: %s", _fname.c_str());
         }
     }
 
@@ -286,7 +286,7 @@ post_process()
         }
         else
         {
-            OMNITRACE_THROW("Error opening coverage output file: %s", _fname.c_str());
+            ROCPROFSYS_THROW("Error opening coverage output file: %s", _fname.c_str());
         }
     }
 
@@ -307,7 +307,7 @@ omnitrace_register_source_hidden(const char* file, const char* func, size_t line
 
     using coverage_data = coverage::coverage_data;
 
-    OMNITRACE_BASIC_VERBOSE_F(4, "[0x%x] :: %-20s :: %20s:%zu :: %s\n",
+    ROCPROFSYS_BASIC_VERBOSE_F(4, "[0x%x] :: %-20s :: %20s:%zu :: %s\n",
                               (unsigned int) address, func, file, line, source);
 
     coverage::get_coverage_data().emplace_back(
@@ -338,7 +338,7 @@ omnitrace_register_coverage_hidden(const char* file, const char* func, size_t ad
     else if(omnitrace::get_state() >= omnitrace::State::Finalized)
         return;
 
-    OMNITRACE_BASIC_VERBOSE_F(3, "[0x%x] %-20s :: %20s\n", (unsigned int) address, func,
+    ROCPROFSYS_BASIC_VERBOSE_F(3, "[0x%x] %-20s :: %20s\n", (unsigned int) address, func,
                               file);
     (*coverage::get_coverage_count())[file][func][address] += 1;
 }

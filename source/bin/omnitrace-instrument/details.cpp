@@ -216,7 +216,7 @@ get_func_file_line_info(module_t* module, procedure_t* func)
 {
     using address_t = Dyninst::Address;
 
-    OMNITRACE_ADD_LOG_ENTRY("Getting function line info for", get_name(func));
+    ROCPROFSYS_ADD_LOG_ENTRY("Getting function line info for", get_name(func));
 
     auto _file_name   = get_name(module);
     auto _func_name   = get_name(func);
@@ -249,7 +249,7 @@ function_signature
 get_loop_file_line_info(module_t* module, procedure_t* func, flow_graph_t*,
                         basic_loop_t* loopToInstrument)
 {
-    OMNITRACE_ADD_LOG_ENTRY("Getting loop line info for", get_name(func));
+    ROCPROFSYS_ADD_LOG_ENTRY("Getting loop line info for", get_name(func));
 
     auto basic_blocks = std::vector<BPatch_basicBlock*>{};
     loopToInstrument->getLoopBasicBlocksExclusive(basic_blocks);
@@ -343,7 +343,7 @@ get_basic_block_file_line_info(module_t* module, procedure_t* func)
     std::map<basic_block_t*, basic_block_signature> _data{};
     if(!func) return _data;
 
-    OMNITRACE_ADD_LOG_ENTRY("Getting basic block line info for", get_name(func));
+    ROCPROFSYS_ADD_LOG_ENTRY("Getting basic block line info for", get_name(func));
 
     auto* _cfg          = func->getCFG();
     auto  _basic_blocks = std::set<BPatch_basicBlock*>{};
@@ -421,7 +421,7 @@ get_basic_block_file_line_info(module_t* module, procedure_t* func)
 std::vector<statement_t>
 get_source_code(module_t* module, procedure_t* func)
 {
-    OMNITRACE_ADD_LOG_ENTRY("Getting source code for", get_name(func));
+    ROCPROFSYS_ADD_LOG_ENTRY("Getting source code for", get_name(func));
 
     std::vector<statement_t> _lines{};
     if(!module || !func) return _lines;
@@ -530,7 +530,7 @@ omnitrace_get_exe_realpath()
         if(!_cmd_line.empty())
         {
             using array_config_t = timemory::join::array_config;
-            OMNITRACE_ADD_DETAILED_LOG_ENTRY(array_config_t{ " ", "[ ", " ]" },
+            ROCPROFSYS_ADD_DETAILED_LOG_ENTRY(array_config_t{ " ", "[ ", " ]" },
                                              "cmdline:: ", _cmd_line);
             return _cmd_line.front();
             // return tim::filepath::realpath(_cmd_line.front(), nullptr, false);
@@ -695,7 +695,7 @@ error_func_real(error_level_t level, int num, const char* const* params)
     const char* msg = bpatch->getEnglishErrorString(num);
     bpatch->formatErrorString(line, sizeof(line), msg, params);
 
-    OMNITRACE_ADD_LOG_ENTRY("Dyninst error function called with level", level,
+    ROCPROFSYS_ADD_LOG_ENTRY("Dyninst error function called with level", level,
                             ":: ID# =", num, "::", line)
         .force(level < BPatchInfo);
 
@@ -742,7 +742,7 @@ error_func_fake(error_level_t level, int num, const char* const* params)
     bpatch->formatErrorString(line, sizeof(line), msg, params);
 
     // just log it
-    OMNITRACE_ADD_LOG_ENTRY("Dyninst error function called with level", level,
+    ROCPROFSYS_ADD_LOG_ENTRY("Dyninst error function called with level", level,
                             ":: ID# =", num, "::", line)
         .force(level < BPatchInfo);
 }

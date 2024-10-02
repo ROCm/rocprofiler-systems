@@ -40,7 +40,7 @@ import argparse
 import traceback
 
 PY3 = sys.version_info[0] == 3
-_OMNITRACE_PYTHON_SCRIPT_FILE = None
+_ROCPROFSYS_PYTHON_SCRIPT_FILE = None
 
 # Python 3.x compatibility utils: execfile
 try:
@@ -104,7 +104,7 @@ def parse_args(args=None):
     parser = argparse.ArgumentParser(
         "rocprofsys",
         add_help=True,
-        epilog="usage: {} -m rocprofsys <OMNITRACE_ARGS> -- <SCRIPT> <SCRIPT_ARGS>".format(
+        epilog="usage: {} -m rocprofsys <ROCPROFSYS_ARGS> -- <SCRIPT> <SCRIPT_ARGS>".format(
             os.path.basename(sys.executable)
         ),
     )
@@ -357,7 +357,7 @@ def main(main_args=sys.argv):
     # Make sure the script's directory is on sys.path
     sys.path.insert(0, os.path.dirname(script_file))
 
-    _OMNITRACE_PYTHON_SCRIPT_FILE = script_file
+    _ROCPROFSYS_PYTHON_SCRIPT_FILE = script_file
     os.environ["ROCPROFSYS_PYTHON_SCRIPT_FILE"] = script_file
 
     prof = Profiler()
@@ -398,13 +398,13 @@ def main(main_args=sys.argv):
 
 if __name__ == "__main__":
     args = sys.argv
-    if _OMNITRACE_PYTHON_SCRIPT_FILE is None:
-        _OMNITRACE_PYTHON_SCRIPT_FILE = os.environ.get(
+    if _ROCPROFSYS_PYTHON_SCRIPT_FILE is None:
+        _ROCPROFSYS_PYTHON_SCRIPT_FILE = os.environ.get(
             "ROCPROFSYS_PYTHON_SCRIPT_FILE", None
         )
 
-    if "--" not in args and _OMNITRACE_PYTHON_SCRIPT_FILE is not None:
-        args = [args[0]] + ["--", _OMNITRACE_PYTHON_SCRIPT_FILE] + args[1:]
+    if "--" not in args and _ROCPROFSYS_PYTHON_SCRIPT_FILE is not None:
+        args = [args[0]] + ["--", _ROCPROFSYS_PYTHON_SCRIPT_FILE] + args[1:]
         os.environ["ROCPROFSYS_USE_PID"] = "ON"
 
     main(args)

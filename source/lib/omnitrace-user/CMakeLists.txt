@@ -38,7 +38,7 @@ set_target_properties(
                BUILD_RPATH "\$ORIGIN"
                INSTALL_RPATH "\$ORIGIN")
 
-omnitrace_strip_target(rocprofsys-user-library)
+rocprofsys_strip_target(rocprofsys-user-library)
 
 foreach(_HEADER ${_user_headers})
     string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/omnitrace/"

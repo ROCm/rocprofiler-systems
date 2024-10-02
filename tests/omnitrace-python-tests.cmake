@@ -6,14 +6,14 @@
 
 set(_INDEX 0)
 
-foreach(_VERSION ${OMNITRACE_PYTHON_VERSIONS})
-    if(NOT OMNITRACE_USE_PYTHON)
+foreach(_VERSION ${ROCPROFSYS_PYTHON_VERSIONS})
+    if(NOT ROCPROFSYS_USE_PYTHON)
         continue()
     endif()
 
-    list(GET OMNITRACE_PYTHON_ROOT_DIRS ${_INDEX} _PYTHON_ROOT_DIR)
+    list(GET ROCPROFSYS_PYTHON_ROOT_DIRS ${_INDEX} _PYTHON_ROOT_DIR)
 
-    omnitrace_find_python(
+    rocprofsys_find_python(
         _PYTHON
         ROOT_DIR "${_PYTHON_ROOT_DIR}"
         COMPONENTS Interpreter)
@@ -21,7 +21,7 @@ foreach(_VERSION ${OMNITRACE_PYTHON_VERSIONS})
     # ---------------------------------------------------------------------------------- #
     # python tests
     # ---------------------------------------------------------------------------------- #
-    omnitrace_add_python_test(
+    rocprofsys_add_python_test(
         NAME python-external
         PYTHON_EXECUTABLE ${_PYTHON_EXECUTABLE}
         PYTHON_VERSION ${_VERSION}
@@ -30,7 +30,7 @@ foreach(_VERSION ${OMNITRACE_PYTHON_VERSIONS})
         RUN_ARGS -v 10 -n 5
         ENVIRONMENT "${_python_environment}")
 
-    omnitrace_add_python_test(
+    rocprofsys_add_python_test(
         NAME python-external-exclude-inefficient
         PYTHON_EXECUTABLE ${_PYTHON_EXECUTABLE}
         PYTHON_VERSION ${_VERSION}
@@ -39,7 +39,7 @@ foreach(_VERSION ${OMNITRACE_PYTHON_VERSIONS})
         RUN_ARGS -v 10 -n 5
         ENVIRONMENT "${_python_environment}")
 
-    omnitrace_add_python_test(
+    rocprofsys_add_python_test(
         NAME python-builtin
         PYTHON_EXECUTABLE ${_PYTHON_EXECUTABLE}
         PYTHON_VERSION ${_VERSION}
@@ -48,7 +48,7 @@ foreach(_VERSION ${OMNITRACE_PYTHON_VERSIONS})
         RUN_ARGS -v 10 -n 5
         ENVIRONMENT "${_python_environment}")
 
-    omnitrace_add_python_test(
+    rocprofsys_add_python_test(
         NAME python-builtin-noprofile
         PYTHON_EXECUTABLE ${_PYTHON_EXECUTABLE}
         PYTHON_VERSION ${_VERSION}
@@ -57,7 +57,7 @@ foreach(_VERSION ${OMNITRACE_PYTHON_VERSIONS})
         RUN_ARGS -v 15 -n 5
         ENVIRONMENT "${_python_environment}")
 
-    omnitrace_add_python_test(
+    rocprofsys_add_python_test(
         STANDALONE
         NAME python-source
         PYTHON_EXECUTABLE ${_PYTHON_EXECUTABLE}
@@ -66,7 +66,7 @@ foreach(_VERSION ${OMNITRACE_PYTHON_VERSIONS})
         RUN_ARGS -v 5 -n 5 -s 3
         ENVIRONMENT "${_python_environment}")
 
-    omnitrace_add_python_test(
+    rocprofsys_add_python_test(
         STANDALONE
         NAME python-code-coverage
         PYTHON_EXECUTABLE ${_PYTHON_EXECUTABLE}
@@ -89,21 +89,21 @@ foreach(_VERSION ${OMNITRACE_PYTHON_VERSIONS})
     # ---------------------------------------------------------------------------------- #
     if(CMAKE_VERSION VERSION_LESS "3.18.0")
         find_program(
-            OMNITRACE_CAT_EXE
+            ROCPROFSYS_CAT_EXE
             NAMES cat
             PATH_SUFFIXES bin)
 
-        if(OMNITRACE_CAT_EXE)
-            set(OMNITRACE_CAT_COMMAND ${OMNITRACE_CAT_EXE})
+        if(ROCPROFSYS_CAT_EXE)
+            set(ROCPROFSYS_CAT_COMMAND ${ROCPROFSYS_CAT_EXE})
         endif()
     else()
-        set(OMNITRACE_CAT_COMMAND ${CMAKE_COMMAND} -E cat)
+        set(ROCPROFSYS_CAT_COMMAND ${CMAKE_COMMAND} -E cat)
     endif()
 
-    if(OMNITRACE_CAT_COMMAND)
-        omnitrace_add_python_test(
+    if(ROCPROFSYS_CAT_COMMAND)
+        rocprofsys_add_python_test(
             NAME python-external-check
-            COMMAND ${OMNITRACE_CAT_COMMAND}
+            COMMAND ${ROCPROFSYS_CAT_COMMAND}
             PYTHON_VERSION ${_VERSION}
             FILE rocprofsys-tests-output/python-external/${_VERSION}/trip_count.txt
             PASS_REGEX
@@ -111,27 +111,27 @@ foreach(_VERSION ${OMNITRACE_PYTHON_VERSIONS})
             DEPENDS python-external-${_VERSION}
             ENVIRONMENT "${_python_environment}")
 
-        omnitrace_add_python_test(
+        rocprofsys_add_python_test(
             NAME python-external-exclude-inefficient-check
-            COMMAND ${OMNITRACE_CAT_COMMAND}
+            COMMAND ${ROCPROFSYS_CAT_COMMAND}
             PYTHON_VERSION ${_VERSION}
             FILE rocprofsys-tests-output/python-external-exclude-inefficient/${_VERSION}/trip_count.txt
             FAIL_REGEX "(\\\|_inefficient).*(\\\|_sum)|ROCPROFSYS_ABORT_FAIL_REGEX"
             DEPENDS python-external-exclude-inefficient-${_VERSION}
             ENVIRONMENT "${_python_environment}")
 
-        omnitrace_add_python_test(
+        rocprofsys_add_python_test(
             NAME python-builtin-check
-            COMMAND ${OMNITRACE_CAT_COMMAND}
+            COMMAND ${ROCPROFSYS_CAT_COMMAND}
             PYTHON_VERSION ${_VERSION}
             FILE rocprofsys-tests-output/python-builtin/${_VERSION}/trip_count.txt
             PASS_REGEX "\\\[inefficient\\\]\\\[builtin.py:14\\\]"
             DEPENDS python-builtin-${_VERSION}
             ENVIRONMENT "${_python_environment}")
 
-        omnitrace_add_python_test(
+        rocprofsys_add_python_test(
             NAME python-builtin-noprofile-check
-            COMMAND ${OMNITRACE_CAT_COMMAND}
+            COMMAND ${ROCPROFSYS_CAT_COMMAND}
             PYTHON_VERSION ${_VERSION}
             FILE rocprofsys-tests-output/python-builtin-noprofile/${_VERSION}/trip_count.txt
             PASS_REGEX ".(run)..(noprofile.py)."
@@ -139,18 +139,18 @@ foreach(_VERSION ${OMNITRACE_PYTHON_VERSIONS})
             DEPENDS python-builtin-noprofile-${_VERSION}
             ENVIRONMENT "${_python_environment}")
     else()
-        omnitrace_message(
+        rocprofsys_message(
             WARNING
             "Neither 'cat' nor 'cmake -E cat' are available. Python source checks are disabled"
             )
     endif()
 
-    function(OMNITRACE_ADD_PYTHON_VALIDATION_TEST)
+    function(ROCPROFSYS_ADD_PYTHON_VALIDATION_TEST)
         cmake_parse_arguments(
             TEST "" "NAME;TIMEMORY_METRIC;TIMEMORY_FILE;PERFETTO_METRIC;PERFETTO_FILE"
             "ARGS" ${ARGN})
 
-        omnitrace_add_python_test(
+        rocprofsys_add_python_test(
             NAME ${TEST_NAME}-validate-timemory
             COMMAND
                 ${_PYTHON_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/validate-timemory-json.py
@@ -162,7 +162,7 @@ foreach(_VERSION ${OMNITRACE_PYTHON_VERSIONS})
                 "rocprofsys-tests-output/${TEST_NAME}/${_VERSION}/${TEST_TIMEMORY_FILE} validated"
             ENVIRONMENT "${_python_environment}")
 
-        omnitrace_add_python_test(
+        rocprofsys_add_python_test(
             NAME ${TEST_NAME}-validate-perfetto
             COMMAND
                 ${_PYTHON_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/validate-perfetto-proto.py
@@ -207,7 +207,7 @@ foreach(_VERSION ${OMNITRACE_PYTHON_VERSIONS})
         2
         3)
 
-    omnitrace_add_python_validation_test(
+    rocprofsys_add_python_validation_test(
         NAME python-source
         TIMEMORY_METRIC "trip_count"
         TIMEMORY_FILE "trip_count.json"
@@ -256,7 +256,7 @@ foreach(_VERSION ${OMNITRACE_PYTHON_VERSIONS})
         10
         1)
 
-    omnitrace_add_python_validation_test(
+    rocprofsys_add_python_validation_test(
         NAME python-builtin
         TIMEMORY_METRIC "trip_count"
         TIMEMORY_FILE "trip_count.json"

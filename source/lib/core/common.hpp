@@ -50,7 +50,7 @@
 #include <utility>
 #include <vector>
 
-#define OMNITRACE_DECLARE_COMPONENT(NAME)                                                \
+#define ROCPROFSYS_DECLARE_COMPONENT(NAME)                                                \
     namespace omnitrace                                                                  \
     {                                                                                    \
     namespace component                                                                  \
@@ -75,7 +75,7 @@
     }                                                                                    \
     }
 
-#define OMNITRACE_COMPONENT_ALIAS(NAME, ...)                                             \
+#define ROCPROFSYS_COMPONENT_ALIAS(NAME, ...)                                             \
     namespace omnitrace                                                                  \
     {                                                                                    \
     namespace component                                                                  \
@@ -91,7 +91,7 @@
     }                                                                                    \
     }
 
-#define OMNITRACE_DEFINE_CONCRETE_TRAIT(TRAIT, TYPE, VALUE)                              \
+#define ROCPROFSYS_DEFINE_CONCRETE_TRAIT(TRAIT, TYPE, VALUE)                              \
     namespace tim                                                                        \
     {                                                                                    \
     namespace trait                                                                      \

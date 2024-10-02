@@ -110,10 +110,10 @@ extern std::stringstream lerr;
 extern std::set<std::string> settings_exclude;
 
 // exclude some timemory settings which are not relevant to omnitrace
-//  exact matches, e.g. OMNITRACE_BANNER
+//  exact matches, e.g. ROCPROFSYS_BANNER
 extern std::string settings_rexclude_exact;
 
-//  leading matches, e.g. OMNITRACE_MPI_[A-Z_]+
+//  leading matches, e.g. ROCPROFSYS_MPI_[A-Z_]+
 extern std::string settings_rexclude_begin;
 
 constexpr size_t max_error_message_buffer_length = 4096;

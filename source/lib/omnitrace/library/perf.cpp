@@ -49,8 +49,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#if !defined(OMNITRACE_RETURN_ERROR_MSG)
-#    define OMNITRACE_RETURN_ERROR_MSG(COND, ...)                                        \
+#if !defined(ROCPROFSYS_RETURN_ERROR_MSG)
+#    define ROCPROFSYS_RETURN_ERROR_MSG(COND, ...)                                        \
         if((COND))                                                                       \
         {                                                                                \
             auto _msg_ss = std::stringstream{};                                          \
@@ -59,12 +59,12 @@
         }
 #endif
 
-#if !defined(OMNITRACE_FATAL)
-#    define OMNITRACE_FATAL TIMEMORY_FATAL
+#if !defined(ROCPROFSYS_FATAL)
+#    define ROCPROFSYS_FATAL TIMEMORY_FATAL
 #endif
 
-#if !defined(OMNITRACE_ASSERT)
-#    define OMNITRACE_ASSERT(COND) (COND) ? ::tim::log::base() : TIMEMORY_FATAL
+#if !defined(ROCPROFSYS_ASSERT)
+#    define ROCPROFSYS_ASSERT(COND) (COND) ? ::tim::log::base() : TIMEMORY_FATAL
 #endif
 
 namespace omnitrace
@@ -98,7 +98,7 @@ perf_event::perf_event(perf_event&& rhs) noexcept
     if(m_fd != -1 && m_fd != rhs.m_fd)
     {
         ::close(m_fd);
-        OMNITRACE_VERBOSE(1, "Closed perf event fd %li\n", m_fd);
+        ROCPROFSYS_VERBOSE(1, "Closed perf event fd %li\n", m_fd);
     }
 
     if(m_mapping != nullptr && m_mapping != rhs.m_mapping) munmap(m_mapping, sizes.mmap);
@@ -123,7 +123,7 @@ perf_event::~perf_event() { close(); }
 perf_event&
 perf_event::operator=(perf_event&& rhs) noexcept
 {
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
     if(&rhs == this) return *this;
 
     // Release resources if the current perf_event is initialized and not equal to this
@@ -150,7 +150,7 @@ perf_event::operator=(perf_event&& rhs) noexcept
 std::optional<std::string>
 perf_event::open(struct perf_event_attr& _pe, pid_t _pid, int _cpu)
 {
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
     m_sample_type = _pe.sample_type;
     m_read_format = _pe.read_format;
     m_batch_size  = _pe.wakeup_events;
@@ -167,16 +167,16 @@ perf_event::open(struct perf_event_attr& _pe, pid_t _pid, int _cpu)
 
         auto file = std::ifstream{ path.c_str() };
 
-        OMNITRACE_RETURN_ERROR_MSG(!file,
+        ROCPROFSYS_RETURN_ERROR_MSG(!file,
                                    "Failed to open " << path << ": " << strerror(errno));
 
         int value = 4;
         file >> value;
 
-        OMNITRACE_RETURN_ERROR_MSG(file.bad(), "Failed to read from " << path << ": "
+        ROCPROFSYS_RETURN_ERROR_MSG(file.bad(), "Failed to read from " << path << ": "
                                                                       << strerror(errno));
 
-        OMNITRACE_RETURN_ERROR_MSG(
+        ROCPROFSYS_RETURN_ERROR_MSG(
             true, "Failed to open perf event. Consider tweaking "
                       << path << " to 2 or less "
                       << "(current value is " << value << "), "
@@ -189,7 +189,7 @@ perf_event::open(struct perf_event_attr& _pe, pid_t _pid, int _cpu)
         void* ring_buffer =
             mmap(nullptr, sizes.mmap, PROT_READ | PROT_WRITE, MAP_SHARED, m_fd, 0);
 
-        OMNITRACE_RETURN_ERROR_MSG(
+        ROCPROFSYS_RETURN_ERROR_MSG(
             ring_buffer == MAP_FAILED,
             "Mapping perf_event ring buffer failed. Make sure the current user has "
             "permission to invoke the perf tool, and that the program being profiled "
@@ -204,7 +204,7 @@ perf_event::open(struct perf_event_attr& _pe, pid_t _pid, int _cpu)
 std::optional<std::string>
 perf_event::open(double _freq, uint32_t _batch_size, pid_t _pid, int _cpu)
 {
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
     uint64_t               _period = (1.0 / _freq) * units::sec;
     struct perf_event_attr _pe;
 
@@ -247,7 +247,7 @@ uint64_t
 perf_event::get_count() const
 {
     uint64_t count;
-    OMNITRACE_REQUIRE(read(m_fd, &count, sizeof(uint64_t)) == sizeof(uint64_t))
+    ROCPROFSYS_REQUIRE(read(m_fd, &count, sizeof(uint64_t)) == sizeof(uint64_t))
         << "Failed to read event count from perf_event file";
     return count;
 }
@@ -258,8 +258,8 @@ perf_event::start() const
 {
     if(m_fd != -1)
     {
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
-        OMNITRACE_REQUIRE(ioctl(m_fd, PERF_EVENT_IOC_ENABLE, 0) != -1)
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_REQUIRE(ioctl(m_fd, PERF_EVENT_IOC_ENABLE, 0) != -1)
             << "Failed to start perf event: " << strerror(errno);
     }
     return (m_fd != -1);
@@ -271,8 +271,8 @@ perf_event::stop() const
 {
     if(m_fd != -1)
     {
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
-        OMNITRACE_REQUIRE(ioctl(m_fd, PERF_EVENT_IOC_DISABLE, 0) != -1)
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_REQUIRE(ioctl(m_fd, PERF_EVENT_IOC_DISABLE, 0) != -1)
             << "Failed to stop perf event: " << strerror(errno) << " (" << m_fd << ")";
     }
     return (m_fd != -1);
@@ -287,7 +287,7 @@ perf_event::is_open() const
 void
 perf_event::close()
 {
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
     stop();
 
     if(m_fd != -1)
@@ -306,24 +306,24 @@ perf_event::close()
 void
 perf_event::set_ready_signal(int sig) const
 {
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
     // Set the perf_event file to async
-    OMNITRACE_REQUIRE(fcntl(m_fd, F_SETFL, fcntl(m_fd, F_GETFL, 0) | O_ASYNC) != -1)
+    ROCPROFSYS_REQUIRE(fcntl(m_fd, F_SETFL, fcntl(m_fd, F_GETFL, 0) | O_ASYNC) != -1)
         << "failed to set perf_event file to async mode";
 
     // Set the notification signal for the perf file
-    OMNITRACE_REQUIRE(fcntl(m_fd, F_SETSIG, sig) != -1)
+    ROCPROFSYS_REQUIRE(fcntl(m_fd, F_SETSIG, sig) != -1)
         << "failed to set perf_event file signal";
 
     // Set the current thread as the owner of the file (to target signal delivery)
-    OMNITRACE_REQUIRE(fcntl(m_fd, F_SETOWN, gettid()) != -1)
+    ROCPROFSYS_REQUIRE(fcntl(m_fd, F_SETOWN, gettid()) != -1)
         << "failed to set the owner of the perf_event file";
 }
 
 void
 perf_event::iterator::next()
 {
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
     struct perf_event_header _hdr;
 
@@ -375,7 +375,7 @@ perf_event::iterator::operator!=(const iterator& other) const
 perf_event::record
 perf_event::iterator::get()
 {
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
     // Copy out the record header
     perf_event::copy_from_ring_buffer(m_mapping, m_index, _buf,
@@ -422,7 +422,7 @@ void
 perf_event::copy_from_ring_buffer(struct perf_event_mmap_page* _mapping, ptrdiff_t _index,
                                   void* _dest, size_t _nbytes)
 {
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
     uintptr_t _base    = reinterpret_cast<uintptr_t>(_mapping) + sizes.page;
     size_t    _beg_idx = _index % sizes.data;
@@ -448,7 +448,7 @@ perf_event::copy_from_ring_buffer(struct perf_event_mmap_page* _mapping, ptrdiff
 uint64_t
 perf_event::record::get_ip() const
 {
-    OMNITRACE_ASSERT(is_sample() && m_source != nullptr &&
+    ROCPROFSYS_ASSERT(is_sample() && m_source != nullptr &&
                      m_source->is_sampling(sample::ip))
         << "Record does not have an ip field (" << is_sample() << "|" << m_source << ")";
     return *locate_field<sample::ip, uint64_t*>();
@@ -457,7 +457,7 @@ perf_event::record::get_ip() const
 uint64_t
 perf_event::record::get_pid() const
 {
-    OMNITRACE_ASSERT(is_sample() && m_source != nullptr &&
+    ROCPROFSYS_ASSERT(is_sample() && m_source != nullptr &&
                      m_source->is_sampling(sample::pid_tid))
         << "Record does not have a `pid` field (" << is_sample() << "|" << m_source
         << ")";
@@ -467,7 +467,7 @@ perf_event::record::get_pid() const
 uint64_t
 perf_event::record::get_tid() const
 {
-    OMNITRACE_ASSERT(is_sample() && m_source != nullptr &&
+    ROCPROFSYS_ASSERT(is_sample() && m_source != nullptr &&
                      m_source->is_sampling(sample::pid_tid))
         << "Record does not have a `tid` field (" << is_sample() << "|" << m_source
         << ")";
@@ -477,7 +477,7 @@ perf_event::record::get_tid() const
 uint64_t
 perf_event::record::get_time() const
 {
-    OMNITRACE_ASSERT(is_sample() && m_source != nullptr &&
+    ROCPROFSYS_ASSERT(is_sample() && m_source != nullptr &&
                      m_source->is_sampling(sample::time))
         << "Record does not have a 'time' field (" << is_sample() << "|" << m_source
         << ")";
@@ -487,7 +487,7 @@ perf_event::record::get_time() const
 uint64_t
 perf_event::record::get_period() const
 {
-    OMNITRACE_ASSERT(is_sample() && m_source != nullptr &&
+    ROCPROFSYS_ASSERT(is_sample() && m_source != nullptr &&
                      m_source->is_sampling(sample::period))
         << "Record does not have a 'period' field (" << is_sample() << "|" << m_source
         << ")";
@@ -497,7 +497,7 @@ perf_event::record::get_period() const
 uint32_t
 perf_event::record::get_cpu() const
 {
-    OMNITRACE_ASSERT(is_sample() && m_source != nullptr &&
+    ROCPROFSYS_ASSERT(is_sample() && m_source != nullptr &&
                      m_source->is_sampling(sample::cpu))
         << "Record does not have a 'cpu' field (" << is_sample() << "|" << m_source
         << ")";
@@ -507,7 +507,7 @@ perf_event::record::get_cpu() const
 container::c_array<uint64_t>
 perf_event::record::get_callchain() const
 {
-    OMNITRACE_ASSERT(is_sample() && m_source != nullptr &&
+    ROCPROFSYS_ASSERT(is_sample() && m_source != nullptr &&
                      m_source->is_sampling(sample::callchain))
         << "Record does not have a callchain field (" << is_sample() << "|" << m_source
         << ")";
@@ -523,7 +523,7 @@ template <sample SampleT, typename Tp>
 Tp
 perf_event::record::locate_field() const
 {
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
     uintptr_t p =
         reinterpret_cast<uintptr_t>(m_header) + sizeof(struct perf_event_header);
@@ -617,22 +617,22 @@ perf_event::record::locate_field() const
     // branch_stack
     if constexpr(SampleT == sample::branch_stack) return reinterpret_cast<Tp>(p);
     if(m_source != nullptr && m_source->is_sampling(sample::branch_stack))
-        OMNITRACE_FATAL << "Branch stack sampling is not supported";
+        ROCPROFSYS_FATAL << "Branch stack sampling is not supported";
 
     // regs
     if constexpr(SampleT == sample::regs) return reinterpret_cast<Tp>(p);
     if(m_source != nullptr && m_source->is_sampling(sample::regs))
-        OMNITRACE_FATAL << "Register sampling is not supported";
+        ROCPROFSYS_FATAL << "Register sampling is not supported";
 
     // stack
     if constexpr(SampleT == sample::stack) return reinterpret_cast<Tp>(p);
     if(m_source != nullptr && m_source->is_sampling(sample::stack))
-        OMNITRACE_FATAL << "Stack sampling is not supported";
+        ROCPROFSYS_FATAL << "Stack sampling is not supported";
 
     // end
     if constexpr(SampleT == sample::last) return reinterpret_cast<Tp>(p);
 
-    OMNITRACE_FATAL << "Unsupported sample field requested!";
+    ROCPROFSYS_FATAL << "Unsupported sample field requested!";
 
     if constexpr(std::is_pointer<Tp>::value)
         return nullptr;
@@ -657,7 +657,7 @@ get_instance(int64_t _tid)
     auto& _data = get_instances();
     if(static_cast<size_t>(_tid) >= _data->size())
     {
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         _data->resize(_tid + 1);
     }
     return _data->at(_tid);

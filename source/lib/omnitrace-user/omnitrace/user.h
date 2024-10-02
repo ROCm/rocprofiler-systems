@@ -20,16 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef OMNITRACE_USER_H_
-#define OMNITRACE_USER_H_
+#ifndef ROCPROFSYS_USER_H_
+#define ROCPROFSYS_USER_H_
 
-#if defined(OMNITRACE_USER_SOURCE) && (OMNITRACE_USER_SOURCE > 0)
-#    if !defined(OMNITRACE_PUBLIC_API)
-#        define OMNITRACE_PUBLIC_API __attribute__((visibility("default")))
+#if defined(ROCPROFSYS_USER_SOURCE) && (ROCPROFSYS_USER_SOURCE > 0)
+#    if !defined(ROCPROFSYS_PUBLIC_API)
+#        define ROCPROFSYS_PUBLIC_API __attribute__((visibility("default")))
 #    endif
 #else
-#    if !defined(OMNITRACE_PUBLIC_API)
-#        define OMNITRACE_PUBLIC_API
+#    if !defined(ROCPROFSYS_PUBLIC_API)
+#        define ROCPROFSYS_PUBLIC_API
 #    endif
 #endif
 
@@ -44,30 +44,30 @@ extern "C"
     /// @fn int omnitrace_user_start_trace(void)
     /// @return omnitrace_user_error_t value
     /// @brief Enable tracing on this thread and all subsequently created threads
-    extern int omnitrace_user_start_trace(void) OMNITRACE_PUBLIC_API;
+    extern int omnitrace_user_start_trace(void) ROCPROFSYS_PUBLIC_API;
 
     /// @fn int omnitrace_user_stop_trace(void)
     /// @return omnitrace_user_error_t value
     /// @brief Disable tracing on this thread and all subsequently created threads
-    extern int omnitrace_user_stop_trace(void) OMNITRACE_PUBLIC_API;
+    extern int omnitrace_user_stop_trace(void) ROCPROFSYS_PUBLIC_API;
 
     /// @fn int omnitrace_user_start_thread_trace(void)
     /// @return omnitrace_user_error_t value
     /// @brief Enable tracing on this specific thread. Does not apply to subsequently
     /// created threads
-    extern int omnitrace_user_start_thread_trace(void) OMNITRACE_PUBLIC_API;
+    extern int omnitrace_user_start_thread_trace(void) ROCPROFSYS_PUBLIC_API;
 
     /// @fn int omnitrace_user_stop_thread_trace(void)
     /// @return omnitrace_user_error_t value
     /// @brief Disable tracing on this specific thread. Does not apply to subsequently
     /// created threads
-    extern int omnitrace_user_stop_thread_trace(void) OMNITRACE_PUBLIC_API;
+    extern int omnitrace_user_stop_thread_trace(void) ROCPROFSYS_PUBLIC_API;
 
     /// @fn int omnitrace_user_push_region(const char* id)
     /// @param id The string identifier for the region
     /// @return omnitrace_user_error_t value
     /// @brief Start a user defined region.
-    extern int omnitrace_user_push_region(const char*) OMNITRACE_PUBLIC_API;
+    extern int omnitrace_user_push_region(const char*) ROCPROFSYS_PUBLIC_API;
 
     /// @fn int omnitrace_user_pop_region(const char* id)
     /// @param id The string identifier for the region
@@ -78,7 +78,7 @@ extern "C"
     /// be violated, and will thus compenstate for out-of-order popping, however, the
     /// perfetto backend will not; thus, out-of-order popping will result in different
     /// results in timemory vs. perfetto.
-    extern int omnitrace_user_pop_region(const char*) OMNITRACE_PUBLIC_API;
+    extern int omnitrace_user_pop_region(const char*) ROCPROFSYS_PUBLIC_API;
 
     /// @typedef omnitrace_annotation omnitrace_annotation_t
     ///
@@ -91,7 +91,7 @@ extern "C"
     /// @return omnitrace_user_error_t value
     /// @brief Start a user defined region and adds the annotations to the perfetto trace.
     extern int omnitrace_user_push_annotated_region(const char*, omnitrace_annotation_t*,
-                                                    size_t) OMNITRACE_PUBLIC_API;
+                                                    size_t) ROCPROFSYS_PUBLIC_API;
 
     /// @fn int omnitrace_user_pop_annotated_region(const char* id,
     ///                                             omnitrace_annotation_t* annotations,
@@ -102,14 +102,14 @@ extern "C"
     /// @return omnitrace_user_error_t value
     /// @brief Stop a user defined region and adds the annotations to the perfetto trace.
     extern int omnitrace_user_pop_annotated_region(const char*, omnitrace_annotation_t*,
-                                                   size_t) OMNITRACE_PUBLIC_API;
+                                                   size_t) ROCPROFSYS_PUBLIC_API;
 
     /// mark causal progress
-    extern int omnitrace_user_progress(const char*) OMNITRACE_PUBLIC_API;
+    extern int omnitrace_user_progress(const char*) ROCPROFSYS_PUBLIC_API;
 
     /// mark causal progress with annotations
     extern int omnitrace_user_annotated_progress(const char*, omnitrace_annotation_t*,
-                                                 size_t) OMNITRACE_PUBLIC_API;
+                                                 size_t) ROCPROFSYS_PUBLIC_API;
 
     /// @fn int omnitrace_user_configure(omnitrace_user_configure_mode_t mode,
     ///                                  omnitrace_user_callbacks_t inp,
@@ -130,11 +130,11 @@ extern "C"
     /// Changing the callbacks is thread-safe but not thread-local.
     extern int omnitrace_user_configure(
         omnitrace_user_configure_mode_t mode, omnitrace_user_callbacks_t inp,
-        omnitrace_user_callbacks_t* out) OMNITRACE_PUBLIC_API;
+        omnitrace_user_callbacks_t* out) ROCPROFSYS_PUBLIC_API;
 
     /// @fn int omnitrace_user_get_callbacks(int category, void** begin_func, void**
     /// end_func)
-    /// @param[in] category An @ref OMNITRACE_USER_BINDINGS value
+    /// @param[in] category An @ref ROCPROFSYS_USER_BINDINGS value
     /// @param[out] begin_func The pointer to the function which corresponds to "starting"
     /// the category, e.g. omnitrace_user_start_trace or omnitrace_user_push_region
     /// @param[out] end_func The pointer to the function which corresponds to "ending" the
@@ -143,16 +143,16 @@ extern "C"
     /// @brief Get the current function pointers for a given category. The initial values
     /// are assigned by omnitrace-dl at start up.
     extern int omnitrace_user_get_callbacks(omnitrace_user_callbacks_t*)
-        OMNITRACE_PUBLIC_API;
+        ROCPROFSYS_PUBLIC_API;
 
     /// @fn const char* omnitrace_user_error_string(int error_category)
-    /// @param error_category OMNITRACE_USER_ERROR value
+    /// @param error_category ROCPROFSYS_USER_ERROR value
     /// @return String descripting the error code
     /// @brief Return a descriptor for the provided error code
-    extern const char* omnitrace_user_error_string(int) OMNITRACE_PUBLIC_API;
+    extern const char* omnitrace_user_error_string(int) ROCPROFSYS_PUBLIC_API;
 
 #if defined(__cplusplus)
 }
 #endif
 
-#endif  // OMNITRACE_USER_H_
+#endif  // ROCPROFSYS_USER_H_

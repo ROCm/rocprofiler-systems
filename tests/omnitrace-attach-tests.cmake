@@ -13,7 +13,7 @@ if(EXISTS "/proc/sys/kernel/yama/ptrace_scope")
         set(_VALID_PTRACE_SCOPE ON)
     endif()
 else()
-    omnitrace_message(
+    rocprofsys_message(
         AUTHOR_WARNING
         "Disabling attach tests. Run 'echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope' to enable attaching to process"
         )

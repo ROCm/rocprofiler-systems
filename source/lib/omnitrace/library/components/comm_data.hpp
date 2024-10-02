@@ -38,7 +38,7 @@
 
 #include <optional>
 
-#if defined(OMNITRACE_USE_MPI)
+#if defined(ROCPROFSYS_USE_MPI)
 #    include <mpi.h>
 #endif
 
@@ -49,7 +49,7 @@
 #include <string>
 #include <utility>
 
-OMNITRACE_COMPONENT_ALIAS(comm_data_tracker_t,
+ROCPROFSYS_COMPONENT_ALIAS(comm_data_tracker_t,
                           ::tim::component::data_tracker<float, project::omnitrace>)
 
 namespace omnitrace
@@ -90,7 +90,7 @@ struct comm_data : base<comm_data, void>
         static constexpr auto label = "RCCL Comm Send";
     };
 
-    OMNITRACE_DEFAULT_OBJECT(comm_data)
+    ROCPROFSYS_DEFAULT_OBJECT(comm_data)
 
     static void preinit();
     static void configure();
@@ -98,7 +98,7 @@ struct comm_data : base<comm_data, void>
     static void start() {}
     static void stop() {}
 
-#if defined(OMNITRACE_USE_MPI)
+#if defined(ROCPROFSYS_USE_MPI)
     static int mpi_type_size(MPI_Datatype _datatype)
     {
         int _size = 0;
@@ -148,7 +148,7 @@ struct comm_data : base<comm_data, void>
                       MPI_Datatype recvtype, MPI_Comm);
 #endif
 
-#if defined(OMNITRACE_USE_RCCL)
+#if defined(ROCPROFSYS_USE_RCCL)
     static auto rccl_type_size(ncclDataType_t datatype)
     {
         switch(datatype)
@@ -230,15 +230,15 @@ private:
 }  // namespace component
 }  // namespace omnitrace
 
-#if !defined(OMNITRACE_EXTERN_COMPONENTS) ||                                             \
-    (defined(OMNITRACE_EXTERN_COMPONENTS) && OMNITRACE_EXTERN_COMPONENTS > 0)
+#if !defined(ROCPROFSYS_EXTERN_COMPONENTS) ||                                             \
+    (defined(ROCPROFSYS_EXTERN_COMPONENTS) && ROCPROFSYS_EXTERN_COMPONENTS > 0)
 
 #    include <timemory/components/base.hpp>
 #    include <timemory/components/data_tracker/components.hpp>
 #    include <timemory/operations.hpp>
 
-OMNITRACE_DECLARE_EXTERN_COMPONENT(
+ROCPROFSYS_DECLARE_EXTERN_COMPONENT(
     TIMEMORY_ESC(data_tracker<float, tim::project::omnitrace>), true, float)
 
-OMNITRACE_DECLARE_EXTERN_COMPONENT(comm_data, false, void)
+ROCPROFSYS_DECLARE_EXTERN_COMPONENT(comm_data, false, void)
 #endif

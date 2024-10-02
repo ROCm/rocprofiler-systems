@@ -2,11 +2,11 @@ cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
 project(rocprofsys-user-api-example LANGUAGES CXX)
 
-if(OMNITRACE_DISABLE_EXAMPLES)
+if(ROCPROFSYS_DISABLE_EXAMPLES)
     get_filename_component(_DIR ${CMAKE_CURRENT_LIST_DIR} NAME)
 
-    if(${PROJECT_NAME} IN_LIST OMNITRACE_DISABLE_EXAMPLES OR ${_DIR} IN_LIST
-                                                             OMNITRACE_DISABLE_EXAMPLES)
+    if(${PROJECT_NAME} IN_LIST ROCPROFSYS_DISABLE_EXAMPLES OR ${_DIR} IN_LIST
+                                                             ROCPROFSYS_DISABLE_EXAMPLES)
         return()
     endif()
 endif()
@@ -20,7 +20,7 @@ add_executable(user-api user-api.cpp)
 target_link_libraries(user-api PRIVATE Threads::Threads
                                        rocprofsys::rocprofsys-user-library)
 
-if(OMNITRACE_INSTALL_EXAMPLES)
+if(ROCPROFSYS_INSTALL_EXAMPLES)
     install(
         TARGETS user-api
         DESTINATION bin

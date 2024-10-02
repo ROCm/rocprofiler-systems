@@ -28,7 +28,7 @@
 
 #include <timemory/defines.h>
 
-#if defined(OMNITRACE_USE_OMPT) && OMNITRACE_USE_OMPT > 0
+#if defined(ROCPROFSYS_USE_OMPT) && ROCPROFSYS_USE_OMPT > 0
 
 #    include "core/components/fwd.hpp"
 #    include "library/components/category_region.hpp"
@@ -49,7 +49,7 @@ using ompt_bundle_t  = tim::component_tuple<ompt_handle_t>;
 extern "C"
 {
     ompt_start_tool_result_t* ompt_start_tool(unsigned int,
-                                              const char*) OMNITRACE_PUBLIC_API;
+                                              const char*) ROCPROFSYS_PUBLIC_API;
 }
 
 namespace omnitrace
@@ -115,7 +115,7 @@ tool_initialize(ompt_function_lookup_t lookup, int initial_device_num,
 {
     if(!omnitrace::settings_are_configured())
     {
-        OMNITRACE_BASIC_WARNING(
+        ROCPROFSYS_BASIC_WARNING(
             0,
             "[%s] invoked before omnitrace was initialized. In instrumentation mode, "
             "settings exported to the environment have not been propagated yet...\n",
@@ -146,10 +146,10 @@ tool_finalize(ompt_data_t*)
 extern "C" ompt_start_tool_result_t*
 ompt_start_tool(unsigned int omp_version, const char* runtime_version)
 {
-    OMNITRACE_BASIC_VERBOSE_F(0, "OpenMP version: %u, runtime version: %s\n", omp_version,
+    ROCPROFSYS_BASIC_VERBOSE_F(0, "OpenMP version: %u, runtime version: %s\n", omp_version,
                               runtime_version);
-    OMNITRACE_METADATA("OMP_VERSION", omp_version);
-    OMNITRACE_METADATA("OMP_RUNTIME_VERSION", runtime_version);
+    ROCPROFSYS_METADATA("OMP_VERSION", omp_version);
+    ROCPROFSYS_METADATA("OMP_RUNTIME_VERSION", runtime_version);
 
     static auto* data = new ompt_start_tool_result_t{ &omnitrace::ompt::tool_initialize,
                                                       &omnitrace::ompt::tool_finalize,

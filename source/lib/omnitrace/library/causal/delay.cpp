@@ -72,12 +72,12 @@ compute_sleep_for_overhead()
         int64_t _end = tracing::now();
         if(i < _nwarm) continue;
         auto _diff = (_end - _beg);
-        OMNITRACE_CONDITIONAL_THROW(
+        ROCPROFSYS_CONDITIONAL_THROW(
             _diff < _val, "Error! sleep_for(%zu) [nanoseconds] >= %zu", _val, _diff);
         _stats += (_diff - _val);
     }
 
-    OMNITRACE_BASIC_VERBOSE(2,
+    ROCPROFSYS_BASIC_VERBOSE(2,
                             "[causal] overhead of std::this_thread::sleep_for(...) "
                             "invocation = %6.3f usec +/- %e\n",
                             _stats.get_mean() / units::usec,

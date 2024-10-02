@@ -53,7 +53,7 @@
 #include <stdexcept>
 #include <unordered_map>
 
-#define OMNITRACE_PYTHON_VERSION                                                         \
+#define ROCPROFSYS_PYTHON_VERSION                                                         \
     ((10000 * PY_MAJOR_VERSION) + (100 * PY_MINOR_VERSION) + PY_MICRO_VERSION)
 
 namespace pyrocprofsys
@@ -223,12 +223,12 @@ struct config
     strset_t                exclude_functions  = default_exclude_functions;
     strset_t                exclude_filenames  = default_exclude_filenames;
     std::vector<profiler_t> records            = {};
-    annotations_t           annotations = { note_t{ "file", OMNITRACE_STRING, nullptr },
-                                  note_t{ "line", OMNITRACE_INT32, nullptr },
-                                  note_t{ "lasti", OMNITRACE_INT32, nullptr },
-                                  note_t{ "argcount", OMNITRACE_INT32, nullptr },
-                                  note_t{ "nlocals", OMNITRACE_INT32, nullptr },
-                                  note_t{ "stacksize", OMNITRACE_INT32, nullptr } };
+    annotations_t           annotations = { note_t{ "file", ROCPROFSYS_STRING, nullptr },
+                                  note_t{ "line", ROCPROFSYS_INT32, nullptr },
+                                  note_t{ "lasti", ROCPROFSYS_INT32, nullptr },
+                                  note_t{ "argcount", ROCPROFSYS_INT32, nullptr },
+                                  note_t{ "nlocals", ROCPROFSYS_INT32, nullptr },
+                                  note_t{ "stacksize", ROCPROFSYS_INT32, nullptr } };
 };
 //
 inline config&
@@ -268,7 +268,7 @@ get_config()
 int
 get_frame_lineno(PyFrameObject* frame)
 {
-#if OMNITRACE_PYTHON_VERSION >= 31100
+#if ROCPROFSYS_PYTHON_VERSION >= 31100
     return PyFrame_GetLineNumber(frame);
 #else
     return frame->f_lineno;
@@ -278,7 +278,7 @@ get_frame_lineno(PyFrameObject* frame)
 int
 get_frame_lasti(PyFrameObject* frame)
 {
-#if OMNITRACE_PYTHON_VERSION >= 31100
+#if ROCPROFSYS_PYTHON_VERSION >= 31100
     return PyFrame_GetLasti(frame);
 #else
     return frame->f_lasti;
@@ -288,7 +288,7 @@ get_frame_lasti(PyFrameObject* frame)
 auto
 get_frame_code(PyFrameObject* frame)
 {
-#if OMNITRACE_PYTHON_VERSION >= 31100
+#if ROCPROFSYS_PYTHON_VERSION >= 31100
     return PyFrame_GetCode(frame);
 #else
     return frame->f_code;
@@ -514,12 +514,12 @@ profiler_function(py::object pframe, const char* swhat, py::object arg)
         }
 
         _config.records.emplace_back([&_label_ref, _annotate]() {
-            omnitrace_pop_category_region(OMNITRACE_CATEGORY_PYTHON, _label_ref.c_str(),
+            omnitrace_pop_category_region(ROCPROFSYS_CATEGORY_PYTHON, _label_ref.c_str(),
                                           (_annotate) ? _config.annotations.data()
                                                       : nullptr,
                                           _config.annotations.size());
         });
-        omnitrace_push_category_region(OMNITRACE_CATEGORY_PYTHON, _label_ref.c_str(),
+        omnitrace_push_category_region(ROCPROFSYS_CATEGORY_PYTHON, _label_ref.c_str(),
                                        (_annotate) ? _config.annotations.data() : nullptr,
                                        _config.annotations.size());
     };

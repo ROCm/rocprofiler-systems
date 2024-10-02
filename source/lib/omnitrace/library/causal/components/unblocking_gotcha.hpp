@@ -53,7 +53,7 @@ struct unblocking_gotcha : comp::base<unblocking_gotcha, void>
     template <size_t Idx>
     using gotcha_index = std::integral_constant<size_t, Idx>;
 
-    OMNITRACE_DEFAULT_OBJECT(unblocking_gotcha)
+    ROCPROFSYS_DEFAULT_OBJECT(unblocking_gotcha)
 
     // string id for component
     static std::string label();
@@ -79,9 +79,9 @@ using unblocking_gotcha_t =
 }  // namespace causal
 }  // namespace omnitrace
 
-OMNITRACE_DEFINE_CONCRETE_TRAIT(prevent_reentry, causal::component::unblocking_gotcha_t,
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(prevent_reentry, causal::component::unblocking_gotcha_t,
                                 false_type)
-OMNITRACE_DEFINE_CONCRETE_TRAIT(static_data, causal::component::unblocking_gotcha_t,
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(static_data, causal::component::unblocking_gotcha_t,
                                 false_type)
-OMNITRACE_DEFINE_CONCRETE_TRAIT(fast_gotcha, causal::component::unblocking_gotcha_t,
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(fast_gotcha, causal::component::unblocking_gotcha_t,
                                 true_type)

@@ -47,7 +47,7 @@ namespace units = ::tim::units;
 using clock_type    = std::chrono::high_resolution_clock;
 using duration_type = std::chrono::duration<double, std::nano>;
 
-#define OMNITRACE_CLOCK_IDENTIFIER(VAL)                                                  \
+#define ROCPROFSYS_CLOCK_IDENTIFIER(VAL)                                                  \
     clock_identifier { #VAL, VAL }
 
 auto
@@ -63,13 +63,13 @@ clock_name(std::string _v)
 }
 
 auto accepted_clock_ids =
-    std::set<clock_identifier>{ OMNITRACE_CLOCK_IDENTIFIER(CLOCK_REALTIME),
-                                OMNITRACE_CLOCK_IDENTIFIER(CLOCK_MONOTONIC),
-                                OMNITRACE_CLOCK_IDENTIFIER(CLOCK_PROCESS_CPUTIME_ID),
-                                OMNITRACE_CLOCK_IDENTIFIER(CLOCK_MONOTONIC_RAW),
-                                OMNITRACE_CLOCK_IDENTIFIER(CLOCK_REALTIME_COARSE),
-                                OMNITRACE_CLOCK_IDENTIFIER(CLOCK_MONOTONIC_COARSE),
-                                OMNITRACE_CLOCK_IDENTIFIER(CLOCK_BOOTTIME) };
+    std::set<clock_identifier>{ ROCPROFSYS_CLOCK_IDENTIFIER(CLOCK_REALTIME),
+                                ROCPROFSYS_CLOCK_IDENTIFIER(CLOCK_MONOTONIC),
+                                ROCPROFSYS_CLOCK_IDENTIFIER(CLOCK_PROCESS_CPUTIME_ID),
+                                ROCPROFSYS_CLOCK_IDENTIFIER(CLOCK_MONOTONIC_RAW),
+                                ROCPROFSYS_CLOCK_IDENTIFIER(CLOCK_REALTIME_COARSE),
+                                ROCPROFSYS_CLOCK_IDENTIFIER(CLOCK_MONOTONIC_COARSE),
+                                ROCPROFSYS_CLOCK_IDENTIFIER(CLOCK_BOOTTIME) };
 
 template <typename Tp>
 clock_identifier
@@ -101,7 +101,7 @@ find_clock_identifier(const Tp& _v)
         }
     }
 
-    OMNITRACE_THROW("Unknown clock id %s: %s. Valid choices: %s\n", _descript,
+    ROCPROFSYS_THROW("Unknown clock id %s: %s. Valid choices: %s\n", _descript,
                     timemory::join::join("", _v).c_str(),
                     timemory::join::join("", accepted_clock_ids).c_str());
 }
@@ -266,7 +266,7 @@ spec::operator()(const stages& _stages) const
             return _ret;
         };
 
-        OMNITRACE_VERBOSE(2,
+        ROCPROFSYS_VERBOSE(2,
                           "Executing constraint spec %lu of %lu :: delay: %6.3f, "
                           "duration: %6.3f, clock: %s\n",
                           i, _spec.repeat, _spec.delay, _spec.duration,

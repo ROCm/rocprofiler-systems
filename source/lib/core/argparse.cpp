@@ -56,25 +56,25 @@ get_clock_id_choices()
         return _v;
     };
 
-#define OMNITRACE_CLOCK_IDENTIFIER(VAL)                                                  \
+#define ROCPROFSYS_CLOCK_IDENTIFIER(VAL)                                                  \
     std::make_tuple(clock_name(#VAL), VAL, std::string_view{ #VAL })
 
     auto _choices = strvec_t{};
     auto _aliases = std::map<std::string, strvec_t>{};
-    for(auto itr : { OMNITRACE_CLOCK_IDENTIFIER(CLOCK_REALTIME),
-                     OMNITRACE_CLOCK_IDENTIFIER(CLOCK_MONOTONIC),
-                     OMNITRACE_CLOCK_IDENTIFIER(CLOCK_PROCESS_CPUTIME_ID),
-                     OMNITRACE_CLOCK_IDENTIFIER(CLOCK_MONOTONIC_RAW),
-                     OMNITRACE_CLOCK_IDENTIFIER(CLOCK_REALTIME_COARSE),
-                     OMNITRACE_CLOCK_IDENTIFIER(CLOCK_MONOTONIC_COARSE),
-                     OMNITRACE_CLOCK_IDENTIFIER(CLOCK_BOOTTIME) })
+    for(auto itr : { ROCPROFSYS_CLOCK_IDENTIFIER(CLOCK_REALTIME),
+                     ROCPROFSYS_CLOCK_IDENTIFIER(CLOCK_MONOTONIC),
+                     ROCPROFSYS_CLOCK_IDENTIFIER(CLOCK_PROCESS_CPUTIME_ID),
+                     ROCPROFSYS_CLOCK_IDENTIFIER(CLOCK_MONOTONIC_RAW),
+                     ROCPROFSYS_CLOCK_IDENTIFIER(CLOCK_REALTIME_COARSE),
+                     ROCPROFSYS_CLOCK_IDENTIFIER(CLOCK_MONOTONIC_COARSE),
+                     ROCPROFSYS_CLOCK_IDENTIFIER(CLOCK_BOOTTIME) })
     {
         auto _choice = std::to_string(std::get<1>(itr));
         _choices.emplace_back(_choice);
         _aliases[_choice] = { std::get<0>(itr), std::string{ std::get<2>(itr) } };
     }
 
-#undef OMNITRACE_CLOCK_IDENTIFIER
+#undef ROCPROFSYS_CLOCK_IDENTIFIER
 
     return std::make_pair(_choices, _aliases);
 }
@@ -222,18 +222,18 @@ init_parser(parser_data& _data)
     _data.dl_libpath = get_realpath(get_internal_libpath("librocprof-sys-dl.so").c_str());
     _data.omni_libpath = get_realpath(get_internal_libpath("librocprof-sys.so").c_str());
 
-#if defined(OMNITRACE_USE_ROCTRACER) || defined(OMNITRACE_USE_ROCPROFILER)
+#if defined(ROCPROFSYS_USE_ROCTRACER) || defined(ROCPROFSYS_USE_ROCPROFILER)
     update_env(_data, "HSA_TOOLS_LIB", _data.dl_libpath);
     if(!getenv("HSA_TOOLS_REPORT_LOAD_FAILURE"))
         update_env(_data, "HSA_TOOLS_REPORT_LOAD_FAILURE", "1");
 #endif
 
-#if defined(OMNITRACE_USE_ROCPROFILER)
+#if defined(ROCPROFSYS_USE_ROCPROFILER)
     update_env(_data, "ROCP_TOOL_LIB", _data.omni_libpath);
     if(!getenv("ROCP_HSA_INTERCEPT")) update_env(_data, "ROCP_HSA_INTERCEPT", "1");
 #endif
 
-#if defined(OMNITRACE_USE_OMPT)
+#if defined(ROCPROFSYS_USE_OMPT)
     if(!getenv("OMP_TOOL_LIBRARIES"))
         update_env(_data, "OMP_TOOL_LIBRARIES", _data.dl_libpath, UPD_PREPEND);
 #endif
@@ -305,7 +305,7 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
             ? strvec_t{ "hsa-interrupt" }
             : strvec_t{};
 
-#if OMNITRACE_USE_ROCTRACER == 0 && OMNITRACE_USE_ROCPROFILER == 0
+#if ROCPROFSYS_USE_ROCTRACER == 0 && ROCPROFSYS_USE_ROCPROFILER == 0
     _realtime_reqs.clear();
 #endif
 
@@ -567,28 +567,28 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
                                   "rcclp", "rocm-smi",    "roctracer",  "rocprofiler",
                                   "roctx", "mutex-locks", "spin-locks", "rw-locks" };
 
-#if !defined(OMNITRACE_USE_MPI) && !defined(OMNITRACE_USE_MPI_HEADERS)
+#if !defined(ROCPROFSYS_USE_MPI) && !defined(ROCPROFSYS_USE_MPI_HEADERS)
     _backend_choices.erase("mpip");
 #endif
 
-#if !defined(OMNITRACE_USE_OMPT)
+#if !defined(ROCPROFSYS_USE_OMPT)
     _backend_choices.erase("ompt");
 #endif
 
-#if !defined(OMNITRACE_USE_RCCL)
+#if !defined(ROCPROFSYS_USE_RCCL)
     _backend_choices.erase("rcclp");
 #endif
 
-#if !defined(OMNITRACE_USE_ROCM_SMI)
+#if !defined(ROCPROFSYS_USE_ROCM_SMI)
     _backend_choices.erase("rocm-smi");
 #endif
 
-#if !defined(OMNITRACE_USE_ROCTRACER)
+#if !defined(ROCPROFSYS_USE_ROCTRACER)
     _backend_choices.erase("roctracer");
     _backend_choices.erase("roctx");
 #endif
 
-#if !defined(OMNITRACE_USE_ROCPROFILER)
+#if !defined(ROCPROFSYS_USE_ROCPROFILER)
     _backend_choices.erase("rocprofiler");
 #endif
 
@@ -599,15 +599,15 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
         _backend_choices.erase("roctracer");
         _backend_choices.erase("rocprofiler");
 
-#if defined(OMNITRACE_USE_RCCL)
+#if defined(ROCPROFSYS_USE_RCCL)
         update_env(_data, "ROCPROFSYS_USE_RCCLP", false);
 #endif
 
-#if defined(OMNITRACE_USE_ROCM_SMI)
+#if defined(ROCPROFSYS_USE_ROCM_SMI)
         update_env(_data, "ROCPROFSYS_USE_ROCM_SMI", false);
 #endif
 
-#if defined(OMNITRACE_USE_ROCTRACER)
+#if defined(ROCPROFSYS_USE_ROCTRACER)
         update_env(_data, "ROCPROFSYS_USE_ROCTRACER", false);
         update_env(_data, "ROCPROFSYS_USE_ROCTX", false);
         update_env(_data, "ROCPROFSYS_ROCTRACER_HSA_ACTIVITY", false);
@@ -616,7 +616,7 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
         _backend_choices.erase("roctx");
 #endif
 
-#if defined(OMNITRACE_USE_ROCPROFILER)
+#if defined(ROCPROFSYS_USE_ROCPROFILER)
         update_env(_data, "ROCPROFSYS_USE_ROCPROFILER", false);
 #endif
     }
@@ -1210,7 +1210,7 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
         _data.processed_environs.emplace("papi_events");
     }
 
-#if defined(OMNITRACE_USE_ROCPROFILER)
+#if defined(ROCPROFSYS_USE_ROCPROFILER)
     if(_data.environ_filter("gpu_events", _data))
     {
         _parser

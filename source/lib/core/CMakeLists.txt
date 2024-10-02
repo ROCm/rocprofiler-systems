@@ -70,7 +70,7 @@ target_link_libraries(
         $<BUILD_INTERFACE:rocprofsys::rocprofsys-static-libgcc-optional>
         $<BUILD_INTERFACE:rocprofsys::rocprofsys-static-libstdcxx-optional>
         $<BUILD_INTERFACE:rocprofsys::rocprofsys-sanitizer>
-        $<BUILD_INTERFACE:$<IF:$<BOOL:${OMNITRACE_BUILD_LTO}>,rocprofsys::rocprofsys-lto,>>
+        $<BUILD_INTERFACE:$<IF:$<BOOL:${ROCPROFSYS_BUILD_LTO}>,rocprofsys::rocprofsys-lto,>>
     )
 
 set_target_properties(rocprofsys-core-library PROPERTIES OUTPUT_NAME rocprof-sys-core)

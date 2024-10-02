@@ -75,7 +75,7 @@ sampler::poll(std::atomic<State>* _state, nsec_t _interval, promise_t* _ready)
     threading::offset_this_id(true);
     threading::set_thread_name("omni.sampler");
 
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
     // notify thread started
     if(_ready) _ready->set_value();
@@ -83,7 +83,7 @@ sampler::poll(std::atomic<State>* _state, nsec_t _interval, promise_t* _ready)
     for(auto& itr : instances)
         itr->config();
 
-    OMNITRACE_VERBOSE(
+    ROCPROFSYS_VERBOSE(
         1, "Background process sampling polling at an interval of %f seconds...\n",
         std::chrono::duration_cast<std::chrono::duration<double>>(_interval).count());
 
@@ -113,14 +113,14 @@ sampler::poll(std::atomic<State>* _state, nsec_t _interval, promise_t* _ready)
 
     if(_has_duration && _now >= _end && get_state() < State::Finalized)
     {
-        OMNITRACE_VERBOSE(
+        ROCPROFSYS_VERBOSE(
             1,
             "Background process sampling duration of %f seconds has elapsed. "
             "Shutting down process sampling...\n",
             _duration);
     }
 
-    OMNITRACE_CONDITIONAL_BASIC_PRINT(get_debug(),
+    ROCPROFSYS_CONDITIONAL_BASIC_PRINT(get_debug(),
                                       "Thread sampler polling completed...\n");
 
     if(polling_finished) polling_finished->set_value();
@@ -131,11 +131,11 @@ sampler::setup()
 {
     if(!get_use_process_sampling())
     {
-        OMNITRACE_DEBUG("Background sampler is disabled...\n");
+        ROCPROFSYS_DEBUG("Background sampler is disabled...\n");
         return;
     }
 
-    OMNITRACE_VERBOSE(1, "Setting up background sampler...\n");
+    ROCPROFSYS_VERBOSE(1, "Setting up background sampler...\n");
 
     // shutdown if already running
     shutdown();
@@ -167,7 +167,7 @@ sampler::setup()
 
     polling_finished = std::make_unique<promise_t>();
 
-    OMNITRACE_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
+    ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
 
     set_state(State::PreInit);
     get_thread() = std::make_unique<std::thread>(&poll<msec_t>, &get_sampler_state(),
@@ -201,7 +201,7 @@ sampler::shutdown()
         }
 
         // during CI, throw an error if polling_finished is not valid
-        OMNITRACE_CI_THROW(!polling_finished, "polling_finished is not valid\n");
+        ROCPROFSYS_CI_THROW(!polling_finished, "polling_finished is not valid\n");
         if(polling_finished)
         {
             // wait for the thread to finish

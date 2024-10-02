@@ -49,10 +49,10 @@ get_thread_state_value()
 auto&
 get_thread_state_history(int64_t _idx = utility::get_thread_index())
 {
-    static auto _v = utility::get_filled_array<OMNITRACE_MAX_THREADS>(
+    static auto _v = utility::get_filled_array<ROCPROFSYS_MAX_THREADS>(
         []() { return utility::get_reserved_vector<ThreadState>(32); });
 
-    if(_idx >= OMNITRACE_MAX_THREADS)
+    if(_idx >= ROCPROFSYS_MAX_THREADS)
     {
         static thread_local auto _tl_v = utility::get_reserved_vector<ThreadState>(32);
         return _tl_v;
@@ -77,11 +77,11 @@ get_thread_state()
 State
 set_state(State _n)
 {
-    OMNITRACE_CONDITIONAL_PRINT_F(get_debug_init(), "Setting state :: %s -> %s\n",
+    ROCPROFSYS_CONDITIONAL_PRINT_F(get_debug_init(), "Setting state :: %s -> %s\n",
                                   std::to_string(get_state()).c_str(),
                                   std::to_string(_n).c_str());
     // state should always be increased, not decreased
-    OMNITRACE_CI_BASIC_THROW(
+    ROCPROFSYS_CI_BASIC_THROW(
         _n < get_state(), "State is being assigned to a lesser value :: %s -> %s",
         std::to_string(get_state()).c_str(), std::to_string(_n).c_str());
     auto _v = get_state();

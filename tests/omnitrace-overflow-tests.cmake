@@ -14,10 +14,10 @@ set(_overflow_environment
     "ROCPROFSYS_SAMPLING_OVERFLOW_FREQ=10000"
     "ROCPROFSYS_DEBUG_THREADING_GET_ID=ON")
 
-if(omnitrace_perf_event_paranoid LESS_EQUAL 3
-   OR omnitrace_cap_sys_admin EQUAL 0
-   OR omnitrace_cap_perfmon EQUAL 0)
-    omnitrace_add_test(
+if(rocprofsys_perf_event_paranoid LESS_EQUAL 3
+   OR rocprofsys_cap_sys_admin EQUAL 0
+   OR rocprofsys_cap_perfmon EQUAL 0)
+    rocprofsys_add_test(
         SKIP_BASELINE
         NAME overflow
         TARGET parallel-overhead

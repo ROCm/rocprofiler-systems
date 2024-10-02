@@ -48,25 +48,25 @@ namespace omnitrace
 inline namespace config
 {
 bool
-get_debug() OMNITRACE_HOT;
+get_debug() ROCPROFSYS_HOT;
 
 int
-get_verbose() OMNITRACE_HOT;
+get_verbose() ROCPROFSYS_HOT;
 
 bool
-get_debug_env() OMNITRACE_HOT;
+get_debug_env() ROCPROFSYS_HOT;
 
 int
-get_verbose_env() OMNITRACE_HOT;
+get_verbose_env() ROCPROFSYS_HOT;
 
 bool
-get_is_continuous_integration() OMNITRACE_HOT;
+get_is_continuous_integration() ROCPROFSYS_HOT;
 
 bool
-get_debug_tid() OMNITRACE_HOT;
+get_debug_tid() ROCPROFSYS_HOT;
 
 bool
-get_debug_pid() OMNITRACE_HOT;
+get_debug_pid() ROCPROFSYS_HOT;
 }  // namespace config
 
 namespace debug
@@ -154,55 +154,55 @@ extern template std::string
 as_hex<void*>(void*, size_t);
 }  // namespace omnitrace
 
-#if !defined(OMNITRACE_DEBUG_BUFFER_LEN)
-#    define OMNITRACE_DEBUG_BUFFER_LEN 1024
+#if !defined(ROCPROFSYS_DEBUG_BUFFER_LEN)
+#    define ROCPROFSYS_DEBUG_BUFFER_LEN 1024
 #endif
 
-#if !defined(OMNITRACE_DEBUG_PROCESS_IDENTIFIER)
+#if !defined(ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER)
 #    if defined(TIMEMORY_USE_MPI)
-#        define OMNITRACE_DEBUG_PROCESS_IDENTIFIER static_cast<int>(::tim::dmp::rank())
+#        define ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER static_cast<int>(::tim::dmp::rank())
 #    elif defined(TIMEMORY_USE_MPI_HEADERS)
-#        define OMNITRACE_DEBUG_PROCESS_IDENTIFIER                                       \
+#        define ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER                                       \
             (::tim::dmp::is_initialized()) ? static_cast<int>(::tim::dmp::rank())        \
                                            : static_cast<int>(::tim::process::get_id())
 #    else
-#        define OMNITRACE_DEBUG_PROCESS_IDENTIFIER                                       \
+#        define ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER                                       \
             static_cast<int>(::tim::process::get_id())
 #    endif
 #endif
 
-#if !defined(OMNITRACE_DEBUG_THREAD_IDENTIFIER)
-#    define OMNITRACE_DEBUG_THREAD_IDENTIFIER ::omnitrace::debug::get_tid()
+#if !defined(ROCPROFSYS_DEBUG_THREAD_IDENTIFIER)
+#    define ROCPROFSYS_DEBUG_THREAD_IDENTIFIER ::omnitrace::debug::get_tid()
 #endif
 
-#if !defined(OMNITRACE_SOURCE_LOCATION)
-#    define OMNITRACE_SOURCE_LOCATION                                                    \
+#if !defined(ROCPROFSYS_SOURCE_LOCATION)
+#    define ROCPROFSYS_SOURCE_LOCATION                                                    \
         ::omnitrace::debug::source_location { __PRETTY_FUNCTION__, __FILE__, __LINE__ }
 #endif
 
-#if !defined(OMNITRACE_RECORD_SOURCE_LOCATION)
-#    define OMNITRACE_RECORD_SOURCE_LOCATION                                             \
-        ::omnitrace::debug::set_source_location(OMNITRACE_SOURCE_LOCATION)
+#if !defined(ROCPROFSYS_RECORD_SOURCE_LOCATION)
+#    define ROCPROFSYS_RECORD_SOURCE_LOCATION                                             \
+        ::omnitrace::debug::set_source_location(ROCPROFSYS_SOURCE_LOCATION)
 #endif
 
 #if defined(__clang__) || (__GNUC__ < 9)
-#    define OMNITRACE_FUNCTION                                                           \
+#    define ROCPROFSYS_FUNCTION                                                           \
         std::string{ __FUNCTION__ }                                                      \
             .substr(0, std::string_view{ __FUNCTION__ }.find("_hidden"))                 \
             .c_str()
-#    define OMNITRACE_PRETTY_FUNCTION                                                    \
+#    define ROCPROFSYS_PRETTY_FUNCTION                                                    \
         std::string{ __PRETTY_FUNCTION__ }                                               \
             .substr(0, std::string_view{ __PRETTY_FUNCTION__ }.find("_hidden"))          \
             .c_str()
 #else
-#    define OMNITRACE_FUNCTION                                                           \
+#    define ROCPROFSYS_FUNCTION                                                           \
         ::omnitrace::debug::get_chars(                                                   \
             std::string_view{ __FUNCTION__ },                                            \
             std::make_index_sequence<std::min(                                           \
                 std::string_view{ __FUNCTION__ }.find("_hidden"),                        \
                 std::string_view{ __FUNCTION__ }.length())>{})                           \
             .data()
-#    define OMNITRACE_PRETTY_FUNCTION                                                    \
+#    define ROCPROFSYS_PRETTY_FUNCTION                                                    \
         ::omnitrace::debug::get_chars(                                                   \
             std::string_view{ __PRETTY_FUNCTION__ },                                     \
             std::make_index_sequence<std::min(                                           \
@@ -213,100 +213,100 @@ as_hex<void*>(void*, size_t);
 
 //--------------------------------------------------------------------------------------//
 
-#define OMNITRACE_FPRINTF_STDERR_COLOR(COLOR)                                            \
+#define ROCPROFSYS_FPRINTF_STDERR_COLOR(COLOR)                                            \
     fprintf(::omnitrace::debug::get_file(), "%s", ::tim::log::color::COLOR())
 
 //--------------------------------------------------------------------------------------//
 
-#define OMNITRACE_CONDITIONAL_PRINT_COLOR(COLOR, COND, ...)                              \
-    if(OMNITRACE_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&              \
+#define ROCPROFSYS_CONDITIONAL_PRINT_COLOR(COLOR, COND, ...)                              \
+    if(ROCPROFSYS_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&              \
                           ::omnitrace::config::get_debug_pid()))                         \
     {                                                                                    \
         ::omnitrace::debug::flush();                                                     \
         ::omnitrace::debug::lock _debug_lk{};                                            \
-        OMNITRACE_FPRINTF_STDERR_COLOR(COLOR);                                           \
+        ROCPROFSYS_FPRINTF_STDERR_COLOR(COLOR);                                           \
         fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%li]%s",              \
-                OMNITRACE_DEBUG_PROCESS_IDENTIFIER, OMNITRACE_DEBUG_THREAD_IDENTIFIER,   \
+                ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER, ROCPROFSYS_DEBUG_THREAD_IDENTIFIER,   \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
         fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
         ::omnitrace::debug::flush();                                                     \
     }
 
-#define OMNITRACE_CONDITIONAL_PRINT_COLOR_F(COLOR, COND, ...)                            \
-    if(OMNITRACE_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&              \
+#define ROCPROFSYS_CONDITIONAL_PRINT_COLOR_F(COLOR, COND, ...)                            \
+    if(ROCPROFSYS_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&              \
                           ::omnitrace::config::get_debug_pid()))                         \
     {                                                                                    \
         ::omnitrace::debug::flush();                                                     \
         ::omnitrace::debug::lock _debug_lk{};                                            \
-        OMNITRACE_FPRINTF_STDERR_COLOR(COLOR);                                           \
+        ROCPROFSYS_FPRINTF_STDERR_COLOR(COLOR);                                           \
         fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%li][%s]%s",          \
-                OMNITRACE_DEBUG_PROCESS_IDENTIFIER, OMNITRACE_DEBUG_THREAD_IDENTIFIER,   \
-                OMNITRACE_FUNCTION,                                                      \
+                ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER, ROCPROFSYS_DEBUG_THREAD_IDENTIFIER,   \
+                ROCPROFSYS_FUNCTION,                                                      \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
         fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
         ::omnitrace::debug::flush();                                                     \
     }
 
-#define OMNITRACE_PRINT_COLOR(COLOR, ...)                                                \
-    OMNITRACE_CONDITIONAL_PRINT_COLOR(COLOR, true, __VA_ARGS__)
+#define ROCPROFSYS_PRINT_COLOR(COLOR, ...)                                                \
+    ROCPROFSYS_CONDITIONAL_PRINT_COLOR(COLOR, true, __VA_ARGS__)
 
-#define OMNITRACE_PRINT_COLOR_F(COLOR, ...)                                              \
-    OMNITRACE_CONDITIONAL_PRINT_COLOR_F(COLOR, true, __VA_ARGS__)
+#define ROCPROFSYS_PRINT_COLOR_F(COLOR, ...)                                              \
+    ROCPROFSYS_CONDITIONAL_PRINT_COLOR_F(COLOR, true, __VA_ARGS__)
 
 //--------------------------------------------------------------------------------------//
 
-#define OMNITRACE_CONDITIONAL_PRINT(COND, ...)                                           \
-    if(OMNITRACE_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&              \
+#define ROCPROFSYS_CONDITIONAL_PRINT(COND, ...)                                           \
+    if(ROCPROFSYS_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&              \
                           ::omnitrace::config::get_debug_pid()))                         \
     {                                                                                    \
         ::omnitrace::debug::flush();                                                     \
         ::omnitrace::debug::lock _debug_lk{};                                            \
-        OMNITRACE_FPRINTF_STDERR_COLOR(info);                                            \
+        ROCPROFSYS_FPRINTF_STDERR_COLOR(info);                                            \
         fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%li]%s",              \
-                OMNITRACE_DEBUG_PROCESS_IDENTIFIER, OMNITRACE_DEBUG_THREAD_IDENTIFIER,   \
+                ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER, ROCPROFSYS_DEBUG_THREAD_IDENTIFIER,   \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
         fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
         ::omnitrace::debug::flush();                                                     \
     }
 
-#define OMNITRACE_CONDITIONAL_BASIC_PRINT(COND, ...)                                     \
-    if(OMNITRACE_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&              \
+#define ROCPROFSYS_CONDITIONAL_BASIC_PRINT(COND, ...)                                     \
+    if(ROCPROFSYS_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&              \
                           ::omnitrace::config::get_debug_pid()))                         \
     {                                                                                    \
         ::omnitrace::debug::flush();                                                     \
         ::omnitrace::debug::lock _debug_lk{};                                            \
-        OMNITRACE_FPRINTF_STDERR_COLOR(info);                                            \
+        ROCPROFSYS_FPRINTF_STDERR_COLOR(info);                                            \
         fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i]%s",                   \
-                OMNITRACE_DEBUG_PROCESS_IDENTIFIER,                                      \
+                ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER,                                      \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
         fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
         ::omnitrace::debug::flush();                                                     \
     }
 
-#define OMNITRACE_CONDITIONAL_PRINT_F(COND, ...)                                         \
-    if(OMNITRACE_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&              \
+#define ROCPROFSYS_CONDITIONAL_PRINT_F(COND, ...)                                         \
+    if(ROCPROFSYS_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&              \
                           ::omnitrace::config::get_debug_pid()))                         \
     {                                                                                    \
         ::omnitrace::debug::flush();                                                     \
         ::omnitrace::debug::lock _debug_lk{};                                            \
-        OMNITRACE_FPRINTF_STDERR_COLOR(info);                                            \
+        ROCPROFSYS_FPRINTF_STDERR_COLOR(info);                                            \
         fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%li][%s]%s",          \
-                OMNITRACE_DEBUG_PROCESS_IDENTIFIER, OMNITRACE_DEBUG_THREAD_IDENTIFIER,   \
-                OMNITRACE_FUNCTION,                                                      \
+                ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER, ROCPROFSYS_DEBUG_THREAD_IDENTIFIER,   \
+                ROCPROFSYS_FUNCTION,                                                      \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
         fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
         ::omnitrace::debug::flush();                                                     \
     }
 
-#define OMNITRACE_CONDITIONAL_BASIC_PRINT_F(COND, ...)                                   \
-    if(OMNITRACE_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&              \
+#define ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(COND, ...)                                   \
+    if(ROCPROFSYS_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&              \
                           ::omnitrace::config::get_debug_pid()))                         \
     {                                                                                    \
         ::omnitrace::debug::flush();                                                     \
         ::omnitrace::debug::lock _debug_lk{};                                            \
-        OMNITRACE_FPRINTF_STDERR_COLOR(info);                                            \
+        ROCPROFSYS_FPRINTF_STDERR_COLOR(info);                                            \
         fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%s]%s",               \
-                OMNITRACE_DEBUG_PROCESS_IDENTIFIER, OMNITRACE_FUNCTION,                  \
+                ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER, ROCPROFSYS_FUNCTION,                  \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
         fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
         ::omnitrace::debug::flush();                                                     \
@@ -314,58 +314,58 @@ as_hex<void*>(void*, size_t);
 
 //--------------------------------------------------------------------------------------//
 
-#define OMNITRACE_CONDITIONAL_WARN(COND, ...)                                            \
-    if(OMNITRACE_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&              \
+#define ROCPROFSYS_CONDITIONAL_WARN(COND, ...)                                            \
+    if(ROCPROFSYS_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&              \
                           ::omnitrace::config::get_debug_pid()))                         \
     {                                                                                    \
         ::omnitrace::debug::flush();                                                     \
         ::omnitrace::debug::lock _debug_lk{};                                            \
-        OMNITRACE_FPRINTF_STDERR_COLOR(warning);                                         \
+        ROCPROFSYS_FPRINTF_STDERR_COLOR(warning);                                         \
         fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%li]%s",              \
-                OMNITRACE_DEBUG_PROCESS_IDENTIFIER, OMNITRACE_DEBUG_THREAD_IDENTIFIER,   \
+                ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER, ROCPROFSYS_DEBUG_THREAD_IDENTIFIER,   \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
         fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
         ::omnitrace::debug::flush();                                                     \
     }
 
-#define OMNITRACE_CONDITIONAL_BASIC_WARN(COND, ...)                                      \
-    if(OMNITRACE_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&              \
+#define ROCPROFSYS_CONDITIONAL_BASIC_WARN(COND, ...)                                      \
+    if(ROCPROFSYS_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&              \
                           ::omnitrace::config::get_debug_pid()))                         \
     {                                                                                    \
         ::omnitrace::debug::flush();                                                     \
         ::omnitrace::debug::lock _debug_lk{};                                            \
-        OMNITRACE_FPRINTF_STDERR_COLOR(warning);                                         \
+        ROCPROFSYS_FPRINTF_STDERR_COLOR(warning);                                         \
         fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i]%s",                   \
-                OMNITRACE_DEBUG_PROCESS_IDENTIFIER,                                      \
+                ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER,                                      \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
         fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
         ::omnitrace::debug::flush();                                                     \
     }
 
-#define OMNITRACE_CONDITIONAL_WARN_F(COND, ...)                                          \
-    if(OMNITRACE_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&              \
+#define ROCPROFSYS_CONDITIONAL_WARN_F(COND, ...)                                          \
+    if(ROCPROFSYS_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&              \
                           ::omnitrace::config::get_debug_pid()))                         \
     {                                                                                    \
         ::omnitrace::debug::flush();                                                     \
         ::omnitrace::debug::lock _debug_lk{};                                            \
-        OMNITRACE_FPRINTF_STDERR_COLOR(warning);                                         \
+        ROCPROFSYS_FPRINTF_STDERR_COLOR(warning);                                         \
         fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%li][%s]%s",          \
-                OMNITRACE_DEBUG_PROCESS_IDENTIFIER, OMNITRACE_DEBUG_THREAD_IDENTIFIER,   \
-                OMNITRACE_FUNCTION,                                                      \
+                ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER, ROCPROFSYS_DEBUG_THREAD_IDENTIFIER,   \
+                ROCPROFSYS_FUNCTION,                                                      \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
         fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
         ::omnitrace::debug::flush();                                                     \
     }
 
-#define OMNITRACE_CONDITIONAL_BASIC_WARN_F(COND, ...)                                    \
-    if(OMNITRACE_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&              \
+#define ROCPROFSYS_CONDITIONAL_BASIC_WARN_F(COND, ...)                                    \
+    if(ROCPROFSYS_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&              \
                           ::omnitrace::config::get_debug_pid()))                         \
     {                                                                                    \
         ::omnitrace::debug::flush();                                                     \
         ::omnitrace::debug::lock _debug_lk{};                                            \
-        OMNITRACE_FPRINTF_STDERR_COLOR(warning);                                         \
+        ROCPROFSYS_FPRINTF_STDERR_COLOR(warning);                                         \
         fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%s]%s",               \
-                OMNITRACE_DEBUG_PROCESS_IDENTIFIER, OMNITRACE_FUNCTION,                  \
+                ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER, ROCPROFSYS_FUNCTION,                  \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
         fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
         ::omnitrace::debug::flush();                                                     \
@@ -373,64 +373,64 @@ as_hex<void*>(void*, size_t);
 
 //--------------------------------------------------------------------------------------//
 
-#define OMNITRACE_CONDITIONAL_THROW_E(COND, TYPE, ...)                                   \
-    if(OMNITRACE_UNLIKELY((COND)))                                                       \
+#define ROCPROFSYS_CONDITIONAL_THROW_E(COND, TYPE, ...)                                   \
+    if(ROCPROFSYS_UNLIKELY((COND)))                                                       \
     {                                                                                    \
-        char _msg_buffer[OMNITRACE_DEBUG_BUFFER_LEN];                                    \
-        snprintf(_msg_buffer, OMNITRACE_DEBUG_BUFFER_LEN,                                \
-                 "[rocprof-sys][%i][%li][%s]%s", OMNITRACE_DEBUG_PROCESS_IDENTIFIER,     \
-                 OMNITRACE_DEBUG_THREAD_IDENTIFIER, OMNITRACE_FUNCTION,                  \
+        char _msg_buffer[ROCPROFSYS_DEBUG_BUFFER_LEN];                                    \
+        snprintf(_msg_buffer, ROCPROFSYS_DEBUG_BUFFER_LEN,                                \
+                 "[rocprof-sys][%i][%li][%s]%s", ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER,     \
+                 ROCPROFSYS_DEBUG_THREAD_IDENTIFIER, ROCPROFSYS_FUNCTION,                  \
                  ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                \
         auto len = strlen(_msg_buffer);                                                  \
-        snprintf(_msg_buffer + len, OMNITRACE_DEBUG_BUFFER_LEN - len, __VA_ARGS__);      \
+        snprintf(_msg_buffer + len, ROCPROFSYS_DEBUG_BUFFER_LEN - len, __VA_ARGS__);      \
         throw ::omnitrace::exception<TYPE>(                                              \
             ::tim::log::string(::tim::log::color::fatal(), _msg_buffer));                \
     }
 
-#define OMNITRACE_CONDITIONAL_BASIC_THROW_E(COND, TYPE, ...)                             \
-    if(OMNITRACE_UNLIKELY((COND)))                                                       \
+#define ROCPROFSYS_CONDITIONAL_BASIC_THROW_E(COND, TYPE, ...)                             \
+    if(ROCPROFSYS_UNLIKELY((COND)))                                                       \
     {                                                                                    \
-        char _msg_buffer[OMNITRACE_DEBUG_BUFFER_LEN];                                    \
-        snprintf(_msg_buffer, OMNITRACE_DEBUG_BUFFER_LEN, "[rocprof-sys][%i][%s]%s",     \
-                 OMNITRACE_DEBUG_PROCESS_IDENTIFIER, OMNITRACE_FUNCTION,                 \
+        char _msg_buffer[ROCPROFSYS_DEBUG_BUFFER_LEN];                                    \
+        snprintf(_msg_buffer, ROCPROFSYS_DEBUG_BUFFER_LEN, "[rocprof-sys][%i][%s]%s",     \
+                 ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER, ROCPROFSYS_FUNCTION,                 \
                  ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                \
         auto len = strlen(_msg_buffer);                                                  \
-        snprintf(_msg_buffer + len, OMNITRACE_DEBUG_BUFFER_LEN - len, __VA_ARGS__);      \
+        snprintf(_msg_buffer + len, ROCPROFSYS_DEBUG_BUFFER_LEN - len, __VA_ARGS__);      \
         throw ::omnitrace::exception<TYPE>(                                              \
             ::tim::log::string(::tim::log::color::fatal(), _msg_buffer));                \
     }
 
-#define OMNITRACE_CI_THROW_E(COND, TYPE, ...)                                            \
-    OMNITRACE_CONDITIONAL_THROW_E(                                                       \
+#define ROCPROFSYS_CI_THROW_E(COND, TYPE, ...)                                            \
+    ROCPROFSYS_CONDITIONAL_THROW_E(                                                       \
         ::omnitrace::get_is_continuous_integration() && (COND), TYPE, __VA_ARGS__)
 
-#define OMNITRACE_CI_BASIC_THROW_E(COND, TYPE, ...)                                      \
-    OMNITRACE_CONDITIONAL_BASIC_THROW_E(                                                 \
+#define ROCPROFSYS_CI_BASIC_THROW_E(COND, TYPE, ...)                                      \
+    ROCPROFSYS_CONDITIONAL_BASIC_THROW_E(                                                 \
         ::omnitrace::get_is_continuous_integration() && (COND), TYPE, __VA_ARGS__)
 
 //--------------------------------------------------------------------------------------//
 
-#define OMNITRACE_CONDITIONAL_THROW(COND, ...)                                           \
-    OMNITRACE_CONDITIONAL_THROW_E((COND), std::runtime_error, __VA_ARGS__)
+#define ROCPROFSYS_CONDITIONAL_THROW(COND, ...)                                           \
+    ROCPROFSYS_CONDITIONAL_THROW_E((COND), std::runtime_error, __VA_ARGS__)
 
-#define OMNITRACE_CONDITIONAL_BASIC_THROW(COND, ...)                                     \
-    OMNITRACE_CONDITIONAL_BASIC_THROW_E((COND), std::runtime_error, __VA_ARGS__)
+#define ROCPROFSYS_CONDITIONAL_BASIC_THROW(COND, ...)                                     \
+    ROCPROFSYS_CONDITIONAL_BASIC_THROW_E((COND), std::runtime_error, __VA_ARGS__)
 
-#define OMNITRACE_CI_THROW(COND, ...)                                                    \
-    OMNITRACE_CI_THROW_E((COND), std::runtime_error, __VA_ARGS__)
+#define ROCPROFSYS_CI_THROW(COND, ...)                                                    \
+    ROCPROFSYS_CI_THROW_E((COND), std::runtime_error, __VA_ARGS__)
 
-#define OMNITRACE_CI_BASIC_THROW(COND, ...)                                              \
-    OMNITRACE_CI_BASIC_THROW_E((COND), std::runtime_error, __VA_ARGS__)
+#define ROCPROFSYS_CI_BASIC_THROW(COND, ...)                                              \
+    ROCPROFSYS_CI_BASIC_THROW_E((COND), std::runtime_error, __VA_ARGS__)
 
 //--------------------------------------------------------------------------------------//
 
-#define OMNITRACE_CONDITIONAL_FAILURE(COND, METHOD, ...)                                 \
-    if(OMNITRACE_UNLIKELY((COND)))                                                       \
+#define ROCPROFSYS_CONDITIONAL_FAILURE(COND, METHOD, ...)                                 \
+    if(ROCPROFSYS_UNLIKELY((COND)))                                                       \
     {                                                                                    \
         ::omnitrace::debug::flush();                                                     \
-        OMNITRACE_FPRINTF_STDERR_COLOR(fatal);                                           \
+        ROCPROFSYS_FPRINTF_STDERR_COLOR(fatal);                                           \
         fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%li]%s",              \
-                OMNITRACE_DEBUG_PROCESS_IDENTIFIER, OMNITRACE_DEBUG_THREAD_IDENTIFIER,   \
+                ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER, ROCPROFSYS_DEBUG_THREAD_IDENTIFIER,   \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
         fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
         ::omnitrace::debug::flush();                                                     \
@@ -439,13 +439,13 @@ as_hex<void*>(void*, size_t);
         METHOD;                                                                          \
     }
 
-#define OMNITRACE_CONDITIONAL_BASIC_FAILURE(COND, METHOD, ...)                           \
-    if(OMNITRACE_UNLIKELY((COND)))                                                       \
+#define ROCPROFSYS_CONDITIONAL_BASIC_FAILURE(COND, METHOD, ...)                           \
+    if(ROCPROFSYS_UNLIKELY((COND)))                                                       \
     {                                                                                    \
         ::omnitrace::debug::flush();                                                     \
-        OMNITRACE_FPRINTF_STDERR_COLOR(fatal);                                           \
+        ROCPROFSYS_FPRINTF_STDERR_COLOR(fatal);                                           \
         fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i]%s",                   \
-                OMNITRACE_DEBUG_PROCESS_IDENTIFIER,                                      \
+                ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER,                                      \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
         fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
         ::omnitrace::debug::flush();                                                     \
@@ -454,14 +454,14 @@ as_hex<void*>(void*, size_t);
         METHOD;                                                                          \
     }
 
-#define OMNITRACE_CONDITIONAL_FAILURE_F(COND, METHOD, ...)                               \
-    if(OMNITRACE_UNLIKELY((COND)))                                                       \
+#define ROCPROFSYS_CONDITIONAL_FAILURE_F(COND, METHOD, ...)                               \
+    if(ROCPROFSYS_UNLIKELY((COND)))                                                       \
     {                                                                                    \
         ::omnitrace::debug::flush();                                                     \
-        OMNITRACE_FPRINTF_STDERR_COLOR(fatal);                                           \
+        ROCPROFSYS_FPRINTF_STDERR_COLOR(fatal);                                           \
         fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%li][%s]%s",          \
-                OMNITRACE_DEBUG_PROCESS_IDENTIFIER, OMNITRACE_DEBUG_THREAD_IDENTIFIER,   \
-                OMNITRACE_FUNCTION,                                                      \
+                ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER, ROCPROFSYS_DEBUG_THREAD_IDENTIFIER,   \
+                ROCPROFSYS_FUNCTION,                                                      \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
         fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
         ::omnitrace::debug::flush();                                                     \
@@ -470,13 +470,13 @@ as_hex<void*>(void*, size_t);
         METHOD;                                                                          \
     }
 
-#define OMNITRACE_CONDITIONAL_BASIC_FAILURE_F(COND, METHOD, ...)                         \
-    if(OMNITRACE_UNLIKELY((COND)))                                                       \
+#define ROCPROFSYS_CONDITIONAL_BASIC_FAILURE_F(COND, METHOD, ...)                         \
+    if(ROCPROFSYS_UNLIKELY((COND)))                                                       \
     {                                                                                    \
         ::omnitrace::debug::flush();                                                     \
-        OMNITRACE_FPRINTF_STDERR_COLOR(fatal);                                           \
+        ROCPROFSYS_FPRINTF_STDERR_COLOR(fatal);                                           \
         fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%s]%s",               \
-                OMNITRACE_DEBUG_PROCESS_IDENTIFIER, OMNITRACE_FUNCTION,                  \
+                ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER, ROCPROFSYS_FUNCTION,                  \
                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
         fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
         ::omnitrace::debug::flush();                                                     \
@@ -485,59 +485,59 @@ as_hex<void*>(void*, size_t);
         METHOD;                                                                          \
     }
 
-#define OMNITRACE_CI_FAILURE(COND, METHOD, ...)                                          \
-    OMNITRACE_CONDITIONAL_FAILURE(                                                       \
+#define ROCPROFSYS_CI_FAILURE(COND, METHOD, ...)                                          \
+    ROCPROFSYS_CONDITIONAL_FAILURE(                                                       \
         ::omnitrace::get_is_continuous_integration() && (COND), METHOD, __VA_ARGS__)
 
-#define OMNITRACE_CI_BASIC_FAILURE(COND, METHOD, ...)                                    \
-    OMNITRACE_CONDITIONAL_BASIC_FAILURE(                                                 \
+#define ROCPROFSYS_CI_BASIC_FAILURE(COND, METHOD, ...)                                    \
+    ROCPROFSYS_CONDITIONAL_BASIC_FAILURE(                                                 \
         ::omnitrace::get_is_continuous_integration() && (COND), METHOD, __VA_ARGS__)
 
 //--------------------------------------------------------------------------------------//
 
-#define OMNITRACE_CONDITIONAL_FAIL(COND, ...)                                            \
-    OMNITRACE_CONDITIONAL_FAILURE(COND, OMNITRACE_ESC(::std::exit(EXIT_FAILURE)),        \
+#define ROCPROFSYS_CONDITIONAL_FAIL(COND, ...)                                            \
+    ROCPROFSYS_CONDITIONAL_FAILURE(COND, ROCPROFSYS_ESC(::std::exit(EXIT_FAILURE)),        \
                                   __VA_ARGS__)
 
-#define OMNITRACE_CONDITIONAL_BASIC_FAIL(COND, ...)                                      \
-    OMNITRACE_CONDITIONAL_BASIC_FAILURE(COND, OMNITRACE_ESC(::std::exit(EXIT_FAILURE)),  \
+#define ROCPROFSYS_CONDITIONAL_BASIC_FAIL(COND, ...)                                      \
+    ROCPROFSYS_CONDITIONAL_BASIC_FAILURE(COND, ROCPROFSYS_ESC(::std::exit(EXIT_FAILURE)),  \
                                         __VA_ARGS__)
 
-#define OMNITRACE_CONDITIONAL_FAIL_F(COND, ...)                                          \
-    OMNITRACE_CONDITIONAL_FAILURE_F(COND, OMNITRACE_ESC(::std::exit(EXIT_FAILURE)),      \
+#define ROCPROFSYS_CONDITIONAL_FAIL_F(COND, ...)                                          \
+    ROCPROFSYS_CONDITIONAL_FAILURE_F(COND, ROCPROFSYS_ESC(::std::exit(EXIT_FAILURE)),      \
                                     __VA_ARGS__)
 
-#define OMNITRACE_CONDITIONAL_BASIC_FAIL_F(COND, ...)                                    \
-    OMNITRACE_CONDITIONAL_BASIC_FAILURE_F(                                               \
-        COND, OMNITRACE_ESC(::std::exit(EXIT_FAILURE)), __VA_ARGS__)
+#define ROCPROFSYS_CONDITIONAL_BASIC_FAIL_F(COND, ...)                                    \
+    ROCPROFSYS_CONDITIONAL_BASIC_FAILURE_F(                                               \
+        COND, ROCPROFSYS_ESC(::std::exit(EXIT_FAILURE)), __VA_ARGS__)
 
-#define OMNITRACE_CI_FAIL(COND, ...)                                                     \
-    OMNITRACE_CI_FAILURE(COND, OMNITRACE_ESC(::std::exit(EXIT_FAILURE)), __VA_ARGS__)
+#define ROCPROFSYS_CI_FAIL(COND, ...)                                                     \
+    ROCPROFSYS_CI_FAILURE(COND, ROCPROFSYS_ESC(::std::exit(EXIT_FAILURE)), __VA_ARGS__)
 
-#define OMNITRACE_CI_BASIC_FAIL(COND, ...)                                               \
-    OMNITRACE_CI_BASIC_FAILURE(COND, OMNITRACE_ESC(::std::exit(EXIT_FAILURE)),           \
+#define ROCPROFSYS_CI_BASIC_FAIL(COND, ...)                                               \
+    ROCPROFSYS_CI_BASIC_FAILURE(COND, ROCPROFSYS_ESC(::std::exit(EXIT_FAILURE)),           \
                                __VA_ARGS__)
 
 //--------------------------------------------------------------------------------------//
 
-#define OMNITRACE_CONDITIONAL_ABORT(COND, ...)                                           \
-    OMNITRACE_CONDITIONAL_FAILURE(COND, OMNITRACE_ESC(::std::abort()), __VA_ARGS__)
+#define ROCPROFSYS_CONDITIONAL_ABORT(COND, ...)                                           \
+    ROCPROFSYS_CONDITIONAL_FAILURE(COND, ROCPROFSYS_ESC(::std::abort()), __VA_ARGS__)
 
-#define OMNITRACE_CONDITIONAL_BASIC_ABORT(COND, ...)                                     \
-    OMNITRACE_CONDITIONAL_BASIC_FAILURE(COND, OMNITRACE_ESC(::std::abort()), __VA_ARGS__)
+#define ROCPROFSYS_CONDITIONAL_BASIC_ABORT(COND, ...)                                     \
+    ROCPROFSYS_CONDITIONAL_BASIC_FAILURE(COND, ROCPROFSYS_ESC(::std::abort()), __VA_ARGS__)
 
-#define OMNITRACE_CONDITIONAL_ABORT_F(COND, ...)                                         \
-    OMNITRACE_CONDITIONAL_FAILURE_F(COND, OMNITRACE_ESC(::std::abort()), __VA_ARGS__)
+#define ROCPROFSYS_CONDITIONAL_ABORT_F(COND, ...)                                         \
+    ROCPROFSYS_CONDITIONAL_FAILURE_F(COND, ROCPROFSYS_ESC(::std::abort()), __VA_ARGS__)
 
-#define OMNITRACE_CONDITIONAL_BASIC_ABORT_F(COND, ...)                                   \
-    OMNITRACE_CONDITIONAL_BASIC_FAILURE_F(COND, OMNITRACE_ESC(::std::abort()),           \
+#define ROCPROFSYS_CONDITIONAL_BASIC_ABORT_F(COND, ...)                                   \
+    ROCPROFSYS_CONDITIONAL_BASIC_FAILURE_F(COND, ROCPROFSYS_ESC(::std::abort()),           \
                                           __VA_ARGS__)
 
-#define OMNITRACE_CI_ABORT(COND, ...)                                                    \
-    OMNITRACE_CI_FAILURE(COND, OMNITRACE_ESC(::std::abort()), __VA_ARGS__)
+#define ROCPROFSYS_CI_ABORT(COND, ...)                                                    \
+    ROCPROFSYS_CI_FAILURE(COND, ROCPROFSYS_ESC(::std::abort()), __VA_ARGS__)
 
-#define OMNITRACE_CI_BASIC_ABORT(COND, ...)                                              \
-    OMNITRACE_CI_BASIC_FAILURE(COND, OMNITRACE_ESC(::std::abort()), __VA_ARGS__)
+#define ROCPROFSYS_CI_BASIC_ABORT(COND, ...)                                              \
+    ROCPROFSYS_CI_BASIC_FAILURE(COND, ROCPROFSYS_ESC(::std::abort()), __VA_ARGS__)
 
 //--------------------------------------------------------------------------------------//
 //
@@ -545,17 +545,17 @@ as_hex<void*>(void*, size_t);
 //
 //--------------------------------------------------------------------------------------//
 
-#define OMNITRACE_DEBUG(...)                                                             \
-    OMNITRACE_CONDITIONAL_PRINT(::omnitrace::get_debug(), __VA_ARGS__)
+#define ROCPROFSYS_DEBUG(...)                                                             \
+    ROCPROFSYS_CONDITIONAL_PRINT(::omnitrace::get_debug(), __VA_ARGS__)
 
-#define OMNITRACE_BASIC_DEBUG(...)                                                       \
-    OMNITRACE_CONDITIONAL_BASIC_PRINT(::omnitrace::get_debug_env(), __VA_ARGS__)
+#define ROCPROFSYS_BASIC_DEBUG(...)                                                       \
+    ROCPROFSYS_CONDITIONAL_BASIC_PRINT(::omnitrace::get_debug_env(), __VA_ARGS__)
 
-#define OMNITRACE_DEBUG_F(...)                                                           \
-    OMNITRACE_CONDITIONAL_PRINT_F(::omnitrace::get_debug(), __VA_ARGS__)
+#define ROCPROFSYS_DEBUG_F(...)                                                           \
+    ROCPROFSYS_CONDITIONAL_PRINT_F(::omnitrace::get_debug(), __VA_ARGS__)
 
-#define OMNITRACE_BASIC_DEBUG_F(...)                                                     \
-    OMNITRACE_CONDITIONAL_BASIC_PRINT_F(::omnitrace::get_debug_env(), __VA_ARGS__)
+#define ROCPROFSYS_BASIC_DEBUG_F(...)                                                     \
+    ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(::omnitrace::get_debug_env(), __VA_ARGS__)
 
 //--------------------------------------------------------------------------------------//
 //
@@ -563,21 +563,21 @@ as_hex<void*>(void*, size_t);
 //
 //--------------------------------------------------------------------------------------//
 
-#define OMNITRACE_VERBOSE(LEVEL, ...)                                                    \
-    OMNITRACE_CONDITIONAL_PRINT(                                                         \
+#define ROCPROFSYS_VERBOSE(LEVEL, ...)                                                    \
+    ROCPROFSYS_CONDITIONAL_PRINT(                                                         \
         ::omnitrace::get_debug() || (::omnitrace::get_verbose() >= LEVEL), __VA_ARGS__)
 
-#define OMNITRACE_BASIC_VERBOSE(LEVEL, ...)                                              \
-    OMNITRACE_CONDITIONAL_BASIC_PRINT(::omnitrace::get_debug_env() ||                    \
+#define ROCPROFSYS_BASIC_VERBOSE(LEVEL, ...)                                              \
+    ROCPROFSYS_CONDITIONAL_BASIC_PRINT(::omnitrace::get_debug_env() ||                    \
                                           (::omnitrace::get_verbose_env() >= LEVEL),     \
                                       __VA_ARGS__)
 
-#define OMNITRACE_VERBOSE_F(LEVEL, ...)                                                  \
-    OMNITRACE_CONDITIONAL_PRINT_F(                                                       \
+#define ROCPROFSYS_VERBOSE_F(LEVEL, ...)                                                  \
+    ROCPROFSYS_CONDITIONAL_PRINT_F(                                                       \
         ::omnitrace::get_debug() || (::omnitrace::get_verbose() >= LEVEL), __VA_ARGS__)
 
-#define OMNITRACE_BASIC_VERBOSE_F(LEVEL, ...)                                            \
-    OMNITRACE_CONDITIONAL_BASIC_PRINT_F(::omnitrace::get_debug_env() ||                  \
+#define ROCPROFSYS_BASIC_VERBOSE_F(LEVEL, ...)                                            \
+    ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(::omnitrace::get_debug_env() ||                  \
                                             (::omnitrace::get_verbose_env() >= LEVEL),   \
                                         __VA_ARGS__)
 
@@ -587,46 +587,46 @@ as_hex<void*>(void*, size_t);
 //
 //--------------------------------------------------------------------------------------//
 
-#define OMNITRACE_WARNING(LEVEL, ...)                                                    \
-    OMNITRACE_CONDITIONAL_WARN(                                                          \
+#define ROCPROFSYS_WARNING(LEVEL, ...)                                                    \
+    ROCPROFSYS_CONDITIONAL_WARN(                                                          \
         ::omnitrace::get_debug() || (::omnitrace::get_verbose() >= LEVEL), __VA_ARGS__)
 
-#define OMNITRACE_BASIC_WARNING(LEVEL, ...)                                              \
-    OMNITRACE_CONDITIONAL_BASIC_WARN(::omnitrace::get_debug_env() ||                     \
+#define ROCPROFSYS_BASIC_WARNING(LEVEL, ...)                                              \
+    ROCPROFSYS_CONDITIONAL_BASIC_WARN(::omnitrace::get_debug_env() ||                     \
                                          (::omnitrace::get_verbose_env() >= LEVEL),      \
                                      __VA_ARGS__)
 
-#define OMNITRACE_WARNING_F(LEVEL, ...)                                                  \
-    OMNITRACE_CONDITIONAL_WARN_F(                                                        \
+#define ROCPROFSYS_WARNING_F(LEVEL, ...)                                                  \
+    ROCPROFSYS_CONDITIONAL_WARN_F(                                                        \
         ::omnitrace::get_debug() || (::omnitrace::get_verbose() >= LEVEL), __VA_ARGS__)
 
-#define OMNITRACE_BASIC_WARNING_F(LEVEL, ...)                                            \
-    OMNITRACE_CONDITIONAL_BASIC_WARN_F(::omnitrace::get_debug_env() ||                   \
+#define ROCPROFSYS_BASIC_WARNING_F(LEVEL, ...)                                            \
+    ROCPROFSYS_CONDITIONAL_BASIC_WARN_F(::omnitrace::get_debug_env() ||                   \
                                            (::omnitrace::get_verbose_env() >= LEVEL),    \
                                        __VA_ARGS__)
 
-#define OMNITRACE_WARNING_IF(COND, ...) OMNITRACE_CONDITIONAL_WARN((COND), __VA_ARGS__)
+#define ROCPROFSYS_WARNING_IF(COND, ...) ROCPROFSYS_CONDITIONAL_WARN((COND), __VA_ARGS__)
 
-#define OMNITRACE_WARNING_IF_F(COND, ...)                                                \
-    OMNITRACE_CONDITIONAL_WARN_F((COND), __VA_ARGS__)
+#define ROCPROFSYS_WARNING_IF_F(COND, ...)                                                \
+    ROCPROFSYS_CONDITIONAL_WARN_F((COND), __VA_ARGS__)
 
-#define OMNITRACE_WARNING_OR_CI_THROW(LEVEL, ...)                                        \
+#define ROCPROFSYS_WARNING_OR_CI_THROW(LEVEL, ...)                                        \
     {                                                                                    \
-        if(OMNITRACE_UNLIKELY(::omnitrace::get_is_continuous_integration()))             \
+        if(ROCPROFSYS_UNLIKELY(::omnitrace::get_is_continuous_integration()))             \
         {                                                                                \
-            OMNITRACE_CI_THROW(true, __VA_ARGS__);                                       \
+            ROCPROFSYS_CI_THROW(true, __VA_ARGS__);                                       \
         }                                                                                \
         else                                                                             \
         {                                                                                \
-            OMNITRACE_CONDITIONAL_WARN(::omnitrace::get_debug() ||                       \
+            ROCPROFSYS_CONDITIONAL_WARN(::omnitrace::get_debug() ||                       \
                                            (::omnitrace::get_verbose() >= LEVEL),        \
                                        __VA_ARGS__)                                      \
         }                                                                                \
     }
 
-#define OMNITRACE_REQUIRE(...) TIMEMORY_REQUIRE(__VA_ARGS__)
-#define OMNITRACE_PREFER(COND)                                                           \
-    ((OMNITRACE_LIKELY(COND))                                                            \
+#define ROCPROFSYS_REQUIRE(...) TIMEMORY_REQUIRE(__VA_ARGS__)
+#define ROCPROFSYS_PREFER(COND)                                                           \
+    ((ROCPROFSYS_LIKELY(COND))                                                            \
          ? ::tim::log::base()                                                            \
          : ((::omnitrace::get_is_continuous_integration()) ? TIMEMORY_FATAL              \
                                                            : TIMEMORY_WARNING))
@@ -638,10 +638,10 @@ as_hex<void*>(void*, size_t);
 //
 //--------------------------------------------------------------------------------------//
 
-#define OMNITRACE_BASIC_PRINT(...) OMNITRACE_CONDITIONAL_BASIC_PRINT(true, __VA_ARGS__)
+#define ROCPROFSYS_BASIC_PRINT(...) ROCPROFSYS_CONDITIONAL_BASIC_PRINT(true, __VA_ARGS__)
 
-#define OMNITRACE_BASIC_PRINT_F(...)                                                     \
-    OMNITRACE_CONDITIONAL_BASIC_PRINT_F(true, __VA_ARGS__)
+#define ROCPROFSYS_BASIC_PRINT_F(...)                                                     \
+    ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(true, __VA_ARGS__)
 
 //--------------------------------------------------------------------------------------//
 //
@@ -649,9 +649,9 @@ as_hex<void*>(void*, size_t);
 //
 //--------------------------------------------------------------------------------------//
 
-#define OMNITRACE_PRINT(...) OMNITRACE_CONDITIONAL_PRINT(true, __VA_ARGS__)
+#define ROCPROFSYS_PRINT(...) ROCPROFSYS_CONDITIONAL_PRINT(true, __VA_ARGS__)
 
-#define OMNITRACE_PRINT_F(...) OMNITRACE_CONDITIONAL_PRINT_F(true, __VA_ARGS__)
+#define ROCPROFSYS_PRINT_F(...) ROCPROFSYS_CONDITIONAL_PRINT_F(true, __VA_ARGS__)
 
 //--------------------------------------------------------------------------------------//
 //
@@ -659,9 +659,9 @@ as_hex<void*>(void*, size_t);
 //
 //--------------------------------------------------------------------------------------//
 
-#define OMNITRACE_THROW(...) OMNITRACE_CONDITIONAL_THROW(true, __VA_ARGS__)
+#define ROCPROFSYS_THROW(...) ROCPROFSYS_CONDITIONAL_THROW(true, __VA_ARGS__)
 
-#define OMNITRACE_BASIC_THROW(...) OMNITRACE_CONDITIONAL_BASIC_THROW(true, __VA_ARGS__)
+#define ROCPROFSYS_BASIC_THROW(...) ROCPROFSYS_CONDITIONAL_BASIC_THROW(true, __VA_ARGS__)
 
 //--------------------------------------------------------------------------------------//
 //
@@ -669,13 +669,13 @@ as_hex<void*>(void*, size_t);
 //
 //--------------------------------------------------------------------------------------//
 
-#define OMNITRACE_FAIL(...) OMNITRACE_CONDITIONAL_FAIL(true, __VA_ARGS__)
+#define ROCPROFSYS_FAIL(...) ROCPROFSYS_CONDITIONAL_FAIL(true, __VA_ARGS__)
 
-#define OMNITRACE_FAIL_F(...) OMNITRACE_CONDITIONAL_FAIL_F(true, __VA_ARGS__)
+#define ROCPROFSYS_FAIL_F(...) ROCPROFSYS_CONDITIONAL_FAIL_F(true, __VA_ARGS__)
 
-#define OMNITRACE_BASIC_FAIL(...) OMNITRACE_CONDITIONAL_BASIC_FAIL(true, __VA_ARGS__)
+#define ROCPROFSYS_BASIC_FAIL(...) ROCPROFSYS_CONDITIONAL_BASIC_FAIL(true, __VA_ARGS__)
 
-#define OMNITRACE_BASIC_FAIL_F(...) OMNITRACE_CONDITIONAL_BASIC_FAIL_F(true, __VA_ARGS__)
+#define ROCPROFSYS_BASIC_FAIL_F(...) ROCPROFSYS_CONDITIONAL_BASIC_FAIL_F(true, __VA_ARGS__)
 
 //--------------------------------------------------------------------------------------//
 //
@@ -683,14 +683,14 @@ as_hex<void*>(void*, size_t);
 //
 //--------------------------------------------------------------------------------------//
 
-#define OMNITRACE_ABORT(...) OMNITRACE_CONDITIONAL_ABORT(true, __VA_ARGS__)
+#define ROCPROFSYS_ABORT(...) ROCPROFSYS_CONDITIONAL_ABORT(true, __VA_ARGS__)
 
-#define OMNITRACE_ABORT_F(...) OMNITRACE_CONDITIONAL_ABORT_F(true, __VA_ARGS__)
+#define ROCPROFSYS_ABORT_F(...) ROCPROFSYS_CONDITIONAL_ABORT_F(true, __VA_ARGS__)
 
-#define OMNITRACE_BASIC_ABORT(...) OMNITRACE_CONDITIONAL_BASIC_ABORT(true, __VA_ARGS__)
+#define ROCPROFSYS_BASIC_ABORT(...) ROCPROFSYS_CONDITIONAL_BASIC_ABORT(true, __VA_ARGS__)
 
-#define OMNITRACE_BASIC_ABORT_F(...)                                                     \
-    OMNITRACE_CONDITIONAL_BASIC_ABORT_F(true, __VA_ARGS__)
+#define ROCPROFSYS_BASIC_ABORT_F(...)                                                     \
+    ROCPROFSYS_CONDITIONAL_BASIC_ABORT_F(true, __VA_ARGS__)
 
 #include <string>
 

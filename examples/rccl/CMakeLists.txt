@@ -2,11 +2,11 @@ cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
 project(rocprofsys-rccl-example LANGUAGES CXX)
 
-if(OMNITRACE_DISABLE_EXAMPLES)
+if(ROCPROFSYS_DISABLE_EXAMPLES)
     get_filename_component(_DIR ${CMAKE_CURRENT_LIST_DIR} NAME)
 
-    if(${PROJECT_NAME} IN_LIST OMNITRACE_DISABLE_EXAMPLES OR ${_DIR} IN_LIST
-                                                             OMNITRACE_DISABLE_EXAMPLES)
+    if(${PROJECT_NAME} IN_LIST ROCPROFSYS_DISABLE_EXAMPLES OR ${_DIR} IN_LIST
+                                                             ROCPROFSYS_DISABLE_EXAMPLES)
         return()
     endif()
 endif()
@@ -18,7 +18,7 @@ function(rccl_message _MSG_TYPE)
         set(_MSG_TYPE STATUS) # don't generate warnings during CI
     endif()
     if("${CMAKE_PROJECT_NAME}" STREQUAL "rocprofsys")
-        omnitrace_message(${_MSG_TYPE} ${ARGN})
+        rocprofsys_message(${_MSG_TYPE} ${ARGN})
     else()
         message(${_MSG_TYPE} ${ARGN})
     endif()
@@ -33,8 +33,8 @@ endif()
 
 if("${CMAKE_PROJECT_NAME}" STREQUAL "rocprofsys"
    AND ("$ENV{ROCPROFSYS_CI}"
-        OR OMNITRACE_CI
-        OR OMNITRACE_BUILD_CI))
+        OR ROCPROFSYS_CI
+        OR ROCPROFSYS_BUILD_CI))
     find_package(rccl QUIET) # avoid generating warning in CI
 else()
     find_package(rccl)

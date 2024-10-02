@@ -4,7 +4,7 @@ set(ROCPROFSYS_ABORT_FAIL_REGEX
           FORCE)
 
 # adds a ctest for executable
-function(OMNITRACE_ADD_BIN_TEST)
+function(ROCPROFSYS_ADD_BIN_TEST)
     cmake_parse_arguments(
         TEST
         "" # options
@@ -46,7 +46,7 @@ function(OMNITRACE_ADD_BIN_TEST)
     if(NOT "${TEST_PASS_REGEX}" STREQUAL ""
        AND NOT "${TEST_FAIL_REGEX}" STREQUAL ""
        AND NOT "${TEST_FAIL_REGEX}" MATCHES "\\|ROCPROFSYS_ABORT_FAIL_REGEX")
-        omnitrace_message(
+        rocprofsys_message(
             FATAL_ERROR
             "${TEST_NAME} has set pass and fail regexes but fail regex does not include '|ROCPROFSYS_ABORT_FAIL_REGEX'"
             )
@@ -105,12 +105,12 @@ function(OMNITRACE_ADD_BIN_TEST)
                        SKIP_REGULAR_EXPRESSION
                        "${TEST_SKIP_REGEX}"
                        ${TEST_PROPERTIES})
-    elseif(OMNITRACE_BUILD_TESTING)
+    elseif(ROCPROFSYS_BUILD_TESTING)
         message(FATAL_ERROR "Error! ${TEST_TARGET} does not exist")
     endif()
 endfunction()
 
-omnitrace_add_bin_test(
+rocprofsys_add_bin_test(
     NAME rocprofsys-instrument-help
     TARGET rocprofsys-instrument
     ARGS --help
@@ -129,7 +129,7 @@ else()
     set(LS_ARGS)
 endif()
 
-omnitrace_add_bin_test(
+rocprofsys_add_bin_test(
     NAME rocprofsys-instrument-simulate-ls
     TARGET rocprofsys-instrument
     ARGS --simulate
@@ -146,7 +146,7 @@ omnitrace_add_bin_test(
     LABELS "simulate"
     TIMEOUT 240)
 
-omnitrace_add_bin_test(
+rocprofsys_add_bin_test(
     NAME rocprofsys-instrument-simulate-ls-check
     DEPENDS rocprofsys-instrument-simulate-ls
     COMMAND ls rocprofsys-tests-output/rocprofsys-instrument-simulate-ls/instrumentation
@@ -155,7 +155,7 @@ omnitrace_add_bin_test(
         ".*available.json.*available.txt.*available.xml.*excluded.json.*excluded.txt.*excluded.xml.*instrumented.json.*instrumented.txt.*instrumented.xml.*overlapping.json.*overlapping.txt.*overlapping.xml.*"
     FAIL_REGEX "No such file or directory|not found|ROCPROFSYS_ABORT_FAIL_REGEX")
 
-omnitrace_add_bin_test(
+rocprofsys_add_bin_test(
     NAME rocprofsys-instrument-simulate-lib
     TARGET rocprofsys-instrument
     ARGS --print-available functions -v 2 -- $<TARGET_FILE:rocprofsys-user-library>
@@ -167,7 +167,7 @@ omnitrace_add_bin_test(
 
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/rocprofsys-tests-output/tmp)
 
-omnitrace_add_bin_test(
+rocprofsys_add_bin_test(
     NAME rocprofsys-instrument-simulate-lib-basename
     TARGET rocprofsys-instrument
     ARGS --print-available
@@ -182,7 +182,7 @@ omnitrace_add_bin_test(
     TIMEOUT 120
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/rocprofsys-tests-output/tmp)
 
-omnitrace_add_bin_test(
+rocprofsys_add_bin_test(
     NAME rocprofsys-instrument-write-log
     TARGET rocprofsys-instrument
     ARGS --print-instrumented
@@ -198,7 +198,7 @@ omnitrace_add_bin_test(
     TIMEOUT 120
     PASS_REGEX "Opening .*/instrumentation/user.log")
 
-omnitrace_add_bin_test(
+rocprofsys_add_bin_test(
     NAME rocprofsys-instrument-write-log-check
     DEPENDS rocprofsys-instrument-write-log
     COMMAND
@@ -209,7 +209,7 @@ omnitrace_add_bin_test(
     PASS_REGEX "user.log"
     FAIL_REGEX "No such file or directory|not found|ROCPROFSYS_ABORT_FAIL_REGEX")
 
-omnitrace_add_bin_test(
+rocprofsys_add_bin_test(
     NAME rocprofsys-avail-help
     TARGET rocprofsys-avail
     ARGS --help
@@ -219,14 +219,14 @@ omnitrace_add_bin_test(
         ".*\\\[rocprof-sys-avail\\\] Usage:.*\\\[DEBUG OPTIONS\\\].*\\\[INFO OPTIONS\\\].*\\\[FILTER OPTIONS\\\].*\\\[COLUMN OPTIONS\\\].*\\\[DISPLAY OPTIONS\\\].*\\\[OUTPUT OPTIONS\\\].*"
     )
 
-omnitrace_add_bin_test(
+rocprofsys_add_bin_test(
     NAME rocprofsys-avail-all
     TARGET rocprofsys-avail
     ARGS --all
     LABELS "rocprofsys-avail"
     TIMEOUT 45)
 
-omnitrace_add_bin_test(
+rocprofsys_add_bin_test(
     NAME rocprofsys-avail-all-expand-keys
     TARGET rocprofsys-avail
     ARGS --all --expand-keys
@@ -234,7 +234,7 @@ omnitrace_add_bin_test(
     TIMEOUT 45
     FAIL_REGEX "%[a-zA-Z_]%|ROCPROFSYS_ABORT_FAIL_REGEX")
 
-omnitrace_add_bin_test(
+rocprofsys_add_bin_test(
     NAME rocprofsys-avail-all-only-available-alphabetical
     TARGET rocprofsys-avail
     ARGS --all --available --alphabetical --debug --output
@@ -245,7 +245,7 @@ omnitrace_add_bin_test(
         ATTACHED_FILES
         ${CMAKE_CURRENT_BINARY_DIR}/rocprofsys-avail-all-only-available-alphabetical.log)
 
-omnitrace_add_bin_test(
+rocprofsys_add_bin_test(
     NAME rocprofsys-avail-all-csv
     TARGET rocprofsys-avail
     ARGS --all --csv --csv-separator "#"
@@ -255,7 +255,7 @@ omnitrace_add_bin_test(
         "COMPONENT#AVAILABLE#VALUE_TYPE#STRING_IDS#FILENAME#DESCRIPTION#CATEGORY#.*ENVIRONMENT VARIABLE#VALUE#DATA TYPE#DESCRIPTION#CATEGORIES#.*HARDWARE COUNTER#DEVICE#AVAILABLE#DESCRIPTION#"
     )
 
-omnitrace_add_bin_test(
+rocprofsys_add_bin_test(
     NAME rocprofsys-avail-filter-wall-clock-available
     TARGET rocprofsys-avail
     ARGS -r wall_clock -C --available
@@ -265,7 +265,7 @@ omnitrace_add_bin_test(
         "\\\|[-]+\\\|\n\\\|[ ]+COMPONENT[ ]+\\\|\n\\\|[-]+\\\|\n\\\| (wall_clock)[ ]+\\\|\n\\\|[-]+\\\|"
     )
 
-omnitrace_add_bin_test(
+rocprofsys_add_bin_test(
     NAME rocprofsys-avail-category-filter-rocprofsys
     TARGET rocprofsys-avail
     ARGS --categories settings::rocprofsys --brief
@@ -276,7 +276,7 @@ omnitrace_add_bin_test(
         "ROCPROFSYS_(ADD_SECONDARY|SCIENTIFIC|PRECISION|MEMORY_PRECISION|TIMING_PRECISION)|ROCPROFSYS_ABORT_FAIL_REGEX"
     )
 
-omnitrace_add_bin_test(
+rocprofsys_add_bin_test(
     NAME rocprofsys-avail-category-filter-timemory
     TARGET rocprofsys-avail
     ARGS --categories settings::timemory --brief --advanced
@@ -286,7 +286,7 @@ omnitrace_add_bin_test(
         "ROCPROFSYS_(ADD_SECONDARY|SCIENTIFIC|PRECISION|MEMORY_PRECISION|TIMING_PRECISION)"
     FAIL_REGEX "ROCPROFSYS_(SETTINGS_DESC|OUTPUT_FILE)|ROCPROFSYS_ABORT_FAIL_REGEX")
 
-omnitrace_add_bin_test(
+rocprofsys_add_bin_test(
     NAME rocprofsys-avail-regex-negation
     TARGET rocprofsys-avail
     ARGS -R
@@ -310,7 +310,7 @@ string(
     REPLACE "+" "\\\+" _AVAIL_CFG_PATH
             "${PROJECT_BINARY_DIR}/rocprofsys-tests-output/rocprofsys-avail/rocprofsys-")
 # use of TWD == Test Working Directory (added by function)
-omnitrace_add_bin_test(
+rocprofsys_add_bin_test(
     NAME rocprofsys-avail-write-config
     TARGET rocprofsys-avail
     ARGS -G
@@ -329,7 +329,7 @@ omnitrace_add_bin_test(
         "Outputting JSON configuration file '${_AVAIL_CFG_PATH}test\\\.json'(.*)Outputting XML configuration file '${_AVAIL_CFG_PATH}test\\\.xml'(.*)Outputting text configuration file '${_AVAIL_CFG_PATH}test\\\.cfg'(.*)"
     )
 
-omnitrace_add_bin_test(
+rocprofsys_add_bin_test(
     NAME rocprofsys-avail-write-config-tweak
     TARGET rocprofsys-avail
     ARGS -G %env{TWD}%/rocprofsys-tests-output/rocprofsys-avail/rocprofsys-tweak.cfg -F
@@ -341,7 +341,7 @@ omnitrace_add_bin_test(
         "Outputting JSON configuration file '${_AVAIL_CFG_PATH}tweak\\\.json'(.*)Outputting XML configuration file '${_AVAIL_CFG_PATH}tweak\\\.xml'(.*)Outputting text configuration file '${_AVAIL_CFG_PATH}tweak\\\.cfg'(.*)"
     )
 
-omnitrace_add_bin_test(
+rocprofsys_add_bin_test(
     NAME rocprofsys-avail-list-keys
     TARGET rocprofsys-avail
     ARGS --list-keys --expand-keys
@@ -349,7 +349,7 @@ omnitrace_add_bin_test(
     LABELS "rocprofsys-avail"
     PASS_REGEX "Output Keys:\n(.*)%argv%(.*)%argv_hash%")
 
-omnitrace_add_bin_test(
+rocprofsys_add_bin_test(
     NAME rocprofsys-avail-list-keys-markdown
     TARGET rocprofsys-avail
     ARGS --list-keys --expand-keys --markdown
@@ -357,7 +357,7 @@ omnitrace_add_bin_test(
     LABELS "rocprofsys-avail;markdown"
     PASS_REGEX "(.*)`%argv%`(.*)`%argv_hash%`")
 
-omnitrace_add_bin_test(
+rocprofsys_add_bin_test(
     NAME rocprofsys-avail-list-categories
     TARGET rocprofsys-avail
     ARGS --list-categories
@@ -365,7 +365,7 @@ omnitrace_add_bin_test(
     LABELS "rocprofsys-avail"
     PASS_REGEX " component::(.*) hw_counters::(.*) settings::")
 
-omnitrace_add_bin_test(
+rocprofsys_add_bin_test(
     NAME rocprofsys-avail-core-categories
     TARGET rocprofsys-avail
     ARGS -c core
@@ -375,7 +375,7 @@ omnitrace_add_bin_test(
         "ROCPROFSYS_CONFIG_FILE(.*)ROCPROFSYS_ENABLED(.*)ROCPROFSYS_SUPPRESS_CONFIG(.*)ROCPROFSYS_SUPPRESS_PARSING(.*)ROCPROFSYS_VERBOSE"
     )
 
-omnitrace_add_bin_test(
+rocprofsys_add_bin_test(
     NAME rocprofsys-run-help
     TARGET rocprofsys-run
     ARGS --help
@@ -396,7 +396,7 @@ set_target_properties(
     sleeper PROPERTIES BUILD_TYPE RelWithDebInfo RUNTIME_OUTPUT_DIRECTORY
                                                  ${PROJECT_BINARY_DIR}/bin/testing)
 
-omnitrace_add_bin_test(
+rocprofsys_add_bin_test(
     NAME rocprofsys-run-args
     TARGET rocprofsys-run
     ARGS --monochrome

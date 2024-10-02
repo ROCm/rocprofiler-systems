@@ -24,7 +24,7 @@
 
 #include "core/defines.hpp"
 
-#if defined(OMNITRACE_USE_ROCPROFILER) && OMNITRACE_USE_ROCPROFILER > 0
+#if defined(ROCPROFSYS_USE_ROCPROFILER) && ROCPROFSYS_USE_ROCPROFILER > 0
 #    include <rocprofiler.h>
 #endif
 
@@ -48,11 +48,11 @@ extern "C"
     using on_load_t = bool (*)(HsaApiTable*, uint64_t, uint64_t, const char* const*);
 
     bool OnLoad(HsaApiTable* table, uint64_t runtime_version, uint64_t failed_tool_count,
-                const char* const* failed_tool_names) OMNITRACE_PUBLIC_API;
-    void OnUnload() OMNITRACE_PUBLIC_API;
+                const char* const* failed_tool_names) ROCPROFSYS_PUBLIC_API;
+    void OnUnload() ROCPROFSYS_PUBLIC_API;
 
-#if defined(OMNITRACE_USE_ROCPROFILER) && OMNITRACE_USE_ROCPROFILER > 0
-    void OnLoadToolProp(rocprofiler_settings_t* settings) OMNITRACE_PUBLIC_API;
-    void OnUnloadTool() OMNITRACE_PUBLIC_API;
+#if defined(ROCPROFSYS_USE_ROCPROFILER) && ROCPROFSYS_USE_ROCPROFILER > 0
+    void OnLoadToolProp(rocprofiler_settings_t* settings) ROCPROFSYS_PUBLIC_API;
+    void OnUnloadTool() ROCPROFSYS_PUBLIC_API;
 #endif
 }

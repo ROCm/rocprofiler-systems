@@ -46,7 +46,7 @@
 #include <mutex>
 #include <tuple>
 
-#if defined(OMNITRACE_USE_ROCPROFILER) && OMNITRACE_USE_ROCPROFILER > 0
+#if defined(ROCPROFSYS_USE_ROCPROFILER) && ROCPROFSYS_USE_ROCPROFILER > 0
 #    include <rocprofiler.h>
 #endif
 
@@ -62,7 +62,7 @@ bool       on_load_trace = (get_env<int>("ROCP_ONLOAD_TRACE", 0) > 0);
 }  // namespace rocm
 }  // namespace omnitrace
 
-#if defined(OMNITRACE_USE_ROCPROFILER) && OMNITRACE_USE_ROCPROFILER > 0
+#if defined(ROCPROFSYS_USE_ROCPROFILER) && ROCPROFSYS_USE_ROCPROFILER > 0
 std::ostream&
 operator<<(std::ostream& _os, const rocprofiler_settings_t& _v)
 {
@@ -84,17 +84,17 @@ operator<<(std::ostream& _os, const rocprofiler_settings_t& _v)
 // HSA-runtime tool on-load method
 extern "C"
 {
-#if defined(OMNITRACE_USE_ROCPROFILER) && OMNITRACE_USE_ROCPROFILER > 0
+#if defined(ROCPROFSYS_USE_ROCPROFILER) && ROCPROFSYS_USE_ROCPROFILER > 0
     void OnUnloadTool()
     {
-        OMNITRACE_BASIC_VERBOSE_F(2 || rocm::on_load_trace, "Unloading...\n");
+        ROCPROFSYS_BASIC_VERBOSE_F(2 || rocm::on_load_trace, "Unloading...\n");
 
         rocm::lock_t _lk{ rocm::rocm_mutex, std::defer_lock };
         if(!_lk.owns_lock()) _lk.lock();
 
         if(!rocm::is_loaded)
         {
-            OMNITRACE_BASIC_VERBOSE_F(1 || rocm::on_load_trace,
+            ROCPROFSYS_BASIC_VERBOSE_F(1 || rocm::on_load_trace,
                                       "rocprofiler is not loaded\n");
             return;
         }
@@ -113,14 +113,14 @@ extern "C"
 
         if(!config::get_use_rocprofiler() || config::get_rocm_events().empty()) return;
 
-        OMNITRACE_BASIC_VERBOSE_F(2 || rocm::on_load_trace, "Loading...\n");
+        ROCPROFSYS_BASIC_VERBOSE_F(2 || rocm::on_load_trace, "Loading...\n");
 
         rocm::lock_t _lk{ rocm::rocm_mutex, std::defer_lock };
         if(!_lk.owns_lock()) _lk.lock();
 
         if(rocm::is_loaded)
         {
-            OMNITRACE_BASIC_VERBOSE_F(1 || rocm::on_load_trace,
+            ROCPROFSYS_BASIC_VERBOSE_F(1 || rocm::on_load_trace,
                                       "rocprofiler is already loaded\n");
             return;
         }
@@ -141,7 +141,7 @@ extern "C"
         // settings->trace_size        = 0;
         // settings->timeout           = 0;
 
-        OMNITRACE_BASIC_VERBOSE_F(1 || rocm::on_load_trace, "rocprofiler settings: %s\n",
+        ROCPROFSYS_BASIC_VERBOSE_F(1 || rocm::on_load_trace, "rocprofiler settings: %s\n",
                                   JOIN("", *settings).c_str());
 
         // Initialize profiling
@@ -160,36 +160,36 @@ extern "C"
         if(_once) return true;
         _once = true;
 
-        OMNITRACE_BASIC_VERBOSE_F(2 || rocm::on_load_trace, "Loading...\n");
-        OMNITRACE_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
+        ROCPROFSYS_BASIC_VERBOSE_F(2 || rocm::on_load_trace, "Loading...\n");
+        ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
 
         if(!tim::get_env("ROCPROFSYS_INIT_TOOLING", true)) return true;
         if(!tim::settings::enabled()) return true;
 
         roctracer_is_init() = true;
-        OMNITRACE_BASIC_VERBOSE_F(1 || rocm::on_load_trace, "Loading ROCm tooling...\n");
+        ROCPROFSYS_BASIC_VERBOSE_F(1 || rocm::on_load_trace, "Loading ROCm tooling...\n");
 
         if(!config::settings_are_configured() && get_state() < State::Active)
             omnitrace_init_tooling_hidden();
 
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
-#if OMNITRACE_HIP_VERSION < 50300
-        OMNITRACE_VERBOSE_F(1 || rocm::on_load_trace,
+#if ROCPROFSYS_HIP_VERSION < 50300
+        ROCPROFSYS_VERBOSE_F(1 || rocm::on_load_trace,
                             "Computing the roctracer clock skew...\n");
         (void) omnitrace::get_clock_skew();
 #endif
 
         if(get_use_process_sampling() && get_use_rocm_smi())
         {
-            OMNITRACE_VERBOSE_F(1 || rocm::on_load_trace,
+            ROCPROFSYS_VERBOSE_F(1 || rocm::on_load_trace,
                                 "Setting rocm_smi state to active...\n");
             rocm_smi::set_state(State::Active);
         }
 
         comp::roctracer::setup(static_cast<void*>(table), rocm::on_load_trace);
 
-#if defined(OMNITRACE_USE_ROCPROFILER) && OMNITRACE_USE_ROCPROFILER > 0
+#if defined(ROCPROFSYS_USE_ROCPROFILER) && ROCPROFSYS_USE_ROCPROFILER > 0
         bool _force_rocprofiler_init =
             tim::get_env("ROCPROFSYS_FORCE_ROCPROFILER_INIT", false, false);
 #else
@@ -201,17 +201,17 @@ extern "C"
             (config::settings_are_configured() && config::get_rocm_events().empty());
         if(_force_rocprofiler_init || (get_use_rocprofiler() && !_is_empty))
         {
-#if OMNITRACE_HIP_VERSION < 50500
+#if ROCPROFSYS_HIP_VERSION < 50500
             auto _rocprof = dynamic_library{
                 "ROCPROFSYS_ROCPROFILER_LIBRARY",
                 find_library_path(
                     "librocprofiler64.so", { "ROCPROFSYS_ROCM_PATH", "ROCM_PATH" },
-                    { OMNITRACE_DEFAULT_ROCM_PATH },
+                    { ROCPROFSYS_DEFAULT_ROCM_PATH },
                     { "lib", "lib64", "rocprofiler/lib", "rocprofiler/lib64" }),
                 (RTLD_LAZY | RTLD_GLOBAL), false
             };
 
-            OMNITRACE_VERBOSE_F(1 || rocm::on_load_trace,
+            ROCPROFSYS_VERBOSE_F(1 || rocm::on_load_trace,
                                 "Loading rocprofiler library (%s=%s)...\n",
                                 _rocprof.envname.c_str(), _rocprof.filename.c_str());
             _rocprof.open();
@@ -219,13 +219,13 @@ extern "C"
             on_load_t _rocprof_load = nullptr;
             _success = _rocprof.invoke("OnLoad", _rocprof_load, table, runtime_version,
                                        failed_tool_count, failed_tool_names);
-            OMNITRACE_CONDITIONAL_PRINT_F(!_success,
+            ROCPROFSYS_CONDITIONAL_PRINT_F(!_success,
                                           "Warning! Invoking rocprofiler's OnLoad "
-                                          "failed! OMNITRACE_ROCPROFILER_LIBRARY=%s\n",
+                                          "failed! ROCPROFSYS_ROCPROFILER_LIBRARY=%s\n",
                                           _rocprof.filename.c_str());
-            OMNITRACE_CI_THROW(!_success,
+            ROCPROFSYS_CI_THROW(!_success,
                                "Warning! Invoking rocprofiler's OnLoad "
-                               "failed! OMNITRACE_ROCPROFILER_LIBRARY=%s\n",
+                               "failed! ROCPROFSYS_ROCPROFILER_LIBRARY=%s\n",
                                _rocprof.filename.c_str());
 #endif
         }
@@ -238,7 +238,7 @@ extern "C"
 
         gpu::add_hip_device_metadata();
 
-        OMNITRACE_BASIC_VERBOSE_F(2 || rocm::on_load_trace, "Loading... %s\n",
+        ROCPROFSYS_BASIC_VERBOSE_F(2 || rocm::on_load_trace, "Loading... %s\n",
                                   (_success) ? "Done" : "Failed");
         return _success;
     }
@@ -246,8 +246,8 @@ extern "C"
     // HSA-runtime on-unload method
     void OnUnload()
     {
-        OMNITRACE_BASIC_VERBOSE_F(2 || rocm::on_load_trace, "Unloading...\n");
+        ROCPROFSYS_BASIC_VERBOSE_F(2 || rocm::on_load_trace, "Unloading...\n");
         omnitrace_finalize_hidden();
-        OMNITRACE_BASIC_VERBOSE_F(2 || rocm::on_load_trace, "Unloading... Done\n");
+        ROCPROFSYS_BASIC_VERBOSE_F(2 || rocm::on_load_trace, "Unloading... Done\n");
     }
 }

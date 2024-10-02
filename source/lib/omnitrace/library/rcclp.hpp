@@ -39,8 +39,8 @@ setup();
 void
 shutdown();
 
-#if !defined(OMNITRACE_USE_RCCL) ||                                                      \
-    (defined(OMNITRACE_USE_RCCL) && OMNITRACE_USE_RCCL == 0)
+#if !defined(ROCPROFSYS_USE_RCCL) ||                                                      \
+    (defined(ROCPROFSYS_USE_RCCL) && ROCPROFSYS_USE_RCCL == 0)
 inline void
 configure()
 {}

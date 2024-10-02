@@ -31,4 +31,4 @@ target_include_directories(
               $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/external/timemory/source>)
 
 target_compile_definitions(rocprofsys-common-library
-                           INTERFACE $<BUILD_INTERFACE:OMNITRACE_INTERNAL_BUILD=1>)
+                           INTERFACE $<BUILD_INTERFACE:ROCPROFSYS_INTERNAL_BUILD=1>)

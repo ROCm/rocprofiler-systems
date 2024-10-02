@@ -15,11 +15,11 @@
 
 # emit a message about the underlying command executed
 : ${DEBUG:=0}
-: ${OMNITRACE_DEBUG_LAUNCH_COMPILER:=${DEBUG}}
+: ${ROCPROFSYS_DEBUG_LAUNCH_COMPILER:=${DEBUG}}
 
 debug-message()
 {
-    if [ "${OMNITRACE_DEBUG_LAUNCH_COMPILER}" -ne 0 ]; then
+    if [ "${ROCPROFSYS_DEBUG_LAUNCH_COMPILER}" -ne 0 ]; then
         echo -e "##### $(basename ${BASH_SOURCE[0]}) executing: \"$@\"... #####"
     fi
 }
@@ -44,7 +44,7 @@ fi
 if [ -z "${3}" ]; then exit 0; fi
 
 # store the omnitrace compiler
-OMNITRACE_COMPILER=${1}
+ROCPROFSYS_COMPILER=${1}
 
 # remove the omnitrace compiler from the arguments
 shift
@@ -81,19 +81,19 @@ fi
 
 if [[ "${CXX_COMPILER}" != "${1}" ]]; then
     debug-message $@
-    # the command does not depend on omnitrace so just execute the command w/o re-directing to ${OMNITRACE_COMPILER}
+    # the command does not depend on omnitrace so just execute the command w/o re-directing to ${ROCPROFSYS_COMPILER}
     eval $@
 else
-    # the executable is the C++ compiler, so we need to re-direct to ${OMNITRACE_COMPILER}
-    if [ ! -f "${OMNITRACE_COMPILER}" ]; then
-        echo -e "\nError: the compiler redirect for omnitrace was not found at ${OMNITRACE_COMPILER}\n"
+    # the executable is the C++ compiler, so we need to re-direct to ${ROCPROFSYS_COMPILER}
+    if [ ! -f "${ROCPROFSYS_COMPILER}" ]; then
+        echo -e "\nError: the compiler redirect for omnitrace was not found at ${ROCPROFSYS_COMPILER}\n"
         exit 1
     fi
 
     # discard the compiler from the command
     shift
 
-    debug-message ${OMNITRACE_COMPILER} $@
-    # execute ${OMNITRACE_COMPILER} (again, usually nvcc_wrapper)
-    ${OMNITRACE_COMPILER} $@
+    debug-message ${ROCPROFSYS_COMPILER} $@
+    # execute ${ROCPROFSYS_COMPILER} (again, usually nvcc_wrapper)
+    ${ROCPROFSYS_COMPILER} $@
 fi

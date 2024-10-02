@@ -134,11 +134,11 @@ using component::sampling_wall_clock;
 }  // namespace sampling
 }  // namespace omnitrace
 
-OMNITRACE_DEFINE_CONCRETE_TRAIT(prevent_reentry, sampling::sampler_t, std::true_type)
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(prevent_reentry, sampling::sampler_t, std::true_type)
 
-OMNITRACE_DEFINE_CONCRETE_TRAIT(provide_backtrace, sampling::sampler_t, std::false_type)
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(provide_backtrace, sampling::sampler_t, std::false_type)
 
-OMNITRACE_DEFINE_CONCRETE_TRAIT(buffer_size, sampling::sampler_t,
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(buffer_size, sampling::sampler_t,
                                 TIMEMORY_ESC(std::integral_constant<size_t, 2048>))
 
 namespace omnitrace
@@ -164,8 +164,8 @@ configure_sampler_allocator(std::shared_ptr<sampler_allocator_t>& _v)
 {
     if(_v) return;
 
-    OMNITRACE_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
     _v = std::make_shared<sampler_allocator_t>();
     _v->reserve(config::get_sampling_allocator_size());
@@ -196,7 +196,7 @@ get_sampler_allocator()
 
     auto& _allocators = get_sampler_allocators();
 
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
     auto_lock_t _lk{ type_mutex<sampler_allocator_t>() };
 
@@ -356,7 +356,7 @@ start_duration_thread()
                 if(_premature && !_finalized)
                 {
                     // protect against spurious wakeups
-                    OMNITRACE_VERBOSE(
+                    ROCPROFSYS_VERBOSE(
                         2, "%sSpurious wakeup of sampling duration thread...\n",
                         tim::log::color::warning());
                     _wait = true;
@@ -368,7 +368,7 @@ start_duration_thread()
                 else
                 {
                     get_duration_disabled().store(true);
-                    OMNITRACE_VERBOSE(1,
+                    ROCPROFSYS_VERBOSE(1,
                                       "Sampling duration of %f seconds has elapsed. "
                                       "Shutting down sampling...\n",
                                       config::get_sampling_duration());
@@ -377,10 +377,10 @@ start_duration_thread()
             }
         };
 
-        OMNITRACE_VERBOSE(1, "Sampling will be disabled after %f seconds...\n",
+        ROCPROFSYS_VERBOSE(1, "Sampling will be disabled after %f seconds...\n",
                           config::get_sampling_duration());
 
-        OMNITRACE_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
+        ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
         get_duration_thread() = std::make_unique<std::thread>(_func);
         _protect              = false;
     }
@@ -394,7 +394,7 @@ get_offload_file()
         if(get_use_tmp_files())
         {
             auto _success = _tmp_v->open();
-            OMNITRACE_CI_FAIL(!_success,
+            ROCPROFSYS_CI_FAIL(!_success,
                               "Error opening sampling offload temporary file '%s'\n",
                               _tmp_v->filename.c_str());
         }
@@ -419,7 +419,7 @@ auto offload_seq_data = std::unordered_map<int64_t, std::set<pos_type>>{};
 void
 offload_buffer(int64_t _seq, sampler_buffer_t&& _buf)
 {
-    OMNITRACE_REQUIRE(get_use_tmp_files())
+    ROCPROFSYS_REQUIRE(get_use_tmp_files())
         << "Error! sampling allocator tries to offload buffer of samples but "
            "omnitrace was configured to not use temporary files\n";
 
@@ -428,15 +428,15 @@ offload_buffer(int64_t _seq, sampler_buffer_t&& _buf)
     auto  _lk   = locking::atomic_lock{ get_offload_mutex() };
     auto& _file = get_offload_file();
 
-    OMNITRACE_REQUIRE(_file)
+    ROCPROFSYS_REQUIRE(_file)
         << "Error! sampling allocator tried to offload buffer of samples for thread "
         << _seq << " but the offload file does not exist\n";
 
-    OMNITRACE_VERBOSE_F(2, "Offloading %zu samples for thread %li to %s...\n",
+    ROCPROFSYS_VERBOSE_F(2, "Offloading %zu samples for thread %li to %s...\n",
                         _buf.count(), _seq, _file->filename.c_str());
     auto& _fs = _file->stream;
 
-    OMNITRACE_REQUIRE(_fs.good()) << "Error! temporary file for offloading buffer is in "
+    ROCPROFSYS_REQUIRE(_fs.good()) << "Error! temporary file for offloading buffer is in "
                                      "an invalid state during offload for thread "
                                   << _seq << "\n";
 
@@ -454,7 +454,7 @@ load_offload_buffer(int64_t _thread_idx)
     auto _data = std::vector<sampler_buffer_t>{};
     if(!get_use_tmp_files())
     {
-        OMNITRACE_WARNING_F(
+        ROCPROFSYS_WARNING_F(
             2, "[sampling] returning no data because using temporary files is disabled");
         return _data;
     }
@@ -465,7 +465,7 @@ load_offload_buffer(int64_t _thread_idx)
     auto& _file = get_offload_file();
     if(!_file)
     {
-        OMNITRACE_WARNING_F(
+        ROCPROFSYS_WARNING_F(
             0, "[sampling] returning no data because the offload file no longer exists");
         return _data;
     }
@@ -476,7 +476,7 @@ load_offload_buffer(int64_t _thread_idx)
 
     if(!_file->open(std::ios::binary | std::ios::in))
     {
-        OMNITRACE_WARNING_F(0, "[sampling] %s failed to open", _file->filename.c_str());
+        ROCPROFSYS_WARNING_F(0, "[sampling] %s failed to open", _file->filename.c_str());
         return _data;
     }
 
@@ -496,7 +496,7 @@ load_offload_buffer(int64_t _thread_idx)
 
         if(_seq != _thread_idx)
         {
-            OMNITRACE_WARNING_F(
+            ROCPROFSYS_WARNING_F(
                 0,
                 "[sampling] file position %zu returned %zi instead of (expected) %zi\n",
                 static_cast<uintptr_t>(itr), _seq, _thread_idx);
@@ -506,7 +506,7 @@ load_offload_buffer(int64_t _thread_idx)
         _data.emplace_back(std::move(_buffer));
     }
 
-    OMNITRACE_VERBOSE_F(2, "[sampling] Loaded %zu samples for thread %li...\n", _count,
+    ROCPROFSYS_VERBOSE_F(2, "[sampling] Loaded %zu samples for thread %li...\n", _count,
                         _thread_idx);
 
     _file->close();
@@ -524,12 +524,12 @@ configure(bool _setup, int64_t _tid)
     bool        _is_running   = (!_running) ? false : *_running;
     auto&       _signal_types = sampling::get_signal_types(_tid);
 
-    OMNITRACE_CONDITIONAL_THROW(get_use_causal(),
+    ROCPROFSYS_CONDITIONAL_THROW(get_use_causal(),
                                 "Internal error! configuring sampling not permitted when "
                                 "causal profiling is enabled");
 
-    OMNITRACE_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
     auto&& _cputime_tids  = get_sampling_cputime_tids();
     auto&& _realtime_tids = get_sampling_realtime_tids();
@@ -540,7 +540,7 @@ configure(bool _setup, int64_t _tid)
         {
             if(_tids.count(_tid) == 0)
             {
-                OMNITRACE_VERBOSE(3, "Disabling SIG%i from thread %li\n", _signum, _tid);
+                ROCPROFSYS_VERBOSE(3, "Disabling SIG%i from thread %li\n", _signum, _tid);
                 _signal_types->erase(_signum);
             }
         }
@@ -575,10 +575,10 @@ configure(bool _setup, int64_t _tid)
         auto _verbose = std::min<int>(get_verbose() - 2, 2);
         if(get_debug_sampling()) _verbose = 2;
 
-        OMNITRACE_DEBUG("Requesting allocator for sampler on thread %lu...\n", _tid);
+        ROCPROFSYS_DEBUG("Requesting allocator for sampler on thread %lu...\n", _tid);
         auto _alloc = get_sampler_allocator();
 
-        OMNITRACE_DEBUG("Configuring sampler for thread %lu...\n", _tid);
+        ROCPROFSYS_DEBUG("Configuring sampler for thread %lu...\n", _tid);
         sampling::sampler_instances::construct(construct_on_thread{ _tid }, _alloc,
                                                "rocprofsys", _tid, _verbose);
 
@@ -637,7 +637,7 @@ configure(bool _setup, int64_t _tid)
             auto _perf_open_error =
                 _perf_sampler->open(_pe, _info->index_data->system_value);
 
-            OMNITRACE_REQUIRE(!_perf_open_error)
+            ROCPROFSYS_REQUIRE(!_perf_open_error)
                 << "perf backend for overflow failed to activate: " << *_perf_open_error;
 
             _perf_sampler->set_ready_signal(get_sampling_overflow_signal());
@@ -669,7 +669,7 @@ configure(bool _setup, int64_t _tid)
         static_assert(tim::trait::buffer_size<sampling::sampler_t>::value > 0,
                       "Error! Zero buffer size");
 
-        OMNITRACE_CONDITIONAL_THROW(
+        ROCPROFSYS_CONDITIONAL_THROW(
             _sampler->get_buffer_size() !=
                 tim::trait::buffer_size<sampling::sampler_t>::value,
             "dynamic sampler has a buffer size different from static trait: %zu instead "
@@ -677,7 +677,7 @@ configure(bool _setup, int64_t _tid)
             _sampler->get_buffer_size(),
             tim::trait::buffer_size<sampling::sampler_t>::value);
 
-        OMNITRACE_CONDITIONAL_THROW(
+        ROCPROFSYS_CONDITIONAL_THROW(
             _sampler->get_buffer_size() <= 0,
             "dynamic sampler requires a positive buffer size: %zu",
             _sampler->get_buffer_size());
@@ -690,7 +690,7 @@ configure(bool _setup, int64_t _tid)
                 auto _overflow_event =
                     get_setting_value<std::string>("ROCPROFSYS_SAMPLING_OVERFLOW_EVENT")
                         .value_or("perf::PERF_COUNT_HW_CACHE_REFERENCES");
-                OMNITRACE_VERBOSE(2,
+                ROCPROFSYS_VERBOSE(2,
                                   "[SIG%i] Sampler for thread %lu will be triggered "
                                   "every %.1f %s events...\n",
                                   itr, _tid, _freq, _overflow_event.c_str());
@@ -703,7 +703,7 @@ configure(bool _setup, int64_t _tid)
                     dynamic_cast<const timer*>(_sampler->get_trigger(itr));
                 if(_timer)
                 {
-                    OMNITRACE_VERBOSE(
+                    ROCPROFSYS_VERBOSE(
                         2,
                         "[SIG%i] Sampler for thread %lu will be triggered %.1fx per "
                         "second of %s-time (every %.3e milliseconds)...\n",
@@ -720,7 +720,7 @@ configure(bool _setup, int64_t _tid)
     }
     else if(!_setup && _sampler && _is_running)
     {
-        OMNITRACE_DEBUG("Stopping sampler for thread %lu...\n", _tid);
+        ROCPROFSYS_DEBUG("Stopping sampler for thread %lu...\n", _tid);
         *_running = false;
 
         if(_tid == threading::get_id() && !_signal_types->empty())
@@ -744,13 +744,13 @@ configure(bool _setup, int64_t _tid)
 
         if(_tid == 0)
         {
-            for(int64_t i = 1; i < OMNITRACE_MAX_THREADS; ++i)
+            for(int64_t i = 1; i < ROCPROFSYS_MAX_THREADS; ++i)
             {
                 if(sampling::get_sampler(i)) sampling::get_sampler(i)->stop();
                 if(perf::get_instance(i)) perf::get_instance(i)->stop();
             }
 
-            for(int64_t i = 1; i < OMNITRACE_MAX_THREADS; ++i)
+            for(int64_t i = 1; i < ROCPROFSYS_MAX_THREADS; ++i)
             {
                 if(sampling::get_sampler(i))
                 {
@@ -769,7 +769,7 @@ configure(bool _setup, int64_t _tid)
         if(trait::runtime_enabled<backtrace_metrics>::get())
             backtrace_metrics::configure(_setup, _tid);
 
-        OMNITRACE_DEBUG("Sampler destroyed for thread %lu\n", _tid);
+        ROCPROFSYS_DEBUG("Sampler destroyed for thread %lu\n", _tid);
     }
 
     return (_signal_types) ? *_signal_types : std::set<int>{};
@@ -857,11 +857,11 @@ block_signals(std::set<int> _signals)
     if(_signals.empty()) _signals = *get_signal_types(threading::get_id());
     if(_signals.empty())
     {
-        OMNITRACE_VERBOSE(2, "No signals to block...\n");
+        ROCPROFSYS_VERBOSE(2, "No signals to block...\n");
         return;
     }
 
-    OMNITRACE_DEBUG("Blocking signals [%s] on thread #%lu...\n",
+    ROCPROFSYS_DEBUG("Blocking signals [%s] on thread #%lu...\n",
                     get_signal_names(_signals).c_str(), threading::get_id());
 
     sigset_t _v = get_signal_set(_signals);
@@ -874,11 +874,11 @@ unblock_signals(std::set<int> _signals)
     if(_signals.empty()) _signals = *get_signal_types(threading::get_id());
     if(_signals.empty())
     {
-        OMNITRACE_VERBOSE(2, "No signals to unblock...\n");
+        ROCPROFSYS_VERBOSE(2, "No signals to unblock...\n");
         return;
     }
 
-    OMNITRACE_DEBUG("Unblocking signals [%s] on thread #%lu...\n",
+    ROCPROFSYS_DEBUG("Unblocking signals [%s] on thread #%lu...\n",
                     get_signal_names(_signals).c_str(), threading::get_id());
 
     sigset_t _v = get_signal_set(_signals);
@@ -888,14 +888,14 @@ unblock_signals(std::set<int> _signals)
 void
 post_process()
 {
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
     size_t _total_data       = 0;
     size_t _total_threads    = 0;
     auto   _external_samples = std::atomic<size_t>{ 0 };
     auto   _internal_samples = std::atomic<size_t>{ 0 };
 
-    OMNITRACE_VERBOSE(2 || get_debug_sampling(), "Stopping sampling components...\n");
+    ROCPROFSYS_VERBOSE(2 || get_debug_sampling(), "Stopping sampling components...\n");
 
     omnitrace::component::backtrace::stop();
     configure(false, 0);
@@ -910,7 +910,7 @@ post_process()
         if(!_sampler)
         {
             // this should be relatively common
-            OMNITRACE_CONDITIONAL_PRINT(
+            ROCPROFSYS_CONDITIONAL_PRINT(
                 get_debug() && get_verbose() >= 2,
                 "Post-processing sampling entries for thread %lu skipped (no sampler)\n",
                 i);
@@ -922,7 +922,7 @@ post_process()
         if(!_init)
         {
             // this is not common
-            OMNITRACE_PRINT("Post-processing sampling entries for thread %lu skipped "
+            ROCPROFSYS_PRINT("Post-processing sampling entries for thread %lu skipped "
                             "(not initialized)\n",
                             i);
             continue;
@@ -930,7 +930,7 @@ post_process()
 
         const auto& _thread_info = thread_info::get(i, SequentTID);
 
-        OMNITRACE_VERBOSE(3 || get_debug_sampling(),
+        ROCPROFSYS_VERBOSE(3 || get_debug_sampling(),
                           "Getting sampler data for thread %lu...\n", i);
 
         auto _raw_data    = _sampler->get_data();
@@ -946,11 +946,11 @@ post_process()
             litr.destroy();
         }
 
-        OMNITRACE_VERBOSE(2 || get_debug_sampling(),
+        ROCPROFSYS_VERBOSE(2 || get_debug_sampling(),
                           "Sampler data for thread %lu has %zu initial entries...\n", i,
                           _raw_data.size());
 
-        OMNITRACE_CI_THROW(
+        ROCPROFSYS_CI_THROW(
             _sampler->get_sample_count() != _raw_data.size(),
             "Error! sampler recorded %zu samples but %zu samples were returned\n",
             _sampler->get_sample_count(), _raw_data.size());
@@ -975,7 +975,7 @@ post_process()
 
         if(!_data.empty())
         {
-            OMNITRACE_VERBOSE(2 || get_debug_sampling(),
+            ROCPROFSYS_VERBOSE(2 || get_debug_sampling(),
                               "Sampler data for thread %lu has %zu valid entries...\n", i,
                               _data.size());
 
@@ -987,14 +987,14 @@ post_process()
         }
         else
         {
-            OMNITRACE_VERBOSE(2 || get_debug_sampling(),
+            ROCPROFSYS_VERBOSE(2 || get_debug_sampling(),
                               "Sampler data for thread %lu has zero valid entries out of "
                               "%zu... (skipped)\n",
                               i, _raw_data.size());
         }
     }
 
-    OMNITRACE_VERBOSE(3 || get_debug_sampling(),
+    ROCPROFSYS_VERBOSE(3 || get_debug_sampling(),
                       "Destroying samplers and allocators...\n");
 
     get_offload_file().reset();  // remove the temporary file
@@ -1013,7 +1013,7 @@ post_process()
         get_offload_file().reset();
     }
 
-    OMNITRACE_VERBOSE(1 || get_debug_sampling(),
+    ROCPROFSYS_VERBOSE(1 || get_debug_sampling(),
                       "Collected %zu samples from %zu threads... %zu samples out of %zu "
                       "were taken while within instrumented routines\n",
                       _total_data, _total_threads, _internal_samples.load(),
@@ -1123,7 +1123,7 @@ post_process_perfetto(int64_t _tid, const std::vector<timer_sampling_data>& _tim
 
     if(trait::runtime_enabled<backtrace_metrics>::get())
     {
-        OMNITRACE_VERBOSE(3 || get_debug_sampling(),
+        ROCPROFSYS_VERBOSE(3 || get_debug_sampling(),
                           "[%li] Post-processing metrics for perfetto...\n", _tid);
         backtrace_metrics::init_perfetto(_tid, _valid_metrics);
         for(const auto& itr : _timer_data)
@@ -1131,11 +1131,11 @@ post_process_perfetto(int64_t _tid, const std::vector<timer_sampling_data>& _tim
         backtrace_metrics::fini_perfetto(_tid, _valid_metrics);
     }
 
-    OMNITRACE_VERBOSE(3 || get_debug_sampling(),
+    ROCPROFSYS_VERBOSE(3 || get_debug_sampling(),
                       "[%li] Post-processing backtraces for perfetto...\n", _tid);
 
     const auto& _thread_info = thread_info::get(_tid, SequentTID);
-    OMNITRACE_CI_THROW(!_thread_info, "No valid thread info for tid=%li\n", _tid);
+    ROCPROFSYS_CI_THROW(!_thread_info, "No valid thread info for tid=%li\n", _tid);
 
     if(!_thread_info) return;
 
@@ -1370,7 +1370,7 @@ void
 post_process_timemory(int64_t _tid, const std::vector<timer_sampling_data>& _timer_data,
                       const std::vector<overflow_sampling_data>& _overflow_data)
 {
-    OMNITRACE_VERBOSE(3 || get_debug_sampling(),
+    ROCPROFSYS_VERBOSE(3 || get_debug_sampling(),
                       "[%li] Post-processing data for timemory...\n", _tid);
 
     // compute the total number of entries

@@ -48,26 +48,26 @@ struct annotation_value_type;
 template <size_t Idx>
 using annotation_value_type_t = typename annotation_value_type<Idx>::type;
 
-#define OMNITRACE_DEFINE_ANNOTATION_TYPE(ENUM, TYPE)                                     \
+#define ROCPROFSYS_DEFINE_ANNOTATION_TYPE(ENUM, TYPE)                                     \
     template <>                                                                          \
     struct annotation_value_type<ENUM>                                                   \
     {                                                                                    \
         using type = TYPE;                                                               \
     };
 
-OMNITRACE_DEFINE_ANNOTATION_TYPE(OMNITRACE_VALUE_CSTR, const char*)
-OMNITRACE_DEFINE_ANNOTATION_TYPE(OMNITRACE_VALUE_SIZE_T, size_t)
-OMNITRACE_DEFINE_ANNOTATION_TYPE(OMNITRACE_VALUE_INT16, int16_t)
-OMNITRACE_DEFINE_ANNOTATION_TYPE(OMNITRACE_VALUE_INT32, int32_t)
-OMNITRACE_DEFINE_ANNOTATION_TYPE(OMNITRACE_VALUE_INT64, int64_t)
-OMNITRACE_DEFINE_ANNOTATION_TYPE(OMNITRACE_VALUE_UINT16, uint16_t)
-OMNITRACE_DEFINE_ANNOTATION_TYPE(OMNITRACE_VALUE_UINT32, uint32_t)
-OMNITRACE_DEFINE_ANNOTATION_TYPE(OMNITRACE_VALUE_UINT64, uint64_t)
-OMNITRACE_DEFINE_ANNOTATION_TYPE(OMNITRACE_VALUE_FLOAT32, float)
-OMNITRACE_DEFINE_ANNOTATION_TYPE(OMNITRACE_VALUE_FLOAT64, double)
-OMNITRACE_DEFINE_ANNOTATION_TYPE(OMNITRACE_VALUE_VOID_P, void*)
+ROCPROFSYS_DEFINE_ANNOTATION_TYPE(ROCPROFSYS_VALUE_CSTR, const char*)
+ROCPROFSYS_DEFINE_ANNOTATION_TYPE(ROCPROFSYS_VALUE_SIZE_T, size_t)
+ROCPROFSYS_DEFINE_ANNOTATION_TYPE(ROCPROFSYS_VALUE_INT16, int16_t)
+ROCPROFSYS_DEFINE_ANNOTATION_TYPE(ROCPROFSYS_VALUE_INT32, int32_t)
+ROCPROFSYS_DEFINE_ANNOTATION_TYPE(ROCPROFSYS_VALUE_INT64, int64_t)
+ROCPROFSYS_DEFINE_ANNOTATION_TYPE(ROCPROFSYS_VALUE_UINT16, uint16_t)
+ROCPROFSYS_DEFINE_ANNOTATION_TYPE(ROCPROFSYS_VALUE_UINT32, uint32_t)
+ROCPROFSYS_DEFINE_ANNOTATION_TYPE(ROCPROFSYS_VALUE_UINT64, uint64_t)
+ROCPROFSYS_DEFINE_ANNOTATION_TYPE(ROCPROFSYS_VALUE_FLOAT32, float)
+ROCPROFSYS_DEFINE_ANNOTATION_TYPE(ROCPROFSYS_VALUE_FLOAT64, double)
+ROCPROFSYS_DEFINE_ANNOTATION_TYPE(ROCPROFSYS_VALUE_VOID_P, void*)
 
-#undef OMNITRACE_DEFINE_ANNOTATION_TYPE
+#undef ROCPROFSYS_DEFINE_ANNOTATION_TYPE
 
 template <typename Np, typename Tp>
 auto
@@ -149,9 +149,9 @@ add_perfetto_annotation(perfetto_event_context_t&     ctx,
                         const omnitrace_annotation_t& _annotation,
                         std::index_sequence<Idx, Tail...>)
 {
-    static_assert(Idx > OMNITRACE_VALUE_NONE && Idx < OMNITRACE_VALUE_LAST,
+    static_assert(Idx > ROCPROFSYS_VALUE_NONE && Idx < ROCPROFSYS_VALUE_LAST,
                   "Error! index sequence should only contain values which are greater "
-                  "than OMNITRACE_VALUE_NONE and less than OMNITRACE_VALUE_LAST");
+                  "than ROCPROFSYS_VALUE_NONE and less than ROCPROFSYS_VALUE_LAST");
 
     // in some situations the user might want to short circuit by setting
     // the name to a null pointer, type to none, or value to a null pointer
@@ -178,15 +178,15 @@ add_perfetto_annotation(perfetto_event_context_t&     ctx,
     else
     {
         // the first "iteration": check whether annotation type has valid range
-        if constexpr(Idx == OMNITRACE_VALUE_NONE + 1)
+        if constexpr(Idx == ROCPROFSYS_VALUE_NONE + 1)
         {
-            if(!(_annotation.type > OMNITRACE_VALUE_NONE &&
-                 _annotation.type < OMNITRACE_VALUE_LAST))
+            if(!(_annotation.type > ROCPROFSYS_VALUE_NONE &&
+                 _annotation.type < ROCPROFSYS_VALUE_LAST))
             {
-                OMNITRACE_FAIL_F("Error! annotation '%s' has an invalid type designation "
+                ROCPROFSYS_FAIL_F("Error! annotation '%s' has an invalid type designation "
                                  "%lu which is outside of acceptable range [%i, %i]\n",
                                  _annotation.name, _annotation.type,
-                                 OMNITRACE_VALUE_NONE + 1, OMNITRACE_VALUE_LAST - 1);
+                                 ROCPROFSYS_VALUE_NONE + 1, ROCPROFSYS_VALUE_LAST - 1);
             }
         }
 

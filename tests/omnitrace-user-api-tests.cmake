@@ -4,7 +4,7 @@
 #
 # -------------------------------------------------------------------------------------- #
 
-omnitrace_add_test(
+rocprofsys_add_test(
     NAME user-api
     TARGET user-api
     LABELS "loops"

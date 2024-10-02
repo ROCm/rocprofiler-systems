@@ -42,7 +42,7 @@ struct delay : comp::empty_base
 {
     using value_type = void;
 
-    OMNITRACE_DEFAULT_OBJECT(delay)
+    ROCPROFSYS_DEFAULT_OBJECT(delay)
 
     static void    setup();
     static void    process();

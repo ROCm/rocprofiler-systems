@@ -83,7 +83,7 @@ start_bundle(bundle_t& _bundle, int64_t _tid, Args&&... _args)
 {
     if(!get_use_timemory() && !get_use_perfetto()) return;
     trait::runtime_enabled<comp::roctracer_data>::set(get_use_roctracer());
-    OMNITRACE_BASIC_VERBOSE_F(3, "starting bundle '%s' in thread %li...\n",
+    ROCPROFSYS_BASIC_VERBOSE_F(3, "starting bundle '%s' in thread %li...\n",
                               _bundle.key().c_str(), _tid);
     if constexpr(sizeof...(Args) > 0)
     {
@@ -117,7 +117,7 @@ stop_bundle(bundle_t& _bundle, int64_t _tid, Args&&... _args)
        _this_manager->is_finalized())
         return;
 
-    OMNITRACE_BASIC_VERBOSE_F(3, "stopping bundle '%s' in thread %li...\n",
+    ROCPROFSYS_BASIC_VERBOSE_F(3, "stopping bundle '%s' in thread %li...\n",
                               _bundle.key().c_str(), _tid);
     if(get_use_timemory())
     {
@@ -211,7 +211,7 @@ pthread_create_gotcha::wrapper::operator()() const
                 _thr_bundle->stop();
             if(_bundle) stop_bundle(*_bundle, _tid);
             pthread_create_gotcha::shutdown(_tid);
-            OMNITRACE_BASIC_VERBOSE(
+            ROCPROFSYS_BASIC_VERBOSE(
                 1, "[PID=%i][rank=%i] Thread %s (parent: %s) exited\n", process::get_id(),
                 dmp::rank(), _info->index_data->as_string().c_str(),
                 _parent_info->index_data->as_string().c_str());
@@ -230,7 +230,7 @@ pthread_create_gotcha::wrapper::operator()() const
     if(_active && !_coverage && !m_config.offset)
     {
         _tid = _info->index_data->sequent_value;
-        OMNITRACE_BASIC_VERBOSE(1, "[PID=%i][rank=%i] Thread %s (parent: %s) created\n",
+        ROCPROFSYS_BASIC_VERBOSE(1, "[PID=%i][rank=%i] Thread %s (parent: %s) created\n",
                                 process::get_id(), dmp::rank(),
                                 _info->index_data->as_string().c_str(),
                                 _parent_info->index_data->as_string().c_str());
@@ -260,21 +260,21 @@ pthread_create_gotcha::wrapper::operator()() const
                 causal::delay::get_local(_tid) =
                     causal::delay::get_local(_parent_info->index_data->sequent_value);
             _is_sampling = true;
-            OMNITRACE_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
+            ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
             _signals = causal::sampling::setup();
             causal::sampling::unblock_signals();
         }
         else if(m_config.enable_sampling)
         {
             _is_sampling = true;
-            OMNITRACE_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
+            ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
             _signals = sampling::setup();
             sampling::unblock_signals();
         }
     }
     else if(m_config.offset)
     {
-        OMNITRACE_BASIC_VERBOSE(
+        ROCPROFSYS_BASIC_VERBOSE(
             2,
             "[PID=%i][rank=%i] Thread %s (parent: %s) created [started by omnitrace]\n",
             process::get_id(), dmp::rank(), _info->index_data->as_string().c_str(),
@@ -429,7 +429,7 @@ pthread_create_gotcha::shutdown()
             std::this_thread::sleep_for(std::chrono::milliseconds{ 50 });
         }
 
-        OMNITRACE_CI_BASIC_FAIL(
+        ROCPROFSYS_CI_BASIC_FAIL(
             shutdown_signals_delivered != _expected_shutdown_signals_delivered,
             "Number of signals delivered (%zu) != expected number of signals delievered "
             "(%zu)",
@@ -458,13 +458,13 @@ pthread_create_gotcha::shutdown()
 
     if(config::settings_are_configured())
     {
-        OMNITRACE_VERBOSE(2 && _ndangling > 0,
+        ROCPROFSYS_VERBOSE(2 && _ndangling > 0,
                           "[pthread_create_gotcha] cleaned up %lu dangling bundles\n",
                           _ndangling);
     }
     else
     {
-        OMNITRACE_BASIC_VERBOSE(
+        ROCPROFSYS_BASIC_VERBOSE(
             2 && _ndangling > 0,
             "[pthread_create_gotcha] cleaned up %lu dangling bundles\n", _ndangling);
     }
@@ -518,7 +518,7 @@ pthread_create_gotcha::operator()(pthread_t* thread, const pthread_attr_t* attr,
     auto        _active       = (_glob_state == ::omnitrace::State::Active && !_disabled);
     const auto& _info = thread_info::init(!_active || !_sample_child || _disabled);
 
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
     auto _coverage     = (_mode == Mode::Coverage);
     auto _use_sampling = config::get_use_sampling();
@@ -534,7 +534,7 @@ pthread_create_gotcha::operator()(pthread_t* thread, const pthread_attr_t* attr,
         get_env<bool>(TIMEMORY_SETTINGS_PREFIX "DEBUG_THREADING_GET_ID", false);
 
     auto _verbose = (debug_threading_get_id) ? 0 : 3;
-    OMNITRACE_VERBOSE(
+    ROCPROFSYS_VERBOSE(
         _verbose,
         "Creating new thread :: global_state=%s, thread_state=%s, mode=%s, active=%s, "
         "coverage=%s, use_causal=%s, use_sampling=%s, sample_children=%s, tid=%li, "
@@ -557,7 +557,7 @@ pthread_create_gotcha::operator()(pthread_t* thread, const pthread_attr_t* attr,
 
     if(_active && !_disabled && !_info->is_offset)
     {
-        OMNITRACE_BASIC_VERBOSE(2, "[PID=%i][rank=%i] Starting new thread on %s...\n",
+        ROCPROFSYS_BASIC_VERBOSE(2, "[PID=%i][rank=%i] Starting new thread on %s...\n",
                                 process::get_id(), dmp::rank(),
                                 _info->index_data->as_string().c_str());
     }
@@ -565,7 +565,7 @@ pthread_create_gotcha::operator()(pthread_t* thread, const pthread_attr_t* attr,
     // ensure that cpu cid stack exists on the parent thread if active
     if(_active && !_coverage)
     {
-        OMNITRACE_DEBUG("blocking signals...\n");
+        ROCPROFSYS_DEBUG("blocking signals...\n");
         get_cpu_cid_stack();
     }
 
@@ -580,7 +580,7 @@ pthread_create_gotcha::operator()(pthread_t* thread, const pthread_attr_t* attr,
     // block the signals in entire process
     if(_enable_sampling && !_blocked.empty())
     {
-        OMNITRACE_DEBUG("blocking signals...\n");
+        ROCPROFSYS_DEBUG("blocking signals...\n");
         tim::signals::block_signals(_blocked, tim::signals::sigmask_scope::process);
     }
 
@@ -600,7 +600,7 @@ pthread_create_gotcha::operator()(pthread_t* thread, const pthread_attr_t* attr,
     // wait for thread to set promise
     if(_promise)
     {
-        OMNITRACE_DEBUG("waiting for child to signal it is setup...\n");
+        ROCPROFSYS_DEBUG("waiting for child to signal it is setup...\n");
         _promise->get_future().wait_for(std::chrono::milliseconds{ 500 });
     }
 
@@ -610,11 +610,11 @@ pthread_create_gotcha::operator()(pthread_t* thread, const pthread_attr_t* attr,
     // unblock the signals in the entire process
     if(_enable_sampling && !_blocked.empty())
     {
-        OMNITRACE_DEBUG("unblocking signals...\n");
+        ROCPROFSYS_DEBUG("unblocking signals...\n");
         tim::signals::unblock_signals(_blocked, tim::signals::sigmask_scope::process);
     }
 
-    OMNITRACE_DEBUG("returning success...\n");
+    ROCPROFSYS_DEBUG("returning success...\n");
     return _ret;
 }
 }  // namespace component

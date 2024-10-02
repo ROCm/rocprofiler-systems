@@ -210,7 +210,7 @@ backtrace_metrics::configure(bool _setup, int64_t _tid)
         if constexpr(tim::trait::is_available<hw_counters>::value)
         {
             perfetto_counter_track<hw_counters>::init();
-            OMNITRACE_DEBUG("HW COUNTER: starting...\n");
+            ROCPROFSYS_DEBUG("HW COUNTER: starting...\n");
             if(get_papi_vector(_tid))
             {
                 get_papi_vector(_tid)->start();
@@ -220,7 +220,7 @@ backtrace_metrics::configure(bool _setup, int64_t _tid)
     }
     else if(!_setup && _is_running)
     {
-        OMNITRACE_DEBUG("Destroying sampler for thread %lu...\n", _tid);
+        ROCPROFSYS_DEBUG("Destroying sampler for thread %lu...\n", _tid);
         *_running = false;
 
         if constexpr(tim::trait::is_available<hw_counters>::value)
@@ -228,10 +228,10 @@ backtrace_metrics::configure(bool _setup, int64_t _tid)
             if(_tid == threading::get_id())
             {
                 if(get_papi_vector(_tid)) get_papi_vector(_tid)->stop();
-                OMNITRACE_DEBUG("HW COUNTER: stopped...\n");
+                ROCPROFSYS_DEBUG("HW COUNTER: stopped...\n");
             }
         }
-        OMNITRACE_DEBUG("Sampler destroyed for thread %lu\n", _tid);
+        ROCPROFSYS_DEBUG("Sampler destroyed for thread %lu\n", _tid);
     }
 }
 
@@ -265,7 +265,7 @@ backtrace_metrics::init_perfetto(int64_t _tid, valid_array_t _valid)
         {
             std::string _desc = tim::papi::get_event_info(itr).short_descr;
             if(_desc.empty()) _desc = itr;
-            OMNITRACE_CI_THROW(_desc.empty(), "Empty description for %s\n", itr.c_str());
+            ROCPROFSYS_CI_THROW(_desc.empty(), "Empty description for %s\n", itr.c_str());
             perfetto_counter_track<hw_counters>::emplace(
                 _tid, JOIN(' ', "Thread", _desc, _tid_name, "(S)"));
         }
@@ -278,7 +278,7 @@ backtrace_metrics::fini_perfetto(int64_t _tid, valid_array_t _valid)
     auto        _hw_cnt_labels = *get_papi_labels(_tid);
     const auto& _thread_info   = thread_info::get(_tid, SequentTID);
 
-    OMNITRACE_CI_THROW(!_thread_info, "Error! missing thread info for tid=%li\n", _tid);
+    ROCPROFSYS_CI_THROW(!_thread_info, "Error! missing thread info for tid=%li\n", _tid);
     if(!_thread_info) return;
 
     uint64_t _ts         = _thread_info->get_stop();
@@ -409,15 +409,15 @@ backtrace_metrics::post_process_perfetto(int64_t _tid, uint64_t _ts) const
 }  // namespace component
 }  // namespace omnitrace
 
-OMNITRACE_INSTANTIATE_EXTERN_COMPONENT(
+ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(
     TIMEMORY_ESC(data_tracker<double, omnitrace::component::backtrace_wall_clock>), true,
     double)
 
-OMNITRACE_INSTANTIATE_EXTERN_COMPONENT(
+ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(
     TIMEMORY_ESC(data_tracker<double, omnitrace::component::backtrace_cpu_clock>), true,
     double)
 
-OMNITRACE_INSTANTIATE_EXTERN_COMPONENT(
+ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(
     TIMEMORY_ESC(data_tracker<double, omnitrace::component::backtrace_fraction>), true,
     double)
 

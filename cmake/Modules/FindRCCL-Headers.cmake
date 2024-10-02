@@ -60,7 +60,7 @@ else()
 endif()
 
 if(NOT EXISTS "${RCCL-Headers_INCLUDE_DIR}/${_RCCL-Headers_FILE}")
-    omnitrace_message(
+    rocprofsys_message(
         AUTHOR_WARNING
         "RCCL header (${RCCL-Headers_INCLUDE_DIR}/${_RCCL-Headers_FILE}) does not exist! Setting RCCL-Headers_INCLUDE_DIR to internal RCCL include directory: ${RCCL-Headers_INCLUDE_DIR_INTERNAL}"
         )

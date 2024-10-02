@@ -11,12 +11,12 @@ target_link_libraries(rocprofsys-exe PRIVATE rocprofsys::rocprofsys-threading)
 
 set_target_properties(
     rocprofsys-exe
-    PROPERTIES OUTPUT_NAME omnitrace
+    PROPERTIES OUTPUT_NAME rocprof-sys
                BUILD_RPATH "\$ORIGIN:\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
-               INSTALL_RPATH "${OMNITRACE_EXE_INSTALL_RPATH}"
+               INSTALL_RPATH "${ROCPROFSYS_EXE_INSTALL_RPATH}"
                INSTALL_RPATH_USE_LINK_PATH ON)
 
-omnitrace_strip_target(rocprofsys-exe)
+rocprofsys_strip_target(rocprofsys-exe)
 
 install(
     TARGETS rocprofsys-exe

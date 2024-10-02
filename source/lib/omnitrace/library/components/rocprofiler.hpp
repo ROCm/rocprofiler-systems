@@ -57,7 +57,7 @@ using rocm_feature_value = std::variant<uint32_t, float, uint64_t, double>;
 
 struct rocm_counter
 {
-    std::array<rocm_metric_type, OMNITRACE_ROCM_MAX_COUNTERS> counters;
+    std::array<rocm_metric_type, ROCPROFSYS_ROCM_MAX_COUNTERS> counters;
 };
 
 struct rocm_event
@@ -109,7 +109,7 @@ struct rocprofiler
     using base_type    = base<rocprofiler, void>;
     using tracker_type = policy::instance_tracker<rocprofiler, false>;
 
-    OMNITRACE_DEFAULT_OBJECT(rocprofiler)
+    ROCPROFSYS_DEFAULT_OBJECT(rocprofiler)
 
     static void preinit();
     static void global_init() { setup(); }
@@ -131,7 +131,7 @@ struct rocprofiler
     [[nodiscard]] static scope::transient_destructor protect_flush_activity();
 };
 
-#if !defined(OMNITRACE_USE_ROCPROFILER)
+#if !defined(ROCPROFSYS_USE_ROCPROFILER)
 inline void
 rocprofiler::setup()
 {}
@@ -173,7 +173,7 @@ struct set_storage<component::rocm_data_tracker>
     using storage_array_t               = std::array<storage<type>*, max_threads>;
     friend struct get_storage<component::rocm_data_tracker>;
 
-    OMNITRACE_DEFAULT_OBJECT(set_storage)
+    ROCPROFSYS_DEFAULT_OBJECT(set_storage)
 
     auto operator()(storage<type>*, size_t) const {}
     auto operator()(type&, size_t) const {}
@@ -192,7 +192,7 @@ struct get_storage<component::rocm_data_tracker>
 {
     using type = component::rocm_data_tracker;
 
-    OMNITRACE_DEFAULT_OBJECT(get_storage)
+    ROCPROFSYS_DEFAULT_OBJECT(get_storage)
 
     auto operator()(const type&) const
     {
@@ -215,27 +215,27 @@ struct get_storage<component::rocm_data_tracker>
 }  // namespace operation
 }  // namespace tim
 
-#if !defined(OMNITRACE_USE_ROCPROFILER)
-OMNITRACE_DEFINE_CONCRETE_TRAIT(is_available, component::rocprofiler_data, false_type)
+#if !defined(ROCPROFSYS_USE_ROCPROFILER)
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::rocprofiler_data, false_type)
 #endif
 
 TIMEMORY_SET_COMPONENT_API(component::rocprofiler_data, project::timemory,
                            category::timing, os::supports_unix)
-OMNITRACE_DEFINE_CONCRETE_TRAIT(is_timing_category, component::rocprofiler_data,
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_timing_category, component::rocprofiler_data,
                                 false_type)
-OMNITRACE_DEFINE_CONCRETE_TRAIT(uses_timing_units, component::rocprofiler_data,
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(uses_timing_units, component::rocprofiler_data,
                                 false_type)
-OMNITRACE_DEFINE_CONCRETE_TRAIT(report_units, component::rocprofiler_data, false_type)
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(report_units, component::rocprofiler_data, false_type)
 TIMEMORY_STATISTICS_TYPE(component::rocprofiler_data, component::rocprofiler_value)
 TIMEMORY_STATISTICS_TYPE(component::rocm_data_tracker, component::rocm_feature_value)
-OMNITRACE_DEFINE_CONCRETE_TRAIT(report_units, component::rocm_data_tracker, false_type)
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(report_units, component::rocm_data_tracker, false_type)
 
-#if !defined(OMNITRACE_EXTERN_COMPONENTS) ||                                             \
-    (defined(OMNITRACE_EXTERN_COMPONENTS) && OMNITRACE_EXTERN_COMPONENTS > 0)
+#if !defined(ROCPROFSYS_EXTERN_COMPONENTS) ||                                             \
+    (defined(ROCPROFSYS_EXTERN_COMPONENTS) && ROCPROFSYS_EXTERN_COMPONENTS > 0)
 
 #    include <timemory/operations.hpp>
 
-OMNITRACE_DECLARE_EXTERN_COMPONENT(rocprofiler, false, void)
-OMNITRACE_DECLARE_EXTERN_COMPONENT(rocprofiler_data, true, double)
+ROCPROFSYS_DECLARE_EXTERN_COMPONENT(rocprofiler, false, void)
+ROCPROFSYS_DECLARE_EXTERN_COMPONENT(rocprofiler_data, true, double)
 
 #endif

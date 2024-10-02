@@ -141,7 +141,7 @@ test-deb()
 
     test-install /opt/rocprof-sys
     remove-pycache /opt/rocprof-sys
-    verbose-run apt-get remove -y omnitrace
+    verbose-run apt-get remove -y rocprof-sys
     if [ -d /opt/rocprof-sys ]; then
         find /opt/rocprof-sys -type f
     fi
@@ -159,7 +159,7 @@ test-rpm()
 
     test-install /opt/rocprof-sys
     remove-pycache /opt/rocprof-sys
-    verbose-run rpm -e omnitrace
+    verbose-run rpm -e rocprof-sys
     if [ -d /opt/rocprof-sys ]; then
         find /opt/rocprof-sys -type f
     fi

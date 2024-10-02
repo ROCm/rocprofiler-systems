@@ -90,7 +90,7 @@ struct data
     using mem_usage_t = uint64_t;
     using temp_t      = int64_t;
 
-    OMNITRACE_DEFAULT_OBJECT(data)
+    ROCPROFSYS_DEFAULT_OBJECT(data)
 
     explicit data(uint32_t _dev_id);
 
@@ -128,7 +128,7 @@ private:
     static bool                          shutdown();
 };
 
-#if !defined(OMNITRACE_USE_ROCM_SMI)
+#if !defined(ROCPROFSYS_USE_ROCM_SMI)
 inline void
 setup()
 {}
@@ -154,27 +154,27 @@ inline void set_state(State) {}
 }  // namespace rocm_smi
 }  // namespace omnitrace
 
-#if defined(OMNITRACE_USE_ROCM_SMI) && OMNITRACE_USE_ROCM_SMI > 0
-#    if !defined(OMNITRACE_EXTERN_COMPONENTS) ||                                         \
-        (defined(OMNITRACE_EXTERN_COMPONENTS) && OMNITRACE_EXTERN_COMPONENTS > 0)
+#if defined(ROCPROFSYS_USE_ROCM_SMI) && ROCPROFSYS_USE_ROCM_SMI > 0
+#    if !defined(ROCPROFSYS_EXTERN_COMPONENTS) ||                                         \
+        (defined(ROCPROFSYS_EXTERN_COMPONENTS) && ROCPROFSYS_EXTERN_COMPONENTS > 0)
 
 #        include <timemory/components/base.hpp>
 #        include <timemory/components/data_tracker/components.hpp>
 #        include <timemory/operations.hpp>
 
-OMNITRACE_DECLARE_EXTERN_COMPONENT(
+ROCPROFSYS_DECLARE_EXTERN_COMPONENT(
     TIMEMORY_ESC(data_tracker<double, omnitrace::component::backtrace_gpu_busy>), true,
     double)
 
-OMNITRACE_DECLARE_EXTERN_COMPONENT(
+ROCPROFSYS_DECLARE_EXTERN_COMPONENT(
     TIMEMORY_ESC(data_tracker<double, omnitrace::component::backtrace_gpu_temp>), true,
     double)
 
-OMNITRACE_DECLARE_EXTERN_COMPONENT(
+ROCPROFSYS_DECLARE_EXTERN_COMPONENT(
     TIMEMORY_ESC(data_tracker<double, omnitrace::component::backtrace_gpu_power>), true,
     double)
 
-OMNITRACE_DECLARE_EXTERN_COMPONENT(
+ROCPROFSYS_DECLARE_EXTERN_COMPONENT(
     TIMEMORY_ESC(data_tracker<double, omnitrace::component::backtrace_gpu_memory>), true,
     double)
 

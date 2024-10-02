@@ -141,19 +141,19 @@ and tweak some sampling default values:
 
 ```console
 # ...
-OMNITRACE_TRACE                = true
-OMNITRACE_PROFILE              = true
-OMNITRACE_USE_SAMPLING         = true
-OMNITRACE_USE_PROCESS_SAMPLING = true
+ROCPROFSYS_TRACE                = true
+ROCPROFSYS_PROFILE              = true
+ROCPROFSYS_USE_SAMPLING         = true
+ROCPROFSYS_USE_PROCESS_SAMPLING = true
 # ...
-OMNITRACE_SAMPLING_FREQ        = 50
-OMNITRACE_SAMPLING_CPUS        = all
-OMNITRACE_SAMPLING_GPUS        = $env:HIP_VISIBLE_DEVICES
+ROCPROFSYS_SAMPLING_FREQ        = 50
+ROCPROFSYS_SAMPLING_CPUS        = all
+ROCPROFSYS_SAMPLING_GPUS        = $env:HIP_VISIBLE_DEVICES
 ```
 
-Once the configuration file is adjusted to your preferences, either export the path to this file via `OMNITRACE_CONFIG_FILE=/path/to/rocprof-sys.cfg`
+Once the configuration file is adjusted to your preferences, either export the path to this file via `ROCPROFSYS_CONFIG_FILE=/path/to/rocprof-sys.cfg`
 or place this file in `${HOME}/.rocprof-sys.cfg` to ensure these values are always read as the default. If you wish to change any of these settings,
-you can override them via environment variables or by specifying an alternative `OMNITRACE_CONFIG_FILE`.
+you can override them via environment variables or by specifying an alternative `ROCPROFSYS_CONFIG_FILE`.
 
 ### Call-Stack Sampling
 
@@ -169,7 +169,7 @@ rocprof-sys-sample -f 1000 -- ls -la
 ### Binary Instrumentation
 
 The `rocprof-sys-instrument` executable is used to instrument an existing binary. Call-stack sampling can be enabled alongside
-the execution an instrumented binary, to help "fill in the gaps" between the instrumentation via setting the `OMNITRACE_USE_SAMPLING`
+the execution an instrumented binary, to help "fill in the gaps" between the instrumentation via setting the `ROCPROFSYS_USE_SAMPLING`
 configuration variable to `ON`.
 Similar to `rocprof-sys-sample`, use a double-hypen (`--`) to separate the command-line arguments for `rocprof-sys-instrument` from the target application and it's arguments.
 
@@ -206,7 +206,7 @@ rocprof-sys-run -- ./app.inst
 ```
 
 If you want to re-define certain settings to new default in a binary rewrite, use the `--env` option. This `rocprof-sys` option
-will set the environment variable to the given value but will not override it. E.g. the default value of `OMNITRACE_PERFETTO_BUFFER_SIZE_KB`
+will set the environment variable to the given value but will not override it. E.g. the default value of `ROCPROFSYS_PERFETTO_BUFFER_SIZE_KB`
 is 1024000 KB (1 GiB):
 
 ```shell
@@ -215,11 +215,11 @@ rocprof-sys-instrument -o app.inst -- /path/to/app
 rocprof-sys-run -- ./app.inst
 ```
 
-Passing `--env OMNITRACE_PERFETTO_BUFFER_SIZE_KB=5120000` will change the default value in `app.inst` to 5120000 KiB (5 GiB):
+Passing `--env ROCPROFSYS_PERFETTO_BUFFER_SIZE_KB=5120000` will change the default value in `app.inst` to 5120000 KiB (5 GiB):
 
 ```shell
 # defaults to 5 GiB buffer size
-rocprof-sys-instrument -o app.inst --env OMNITRACE_PERFETTO_BUFFER_SIZE_KB=5120000 -- /path/to/app
+rocprof-sys-instrument -o app.inst --env ROCPROFSYS_PERFETTO_BUFFER_SIZE_KB=5120000 -- /path/to/app
 rocprof-sys-run -- ./app.inst
 ```
 
@@ -227,7 +227,7 @@ rocprof-sys-run -- ./app.inst
 # override default 5 GiB buffer size to 200 MB via command-line
 rocprof-sys-run --trace-buffer-size=200000 -- ./app.inst
 # override default 5 GiB buffer size to 200 MB via environment
-export OMNITRACE_PERFETTO_BUFFER_SIZE_KB=200000
+export ROCPROFSYS_PERFETTO_BUFFER_SIZE_KB=200000
 rocprof-sys-run -- ./app.inst
 ```
 
@@ -309,7 +309,7 @@ Perfetto tracing with the system backend supports multiple processes writing to 
 output file. Thus, it is a useful technique if rocprof-sys is built with partial MPI support
 because all the perfetto output will be coalesced into a single file. The
 installation docs for perfetto can be found [here](https://perfetto.dev/docs/contributing/build-instructions).
-If you are building rocprof-sys from source, you can configure CMake with `OMNITRACE_INSTALL_PERFETTO_TOOLS=ON`
+If you are building rocprof-sys from source, you can configure CMake with `ROCPROFSYS_INSTALL_PERFETTO_TOOLS=ON`
 and the `perfetto` and `traced` applications will be installed as part of the build process. However,
 it should be noted that to prevent this option from accidentally overwriting an existing perfetto install,
 all the perfetto executables installed by omnitrace are prefixed with `rocprof-sys-perfetto-`, except for the `perfetto`
@@ -320,7 +320,7 @@ Enable `traced` and `perfetto` in the background:
 ```shell
 pkill traced
 traced --background
-perfetto --out ./rocprof-sys-perfetto.proto --txt -c ${OMNITRACE_ROOT}/share/perfetto.cfg --background
+perfetto --out ./rocprof-sys-perfetto.proto --txt -c ${ROCPROFSYS_ROOT}/share/perfetto.cfg --background
 ```
 
 > ***NOTE: if the perfetto tools were installed by rocprof-sys, replace `traced` with `rocprof-sys-perfetto-traced` and***
@@ -339,5 +339,5 @@ rocprof-sys-run --trace --perfetto-backend=system -- ./myapp.inst
 or via the `--env` option of `rocprof-sys-instrument` + runtime instrumentation:
 
 ```shell
-rocprof-sys-instrument --env OMNITRACE_PERFETTO_BACKEND=system -- ./myapp
+rocprof-sys-instrument --env ROCPROFSYS_PERFETTO_BACKEND=system -- ./myapp
 ```

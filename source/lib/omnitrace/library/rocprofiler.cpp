@@ -71,8 +71,8 @@ get_event_names()
 void
 fatal(const std::string& msg)
 {
-    OMNITRACE_PRINT_F("\n");
-    OMNITRACE_PRINT_F("%s\n", msg.c_str());
+    ROCPROFSYS_PRINT_F("\n");
+    ROCPROFSYS_PRINT_F("%s\n", msg.c_str());
     abort();
 }
 
@@ -94,7 +94,7 @@ rocm_check_status(hsa_status_t _status, const std::set<hsa_status_t>& _nonfatal 
         if(_nonfatal.count(_status) == 0)
             fatal(JOIN(" :: ", "ERROR", rocm_error_string(_status)));
 
-        OMNITRACE_PRINT_F("Warning! %s\n", rocm_error_string(_status));
+        ROCPROFSYS_PRINT_F("Warning! %s\n", rocm_error_string(_status));
         return false;
     }
     return true;
@@ -240,7 +240,7 @@ metrics_input(unsigned _device, rocprofiler_feature_t** ret)
     auto                     _this_device = JOIN("", ":device=", _device);
     for(auto itr : _events)
     {
-        OMNITRACE_VERBOSE_F(3, "Processing feature '%s' for device %u...\n", itr.c_str(),
+        ROCPROFSYS_VERBOSE_F(3, "Processing feature '%s' for device %u...\n", itr.c_str(),
                             _device);
         auto _pos = itr.find(":device=");
         if(_pos != std::string::npos)
@@ -262,7 +262,7 @@ metrics_input(unsigned _device, rocprofiler_feature_t** ret)
     // PMC events
     for(unsigned i = 0; i < feature_count; ++i)
     {
-        OMNITRACE_VERBOSE_F(3, "Adding feature '%s' for device %u...\n",
+        ROCPROFSYS_VERBOSE_F(3, "Adding feature '%s' for device %u...\n",
                             _features.at(i).c_str(), _device);
         features[i].kind            = ROCPROFILER_FEATURE_KIND_METRIC;
         features[i].name            = strdup(_features.at(i).c_str());
@@ -353,7 +353,7 @@ rocm_metrics()
         (void) HsaRsrcFactory::Instance();
     } catch(std::runtime_error& _e)
     {
-        OMNITRACE_VERBOSE_F(0, "%s\n", _e.what());
+        ROCPROFSYS_VERBOSE_F(0, "%s\n", _e.what());
         return _data;
     }
 
@@ -372,7 +372,7 @@ rocm_metrics()
                                   info_data_callback, reinterpret_cast<void*>(&_data)),
                               { HSA_STATUS_ERROR_NOT_INITIALIZED }))
         {
-            OMNITRACE_WARNING_F(-1, "rocprofiler_iterate_info failed for gpu agent %u\n",
+            ROCPROFSYS_WARNING_F(-1, "rocprofiler_iterate_info failed for gpu agent %u\n",
                                 i);
         }
     }
@@ -384,7 +384,7 @@ rocm_metrics()
                                   info_data_callback, reinterpret_cast<void*>(&_data)),
                               { HSA_STATUS_ERROR_NOT_INITIALIZED }))
         {
-            OMNITRACE_WARNING_F(-1, "rocprofiler_iterate_info failed for %i gpu agents\n",
+            ROCPROFSYS_WARNING_F(-1, "rocprofiler_iterate_info failed for %i gpu agents\n",
                                 gpu_count);
         }
     }
@@ -468,7 +468,7 @@ rocm_initialize()
     rocprofiler_queue_callbacks_t callbacks_ptrs{};
     callbacks_ptrs.dispatch = rocm_dispatch_callback;
     int err = rocprofiler_set_queue_callbacks(callbacks_ptrs, callbacks_arg);
-    OMNITRACE_VERBOSE_F(3, "err=%d, rocprofiler_set_queue_callbacks\n", err);
+    ROCPROFSYS_VERBOSE_F(3, "err=%d, rocprofiler_set_queue_callbacks\n", err);
 
     is_setup() = true;
 }
@@ -504,7 +504,7 @@ post_process_perfetto()
     auto _device_fields = std::map<uint32_t, std::vector<std::string_view>>{};
     auto _device_range  = std::map<uint32_t, std::set<rocm_metric_type>>{};
 
-    for(size_t i = 0; i < OMNITRACE_MAX_THREADS; ++i)
+    for(size_t i = 0; i < ROCPROFSYS_MAX_THREADS; ++i)
     {
         auto& _v = component::rocm_data(i);
         if(_v)
@@ -624,7 +624,7 @@ post_process_timemory()
     auto _device_fields = std::map<uint32_t, std::vector<std::string_view>>{};
     auto _device_range  = std::map<uint32_t, std::set<rocm_metric_type>>{};
 
-    for(size_t i = 0; i < OMNITRACE_MAX_THREADS; ++i)
+    for(size_t i = 0; i < ROCPROFSYS_MAX_THREADS; ++i)
     {
         auto& _v = component::rocm_data(i);
         if(_v)
@@ -672,7 +672,7 @@ post_process_timemory()
         rocm_event*                      parent   = nullptr;
         mutable std::vector<local_event> children = {};
 
-        OMNITRACE_DEFAULT_OBJECT(local_event)
+        ROCPROFSYS_DEFAULT_OBJECT(local_event)
 
         explicit local_event(rocm_event* _v)
         : parent{ _v }
@@ -752,7 +752,7 @@ post_process_timemory()
 
     for(auto& ditr : _device_data)
     {
-        OMNITRACE_VERBOSE_F(1, "Post-processing %zu entries for device %u...\n",
+        ROCPROFSYS_VERBOSE_F(1, "Post-processing %zu entries for device %u...\n",
                             ditr.second.size(), ditr.first);
         auto _storage = std::vector<local_storage>{};
         for(auto& itr : ditr.second)
@@ -795,7 +795,7 @@ post_process_timemory()
             }
         }
 
-        OMNITRACE_VERBOSE_F(3, "Average # of iterations before match: %.1f\n",
+        ROCPROFSYS_VERBOSE_F(3, "Average # of iterations before match: %.1f\n",
                             _avg / ditr.second.size() * 100.0);
 
         for(auto& sitr : _storage)

@@ -35,7 +35,7 @@ namespace omnitrace
 {
 namespace concepts = ::tim::concepts;  // NOLINT
 
-static constexpr size_t max_supported_threads = OMNITRACE_MAX_THREADS;
+static constexpr size_t max_supported_threads = ROCPROFSYS_MAX_THREADS;
 
 template <typename Tp>
 struct thread_deleter;

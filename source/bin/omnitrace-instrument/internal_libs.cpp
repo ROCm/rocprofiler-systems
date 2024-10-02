@@ -201,7 +201,7 @@ get_library_search_paths_impl()
 
     for(const auto& itr : { get_env<std::string>("ROCPROFSYS_ROCM_PATH", ""),
                             get_env<std::string>("ROCM_PATH", ""),
-                            std::string{ OMNITRACE_DEFAULT_ROCM_PATH } })
+                            std::string{ ROCPROFSYS_DEFAULT_ROCM_PATH } })
     {
         if(!itr.empty())
         {

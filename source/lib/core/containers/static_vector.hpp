@@ -147,7 +147,7 @@ template <typename Tp, size_t N, bool AtomicSizeV>
 static_vector<Tp, N, AtomicSizeV>&
 static_vector<Tp, N, AtomicSizeV>::operator=(std::initializer_list<Tp>&& _v)
 {
-    if(OMNITRACE_UNLIKELY(_v.size() > N))
+    if(ROCPROFSYS_UNLIKELY(_v.size() > N))
     {
         throw exception<std::out_of_range>(
             std::string{ "static_vector::operator=(initializer_list) size > " } +

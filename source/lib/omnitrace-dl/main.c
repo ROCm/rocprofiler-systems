@@ -22,9 +22,9 @@
 
 #define _GNU_SOURCE
 
-#define OMNITRACE_PUBLIC_API   __attribute__((visibility("default")));
-#define OMNITRACE_HIDDEN_API   __attribute__((visibility("hidden")));
-#define OMNITRACE_INTERNAL_API __attribute__((visibility("internal")));
+#define ROCPROFSYS_PUBLIC_API   __attribute__((visibility("default")));
+#define ROCPROFSYS_HIDDEN_API   __attribute__((visibility("hidden")));
+#define ROCPROFSYS_INTERNAL_API __attribute__((visibility("internal")));
 
 #include <dlfcn.h>
 #include <stdbool.h>
@@ -47,11 +47,11 @@ typedef int (*start_main_t)(int (*)(int, char**, char**), int, char**,
 int
 omnitrace_libc_start_main(int (*)(int, char**, char**), int, char**,
                           int (*)(int, char**, char**), void (*)(void), void (*)(void),
-                          void*) OMNITRACE_INTERNAL_API;
+                          void*) ROCPROFSYS_INTERNAL_API;
 
 int
 __libc_start_main(int (*)(int, char**, char**), int, char**, int (*)(int, char**, char**),
-                  void (*)(void), void (*)(void), void*) OMNITRACE_PUBLIC_API;
+                  void (*)(void), void (*)(void), void*) ROCPROFSYS_PUBLIC_API;
 
 //
 // external function declarations
@@ -77,10 +77,10 @@ omnitrace_init(const char*, bool, const char*);
 extern char*
 basename(const char*);
 
-extern void omnitrace_set_main(main_func_t) OMNITRACE_INTERNAL_API;
+extern void omnitrace_set_main(main_func_t) ROCPROFSYS_INTERNAL_API;
 
 extern int
-omnitrace_main(int argc, char** argv, char** envp) OMNITRACE_INTERNAL_API;
+omnitrace_main(int argc, char** argv, char** envp) ROCPROFSYS_INTERNAL_API;
 
 int
 omnitrace_libc_start_main(int (*_main)(int, char**, char**), int _argc, char** _argv,

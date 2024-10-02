@@ -20,14 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef OMNITRACE_DL_HPP_
-#define OMNITRACE_DL_HPP_
+#ifndef ROCPROFSYS_DL_HPP_
+#define ROCPROFSYS_DL_HPP_
 
-#if defined(OMNITRACE_DL_SOURCE) && (OMNITRACE_DL_SOURCE > 0)
+#if defined(ROCPROFSYS_DL_SOURCE) && (ROCPROFSYS_DL_SOURCE > 0)
 #    include "common/defines.h"
 #else
-#    if !defined(OMNITRACE_PUBLIC_API)
-#        define OMNITRACE_PUBLIC_API
+#    if !defined(ROCPROFSYS_PUBLIC_API)
+#        define ROCPROFSYS_PUBLIC_API
 #    endif
 #endif
 
@@ -49,16 +49,16 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#if !defined(OMNITRACE_USE_OMPT)
-#    define OMNITRACE_USE_OMPT 0
+#if !defined(ROCPROFSYS_USE_OMPT)
+#    define ROCPROFSYS_USE_OMPT 0
 #endif
 
-#if !defined(OMNITRACE_USE_ROCTRACER)
-#    define OMNITRACE_USE_ROCTRACER 0
+#if !defined(ROCPROFSYS_USE_ROCTRACER)
+#    define ROCPROFSYS_USE_ROCTRACER 0
 #endif
 
-#if !defined(OMNITRACE_USE_ROCPROFILER)
-#    define OMNITRACE_USE_ROCPROFILER 0
+#if !defined(ROCPROFSYS_USE_ROCPROFILER)
+#    define ROCPROFSYS_USE_ROCPROFILER 0
 #endif
 
 //--------------------------------------------------------------------------------------//
@@ -69,125 +69,125 @@
 
 extern "C"
 {
-    void omnitrace_init_library(void) OMNITRACE_PUBLIC_API;
-    void omnitrace_init_tooling(void) OMNITRACE_PUBLIC_API;
-    void omnitrace_init(const char*, bool, const char*) OMNITRACE_PUBLIC_API;
-    void omnitrace_finalize(void) OMNITRACE_PUBLIC_API;
+    void omnitrace_init_library(void) ROCPROFSYS_PUBLIC_API;
+    void omnitrace_init_tooling(void) ROCPROFSYS_PUBLIC_API;
+    void omnitrace_init(const char*, bool, const char*) ROCPROFSYS_PUBLIC_API;
+    void omnitrace_finalize(void) ROCPROFSYS_PUBLIC_API;
     void omnitrace_set_env(const char* env_name,
-                           const char* env_val) OMNITRACE_PUBLIC_API;
-    void omnitrace_set_mpi(bool use, bool attached) OMNITRACE_PUBLIC_API;
-    void omnitrace_set_instrumented(int) OMNITRACE_PUBLIC_API;
-    void omnitrace_push_trace(const char* name) OMNITRACE_PUBLIC_API;
-    void omnitrace_pop_trace(const char* name) OMNITRACE_PUBLIC_API;
-    int  omnitrace_push_region(const char*) OMNITRACE_PUBLIC_API;
-    int  omnitrace_pop_region(const char*) OMNITRACE_PUBLIC_API;
+                           const char* env_val) ROCPROFSYS_PUBLIC_API;
+    void omnitrace_set_mpi(bool use, bool attached) ROCPROFSYS_PUBLIC_API;
+    void omnitrace_set_instrumented(int) ROCPROFSYS_PUBLIC_API;
+    void omnitrace_push_trace(const char* name) ROCPROFSYS_PUBLIC_API;
+    void omnitrace_pop_trace(const char* name) ROCPROFSYS_PUBLIC_API;
+    int  omnitrace_push_region(const char*) ROCPROFSYS_PUBLIC_API;
+    int  omnitrace_pop_region(const char*) ROCPROFSYS_PUBLIC_API;
     int  omnitrace_push_category_region(omnitrace_category_t, const char*,
                                         omnitrace_annotation_t*,
-                                        size_t) OMNITRACE_PUBLIC_API;
+                                        size_t) ROCPROFSYS_PUBLIC_API;
     int  omnitrace_pop_category_region(omnitrace_category_t, const char*,
                                        omnitrace_annotation_t*,
-                                       size_t) OMNITRACE_PUBLIC_API;
+                                       size_t) ROCPROFSYS_PUBLIC_API;
 
     void omnitrace_register_source(const char* file, const char* func, size_t line,
                                    size_t      address,
-                                   const char* source) OMNITRACE_PUBLIC_API;
+                                   const char* source) ROCPROFSYS_PUBLIC_API;
     void omnitrace_register_coverage(const char* file, const char* func,
-                                     size_t address) OMNITRACE_PUBLIC_API;
-    void omnitrace_progress(const char*) OMNITRACE_PUBLIC_API;
+                                     size_t address) ROCPROFSYS_PUBLIC_API;
+    void omnitrace_progress(const char*) ROCPROFSYS_PUBLIC_API;
     void omnitrace_annotated_progress(const char*, omnitrace_annotation_t*,
-                                      size_t) OMNITRACE_PUBLIC_API;
+                                      size_t) ROCPROFSYS_PUBLIC_API;
 
-#if defined(OMNITRACE_DL_SOURCE) && (OMNITRACE_DL_SOURCE > 0)
-    void omnitrace_preinit_library(void) OMNITRACE_HIDDEN_API;
-    int  omnitrace_preload_library(void) OMNITRACE_HIDDEN_API;
+#if defined(ROCPROFSYS_DL_SOURCE) && (ROCPROFSYS_DL_SOURCE > 0)
+    void omnitrace_preinit_library(void) ROCPROFSYS_HIDDEN_API;
+    int  omnitrace_preload_library(void) ROCPROFSYS_HIDDEN_API;
 
-    int omnitrace_user_start_trace_dl(void) OMNITRACE_HIDDEN_API;
-    int omnitrace_user_stop_trace_dl(void) OMNITRACE_HIDDEN_API;
+    int omnitrace_user_start_trace_dl(void) ROCPROFSYS_HIDDEN_API;
+    int omnitrace_user_stop_trace_dl(void) ROCPROFSYS_HIDDEN_API;
 
-    int omnitrace_user_start_thread_trace_dl(void) OMNITRACE_HIDDEN_API;
-    int omnitrace_user_stop_thread_trace_dl(void) OMNITRACE_HIDDEN_API;
+    int omnitrace_user_start_thread_trace_dl(void) ROCPROFSYS_HIDDEN_API;
+    int omnitrace_user_stop_thread_trace_dl(void) ROCPROFSYS_HIDDEN_API;
 
-    int omnitrace_user_push_region_dl(const char*) OMNITRACE_HIDDEN_API;
-    int omnitrace_user_pop_region_dl(const char*) OMNITRACE_HIDDEN_API;
+    int omnitrace_user_push_region_dl(const char*) ROCPROFSYS_HIDDEN_API;
+    int omnitrace_user_pop_region_dl(const char*) ROCPROFSYS_HIDDEN_API;
 
     int omnitrace_user_push_annotated_region_dl(const char*, omnitrace_annotation_t*,
-                                                size_t) OMNITRACE_HIDDEN_API;
+                                                size_t) ROCPROFSYS_HIDDEN_API;
     int omnitrace_user_pop_annotated_region_dl(const char*, omnitrace_annotation_t*,
-                                               size_t) OMNITRACE_HIDDEN_API;
+                                               size_t) ROCPROFSYS_HIDDEN_API;
 
-    int omnitrace_user_progress_dl(const char* name) OMNITRACE_HIDDEN_API;
+    int omnitrace_user_progress_dl(const char* name) ROCPROFSYS_HIDDEN_API;
     int omnitrace_user_annotated_progress_dl(const char*, omnitrace_annotation_t*,
-                                             size_t) OMNITRACE_HIDDEN_API;
+                                             size_t) ROCPROFSYS_HIDDEN_API;
     // KokkosP
-    struct OMNITRACE_HIDDEN_API SpaceHandle
+    struct ROCPROFSYS_HIDDEN_API SpaceHandle
     {
         char name[64];
     };
 
-    struct OMNITRACE_HIDDEN_API Kokkos_Tools_ToolSettings
+    struct ROCPROFSYS_HIDDEN_API Kokkos_Tools_ToolSettings
     {
         bool requires_global_fencing;
         bool padding[255];
     };
 
-    void kokkosp_print_help(char*) OMNITRACE_PUBLIC_API;
-    void kokkosp_parse_args(int, char**) OMNITRACE_PUBLIC_API;
-    void kokkosp_declare_metadata(const char*, const char*) OMNITRACE_PUBLIC_API;
+    void kokkosp_print_help(char*) ROCPROFSYS_PUBLIC_API;
+    void kokkosp_parse_args(int, char**) ROCPROFSYS_PUBLIC_API;
+    void kokkosp_declare_metadata(const char*, const char*) ROCPROFSYS_PUBLIC_API;
     void kokkosp_request_tool_settings(const uint32_t,
-                                       Kokkos_Tools_ToolSettings*) OMNITRACE_PUBLIC_API;
+                                       Kokkos_Tools_ToolSettings*) ROCPROFSYS_PUBLIC_API;
     void kokkosp_init_library(const int, const uint64_t, const uint32_t,
-                              void*) OMNITRACE_PUBLIC_API;
-    void kokkosp_finalize_library() OMNITRACE_PUBLIC_API;
+                              void*) ROCPROFSYS_PUBLIC_API;
+    void kokkosp_finalize_library() ROCPROFSYS_PUBLIC_API;
     void kokkosp_begin_parallel_for(const char*, uint32_t,
-                                    uint64_t*) OMNITRACE_PUBLIC_API;
-    void kokkosp_end_parallel_for(uint64_t) OMNITRACE_PUBLIC_API;
+                                    uint64_t*) ROCPROFSYS_PUBLIC_API;
+    void kokkosp_end_parallel_for(uint64_t) ROCPROFSYS_PUBLIC_API;
     void kokkosp_begin_parallel_reduce(const char*, uint32_t,
-                                       uint64_t*) OMNITRACE_PUBLIC_API;
-    void kokkosp_end_parallel_reduce(uint64_t) OMNITRACE_PUBLIC_API;
+                                       uint64_t*) ROCPROFSYS_PUBLIC_API;
+    void kokkosp_end_parallel_reduce(uint64_t) ROCPROFSYS_PUBLIC_API;
     void kokkosp_begin_parallel_scan(const char*, uint32_t,
-                                     uint64_t*) OMNITRACE_PUBLIC_API;
-    void kokkosp_end_parallel_scan(uint64_t) OMNITRACE_PUBLIC_API;
-    void kokkosp_begin_fence(const char*, uint32_t, uint64_t*) OMNITRACE_PUBLIC_API;
-    void kokkosp_end_fence(uint64_t) OMNITRACE_PUBLIC_API;
-    void kokkosp_push_profile_region(const char*) OMNITRACE_PUBLIC_API;
-    void kokkosp_pop_profile_region() OMNITRACE_PUBLIC_API;
-    void kokkosp_create_profile_section(const char*, uint32_t*) OMNITRACE_PUBLIC_API;
-    void kokkosp_destroy_profile_section(uint32_t) OMNITRACE_PUBLIC_API;
-    void kokkosp_start_profile_section(uint32_t) OMNITRACE_PUBLIC_API;
-    void kokkosp_stop_profile_section(uint32_t) OMNITRACE_PUBLIC_API;
+                                     uint64_t*) ROCPROFSYS_PUBLIC_API;
+    void kokkosp_end_parallel_scan(uint64_t) ROCPROFSYS_PUBLIC_API;
+    void kokkosp_begin_fence(const char*, uint32_t, uint64_t*) ROCPROFSYS_PUBLIC_API;
+    void kokkosp_end_fence(uint64_t) ROCPROFSYS_PUBLIC_API;
+    void kokkosp_push_profile_region(const char*) ROCPROFSYS_PUBLIC_API;
+    void kokkosp_pop_profile_region() ROCPROFSYS_PUBLIC_API;
+    void kokkosp_create_profile_section(const char*, uint32_t*) ROCPROFSYS_PUBLIC_API;
+    void kokkosp_destroy_profile_section(uint32_t) ROCPROFSYS_PUBLIC_API;
+    void kokkosp_start_profile_section(uint32_t) ROCPROFSYS_PUBLIC_API;
+    void kokkosp_stop_profile_section(uint32_t) ROCPROFSYS_PUBLIC_API;
     void kokkosp_allocate_data(const SpaceHandle, const char*, const void* const,
-                               const uint64_t) OMNITRACE_PUBLIC_API;
+                               const uint64_t) ROCPROFSYS_PUBLIC_API;
     void kokkosp_deallocate_data(const SpaceHandle, const char*, const void* const,
-                                 const uint64_t) OMNITRACE_PUBLIC_API;
+                                 const uint64_t) ROCPROFSYS_PUBLIC_API;
     void kokkosp_begin_deep_copy(SpaceHandle, const char*, const void*, SpaceHandle,
-                                 const char*, const void*, uint64_t) OMNITRACE_PUBLIC_API;
-    void kokkosp_end_deep_copy() OMNITRACE_PUBLIC_API;
-    void kokkosp_profile_event(const char*) OMNITRACE_PUBLIC_API;
+                                 const char*, const void*, uint64_t) ROCPROFSYS_PUBLIC_API;
+    void kokkosp_end_deep_copy() ROCPROFSYS_PUBLIC_API;
+    void kokkosp_profile_event(const char*) ROCPROFSYS_PUBLIC_API;
     void kokkosp_dual_view_sync(const char*, const void* const,
-                                bool) OMNITRACE_PUBLIC_API;
+                                bool) ROCPROFSYS_PUBLIC_API;
     void kokkosp_dual_view_modify(const char*, const void* const,
-                                  bool) OMNITRACE_PUBLIC_API;
+                                  bool) ROCPROFSYS_PUBLIC_API;
 
     // OpenMP Tools (OMPT)
-#    if OMNITRACE_USE_OMPT > 0
+#    if ROCPROFSYS_USE_OMPT > 0
     struct ompt_start_tool_result_t;
 
     ompt_start_tool_result_t* ompt_start_tool(unsigned int,
-                                              const char*) OMNITRACE_PUBLIC_API;
+                                              const char*) ROCPROFSYS_PUBLIC_API;
 #    endif
 
-#    if OMNITRACE_USE_ROCTRACER > 0
+#    if ROCPROFSYS_USE_ROCTRACER > 0
     // HSA
     struct HsaApiTable;
     bool OnLoad(HsaApiTable* table, uint64_t runtime_version, uint64_t failed_tool_count,
-                const char* const* failed_tool_names) OMNITRACE_PUBLIC_API;
-    void OnUnload() OMNITRACE_PUBLIC_API;
+                const char* const* failed_tool_names) ROCPROFSYS_PUBLIC_API;
+    void OnUnload() ROCPROFSYS_PUBLIC_API;
 #    endif
 
-#    if OMNITRACE_USE_ROCPROFILER > 0
+#    if ROCPROFSYS_USE_ROCPROFILER > 0
     // ROCP
-    void OnLoadToolProp(void* settings) OMNITRACE_PUBLIC_API;
-    void OnUnloadTool() OMNITRACE_PUBLIC_API;
+    void OnLoadToolProp(void* settings) ROCPROFSYS_PUBLIC_API;
+    void OnUnloadTool() ROCPROFSYS_PUBLIC_API;
 #    endif
 #endif
 }
@@ -208,4 +208,4 @@ enum class InstrumentMode : int
 }
 }  // namespace omnitrace
 
-#endif  // OMNITRACE_DL_HPP_ 1
+#endif  // ROCPROFSYS_DL_HPP_ 1

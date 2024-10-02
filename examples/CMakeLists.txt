@@ -17,7 +17,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_CLANG_TIDY)
 set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME examples)
 
-if(OMNITRACE_BUILD_DEBUG)
+if(ROCPROFSYS_BUILD_DEBUG)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3 -fno-omit-frame-pointer")
 endif()
 
@@ -27,16 +27,16 @@ if(CMAKE_PROJECT_NAME STREQUAL "rocprofsys")
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
-    omnitrace_add_option(OMNITRACE_INSTALL_EXAMPLES "Install rocprofsys examples" OFF)
+    rocprofsys_add_option(ROCPROFSYS_INSTALL_EXAMPLES "Install rocprofsys examples" OFF)
 else()
-    option(OMNITRACE_INSTALL_EXAMPLES "Install rocprofsys examples" ON)
+    option(ROCPROFSYS_INSTALL_EXAMPLES "Install rocprofsys examples" ON)
 endif()
 
-if(OMNITRACE_INSTALL_EXAMPLES)
+if(ROCPROFSYS_INSTALL_EXAMPLES)
     include(GNUInstallDirs)
 endif()
 
-set(OMNITRACE_EXAMPLE_ROOT_DIR
+set(ROCPROFSYS_EXAMPLE_ROOT_DIR
     ${CMAKE_CURRENT_LIST_DIR}
     CACHE INTERNAL "")
 # defines function for creating causal profiling exes

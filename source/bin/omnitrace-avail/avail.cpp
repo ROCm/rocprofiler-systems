@@ -202,7 +202,7 @@ main(int argc, char** argv)
             std::min<int>(_cols - parser.get_help_width() - 8, 120));
 
     parser.enable_help();
-    parser.enable_version("rocprof-sys-avail", OMNITRACE_ARGPARSE_VERSION_INFO);
+    parser.enable_version("rocprof-sys-avail", ROCPROFSYS_ARGPARSE_VERSION_INFO);
 
     parser.start_group("DEBUG");
 
@@ -508,13 +508,13 @@ main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-#if OMNITRACE_USE_HIP > 0
+#if ROCPROFSYS_USE_HIP > 0
     if(gpu_count > 0)
     {
         size_t _num_metrics = 0;
         try
         {
-            // call to rocm_metrics() will add choices to OMNITRACE_ROCM_EVENTS setting
+            // call to rocm_metrics() will add choices to ROCPROFSYS_ROCM_EVENTS setting
             // so always perform this call even if list of HW counters is not requested
             _num_metrics = omnitrace::rocprofiler::rocm_metrics().size();
         } catch(std::runtime_error& _e)

@@ -96,7 +96,7 @@ namespace omnitrace
 namespace timeout
 {
 void
-setup() OMNITRACE_INTERNAL_API;
+setup() ROCPROFSYS_INTERNAL_API;
 }
 }  // namespace omnitrace
 
@@ -117,7 +117,7 @@ ensure_initialization(bool _offset, int64_t _glob_n, int64_t _offset_n)
     if(_tid > 0 && _tid < _peak_num_threads)
     {
         const auto& _info = thread_info::get();
-        OMNITRACE_BASIC_VERBOSE_F(3,
+        ROCPROFSYS_BASIC_VERBOSE_F(3,
                                   "thread info: %s, offset: %s, global counter: %li, "
                                   "offset counter: %li, max threads: %li\n",
                                   std::to_string(static_cast<bool>(_info)).c_str(),
@@ -147,7 +147,7 @@ ensure_finalization(bool _static_init = false)
             throw exception<std::runtime_error>("failure adding threading callback");
     }
 
-    OMNITRACE_CI_BASIC_THROW(
+    ROCPROFSYS_CI_BASIC_THROW(
         config::set_signal_handler(nullptr) != &finalization_handler,
         "Assignment of signal handler failed. signal handler is %s, expected %s\n",
         as_hex(reinterpret_cast<void*>(config::set_signal_handler(nullptr))).c_str(),
@@ -157,10 +157,10 @@ ensure_finalization(bool _static_init = false)
     const auto& _tid  = _info->index_data;
     if(_tid)
     {
-        OMNITRACE_CI_THROW(_tid->sequent_value != threading::get_id(),
+        ROCPROFSYS_CI_THROW(_tid->sequent_value != threading::get_id(),
                            "Error! internal tid != %li :: %li", threading::get_id(),
                            _tid->sequent_value);
-        OMNITRACE_CI_THROW(_tid->system_value != threading::get_sys_tid(),
+        ROCPROFSYS_CI_THROW(_tid->system_value != threading::get_sys_tid(),
                            "Error! system tid != %li :: %li", threading::get_sys_tid(),
                            _tid->system_value);
     }
@@ -182,7 +182,7 @@ ensure_finalization(bool _static_init = false)
 
     if(_static_init)
     {
-        OMNITRACE_BASIC_DEBUG_F("\n");
+        ROCPROFSYS_BASIC_DEBUG_F("\n");
         auto _verbose =
             get_verbose_env() + ((get_debug_env() || get_debug_init()) ? 16 : 0);
         auto _search_paths = JOIN(':', tim::get_env<std::string>("ROCPROFSYS_PATH", ""),
@@ -194,7 +194,7 @@ ensure_finalization(bool _static_init = false)
     }
     else
     {
-        OMNITRACE_DEBUG_F("\n");
+        ROCPROFSYS_DEBUG_F("\n");
     }
 
     if(_timemory_manager) _timemory_manager->set_write_metadata(-1);
@@ -207,7 +207,7 @@ struct fini_bundle
 {
     using data_type = std::tuple<Tp...>;
 
-    OMNITRACE_DEFAULT_OBJECT(fini_bundle)
+    ROCPROFSYS_DEFAULT_OBJECT(fini_bundle)
 
     fini_bundle(std::string_view _label)
     : m_label{ _label }
@@ -269,14 +269,14 @@ omnitrace_set_env_hidden(const char* env_name, const char* env_val)
     bool        _success  = _set_envs.emplace(env_name).second;
 
     // just search env to avoid initializing the settings
-    OMNITRACE_CONDITIONAL_PRINT_F(get_debug_init() || get_verbose_env() > 2,
+    ROCPROFSYS_CONDITIONAL_PRINT_F(get_debug_init() || get_verbose_env() > 2,
                                   "Setting env: %s=%s\n", env_name, env_val);
 
     tim::set_env(env_name, env_val, 0);
 
     if(_success && get_state() >= State::Init)
     {
-        OMNITRACE_WARNING_F(
+        ROCPROFSYS_WARNING_F(
             0,
             "omnitrace_set_env(\"%s\", \"%s\") called after rocprof-sys was initialized. "
             "state = %s. This environment variable will have no effect\n",
@@ -316,7 +316,7 @@ omnitrace_set_mpi_hidden(bool use, bool attached)
     _once = true;
 
     // just search env to avoid initializing the settings
-    OMNITRACE_CONDITIONAL_PRINT_F(get_debug_init() || get_verbose_env() > 2,
+    ROCPROFSYS_CONDITIONAL_PRINT_F(get_debug_init() || get_verbose_env() > 2,
                                   "use: %s, attached: %s\n", (use) ? "y" : "n",
                                   (attached) ? "y" : "n");
 
@@ -334,7 +334,7 @@ omnitrace_set_mpi_hidden(bool use, bool attached)
 
     if(get_state() >= State::Init)
     {
-        OMNITRACE_WARNING_F(
+        ROCPROFSYS_WARNING_F(
             0,
             "omnitrace_set_mpi(use=%s, attached=%s) called after rocprof-sys was "
             "initialized. state = %s. MPI support may not be properly initialized. Use "
@@ -357,22 +357,22 @@ omnitrace_init_library_hidden()
     static bool _once       = false;
     auto        _debug_init = get_debug_init();
 
-    OMNITRACE_CONDITIONAL_BASIC_PRINT_F(_debug_init, "State is %s...\n",
+    ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(_debug_init, "State is %s...\n",
                                         std::to_string(get_state()).c_str());
 
-    OMNITRACE_CI_THROW(get_state() != State::PreInit, "State is not PreInit :: %s",
+    ROCPROFSYS_CI_THROW(get_state() != State::PreInit, "State is not PreInit :: %s",
                        std::to_string(get_state()).c_str());
 
     if(get_state() != State::PreInit || get_state() == State::Init || _once) return;
     _once = true;
 
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
-    OMNITRACE_CONDITIONAL_BASIC_PRINT_F(_debug_init, "State is %s. Setting to %s...\n",
+    ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(_debug_init, "State is %s. Setting to %s...\n",
                                         std::to_string(get_state()).c_str(),
                                         std::to_string(State::Init).c_str());
 
-    OMNITRACE_CONDITIONAL_BASIC_PRINT_F(
+    ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(
         _debug_init, "Calling backtrace once so that the one-time call of malloc in "
                      "glibc's backtrace() occurs...\n");
     {
@@ -383,11 +383,11 @@ omnitrace_init_library_hidden()
 
     set_state(State::Init);
 
-    OMNITRACE_CI_THROW(get_state() != State::Init,
+    ROCPROFSYS_CI_THROW(get_state() != State::Init,
                        "set_state(State::Init) failed. state is %s",
                        std::to_string(get_state()).c_str());
 
-    OMNITRACE_CONDITIONAL_BASIC_PRINT_F(_debug_init, "Configuring settings...\n");
+    ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(_debug_init, "Configuring settings...\n");
 
     // configure the settings
     configure_settings();
@@ -402,7 +402,7 @@ omnitrace_init_library_hidden()
     tim::trait::runtime_enabled<comp::roctracer_data>::set(get_use_roctracer() &&
                                                            get_use_timemory());
 
-    OMNITRACE_CONDITIONAL_BASIC_PRINT_F(_debug_init, "\n");
+    ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(_debug_init, "\n");
 }
 
 //======================================================================================//
@@ -421,46 +421,46 @@ omnitrace_init_tooling_hidden()
     static bool _once       = false;
     static auto _debug_init = get_debug_init();
 
-    OMNITRACE_CONDITIONAL_BASIC_PRINT_F(_debug_init, "State is %s...\n",
+    ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(_debug_init, "State is %s...\n",
                                         std::to_string(get_state()).c_str());
 
     if(get_state() != State::PreInit || get_state() == State::Init || _once) return false;
     _once = true;
 
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
-    OMNITRACE_CONDITIONAL_THROW(
+    ROCPROFSYS_CONDITIONAL_THROW(
         get_state() == State::Init,
         "%s called after omnitrace_init_library() was explicitly called",
-        OMNITRACE_FUNCTION);
+        ROCPROFSYS_FUNCTION);
 
-    OMNITRACE_CONDITIONAL_BASIC_PRINT_F(get_verbose_env() >= 0,
+    ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(get_verbose_env() >= 0,
                                         "Instrumentation mode: %s\n",
                                         std::to_string(config::get_mode()).c_str());
 
-    OMNITRACE_CONDITIONAL_BASIC_PRINT_F(_debug_init, "Printing banner...\n");
+    ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(_debug_init, "Printing banner...\n");
 
     if(get_verbose_env() >= 0) print_banner();
 
-    OMNITRACE_CONDITIONAL_BASIC_PRINT_F(_debug_init,
+    ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(_debug_init,
                                         "Calling omnitrace_init_library()...\n");
 
     omnitrace_init_library_hidden();
 
-    OMNITRACE_DEBUG_F("\n");
+    ROCPROFSYS_DEBUG_F("\n");
 
     auto _dtor = scope::destructor{ []() {
         // if set to finalized, don't continue
         if(get_state() > State::Active) return;
         if(get_use_process_sampling())
         {
-            OMNITRACE_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
+            ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
             process_sampler::setup();
         }
         if(get_use_causal())
         {
             {
-                OMNITRACE_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
+                ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
                 causal::sampling::setup();
             }
             push_enable_sampling_on_child_threads(get_use_causal());
@@ -469,19 +469,19 @@ omnitrace_init_tooling_hidden()
         else if(get_use_sampling())
         {
             {
-                OMNITRACE_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
+                ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
                 sampling::setup();
             }
             push_enable_sampling_on_child_threads(get_use_sampling());
             sampling::unblock_signals();
         }
         get_main_bundle()->start();
-        OMNITRACE_DEBUG_F("State: %s -> State::Active\n",
+        ROCPROFSYS_DEBUG_F("State: %s -> State::Active\n",
                           std::to_string(get_state()).c_str());
         set_state(State::Active);  // set to active as very last operation
     } };
 
-    OMNITRACE_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
+    ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
 
     // ideally these have already been started
     omnitrace_preinit_hidden();
@@ -494,7 +494,7 @@ omnitrace_init_tooling_hidden()
     // perfetto initialization
     if(get_use_perfetto())
     {
-        OMNITRACE_VERBOSE_F(1, "Setting up Perfetto...\n");
+        ROCPROFSYS_VERBOSE_F(1, "Setting up Perfetto...\n");
         omnitrace::perfetto::setup();
     }
 
@@ -533,19 +533,19 @@ omnitrace_init_tooling_hidden()
 
     if(get_use_ompt())
     {
-        OMNITRACE_VERBOSE_F(1, "Setting up OMPT...\n");
+        ROCPROFSYS_VERBOSE_F(1, "Setting up OMPT...\n");
         ompt::setup();
     }
 
     if(get_use_rcclp())
     {
-        OMNITRACE_VERBOSE_F(1, "Setting up RCCLP...\n");
+        ROCPROFSYS_VERBOSE_F(1, "Setting up RCCLP...\n");
         rcclp::setup();
     }
 
     if(get_use_perfetto())
     {
-        OMNITRACE_VERBOSE_F(1, "Starting Perfetto...\n");
+        ROCPROFSYS_VERBOSE_F(1, "Starting Perfetto...\n");
         omnitrace::perfetto::start();
     }
 
@@ -576,7 +576,7 @@ omnitrace_init_hidden(const char* _mode, bool _is_binary_rewrite, const char* _a
        std::tie(_args.first, _args.second) == std::tie(_mode_sv, _is_binary_rewrite))
         return;
 
-    OMNITRACE_CONDITIONAL_THROW(
+    ROCPROFSYS_CONDITIONAL_THROW(
         _count > 0 &&
             std::tie(_args.first, _args.second) != std::tie(_mode_sv, _is_binary_rewrite),
         "\nomnitrace_init(...) called multiple times with different arguments for mode "
@@ -595,7 +595,7 @@ omnitrace_init_hidden(const char* _mode, bool _is_binary_rewrite, const char* _a
     {
         if(std::string_view{ _mode } != "trace" && std::string_view{ _mode } != "Trace")
         {
-            OMNITRACE_WARNING_F(
+            ROCPROFSYS_WARNING_F(
                 0,
                 "omnitrace_init(mode=%s, is_binary_rewrite=%s, argv0=%s) "
                 "called after rocprof-sys was initialized. state = %s. Mode-based "
@@ -607,7 +607,7 @@ omnitrace_init_hidden(const char* _mode, bool _is_binary_rewrite, const char* _a
     }
 
     tracing::get_finalization_functions().emplace_back([_argv0_c]() {
-        OMNITRACE_CI_THROW(get_state() != State::Active,
+        ROCPROFSYS_CI_THROW(get_state() != State::Active,
                            "Finalizer function for popping main invoked in non-active "
                            "state :: state = %s\n",
                            std::to_string(get_state()).c_str());
@@ -615,7 +615,7 @@ omnitrace_init_hidden(const char* _mode, bool _is_binary_rewrite, const char* _a
         {
             auto _name = (_argv0_c) ? std::string{ _argv0_c } : config::get_exe_name();
             // if main hasn't been popped yet, pop it
-            OMNITRACE_BASIC_VERBOSE(2, "Running omnitrace_pop_trace(%s)...\n",
+            ROCPROFSYS_BASIC_VERBOSE(2, "Running omnitrace_pop_trace(%s)...\n",
                                     _name.c_str());
             omnitrace_pop_trace_hidden(_name.c_str());
         }
@@ -626,7 +626,7 @@ omnitrace_init_hidden(const char* _mode, bool _is_binary_rewrite, const char* _a
         if(get_state() == State::Active) omnitrace_finalize_hidden();
     });
 
-    OMNITRACE_CONDITIONAL_BASIC_PRINT_F(
+    ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(
         get_debug_env() || get_verbose_env() > 2,
         "mode: %s | is binary rewrite: %s | command: %s\n", _mode,
         (_is_binary_rewrite) ? "y" : "n", _argv0.c_str());
@@ -679,7 +679,7 @@ omnitrace_finalize_hidden(void)
     // return if not active
     if(get_state() != State::Active)
     {
-        OMNITRACE_BASIC_DEBUG_F("State = %s. Finalization skipped\n",
+        ROCPROFSYS_BASIC_DEBUG_F("State = %s. Finalization skipped\n",
                                 std::to_string(get_state()).c_str());
         return;
     }
@@ -691,7 +691,7 @@ omnitrace_finalize_hidden(void)
     }
 
     if(get_verbose() >= 0 || get_debug()) fprintf(stderr, "\n");
-    OMNITRACE_VERBOSE_F(0, "finalizing...\n");
+    ROCPROFSYS_VERBOSE_F(0, "finalizing...\n");
 
     sampling::block_samples();
 
@@ -719,7 +719,7 @@ omnitrace_finalize_hidden(void)
 
     if(get_use_roctracer())
     {
-        OMNITRACE_VERBOSE_F(1, "Flushing roctracer...\n");
+        ROCPROFSYS_VERBOSE_F(1, "Flushing roctracer...\n");
         // ensure that roctracer is flushed before setting the state to finalized
         comp::roctracer::flush();
     }
@@ -747,25 +747,25 @@ omnitrace_finalize_hidden(void)
     {
         if(dmp::rank() == 0)
         {
-            OMNITRACE_PRINT_F("\n");
+            ROCPROFSYS_PRINT_F("\n");
             config::print_settings(
                 tim::get_env<bool>("ROCPROFSYS_PRINT_ENV", get_debug()));
         }
     }
 
-    OMNITRACE_VERBOSE_F(1, "omnitrace_push_trace :: called %zux\n", _push_count);
-    OMNITRACE_VERBOSE_F(1, "omnitrace_pop_trace  :: called %zux\n", _pop_count);
+    ROCPROFSYS_VERBOSE_F(1, "omnitrace_push_trace :: called %zux\n", _push_count);
+    ROCPROFSYS_VERBOSE_F(1, "omnitrace_pop_trace  :: called %zux\n", _pop_count);
 
     tim::signals::enable_signal_detection({ tim::signals::sys_signal::Interrupt },
                                           [](int) {});
 
-    OMNITRACE_DEBUG_F("Copying over all timemory hash information to main thread...\n");
+    ROCPROFSYS_DEBUG_F("Copying over all timemory hash information to main thread...\n");
     tracing::copy_timemory_hash_ids();
 
     // stop the main bundle which has stats for run
     if(get_main_bundle())
     {
-        OMNITRACE_DEBUG_F("Stopping main bundle...\n");
+        ROCPROFSYS_DEBUG_F("Stopping main bundle...\n");
         get_main_bundle()->stop();
     }
 
@@ -774,17 +774,17 @@ omnitrace_finalize_hidden(void)
 
     if(get_use_rcclp())
     {
-        OMNITRACE_VERBOSE_F(1, "Shutting down RCCLP...\n");
+        ROCPROFSYS_VERBOSE_F(1, "Shutting down RCCLP...\n");
         rcclp::shutdown();
     }
 
     if(get_use_ompt())
     {
-        OMNITRACE_VERBOSE_F(1, "Shutting down OMPT...\n");
+        ROCPROFSYS_VERBOSE_F(1, "Shutting down OMPT...\n");
         ompt::shutdown();
     }
 
-    OMNITRACE_DEBUG_F("Stopping and destroying instrumentation bundles...\n");
+    ROCPROFSYS_DEBUG_F("Stopping and destroying instrumentation bundles...\n");
     for(size_t i = 0; i < thread_info::get_peak_num_threads(); ++i)
     {
         if(!instrumentation_bundles::get()) continue;
@@ -798,7 +798,7 @@ omnitrace_finalize_hidden(void)
                 ++_pop_count;
                 _lvl = 4;
             }
-            OMNITRACE_VERBOSE_F(_lvl,
+            ROCPROFSYS_VERBOSE_F(_lvl,
                                 "Warning! instrumentation bundle on thread %zu (TID=%li) "
                                 "with label '%s' was not stopped.\n",
                                 i, itr->back()->tid(), itr->back()->key().c_str());
@@ -812,7 +812,7 @@ omnitrace_finalize_hidden(void)
     // stop the main gotcha which shuts down the pthread gotchas
     if(get_init_bundle())
     {
-        OMNITRACE_DEBUG_F("Stopping main gotcha...\n");
+        ROCPROFSYS_DEBUG_F("Stopping main gotcha...\n");
         get_init_bundle()->stop();
 
         pthread_gotcha::shutdown();
@@ -822,57 +822,57 @@ omnitrace_finalize_hidden(void)
     // stop the gotcha bundle
     if(get_preinit_bundle())
     {
-        OMNITRACE_VERBOSE_F(1, "Shutting down miscellaneous gotchas...\n");
+        ROCPROFSYS_VERBOSE_F(1, "Shutting down miscellaneous gotchas...\n");
         get_preinit_bundle()->stop();
         component::mpi_gotcha::shutdown();
     }
 
     if(get_use_process_sampling())
     {
-        OMNITRACE_VERBOSE_F(1, "Shutting down background sampler...\n");
+        ROCPROFSYS_VERBOSE_F(1, "Shutting down background sampler...\n");
         process_sampler::shutdown();
     }
 
     if(get_use_roctracer())
     {
-        OMNITRACE_VERBOSE_F(1, "Shutting down roctracer...\n");
+        ROCPROFSYS_VERBOSE_F(1, "Shutting down roctracer...\n");
         // ensure that threads running roctracer callbacks shutdown
         comp::roctracer::shutdown();
 
         // join extra thread(s) used by roctracer
-        OMNITRACE_VERBOSE_F(2, "Waiting on roctracer tasks...\n");
+        ROCPROFSYS_VERBOSE_F(2, "Waiting on roctracer tasks...\n");
         tasking::join();
     }
 
     if(get_use_rocprofiler())
     {
-        OMNITRACE_VERBOSE_F(1, "Shutting down rocprofiler...\n");
+        ROCPROFSYS_VERBOSE_F(1, "Shutting down rocprofiler...\n");
         rocprofiler::post_process();
         rocprofiler::rocm_cleanup();
     }
 
     if(get_use_causal())
     {
-        OMNITRACE_VERBOSE_F(1, "Shutting down causal sampling...\n");
+        ROCPROFSYS_VERBOSE_F(1, "Shutting down causal sampling...\n");
         causal::sampling::shutdown();
     }
 
     if(get_use_sampling())
     {
-        OMNITRACE_VERBOSE_F(1, "Shutting down sampling...\n");
+        ROCPROFSYS_VERBOSE_F(1, "Shutting down sampling...\n");
         sampling::shutdown();
     }
 
-    OMNITRACE_VERBOSE_F(3, "Reporting the process- and thread-level metrics...\n");
+    ROCPROFSYS_VERBOSE_F(3, "Reporting the process- and thread-level metrics...\n");
     // report the high-level metrics for the process
     if(get_main_bundle())
     {
-        OMNITRACE_VERBOSE_F(0, "\n");
+        ROCPROFSYS_VERBOSE_F(0, "\n");
         std::string _msg = JOIN("", *get_main_bundle());
         auto        _pos = _msg.find(">>>  ");
         if(_pos != std::string::npos) _msg = _msg.substr(_pos + 5);
-        OMNITRACE_VERBOSE_F(0, "%s\n", _msg.c_str());
-        OMNITRACE_DEBUG_F("Resetting main bundle...\n");
+        ROCPROFSYS_VERBOSE_F(0, "%s\n", _msg.c_str());
+        ROCPROFSYS_DEBUG_F("Resetting main bundle...\n");
         get_main_bundle()->reset();
     }
 
@@ -891,39 +891,39 @@ omnitrace_finalize_hidden(void)
                 std::string _msg = JOIN("", *itr);
                 auto        _pos = _msg.find(">>>  ");
                 if(_pos != std::string::npos) _msg = _msg.substr(_pos + 5);
-                OMNITRACE_VERBOSE_F(_thr_verbose, "%s\n", _msg.c_str());
+                ROCPROFSYS_VERBOSE_F(_thr_verbose, "%s\n", _msg.c_str());
             }
         }
     }
 
-    OMNITRACE_VERBOSE_F(0, "\n");
+    ROCPROFSYS_VERBOSE_F(0, "\n");
 
     // ensure that all the MT instances are flushed
     if(get_use_sampling())
     {
-        OMNITRACE_VERBOSE_F(1, "Post-processing the sampling backtraces...\n");
+        ROCPROFSYS_VERBOSE_F(1, "Post-processing the sampling backtraces...\n");
         sampling::post_process();
     }
 
     if(get_use_causal())
     {
-        OMNITRACE_VERBOSE_F(1, "Finishing the causal experiments...\n");
+        ROCPROFSYS_VERBOSE_F(1, "Finishing the causal experiments...\n");
         causal::finish_experimenting();
     }
 
     if(get_use_process_sampling())
     {
-        OMNITRACE_VERBOSE_F(1, "Post-processing the system-level samples...\n");
+        ROCPROFSYS_VERBOSE_F(1, "Post-processing the system-level samples...\n");
         process_sampler::post_process();
     }
 
     // shutdown tasking before timemory is finalized, especially the roctracer thread-pool
-    OMNITRACE_VERBOSE_F(1, "Shutting down thread-pools...\n");
+    ROCPROFSYS_VERBOSE_F(1, "Shutting down thread-pools...\n");
     tasking::shutdown();
 
     if(get_use_code_coverage())
     {
-        OMNITRACE_VERBOSE_F(1, "Post-processing the code coverage...\n");
+        ROCPROFSYS_VERBOSE_F(1, "Post-processing the code coverage...\n");
         coverage::post_process();
     }
 
@@ -932,7 +932,7 @@ omnitrace_finalize_hidden(void)
     bool _perfetto_output_error = false;
     if(get_use_perfetto())
     {
-        OMNITRACE_VERBOSE_F(0, "Finalizing perfetto...\n");
+        ROCPROFSYS_VERBOSE_F(0, "Finalizing perfetto...\n");
         omnitrace::perfetto::post_process(_timemory_manager.get(),
                                           _perfetto_output_error);
     }
@@ -952,7 +952,7 @@ omnitrace_finalize_hidden(void)
                tim::cereal::make_nvp("memory_maps", _maps));
         });
 
-        OMNITRACE_VERBOSE_F(1, "Finalizing timemory...\n");
+        ROCPROFSYS_VERBOSE_F(1, "Finalizing timemory...\n");
         tim::timemory_finalize(_timemory_manager.get());
 
         auto _cfg       = settings::compose_filename_config{};
@@ -968,11 +968,11 @@ omnitrace_finalize_hidden(void)
 
     if(_perfetto_output_error)
     {
-        OMNITRACE_THROW("Error opening perfetto output file: %s",
+        ROCPROFSYS_THROW("Error opening perfetto output file: %s",
                         get_perfetto_output_filename().c_str());
     }
 
-    OMNITRACE_CI_THROW(
+    ROCPROFSYS_CI_THROW(
         _push_count > _pop_count, "%s",
         TIMEMORY_JOIN(" ",
                       "omnitrace_push_trace was called more times than "
@@ -984,7 +984,7 @@ omnitrace_finalize_hidden(void)
     debug::close_file();
     config::finalize();
 
-    OMNITRACE_VERBOSE_F(0, "Finalized: %s\n", _finalization.as_string().c_str());
+    ROCPROFSYS_VERBOSE_F(0, "Finalized: %s\n", _finalization.as_string().c_str());
 
     tim::signals::enable_signal_detection(
         { tim::signals::sys_signal::SegFault, tim::signals::sys_signal::Stop },

@@ -66,7 +66,7 @@ def generate_custom(args, cmake_args, ctest_args):
         set(CTEST_BINARY_DIRECTORY {BINARY_DIR})
 
         set(CTEST_UPDATE_COMMAND {GIT_CMD})
-        set(CTEST_CONFIGURE_COMMAND "{CMAKE_CMD} -B {BINARY_DIR} {SOURCE_DIR} -DOMNITRACE_BUILD_CI=ON {CMAKE_ARGS}")
+        set(CTEST_CONFIGURE_COMMAND "{CMAKE_CMD} -B {BINARY_DIR} {SOURCE_DIR} -DROCPROFSYS_BUILD_CI=ON {CMAKE_ARGS}")
         set(CTEST_BUILD_COMMAND "{CMAKE_CMD} --build {BINARY_DIR} --target all --parallel {BUILD_JOBS}")
         set(CTEST_COVERAGE_COMMAND {GCOV_CMD})
         """
@@ -219,7 +219,7 @@ def parse_args(args=None):
     cdash_args = parse_cdash_args(input_args)
 
     if cdash_args.coverage:
-        cmake_args += ["-DOMNITRACE_BUILD_CODECOV=ON", "-DOMNITRACE_STRIP_LIBRARIES=OFF"]
+        cmake_args += ["-DROCPROFSYS_BUILD_CODECOV=ON", "-DROCPROFSYS_STRIP_LIBRARIES=OFF"]
 
     def get_repeat_val(_param):
         _value = getattr(cdash_args, f"repeat_{_param}".replace("-", "_"))

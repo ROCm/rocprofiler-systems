@@ -1,14 +1,14 @@
 # executable RPATH
 
-if(OMNITRACE_USE_ROCPROFILER
+if(ROCPROFSYS_USE_ROCPROFILER
    AND rocprofiler_LIBRARY_DIR
    AND ROCmVersion_TRIPLE_VERSION VERSION_LESS 5.2.0
    AND NOT CMAKE_INSTALL_RPATH_USE_LINK_PATH)
-    set(OMNITRACE_EXE_INSTALL_RPATH
+    set(ROCPROFSYS_EXE_INSTALL_RPATH
         "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}:\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}/${PACKAGE_NAME}:${rocprofiler_LIBRARY_DIR}"
         )
 else()
-    set(OMNITRACE_EXE_INSTALL_RPATH
+    set(ROCPROFSYS_EXE_INSTALL_RPATH
         "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}:\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}/${PACKAGE_NAME}"
         )
 endif()
@@ -21,6 +21,6 @@ add_subdirectory(omnitrace-instrument)
 add_subdirectory(omnitrace-run)
 
 # tests
-if(OMNITRACE_BUILD_TESTING OR "$ENV{ROCPROFSYS_CI}" MATCHES "[1-9]+|ON|on|y|yes")
+if(ROCPROFSYS_BUILD_TESTING OR "$ENV{ROCPROFSYS_CI}" MATCHES "[1-9]+|ON|on|y|yes")
     add_subdirectory(tests)
 endif()

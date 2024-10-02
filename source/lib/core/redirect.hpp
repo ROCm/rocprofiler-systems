@@ -36,10 +36,10 @@ namespace omnitrace
 inline namespace config
 {
 bool
-get_debug() OMNITRACE_HOT;
+get_debug() ROCPROFSYS_HOT;
 
 int
-get_verbose() OMNITRACE_HOT;
+get_verbose() ROCPROFSYS_HOT;
 }  // namespace config
 
 struct redirect

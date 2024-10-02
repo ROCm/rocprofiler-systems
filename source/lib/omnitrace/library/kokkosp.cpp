@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#define TIMEMORY_KOKKOSP_POSTFIX OMNITRACE_PUBLIC_API
+#define TIMEMORY_KOKKOSP_POSTFIX ROCPROFSYS_PUBLIC_API
 
 #include "api.hpp"
 #include "core/components/fwd.hpp"
@@ -161,23 +161,23 @@ extern "C"
     };
 
     void kokkosp_request_tool_settings(const uint32_t,
-                                       Kokkos_Tools_ToolSettings*) OMNITRACE_PUBLIC_API;
+                                       Kokkos_Tools_ToolSettings*) ROCPROFSYS_PUBLIC_API;
     void kokkosp_dual_view_sync(const char*, const void* const,
-                                bool) OMNITRACE_PUBLIC_API;
+                                bool) ROCPROFSYS_PUBLIC_API;
     void kokkosp_dual_view_modify(const char*, const void* const,
-                                  bool) OMNITRACE_PUBLIC_API;
+                                  bool) ROCPROFSYS_PUBLIC_API;
 
     void kokkosp_print_help(char*) {}
 
     void kokkosp_parse_args(int argc, char** argv)
     {
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         if(!omnitrace::config::settings_are_configured() &&
            omnitrace::get_state() < omnitrace::State::Active)
         {
             _standalone_initialized = true;
 
-            OMNITRACE_BASIC_VERBOSE_F(0, "Parsing arguments...\n");
+            ROCPROFSYS_BASIC_VERBOSE_F(0, "Parsing arguments...\n");
             std::string _command_line = {};
             for(int i = 0; i < argc; ++i)
             {
@@ -191,7 +191,7 @@ extern "C"
 
     void kokkosp_declare_metadata(const char* key, const char* value)
     {
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         tim::manager::add_metadata(key, value);
     }
 
@@ -204,10 +204,10 @@ extern "C"
     void kokkosp_init_library(const int loadSeq, const uint64_t interfaceVer,
                               const uint32_t devInfoCount, void* deviceInfo)
     {
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         tim::consume_parameters(devInfoCount, deviceInfo);
 
-        OMNITRACE_BASIC_VERBOSE_F(
+        ROCPROFSYS_BASIC_VERBOSE_F(
             0,
             "Initializing rocprof-sys kokkos connector (sequence %d, version: %llu)... ",
             loadSeq, (unsigned long long) interfaceVer);
@@ -235,7 +235,7 @@ extern "C"
                         std::stringstream _libs_str{};
                         for(const auto& litr : _libs)
                             _libs_str << "    " << litr << "\n";
-                        OMNITRACE_ABORT(
+                        ROCPROFSYS_ABORT(
                             "%s was invoked with librocprof-sys.so as the "
                             "KOKKOS_PROFILE_LIBRARY.\n"
                             "However, librocprof-sys-dl.so has already been loaded by "
@@ -247,7 +247,7 @@ extern "C"
                 }
             }
 
-            OMNITRACE_BASIC_VERBOSE_F(0, "Initializing rocprof-sys (standalone)... ");
+            ROCPROFSYS_BASIC_VERBOSE_F(0, "Initializing rocprof-sys (standalone)... ");
             auto _mode = tim::get_env<std::string>("ROCPROFSYS_MODE", "trace");
             auto _arg0 = (_initialize_arguments.empty()) ? std::string{ "unknown" }
                                                          : _initialize_arguments.at(0);
@@ -283,17 +283,17 @@ extern "C"
 
     void kokkosp_finalize_library()
     {
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         if(_standalone_initialized)
         {
             omnitrace_pop_trace_hidden("kokkos_main");
-            OMNITRACE_VERBOSE_F(
+            ROCPROFSYS_VERBOSE_F(
                 0, "Finalizing kokkos rocprof-sys connector (standalone)...\n");
             omnitrace_finalize_hidden();
         }
         else
         {
-            OMNITRACE_VERBOSE_F(0, "Finalizing kokkos rocprof-sys connector... ");
+            ROCPROFSYS_VERBOSE_F(0, "Finalizing kokkos rocprof-sys connector... ");
             kokkosp::cleanup();
             if(omnitrace::get_verbose() >= 0) fprintf(stderr, "Done\n");
         }
@@ -305,7 +305,7 @@ extern "C"
     {
         if(violates_name_rules(name)) return set_invalid_id(kernid);
 
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         auto pname = (devid > std::numeric_limits<uint16_t>::max())  // junk device number
                          ? JOIN(" ", _kp_prefix, name, "[for]")
                          : JOIN(" ", _kp_prefix, name, JOIN("", "[for][dev", devid, ']'));
@@ -319,7 +319,7 @@ extern "C"
     {
         if(is_invalid_id(kernid)) return;
 
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         kokkosp::logger_t{}.mark(-1, __FUNCTION__, kernid);
         kokkosp::stop_profiler<kokkosp_region>(kernid);
         kokkosp::destroy_profiler<kokkosp_region>(kernid);
@@ -331,7 +331,7 @@ extern "C"
     {
         if(violates_name_rules(name)) return set_invalid_id(kernid);
 
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         auto pname =
             (devid > std::numeric_limits<uint16_t>::max())  // junk device number
                 ? JOIN(" ", _kp_prefix, name, "[reduce]")
@@ -346,7 +346,7 @@ extern "C"
     {
         if(is_invalid_id(kernid)) return;
 
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         kokkosp::logger_t{}.mark(-1, __FUNCTION__, kernid);
         kokkosp::stop_profiler<kokkosp_region>(kernid);
         kokkosp::destroy_profiler<kokkosp_region>(kernid);
@@ -358,7 +358,7 @@ extern "C"
     {
         if(violates_name_rules(name)) return set_invalid_id(kernid);
 
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         auto pname =
             (devid > std::numeric_limits<uint16_t>::max())  // junk device number
                 ? JOIN(" ", _kp_prefix, name, "[scan]")
@@ -373,7 +373,7 @@ extern "C"
     {
         if(is_invalid_id(kernid)) return;
 
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         kokkosp::logger_t{}.mark(-1, __FUNCTION__, kernid);
         kokkosp::stop_profiler<kokkosp_region>(kernid);
         kokkosp::destroy_profiler<kokkosp_region>(kernid);
@@ -385,7 +385,7 @@ extern "C"
     {
         if(violates_name_rules(name)) return set_invalid_id(kernid);
 
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         auto pname =
             (devid > std::numeric_limits<uint16_t>::max())  // junk device number
                 ? JOIN(" ", _kp_prefix, name, "[fence]")
@@ -400,7 +400,7 @@ extern "C"
     {
         if(is_invalid_id(kernid)) return;
 
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         kokkosp::logger_t{}.mark(-1, __FUNCTION__, kernid);
         kokkosp::stop_profiler<kokkosp_region>(kernid);
         kokkosp::destroy_profiler<kokkosp_region>(kernid);
@@ -410,7 +410,7 @@ extern "C"
 
     void kokkosp_push_profile_region(const char* name)
     {
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         kokkosp::logger_t{}.mark(1, __FUNCTION__, name);
         kokkosp::get_profiler_stack<kokkosp_region>()
             .emplace_back(kokkosp::profiler_t<kokkosp_region>(name))
@@ -419,7 +419,7 @@ extern "C"
 
     void kokkosp_pop_profile_region()
     {
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         kokkosp::logger_t{}.mark(-1, __FUNCTION__);
         if(kokkosp::get_profiler_stack<kokkosp_region>().empty()) return;
         kokkosp::get_profiler_stack<kokkosp_region>().back().stop();
@@ -430,7 +430,7 @@ extern "C"
 
     void kokkosp_create_profile_section(const char* name, uint32_t* secid)
     {
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         *secid     = kokkosp::get_unique_id();
         auto pname = std::string{ name };
         kokkosp::create_profiler<kokkosp_region>(name, *secid);
@@ -438,7 +438,7 @@ extern "C"
 
     void kokkosp_destroy_profile_section(uint32_t secid)
     {
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         kokkosp::destroy_profiler<kokkosp_region>(secid);
     }
 
@@ -446,14 +446,14 @@ extern "C"
 
     void kokkosp_start_profile_section(uint32_t secid)
     {
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         kokkosp::logger_t{}.mark(1, __FUNCTION__, secid);
         kokkosp::start_profiler<kokkosp_region>(secid);
     }
 
     void kokkosp_stop_profile_section(uint32_t secid)
     {
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         kokkosp::logger_t{}.mark(-1, __FUNCTION__, secid);
         kokkosp::stop_profiler<kokkosp_region>(secid);
     }
@@ -466,7 +466,7 @@ extern "C"
         if(violates_name_rules(label)) return;
         if(omnitrace::config::get_use_causal()) return;
 
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         kokkosp::logger_t{}.mark(0, __FUNCTION__, space.name, label,
                                  JOIN("", '[', ptr, ']'), size);
         auto pname =
@@ -481,7 +481,7 @@ extern "C"
         if(violates_name_rules(label)) return;
         if(omnitrace::config::get_use_causal()) return;
 
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         kokkosp::logger_t{}.mark(0, __FUNCTION__, space.name, label,
                                  JOIN("", '[', ptr, ']'), size);
         auto pname =
@@ -499,7 +499,7 @@ extern "C"
         if(!_kp_deep_copy || omnitrace::config::get_use_causal()) return;
         if(violates_name_rules(dst_name, src_name)) return;
 
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         kokkosp::logger_t{}.mark(1, __FUNCTION__, dst_handle.name, dst_name,
                                  JOIN("", '[', dst_ptr, ']'), src_handle.name, src_name,
                                  JOIN("", '[', src_ptr, ']'), size);
@@ -520,7 +520,7 @@ extern "C"
     {
         if(!_kp_deep_copy || omnitrace::config::get_use_causal()) return;
 
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         kokkosp::logger_t{}.mark(-1, __FUNCTION__);
         auto& _data = kokkosp::get_profiler_stack<kokkosp_region>();
         if(_data.empty()) return;
@@ -534,7 +534,7 @@ extern "C"
 
     void kokkosp_profile_event(const char* name)
     {
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         auto _name = tim::get_hash_identifier_fast(tim::add_hash_id(name));
         kokkosp::profiler_t<kokkosp_region>{ _name }.mark();
     }
@@ -545,7 +545,7 @@ extern "C"
     {
         if(violates_name_rules(label)) return;
 
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         if(omnitrace::config::get_use_perfetto())
         {
             auto _name = tim::get_hash_identifier_fast(
@@ -565,7 +565,7 @@ extern "C"
     {
         if(violates_name_rules(label)) return;
 
-        OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+        ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         if(omnitrace::config::get_use_perfetto())
         {
             auto _name = tim::get_hash_identifier_fast(

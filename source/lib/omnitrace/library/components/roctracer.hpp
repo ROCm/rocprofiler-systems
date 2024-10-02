@@ -36,7 +36,7 @@
 #include <timemory/mpl/types.hpp>
 #include <timemory/utility/transient_function.hpp>
 
-OMNITRACE_COMPONENT_ALIAS(roctracer_data,
+ROCPROFSYS_COMPONENT_ALIAS(roctracer_data,
                           ::tim::component::data_tracker<double, roctracer>)
 
 namespace omnitrace
@@ -51,7 +51,7 @@ struct roctracer
     using base_type    = base<roctracer, void>;
     using tracker_type = policy::instance_tracker<roctracer, false>;
 
-    OMNITRACE_DEFAULT_OBJECT(roctracer)
+    ROCPROFSYS_DEFAULT_OBJECT(roctracer)
 
     static void preinit();
     static void global_finalize() { shutdown(); }
@@ -73,7 +73,7 @@ struct roctracer
     [[nodiscard]] static scope::transient_destructor protect_flush_activity();
 };
 
-#if !defined(OMNITRACE_USE_ROCTRACER)
+#if !defined(ROCPROFSYS_USE_ROCTRACER)
 inline void
 roctracer::setup(void*, bool)
 {}
@@ -95,23 +95,23 @@ roctracer::is_setup()
 }  // namespace component
 }  // namespace omnitrace
 
-#if !defined(OMNITRACE_USE_ROCTRACER)
-OMNITRACE_DEFINE_CONCRETE_TRAIT(is_available, component::roctracer_data, false_type)
+#if !defined(ROCPROFSYS_USE_ROCTRACER)
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::roctracer_data, false_type)
 #endif
 
 TIMEMORY_SET_COMPONENT_API(omnitrace::component::roctracer_data, project::timemory,
                            category::timing, os::supports_unix)
-OMNITRACE_DEFINE_CONCRETE_TRAIT(is_timing_category, component::roctracer_data, true_type)
-OMNITRACE_DEFINE_CONCRETE_TRAIT(uses_timing_units, component::roctracer_data, true_type)
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_timing_category, component::roctracer_data, true_type)
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(uses_timing_units, component::roctracer_data, true_type)
 
-#if defined(OMNITRACE_USE_ROCTRACER) && OMNITRACE_USE_ROCTRACER > 0
-#    if !defined(OMNITRACE_EXTERN_COMPONENTS) ||                                         \
-        (defined(OMNITRACE_EXTERN_COMPONENTS) && OMNITRACE_EXTERN_COMPONENTS > 0)
+#if defined(ROCPROFSYS_USE_ROCTRACER) && ROCPROFSYS_USE_ROCTRACER > 0
+#    if !defined(ROCPROFSYS_EXTERN_COMPONENTS) ||                                         \
+        (defined(ROCPROFSYS_EXTERN_COMPONENTS) && ROCPROFSYS_EXTERN_COMPONENTS > 0)
 
 #        include <timemory/operations.hpp>
 
-OMNITRACE_DECLARE_EXTERN_COMPONENT(roctracer, false, void)
-OMNITRACE_DECLARE_EXTERN_COMPONENT(roctracer_data, true, double)
+ROCPROFSYS_DECLARE_EXTERN_COMPONENT(roctracer, false, void)
+ROCPROFSYS_DECLARE_EXTERN_COMPONENT(roctracer_data, true, double)
 
 #    endif
 #endif

@@ -4,7 +4,7 @@
 #
 # -------------------------------------------------------------------------------------- #
 
-omnitrace_add_test(
+rocprofsys_add_test(
     NAME fork
     TARGET fork-example
     REWRITE_ARGS -e -v 2 --print-instrumented modules -i 16

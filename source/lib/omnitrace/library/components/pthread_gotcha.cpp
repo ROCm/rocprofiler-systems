@@ -47,7 +47,7 @@ struct stop<omnitrace::component::pthread_create_gotcha_t>
 {
     using type = omnitrace::component::pthread_create_gotcha_t;
 
-    OMNITRACE_DEFAULT_OBJECT(stop)
+    ROCPROFSYS_DEFAULT_OBJECT(stop)
 
     template <typename... Args>
     explicit stop(type&, Args&&...)

@@ -77,13 +77,13 @@ using overflow_enabled  = trait::runtime_enabled<component::overflow>;
 }  // namespace causal
 }  // namespace omnitrace
 
-OMNITRACE_DEFINE_CONCRETE_TRAIT(prevent_reentry, causal::sampling::causal_sampler_t,
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(prevent_reentry, causal::sampling::causal_sampler_t,
                                 std::true_type)
 
-OMNITRACE_DEFINE_CONCRETE_TRAIT(provide_backtrace, causal::sampling::causal_sampler_t,
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(provide_backtrace, causal::sampling::causal_sampler_t,
                                 std::false_type)
 
-OMNITRACE_DEFINE_CONCRETE_TRAIT(buffer_size, causal::sampling::causal_sampler_t,
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(buffer_size, causal::sampling::causal_sampler_t,
                                 TIMEMORY_ESC(std::integral_constant<size_t, 4096>))
 
 namespace omnitrace
@@ -219,11 +219,11 @@ configure(bool _setup, int64_t _tid)
     auto&       _running      = get_causal_sampler_running(_tid);
     auto&       _signal_types = get_causal_sampler_signals(_tid);
 
-    OMNITRACE_CONDITIONAL_THROW(get_use_sampling(),
+    ROCPROFSYS_CONDITIONAL_THROW(get_use_sampling(),
                                 "Internal error! configuring causal profiling not "
                                 "permitted when sampling is enabled");
 
-    OMNITRACE_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
+    ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
 
     if(_setup && _signal_types.empty()) _signal_types = get_sampling_signals(_tid);
 
@@ -287,7 +287,7 @@ configure(bool _setup, int64_t _tid)
                                                  return perf::get_instance(_idx)->stop();
                                              },
                                              _tid, threading::get_sys_tid() });
-                if(_tid == 0) OMNITRACE_VERBOSE(1, "causal profiling backend: perf\n");
+                if(_tid == 0) ROCPROFSYS_VERBOSE(1, "causal profiling backend: perf\n");
             }
 
             return _open_error;
@@ -301,7 +301,7 @@ configure(bool _setup, int64_t _tid)
             _causal->configure(timer{ get_sampling_realtime_signal(), CLOCK_REALTIME,
                                       SIGEV_THREAD_ID, 1000.0, 1.0e-6, _tid,
                                       threading::get_sys_tid() });
-            if(_tid == 0) OMNITRACE_VERBOSE(1, "causal profiling backend: timer\n");
+            if(_tid == 0) ROCPROFSYS_VERBOSE(1, "causal profiling backend: timer\n");
             return true;
         };
 
@@ -314,13 +314,13 @@ configure(bool _setup, int64_t _tid)
         if(get_causal_backend() == CausalBackend::Perf)
         {
             auto _perf_error = _activate_perf_backend();
-            OMNITRACE_REQUIRE(!_perf_error)
+            ROCPROFSYS_REQUIRE(!_perf_error)
                 << "perf backend for causal profiling failed to activate: "
                 << *_perf_error << "\n";
         }
         else if(get_causal_backend() == CausalBackend::Timer)
         {
-            OMNITRACE_REQUIRE(_activate_timer_backend())
+            ROCPROFSYS_REQUIRE(_activate_timer_backend())
                 << "timer backend for causal profiling failed to activate\n";
         }
         else if(get_causal_backend() == CausalBackend::Auto)
@@ -333,11 +333,11 @@ configure(bool _setup, int64_t _tid)
             }
             else
             {
-                OMNITRACE_WARNING_F(
+                ROCPROFSYS_WARNING_F(
                     0, "perf backend for causal profiling failed to activate: %s\n",
                     _perf_error->c_str());
 
-                OMNITRACE_REQUIRE(_activate_timer_backend())
+                ROCPROFSYS_REQUIRE(_activate_timer_backend())
                     << "timer backend for causal profiling failed to activate\n";
 
                 config::set_setting_value("ROCPROFSYS_CAUSAL_BACKEND",
@@ -354,7 +354,7 @@ configure(bool _setup, int64_t _tid)
     }
     else if(!_setup && _causal && _running)
     {
-        OMNITRACE_DEBUG("Destroying causal sampler for thread %lu...\n", _tid);
+        ROCPROFSYS_DEBUG("Destroying causal sampler for thread %lu...\n", _tid);
         _running = false;
 
         if(_tid == threading::get_id() && !_signal_types.empty())
@@ -367,7 +367,7 @@ configure(bool _setup, int64_t _tid)
             // this propagates to all threads
             _causal->ignore(_signal_types);
 
-            for(int64_t i = 1; i < OMNITRACE_MAX_THREADS; ++i)
+            for(int64_t i = 1; i < ROCPROFSYS_MAX_THREADS; ++i)
             {
                 if(get_causal_sampler(i))
                 {
@@ -390,7 +390,7 @@ configure(bool _setup, int64_t _tid)
             _causal_perf.reset();
         }
 
-        OMNITRACE_DEBUG("Causal sampler destroyed for thread %lu\n", _tid);
+        ROCPROFSYS_DEBUG("Causal sampler destroyed for thread %lu\n", _tid);
     }
 
     return _signal_types;
@@ -489,7 +489,7 @@ void pause(ScopeT)
         bool _paused_v = *_process_paused;
         if(!_paused_v)
         {
-            for(auto i = 0; i < OMNITRACE_MAX_THREADS; ++i)
+            for(auto i = 0; i < ROCPROFSYS_MAX_THREADS; ++i)
             {
                 auto& _causal_perf = perf::get_instance(i);
                 if(_causal_perf) _causal_perf->stop();
@@ -528,7 +528,7 @@ void resume(ScopeT)
         bool _paused_v = *_process_paused;
         if(_paused_v)
         {
-            for(auto i = 0; i < OMNITRACE_MAX_THREADS; ++i)
+            for(auto i = 0; i < ROCPROFSYS_MAX_THREADS; ++i)
             {
                 auto& _causal_perf = perf::get_instance(i);
                 if(_causal_perf) _causal_perf->start();
@@ -566,9 +566,9 @@ unblock_signals(std::set<int> _signals)
 void
 post_process()
 {
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
-    OMNITRACE_VERBOSE(2 || get_debug_sampling(),
+    ROCPROFSYS_VERBOSE(2 || get_debug_sampling(),
                       "Stopping causal sampling components...\n");
 
     block_samples();

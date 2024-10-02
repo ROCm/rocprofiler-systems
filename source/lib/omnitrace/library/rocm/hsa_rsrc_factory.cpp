@@ -828,7 +828,7 @@ HsaRsrcFactory::PrintGpuAgents(const std::string&)
         if(itr) _agents.emplace_back(*itr);
     }
 
-    OMNITRACE_METADATA([_agents](auto& ar) {
+    ROCPROFSYS_METADATA([_agents](auto& ar) {
         namespace cereal = ::tim::cereal;
 
         ar.setNextName("rocm_agents");

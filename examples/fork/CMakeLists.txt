@@ -11,7 +11,7 @@ add_executable(fork-example fork.cpp)
 target_link_libraries(fork-example PRIVATE Threads::Threads rocprofsys::rocprofsys)
 target_compile_options(fork-example PRIVATE ${_FLAGS})
 
-if(OMNITRACE_INSTALL_EXAMPLES)
+if(ROCPROFSYS_INSTALL_EXAMPLES)
     install(
         TARGETS fork-example
         DESTINATION bin

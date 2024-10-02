@@ -178,7 +178,7 @@ callchain::sample(int signo)
     if(signo != get_sampling_overflow_signal()) return;
 
     // on RedHat, the unw_step within get_unw_stack involves a mutex lock
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
     static thread_local const auto& _tinfo      = thread_info::get();
     auto                            _tid        = _tinfo->index_data->sequent_value;

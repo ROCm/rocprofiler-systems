@@ -42,7 +42,7 @@ namespace omnitrace
 namespace timeout
 {
 void
-setup() OMNITRACE_INTERNAL_API;
+setup() ROCPROFSYS_INTERNAL_API;
 
 namespace
 {
@@ -76,7 +76,7 @@ ci_timeout_backtrace(int)
 
     static auto _mutex = locking::atomic_mutex{};
     auto        _lk    = locking::atomic_lock{ _mutex };
-    OMNITRACE_PRINT("%s\n", _err.str().c_str());
+    ROCPROFSYS_PRINT("%s\n", _err.str().c_str());
 
     ++ci_timeout_backtrace_global_done;
 }
@@ -88,7 +88,7 @@ ensure_ci_timeout_backtrace(double             _ci_timeout_seconds,
     _ci_timeout_ready.set_value();
 
     thread_info::init(true);
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Disabled);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Disabled);
 
     auto _factor = 3.0;
     while(_ci_timeout_seconds <= _factor)
@@ -127,14 +127,14 @@ ensure_ci_timeout_backtrace(double             _ci_timeout_seconds,
                 const auto& _info = thread_info::get(_handle);
                 if(_info)
                 {
-                    OMNITRACE_WARNING_F(
+                    ROCPROFSYS_WARNING_F(
                         0, "pthread_kill(%zu, %i) failed for thread %zi (info: %s)\n",
                         _handle, timeout_signal_v, _info->index_data->sequent_value,
                         _info->as_string().c_str());
                 }
                 else
                 {
-                    OMNITRACE_WARNING_F(0,
+                    ROCPROFSYS_WARNING_F(0,
                                         "pthread_kill(%zu, %i) failed. executing generic "
                                         "kill(%i, %i)...\n",
                                         _handle, timeout_signal_v, process::get_id(),
@@ -151,7 +151,7 @@ ensure_ci_timeout_backtrace(double             _ci_timeout_seconds,
         };
 
         _tids.erase(main_thread_native_handle);
-        OMNITRACE_WARNING_F(-127,
+        ROCPROFSYS_WARNING_F(-127,
                             "timeout after %8.3f seconds... Generating backtraces for "
                             "%zu threads...\n",
                             _ci_timeout_seconds, _tids.size() + 1);
@@ -176,7 +176,7 @@ ensure_ci_timeout_backtrace(double             _ci_timeout_seconds,
         }
     }
 
-    OMNITRACE_WARNING_F(0, "timeout thread exiting...\n");
+    ROCPROFSYS_WARNING_F(0, "timeout thread exiting...\n");
 }
 }  // namespace
 
@@ -188,7 +188,7 @@ setup()
 
     if(ci_timeout_active) return;
 
-    // in CI mode, if OMNITRACE_CI_TIMEOUT or OMNITRACE_CI_TIMEOUT_OVERRIDE is
+    // in CI mode, if ROCPROFSYS_CI_TIMEOUT or ROCPROFSYS_CI_TIMEOUT_OVERRIDE is
     // set, start a thread that will print out the backtrace for each thread
     // before the timeout is hit (i.e. killed by CTest) so we can potentially
     // diagnose where the code is stuck
@@ -207,8 +207,8 @@ setup()
             ci_timeout_active = true;
             _lk.unlock();
 
-            OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
-            OMNITRACE_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
+            ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
+            ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
 
             // enable the signal handler for when the timeout is reached
             struct sigaction _action = {};

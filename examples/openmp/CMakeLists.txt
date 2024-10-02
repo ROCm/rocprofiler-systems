@@ -15,7 +15,7 @@ option(USE_CLANG_OMP "Use the clang OpenMP if available" ON)
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     find_package(OpenMP REQUIRED)
     target_link_libraries(openmp-common PUBLIC OpenMP::OpenMP_CXX)
-    set(OMNITRACE_OPENMP_USING_LIBOMP_LIBRARY
+    set(ROCPROFSYS_OPENMP_USING_LIBOMP_LIBRARY
         ON
         CACHE INTERNAL "Used by rocprofsys testing" FORCE)
 else()
@@ -25,20 +25,20 @@ else()
         NAMES omp omp5 ${CMAKE_SHARED_LIBRARY_PREFIX}omp${CMAKE_SHARED_LIBRARY_SUFFIX}.5)
     if(CLANGXX_EXECUTABLE
        AND LIBOMP_LIBRARY
-       AND COMMAND omnitrace_custom_compilation
+       AND COMMAND rocprofsys_custom_compilation
        AND USE_CLANG_OMP)
         target_compile_options(openmp-common PUBLIC -W -Wall -fopenmp=libomp)
         target_link_libraries(openmp-common PUBLIC ${LIBOMP_LIBRARY})
-        omnitrace_custom_compilation(COMPILER ${CLANGXX_EXECUTABLE} TARGET openmp-common)
-        omnitrace_custom_compilation(COMPILER ${CLANGXX_EXECUTABLE} TARGET openmp-cg)
-        omnitrace_custom_compilation(COMPILER ${CLANGXX_EXECUTABLE} TARGET openmp-lu)
-        set(OMNITRACE_OPENMP_USING_LIBOMP_LIBRARY
+        rocprofsys_custom_compilation(COMPILER ${CLANGXX_EXECUTABLE} TARGET openmp-common)
+        rocprofsys_custom_compilation(COMPILER ${CLANGXX_EXECUTABLE} TARGET openmp-cg)
+        rocprofsys_custom_compilation(COMPILER ${CLANGXX_EXECUTABLE} TARGET openmp-lu)
+        set(ROCPROFSYS_OPENMP_USING_LIBOMP_LIBRARY
             ON
             CACHE INTERNAL "Used by rocprofsys testing" FORCE)
     else()
         find_package(OpenMP REQUIRED)
         target_link_libraries(openmp-common PUBLIC OpenMP::OpenMP_CXX)
-        set(OMNITRACE_OPENMP_USING_LIBOMP_LIBRARY
+        set(ROCPROFSYS_OPENMP_USING_LIBOMP_LIBRARY
             OFF
             CACHE INTERNAL "Used by rocprofsys testing" FORCE)
     endif()
@@ -47,7 +47,7 @@ endif()
 target_link_libraries(openmp-cg PRIVATE openmp-common)
 target_link_libraries(openmp-lu PRIVATE openmp-common)
 
-if(OMNITRACE_INSTALL_EXAMPLES)
+if(ROCPROFSYS_INSTALL_EXAMPLES)
     install(
         TARGETS openmp-cg openmp-lu
         DESTINATION bin

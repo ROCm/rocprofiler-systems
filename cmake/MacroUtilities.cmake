@@ -12,11 +12,11 @@ include(CMakeDependentOption)
 include(CMakeParseArguments)
 
 # -----------------------------------------------------------------------
-# message which handles OMNITRACE_QUIET_CONFIG settings
+# message which handles ROCPROFSYS_QUIET_CONFIG settings
 # -----------------------------------------------------------------------
 #
-function(OMNITRACE_MESSAGE TYPE)
-    if(NOT OMNITRACE_QUIET_CONFIG)
+function(ROCPROFSYS_MESSAGE TYPE)
+    if(NOT ROCPROFSYS_QUIET_CONFIG)
         message(${TYPE} "[rocprof-sys] ${ARGN}")
     endif()
 endfunction()
@@ -24,7 +24,7 @@ endfunction()
 # -----------------------------------------------------------------------
 # Save a set of variables with the given prefix
 # -----------------------------------------------------------------------
-macro(OMNITRACE_SAVE_VARIABLES _PREFIX)
+macro(ROCPROFSYS_SAVE_VARIABLES _PREFIX)
     # parse args
     cmake_parse_arguments(
         SAVE
@@ -58,7 +58,7 @@ endmacro()
 # -----------------------------------------------------------------------
 # Restore a set of variables with the given prefix
 # -----------------------------------------------------------------------
-macro(OMNITRACE_RESTORE_VARIABLES _PREFIX)
+macro(ROCPROFSYS_RESTORE_VARIABLES _PREFIX)
     # parse args
     cmake_parse_arguments(
         RESTORE
@@ -92,10 +92,10 @@ macro(OMNITRACE_RESTORE_VARIABLES _PREFIX)
 endmacro()
 
 # -----------------------------------------------------------------------
-# function - omnitrace_capitalize - make a string capitalized (first letter is capital)
+# function - rocprofsys_capitalize - make a string capitalized (first letter is capital)
 # usage: capitalize("SHARED" CShared) message(STATUS "-- CShared is \"${CShared}\"") $ --
 # CShared is "Shared"
-function(OMNITRACE_CAPITALIZE str var)
+function(ROCPROFSYS_CAPITALIZE str var)
     # make string lower
     string(TOLOWER "${str}" str)
     string(SUBSTRING "${str}" 0 1 _first)
@@ -108,11 +108,11 @@ function(OMNITRACE_CAPITALIZE str var)
 endfunction()
 
 # ------------------------------------------------------------------------------#
-# function omnitrace_strip_target(<TARGET> [FORCE] [EXPLICIT])
+# function rocprofsys_strip_target(<TARGET> [FORCE] [EXPLICIT])
 #
 # Creates a post-build command which strips a binary. FORCE flag will override
 #
-function(OMNITRACE_STRIP_TARGET)
+function(ROCPROFSYS_STRIP_TARGET)
     cmake_parse_arguments(STRIP "FORCE;EXPLICIT" "" "ARGS" ${ARGN})
 
     list(LENGTH STRIP_UNPARSED_ARGUMENTS NUM_UNPARSED)
@@ -120,17 +120,17 @@ function(OMNITRACE_STRIP_TARGET)
     if(NUM_UNPARSED EQUAL 1)
         set(_TARGET "${STRIP_UNPARSED_ARGUMENTS}")
     else()
-        omnitrace_message(FATAL_ERROR
-                          "omnitrace_strip_target cannot deduce target from \"${ARGN}\"")
+        rocprofsys_message(FATAL_ERROR
+                          "rocprofsys_strip_target cannot deduce target from \"${ARGN}\"")
     endif()
 
     if(NOT TARGET "${_TARGET}")
-        omnitrace_message(
+        rocprofsys_message(
             FATAL_ERROR
-            "omnitrace_strip_target not provided valid target: \"${_TARGET}\"")
+            "rocprofsys_strip_target not provided valid target: \"${_TARGET}\"")
     endif()
 
-    if(CMAKE_STRIP AND (STRIP_FORCE OR OMNITRACE_STRIP_LIBRARIES))
+    if(CMAKE_STRIP AND (STRIP_FORCE OR ROCPROFSYS_STRIP_LIBRARIES))
         if(STRIP_EXPLICIT)
             add_custom_command(
                 TARGET ${_TARGET}
@@ -168,7 +168,7 @@ endfunction()
 #
 # Creates a target which runs ctest but depends on all the tests being built.
 #
-function(ADD_OMNITRACE_TEST_TARGET)
+function(ADD_ROCPROFSYS_TEST_TARGET)
     if(NOT TARGET rocprofsys-test)
         add_custom_target(
             rocprofsys-test
@@ -179,7 +179,7 @@ function(ADD_OMNITRACE_TEST_TARGET)
 endfunction()
 
 # ----------------------------------------------------------------------------------------#
-# macro omnitrace_checkout_git_submodule()
+# macro rocprofsys_checkout_git_submodule()
 #
 # Run "git submodule update" if a file in a submodule does not exist
 #
@@ -188,7 +188,7 @@ endfunction()
 # value) -- (default: PROJECT_SOURCE_DIR) TEST_FILE (one value) -- file to check for
 # (default: CMakeLists.txt) ADDITIONAL_CMDS (many value) -- any addition commands to pass
 #
-function(OMNITRACE_CHECKOUT_GIT_SUBMODULE)
+function(ROCPROFSYS_CHECKOUT_GIT_SUBMODULE)
     # parse args
     cmake_parse_arguments(
         CHECKOUT "RECURSIVE"
@@ -257,7 +257,7 @@ function(OMNITRACE_CHECKOUT_GIT_SUBMODULE)
         if(RET GREATER 0)
             set(_CMD "${GIT_EXECUTABLE} submodule update --init ${_RECURSE}
                 ${CHECKOUT_ADDITIONAL_CMDS} ${CHECKOUT_RELATIVE_PATH}")
-            message(STATUS "function(omnitrace_checkout_git_submodule) failed.")
+            message(STATUS "function(rocprofsys_checkout_git_submodule) failed.")
             message(FATAL_ERROR "Command: \"${_CMD}\"")
         else()
             set(_TEST_FILE_EXISTS ON)
@@ -297,7 +297,7 @@ function(OMNITRACE_CHECKOUT_GIT_SUBMODULE)
                 "${GIT_EXECUTABLE} clone -b ${CHECKOUT_REPO_BRANCH}
                 ${CHECKOUT_ADDITIONAL_CMDS} ${CHECKOUT_REPO_URL} ${CHECKOUT_RELATIVE_PATH}"
                 )
-            message(STATUS "function(omnitrace_checkout_git_submodule) failed.")
+            message(STATUS "function(rocprofsys_checkout_git_submodule) failed.")
             message(FATAL_ERROR "Command: \"${_CMD}\"")
         else()
             set(_TEST_FILE_EXISTS ON)
@@ -315,7 +315,7 @@ endfunction()
 # ----------------------------------------------------------------------------------------#
 # try to find a package quietly
 #
-function(OMNITRACE_TEST_FIND_PACKAGE PACKAGE_NAME OUTPUT_VAR)
+function(ROCPROFSYS_TEST_FIND_PACKAGE PACKAGE_NAME OUTPUT_VAR)
     cmake_parse_arguments(PACKAGE "" "" "UNSET" ${ARGN})
     find_package(${PACKAGE_NAME} QUIET ${PACKAGE_UNPARSED_ARGUMENTS})
     if(NOT ${PACKAGE_NAME}_FOUND)
@@ -335,7 +335,7 @@ endfunction()
 # ----------------------------------------------------------------------------------------#
 # macro to add an interface lib
 #
-macro(OMNITRACE_ADD_INTERFACE_LIBRARY _TARGET)
+macro(ROCPROFSYS_ADD_INTERFACE_LIBRARY _TARGET)
     add_library(${_TARGET} INTERFACE)
     add_library(${PROJECT_NAME}::${_TARGET} ALIAS ${_TARGET})
     install(
@@ -355,7 +355,7 @@ endmacro()
 # specified by the existence of the variable <NAME>, to the list of enabled/disabled
 # features, plus a docstring describing the feature
 #
-function(OMNITRACE_ADD_FEATURE _var _description)
+function(ROCPROFSYS_ADD_FEATURE _var _description)
     set(EXTRA_DESC "")
     foreach(currentArg ${ARGN})
         if(NOT "${currentArg}" STREQUAL "${_var}"
@@ -372,12 +372,12 @@ function(OMNITRACE_ADD_FEATURE _var _description)
     if("CMAKE_DEFINE" IN_LIST ARGN)
         set_property(GLOBAL APPEND PROPERTY ${PROJECT_NAME}_CMAKE_DEFINES
                                             "${_var} @${_var}@")
-        if(OMNITRACE_BUILD_DOCS)
+        if(ROCPROFSYS_BUILD_DOCS)
             set_property(
                 GLOBAL APPEND PROPERTY ${PROJECT_NAME}_CMAKE_OPTIONS_DOC
                                        "${_var}` | ${_description}${EXTRA_DESC} |")
         endif()
-    elseif("DOC" IN_LIST ARGN AND OMNITRACE_BUILD_DOCS)
+    elseif("DOC" IN_LIST ARGN AND ROCPROFSYS_BUILD_DOCS)
         set_property(GLOBAL APPEND PROPERTY ${PROJECT_NAME}_CMAKE_OPTIONS_DOC
                                             "${_var}` | ${_description}${EXTRA_DESC} |")
     endif()
@@ -387,13 +387,13 @@ endfunction()
 # function add_option(<OPTION_NAME> <DOCSRING> <DEFAULT_SETTING> [NO_FEATURE]) Add an
 # option and add as a feature if NO_FEATURE is not provided
 #
-function(OMNITRACE_ADD_OPTION _NAME _MESSAGE _DEFAULT)
+function(ROCPROFSYS_ADD_OPTION _NAME _MESSAGE _DEFAULT)
     option(${_NAME} "${_MESSAGE}" ${_DEFAULT})
     if("NO_FEATURE" IN_LIST ARGN)
         mark_as_advanced(${_NAME})
     else()
-        omnitrace_add_feature(${_NAME} "${_MESSAGE}")
-        if(OMNITRACE_BUILD_DOCS)
+        rocprofsys_add_feature(${_NAME} "${_MESSAGE}")
+        if(ROCPROFSYS_BUILD_DOCS)
             set_property(GLOBAL APPEND PROPERTY ${PROJECT_NAME}_CMAKE_OPTIONS_DOC
                                                 "${_NAME}` | ${_MESSAGE} |")
         endif()
@@ -407,10 +407,10 @@ function(OMNITRACE_ADD_OPTION _NAME _MESSAGE _DEFAULT)
 endfunction()
 
 # ----------------------------------------------------------------------------------------#
-# function omnitrace_add_cache_option(<OPTION_NAME> <DOCSRING> <TYPE> <DEFAULT_VALUE>
+# function rocprofsys_add_cache_option(<OPTION_NAME> <DOCSRING> <TYPE> <DEFAULT_VALUE>
 # [NO_FEATURE] [ADVANCED] [CMAKE_DEFINE])
 #
-function(OMNITRACE_ADD_CACHE_OPTION _NAME _MESSAGE _TYPE _DEFAULT)
+function(ROCPROFSYS_ADD_CACHE_OPTION _NAME _MESSAGE _TYPE _DEFAULT)
     set(_FORCE)
     if("FORCE" IN_LIST ARGN)
         set(_FORCE FORCE)
@@ -423,9 +423,9 @@ function(OMNITRACE_ADD_CACHE_OPTION _NAME _MESSAGE _TYPE _DEFAULT)
     if("NO_FEATURE" IN_LIST ARGN)
         mark_as_advanced(${_NAME})
     else()
-        omnitrace_add_feature(${_NAME} "${_MESSAGE}")
+        rocprofsys_add_feature(${_NAME} "${_MESSAGE}")
 
-        if(OMNITRACE_BUILD_DOCS)
+        if(ROCPROFSYS_BUILD_DOCS)
             set_property(GLOBAL APPEND PROPERTY ${PROJECT_NAME}_CMAKE_OPTIONS_DOC
                                                 "${_NAME}` | ${_MESSAGE} |")
         endif()
@@ -441,9 +441,9 @@ function(OMNITRACE_ADD_CACHE_OPTION _NAME _MESSAGE _TYPE _DEFAULT)
 endfunction()
 
 # ----------------------------------------------------------------------------------------#
-# function omnitrace_report_feature_changes() :: print changes in features
+# function rocprofsys_report_feature_changes() :: print changes in features
 #
-function(OMNITRACE_REPORT_FEATURE_CHANGES)
+function(ROCPROFSYS_REPORT_FEATURE_CHANGES)
     get_property(_features GLOBAL PROPERTY ${PROJECT_NAME}_FEATURES)
     if(NOT "${_features}" STREQUAL "")
         list(REMOVE_DUPLICATES _features)
@@ -451,9 +451,9 @@ function(OMNITRACE_REPORT_FEATURE_CHANGES)
     endif()
     foreach(_feature ${_features})
         if("${ARGN}" STREQUAL "")
-            omnitrace_watch_for_change(${_feature})
+            rocprofsys_watch_for_change(${_feature})
         elseif("${_feature}" IN_LIST ARGN)
-            omnitrace_watch_for_change(${_feature})
+            rocprofsys_watch_for_change(${_feature})
         endif()
     endforeach()
 endfunction()
@@ -461,7 +461,7 @@ endfunction()
 # ----------------------------------------------------------------------------------------#
 # function print_enabled_features() Print enabled  features plus their docstrings.
 #
-function(OMNITRACE_PRINT_ENABLED_FEATURES)
+function(ROCPROFSYS_PRINT_ENABLED_FEATURES)
     set(_basemsg "The following features are defined/enabled (+):")
     set(_currentFeatureText "${_basemsg}")
     get_property(_features GLOBAL PROPERTY ${PROJECT_NAME}_FEATURES)
@@ -485,7 +485,7 @@ function(OMNITRACE_PRINT_ENABLED_FEATURES)
                     string(REGEX REPLACE "^${PROJECT_NAME}_USE_" "" _feature_tmp
                                          "${_feature}")
                     string(TOLOWER "${_feature_tmp}" _feature_tmp_l)
-                    omnitrace_capitalize("${_feature_tmp}" _feature_tmp_c)
+                    rocprofsys_capitalize("${_feature_tmp}" _feature_tmp_c)
                     foreach(_var _feature _feature_tmp _feature_tmp_l _feature_tmp_c)
                         set(_ver "${${${_var}}_VERSION}")
                         if(NOT "${_ver}" STREQUAL "")
@@ -509,7 +509,7 @@ endfunction()
 # ----------------------------------------------------------------------------------------#
 # function print_disabled_features() Print disabled features plus their docstrings.
 #
-function(OMNITRACE_PRINT_DISABLED_FEATURES)
+function(ROCPROFSYS_PRINT_DISABLED_FEATURES)
     set(_basemsg "The following features are NOT defined/enabled (-):")
     set(_currentFeatureText "${_basemsg}")
     get_property(_features GLOBAL PROPERTY ${PROJECT_NAME}_FEATURES)
@@ -538,10 +538,10 @@ endfunction()
 # ----------------------------------------------------------------------------------------#
 # function print_features() Print all features plus their docstrings.
 #
-function(OMNITRACE_PRINT_FEATURES)
-    omnitrace_report_feature_changes()
-    omnitrace_print_enabled_features()
-    omnitrace_print_disabled_features()
+function(ROCPROFSYS_PRINT_FEATURES)
+    rocprofsys_report_feature_changes()
+    rocprofsys_print_enabled_features()
+    rocprofsys_print_disabled_features()
 endfunction()
 
 # ----------------------------------------------------------------------------------------#
@@ -551,26 +551,26 @@ endfunction()
 # source files DIRECTORY   --> all files in directory PROJECT     --> all files/targets in
 # a project/subproject
 #
-function(omnitrace_custom_compilation)
+function(rocprofsys_custom_compilation)
     cmake_parse_arguments(COMP "GLOBAL;PROJECT" "COMPILER" "DIRECTORY;TARGET;SOURCE"
                           ${ARGN})
 
     # find rocprofsys-launch-compiler
     find_program(
-        OMNITRACE_COMPILE_LAUNCHER
-        NAMES omnitrace-launch-compiler
+        ROCPROFSYS_COMPILE_LAUNCHER
+        NAMES rocprofsys-launch-compiler
         HINTS ${PROJECT_SOURCE_DIR} ${CMAKE_SOURCE_DIR}
         PATHS ${PROJECT_SOURCE_DIR} ${CMAKE_SOURCE_DIR}
         PATH_SUFFIXES scripts bin)
 
     if(NOT COMP_COMPILER)
-        message(FATAL_ERROR "omnitrace_custom_compilation not provided COMPILER argument")
+        message(FATAL_ERROR "rocprofsys_custom_compilation not provided COMPILER argument")
     endif()
 
-    if(NOT OMNITRACE_COMPILE_LAUNCHER)
+    if(NOT ROCPROFSYS_COMPILE_LAUNCHER)
         message(
             FATAL_ERROR
-                "rocprofsys could not find 'rocprofsys-launch-compiler'. Please set '-DOMNITRACE_COMPILE_LAUNCHER=/path/to/launcher'"
+                "rocprofsys could not find 'rocprofsys-launch-compiler'. Please set '-DROCPROFSYS_COMPILE_LAUNCHER=/path/to/launcher'"
             )
     endif()
 
@@ -580,16 +580,16 @@ function(omnitrace_custom_compilation)
             GLOBAL
             PROPERTY
                 RULE_LAUNCH_COMPILE
-                "${OMNITRACE_COMPILE_LAUNCHER} ${COMP_COMPILER} ${CMAKE_CXX_COMPILER}")
+                "${ROCPROFSYS_COMPILE_LAUNCHER} ${COMP_COMPILER} ${CMAKE_CXX_COMPILER}")
         set_property(
             GLOBAL
             PROPERTY
                 RULE_LAUNCH_LINK
-                "${OMNITRACE_COMPILE_LAUNCHER} ${COMP_COMPILER} ${CMAKE_CXX_COMPILER}")
+                "${ROCPROFSYS_COMPILE_LAUNCHER} ${COMP_COMPILER} ${CMAKE_CXX_COMPILER}")
     else()
         foreach(_TYPE PROJECT DIRECTORY TARGET SOURCE)
             # make project/subproject scoping easy, e.g.
-            # omnitrace_custom_compilation(PROJECT) after project(...)
+            # rocprofsys_custom_compilation(PROJECT) after project(...)
             if("${_TYPE}" STREQUAL "PROJECT" AND COMP_${_TYPE})
                 list(APPEND COMP_DIRECTORY ${PROJECT_SOURCE_DIR})
                 unset(COMP_${_TYPE})
@@ -601,13 +601,13 @@ function(omnitrace_custom_compilation)
                         ${_TYPE} ${_VAL}
                         PROPERTY
                             RULE_LAUNCH_COMPILE
-                            "${OMNITRACE_COMPILE_LAUNCHER} ${COMP_COMPILER} ${CMAKE_CXX_COMPILER}"
+                            "${ROCPROFSYS_COMPILE_LAUNCHER} ${COMP_COMPILER} ${CMAKE_CXX_COMPILER}"
                         )
                     set_property(
                         ${_TYPE} ${_VAL}
                         PROPERTY
                             RULE_LAUNCH_LINK
-                            "${OMNITRACE_COMPILE_LAUNCHER} ${COMP_COMPILER} ${CMAKE_CXX_COMPILER}"
+                            "${ROCPROFSYS_COMPILE_LAUNCHER} ${COMP_COMPILER} ${CMAKE_CXX_COMPILER}"
                         )
                 endforeach()
             endif()
@@ -615,7 +615,7 @@ function(omnitrace_custom_compilation)
     endif()
 endfunction()
 
-function(OMNITRACE_WATCH_FOR_CHANGE _var)
+function(ROCPROFSYS_WATCH_FOR_CHANGE _var)
     list(LENGTH ARGN _NUM_EXTRA_ARGS)
     if(_NUM_EXTRA_ARGS EQUAL 1)
         set(_VAR ${ARGN})
@@ -633,42 +633,42 @@ function(OMNITRACE_WATCH_FOR_CHANGE _var)
 
     update_var(OFF)
 
-    set(_omnitrace_watch_var_name OMNITRACE_WATCH_VALUE_${_var})
-    if(DEFINED ${_omnitrace_watch_var_name})
-        if("${${_var}}" STREQUAL "${${_omnitrace_watch_var_name}}")
+    set(_rocprofsys_watch_var_name ROCPROFSYS_WATCH_VALUE_${_var})
+    if(DEFINED ${_rocprofsys_watch_var_name})
+        if("${${_var}}" STREQUAL "${${_rocprofsys_watch_var_name}}")
             return()
         else()
-            omnitrace_message(
+            rocprofsys_message(
                 STATUS
-                "${_var} changed :: ${${_omnitrace_watch_var_name}} --> ${${_var}}")
+                "${_var} changed :: ${${_rocprofsys_watch_var_name}} --> ${${_var}}")
             update_var(ON)
         endif()
     else()
         if(NOT "${${_var}}" STREQUAL "")
-            omnitrace_message(STATUS "${_var} :: ${${_var}}")
+            rocprofsys_message(STATUS "${_var} :: ${${_var}}")
             update_var(ON)
         endif()
     endif()
 
     # store the value for the next run
-    set(${_omnitrace_watch_var_name}
+    set(${_rocprofsys_watch_var_name}
         "${${_var}}"
         CACHE INTERNAL "Last value of ${_var}" FORCE)
 endfunction()
 
-function(OMNITRACE_DIRECTORY)
+function(ROCPROFSYS_DIRECTORY)
     cmake_parse_arguments(F "MKDIR;FAIL;FORCE" "PREFIX;OUTPUT_VARIABLE;WORKING_DIRECTORY"
                           "PATHS" ${ARGN})
 
     if(F_PREFIX AND NOT IS_ABSOLUTE "${F_PREFIX}")
         if(F_WORKING_DIRECTORY)
-            omnitrace_message(
+            rocprofsys_message(
                 STATUS
                 "PREFIX was specified as a relative path, using working directory + prefix :: '${F_WORKING_DIRECTORY}/${F_PREFIX}'..."
                 )
             set(F_PREFIX ${F_WORKING_DIRECTORY}/${F_PREFIX})
         else()
-            omnitrace_message(
+            rocprofsys_message(
                 FATAL_ERROR
                 "PREFIX was specified but it is not an absolute path: ${F_PREFIX}")
         endif()
@@ -690,9 +690,9 @@ function(OMNITRACE_DIRECTORY)
         endif()
 
         if(NOT EXISTS "${_PATH}" AND F_FAIL)
-            omnitrace_message(FATAL_ERROR "Directory '${_PATH}' does not exist")
+            rocprofsys_message(FATAL_ERROR "Directory '${_PATH}' does not exist")
         elseif(NOT IS_DIRECTORY "${_PATH}" AND F_FAIL)
-            omnitrace_message(FATAL_ERROR "'${_PATH}' exists but is not a directory")
+            rocprofsys_message(FATAL_ERROR "'${_PATH}' exists but is not a directory")
         elseif(NOT EXISTS "${_PATH}" AND F_MKDIR)
             execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${_PATH}
                             WORKING_DIRECTORY ${F_WORKING_DIRECTORY})
@@ -716,11 +716,11 @@ function(OMNITRACE_DIRECTORY)
     endif()
 endfunction()
 
-function(OMNITRACE_CHECK_PYTHON_DIRS_AND_VERSIONS)
+function(ROCPROFSYS_CHECK_PYTHON_DIRS_AND_VERSIONS)
     cmake_parse_arguments(F "FAIL;UNSET" "RESULT_VARIABLE;OUTPUT_VARIABLE" "" ${ARGN})
 
-    list(LENGTH OMNITRACE_PYTHON_VERSIONS _NUM_PYTHON_VERSIONS)
-    list(LENGTH OMNITRACE_PYTHON_ROOT_DIRS _NUM_PYTHON_ROOT_DIRS)
+    list(LENGTH ROCPROFSYS_PYTHON_VERSIONS _NUM_PYTHON_VERSIONS)
+    list(LENGTH ROCPROFSYS_PYTHON_ROOT_DIRS _NUM_PYTHON_ROOT_DIRS)
 
     if(NOT _NUM_PYTHON_VERSIONS EQUAL _NUM_PYTHON_ROOT_DIRS)
         set(_RET 1)
@@ -741,20 +741,20 @@ function(OMNITRACE_CHECK_PYTHON_DIRS_AND_VERSIONS)
 
     if(NOT ${_RET} EQUAL 0)
         if(F_FAIL)
-            omnitrace_message(
+            rocprofsys_message(
                 WARNING
-                "Error! Number of python versions  : ${_NUM_PYTHON_VERSIONS}. VERSIONS :: ${OMNITRACE_PYTHON_VERSIONS}"
+                "Error! Number of python versions  : ${_NUM_PYTHON_VERSIONS}. VERSIONS :: ${ROCPROFSYS_PYTHON_VERSIONS}"
                 )
-            omnitrace_message(
+            rocprofsys_message(
                 WARNING
-                "Error! Number of python root directories : ${_NUM_PYTHON_ROOT_DIRS}. ROOT DIRS :: ${OMNITRACE_PYTHON_ROOT_DIRS}"
+                "Error! Number of python root directories : ${_NUM_PYTHON_ROOT_DIRS}. ROOT DIRS :: ${ROCPROFSYS_PYTHON_ROOT_DIRS}"
                 )
-            omnitrace_message(
+            rocprofsys_message(
                 FATAL_ERROR
                 "Error! Number of python versions != number of python root directories")
         elseif(F_UNSET)
-            unset(OMNITRACE_PYTHON_VERSIONS CACHE)
-            unset(OMNITRACE_PYTHON_ROOT_DIRS CACHE)
+            unset(ROCPROFSYS_PYTHON_VERSIONS CACHE)
+            unset(ROCPROFSYS_PYTHON_ROOT_DIRS CACHE)
             if(F_OUTPUT_VARIABLE)
                 set(${F_OUTPUT_VARIABLE} 0)
             endif()
@@ -765,7 +765,7 @@ endfunction()
 # ----------------------------------------------------------------------------
 # Console scripts
 #
-function(OMNITRACE_PYTHON_CONSOLE_SCRIPT SCRIPT_NAME SCRIPT_SUBMODULE)
+function(ROCPROFSYS_PYTHON_CONSOLE_SCRIPT SCRIPT_NAME SCRIPT_SUBMODULE)
     set(options)
     set(args VERSION ROOT_DIR)
     set(kwargs)
@@ -786,7 +786,7 @@ function(OMNITRACE_PYTHON_CONSOLE_SCRIPT SCRIPT_NAME SCRIPT_SUBMODULE)
                 OPTIONAL)
         endif()
 
-        if(OMNITRACE_BUILD_TESTING OR OMNITRACE_BUILD_PYTHON)
+        if(ROCPROFSYS_BUILD_TESTING OR ROCPROFSYS_BUILD_PYTHON)
             add_test(
                 NAME ${SCRIPT_NAME}-console-script-test-${ARG_VERSION}
                 COMMAND ${PROJECT_BINARY_DIR}/bin/${SCRIPT_NAME}-${ARG_VERSION} --help
@@ -819,17 +819,17 @@ function(OMNITRACE_PYTHON_CONSOLE_SCRIPT SCRIPT_NAME SCRIPT_SUBMODULE)
     endif()
 endfunction()
 
-function(OMNITRACE_FIND_STATIC_LIBRARY)
+function(ROCPROFSYS_FIND_STATIC_LIBRARY)
     set(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_STATIC_LIBRARY_SUFFIX})
     find_library(${ARGN})
 endfunction()
 
-function(OMNITRACE_FIND_SHARED_LIBRARY)
+function(ROCPROFSYS_FIND_SHARED_LIBRARY)
     set(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_SHARED_LIBRARY_SUFFIX})
     find_library(${ARGN})
 endfunction()
 
-function(OMNITRACE_BUILDTREE_TPL _TPL_TARGET _NEW_NAME _BUILD_TREE_DIR)
+function(ROCPROFSYS_BUILDTREE_TPL _TPL_TARGET _NEW_NAME _BUILD_TREE_DIR)
     get_target_property(_TPL_VERSION ${_TPL_TARGET} VERSION)
     get_target_property(_TPL_SOVERSION ${_TPL_TARGET} SOVERSION)
     get_target_property(_TPL_NAME ${_TPL_TARGET} OUTPUT_NAME)
@@ -862,7 +862,7 @@ function(OMNITRACE_BUILDTREE_TPL _TPL_TARGET _NEW_NAME _BUILD_TREE_DIR)
         COMMENT "Creating ${_NEW_NAME} from ${_TPL_TARGET}...")
 endfunction()
 
-function(OMNITRACE_INSTALL_TPL _TPL_TARGET _NEW_NAME _BUILD_TREE_DIR _COMPONENT)
+function(ROCPROFSYS_INSTALL_TPL _TPL_TARGET _NEW_NAME _BUILD_TREE_DIR _COMPONENT)
     get_target_property(_TPL_VERSION ${_TPL_TARGET} VERSION)
     get_target_property(_TPL_SOVERSION ${_TPL_TARGET} SOVERSION)
     get_target_property(_TPL_NAME ${_TPL_TARGET} OUTPUT_NAME)
@@ -876,7 +876,7 @@ function(OMNITRACE_INSTALL_TPL _TPL_TARGET _NEW_NAME _BUILD_TREE_DIR _COMPONENT)
     endforeach()
 
     # build tree symbolic links
-    omnitrace_buildtree_tpl("${_TPL_TARGET}" "${_NEW_NAME}" "${_BUILD_TREE_DIR}" ${ARGN})
+    rocprofsys_buildtree_tpl("${_TPL_TARGET}" "${_NEW_NAME}" "${_BUILD_TREE_DIR}" ${ARGN})
 
     install(
         FILES $<TARGET_FILE:${_TPL_TARGET}>

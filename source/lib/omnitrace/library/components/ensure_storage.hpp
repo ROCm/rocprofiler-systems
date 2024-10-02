@@ -39,9 +39,9 @@ namespace
 template <typename... Tp>
 struct ensure_storage
 {
-    OMNITRACE_DEFAULT_OBJECT(ensure_storage)
+    ROCPROFSYS_DEFAULT_OBJECT(ensure_storage)
 
-    void operator()() const { OMNITRACE_FOLD_EXPRESSION((*this)(tim::type_list<Tp>{})); }
+    void operator()() const { ROCPROFSYS_FOLD_EXPRESSION((*this)(tim::type_list<Tp>{})); }
 
 private:
     template <typename Up, std::enable_if_t<tim::trait::is_available<Up>::value, int> = 0>

@@ -23,7 +23,7 @@ target_sources(
             ${CMAKE_CURRENT_LIST_DIR}/info_type.hpp)
 
 target_include_directories(rocprofsys-avail PRIVATE ${CMAKE_CURRENT_LIST_DIR})
-target_compile_definitions(rocprofsys-avail PRIVATE OMNITRACE_EXTERN_COMPONENTS=0)
+target_compile_definitions(rocprofsys-avail PRIVATE ROCPROFSYS_EXTERN_COMPONENTS=0)
 target_link_libraries(
     rocprofsys-avail
     PRIVATE rocprofsys::rocprofsys-compile-definitions
@@ -31,10 +31,10 @@ target_link_libraries(
 set_target_properties(
     rocprofsys-avail
     PROPERTIES BUILD_RPATH "\$ORIGIN:\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
-               INSTALL_RPATH "${OMNITRACE_EXE_INSTALL_RPATH}"
+               INSTALL_RPATH "${ROCPROFSYS_EXE_INSTALL_RPATH}"
                OUTPUT_NAME rocprof-sys-avail)
 
-omnitrace_strip_target(rocprofsys-avail)
+rocprofsys_strip_target(rocprofsys-avail)
 
 install(
     TARGETS rocprofsys-avail

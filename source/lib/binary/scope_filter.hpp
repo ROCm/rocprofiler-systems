@@ -55,7 +55,7 @@ struct scope_filter
 
     template <typename ContainerT>
     static bool satisfies_filter(const ContainerT&, filter_scope,
-                                 std::string_view) OMNITRACE_PURE;
+                                 std::string_view) ROCPROFSYS_PURE;
 };
 
 template <typename ContainerT>

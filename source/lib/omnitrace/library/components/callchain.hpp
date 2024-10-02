@@ -48,7 +48,7 @@ namespace component
 {
 struct callchain : comp::empty_base
 {
-    static constexpr size_t stack_depth = OMNITRACE_MAX_UNWIND_DEPTH;
+    static constexpr size_t stack_depth = ROCPROFSYS_MAX_UNWIND_DEPTH;
 
     struct record
     {

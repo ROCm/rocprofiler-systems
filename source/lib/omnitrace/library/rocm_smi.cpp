@@ -59,7 +59,7 @@
 #include <sys/resource.h>
 #include <thread>
 
-#define OMNITRACE_ROCM_SMI_CALL(...)                                                     \
+#define ROCPROFSYS_ROCM_SMI_CALL(...)                                                     \
     ::omnitrace::rocm_smi::check_error(__FILE__, __LINE__, __VA_ARGS__)
 
 namespace omnitrace
@@ -99,10 +99,10 @@ check_error(const char* _file, int _line, rsmi_status_t _code, bool* _option = n
     const char* _msg = nullptr;
     auto        _err = rsmi_status_string(_code, &_msg);
     if(_err != RSMI_STATUS_SUCCESS)
-        OMNITRACE_THROW("rsmi_status_string failed. No error message available. "
+        ROCPROFSYS_THROW("rsmi_status_string failed. No error message available. "
                         "Error code %i originated at %s:%i\n",
                         static_cast<int>(_code), _file, _line);
-    OMNITRACE_THROW("[%s:%i] Error code %i :: %s", _file, _line, static_cast<int>(_code),
+    ROCPROFSYS_THROW("[%s:%i] Error code %i :: %s", _file, _line, static_cast<int>(_code),
                     _msg);
 }
 
@@ -135,31 +135,31 @@ data::sample(uint32_t _dev_id)
     m_dev_id = _dev_id;
     m_ts     = _ts;
 
-#define OMNITRACE_RSMI_GET(OPTION, FUNCTION, ...)                                        \
+#define ROCPROFSYS_RSMI_GET(OPTION, FUNCTION, ...)                                        \
     if(OPTION)                                                                           \
     {                                                                                    \
         try                                                                              \
         {                                                                                \
-            OMNITRACE_ROCM_SMI_CALL(FUNCTION(__VA_ARGS__), &OPTION);                     \
+            ROCPROFSYS_ROCM_SMI_CALL(FUNCTION(__VA_ARGS__), &OPTION);                     \
         } catch(std::runtime_error & _e)                                                 \
         {                                                                                \
-            OMNITRACE_VERBOSE_F(                                                         \
+            ROCPROFSYS_VERBOSE_F(                                                         \
                 0, "[%s] Exception: %s. Disabling future samples from rocm-smi...\n",    \
                 #FUNCTION, _e.what());                                                   \
             get_state().store(State::Disabled);                                          \
         }                                                                                \
     }
 
-    OMNITRACE_RSMI_GET(get_settings(m_dev_id).busy, rsmi_dev_busy_percent_get, _dev_id,
+    ROCPROFSYS_RSMI_GET(get_settings(m_dev_id).busy, rsmi_dev_busy_percent_get, _dev_id,
                        &m_busy_perc);
-    OMNITRACE_RSMI_GET(get_settings(m_dev_id).temp, rsmi_dev_temp_metric_get, _dev_id,
+    ROCPROFSYS_RSMI_GET(get_settings(m_dev_id).temp, rsmi_dev_temp_metric_get, _dev_id,
                        RSMI_TEMP_TYPE_EDGE, RSMI_TEMP_CURRENT, &m_temp);
-    OMNITRACE_RSMI_GET(get_settings(m_dev_id).power, rsmi_dev_power_ave_get, _dev_id, 0,
+    ROCPROFSYS_RSMI_GET(get_settings(m_dev_id).power, rsmi_dev_power_ave_get, _dev_id, 0,
                        &m_power);
-    OMNITRACE_RSMI_GET(get_settings(m_dev_id).mem_usage, rsmi_dev_memory_usage_get,
+    ROCPROFSYS_RSMI_GET(get_settings(m_dev_id).mem_usage, rsmi_dev_memory_usage_get,
                        _dev_id, RSMI_MEM_TYPE_VRAM, &m_mem_usage);
 
-#undef OMNITRACE_RSMI_GET
+#undef ROCPROFSYS_RSMI_GET
 }
 
 void
@@ -201,11 +201,11 @@ sample()
     for(auto itr : data::device_list)
     {
         if(rocm_smi::get_state() != State::Active) continue;
-        OMNITRACE_DEBUG_F("Polling rocm-smi for device %u...\n", itr);
+        ROCPROFSYS_DEBUG_F("Polling rocm-smi for device %u...\n", itr);
         auto& _data = *_bundle_data.at(itr);
         if(!_data) continue;
         _data->emplace_back(data{ itr });
-        OMNITRACE_DEBUG_F("    %s\n", TIMEMORY_JOIN("", _data->back()).c_str());
+        ROCPROFSYS_DEBUG_F("    %s\n", TIMEMORY_JOIN("", _data->back()).c_str());
     }
 }
 
@@ -233,7 +233,7 @@ data::setup()
 bool
 data::shutdown()
 {
-    OMNITRACE_DEBUG("Shutting down rocm-smi...\n");
+    ROCPROFSYS_DEBUG("Shutting down rocm-smi...\n");
     rocm_smi::set_state(State::Finalized);
     return true;
 }
@@ -263,10 +263,10 @@ data::post_process(uint32_t _dev_id)
     auto        _rocm_smi   = (_rocm_smi_v) ? *_rocm_smi_v : std::deque<rocm_smi::data>{};
     const auto& _thread_info = thread_info::get(0, InternalTID);
 
-    OMNITRACE_VERBOSE(1, "Post-processing %zu rocm-smi samples from device %u\n",
+    ROCPROFSYS_VERBOSE(1, "Post-processing %zu rocm-smi samples from device %u\n",
                       _rocm_smi.size(), _dev_id);
 
-    OMNITRACE_CI_THROW(!_thread_info, "Missing thread info for thread 0");
+    ROCPROFSYS_CI_THROW(!_thread_info, "Missing thread info for thread 0");
     if(!_thread_info) return;
 
     auto _settings = get_settings(_dev_id);
@@ -336,7 +336,7 @@ setup()
 
     if(is_initialized() || !get_use_rocm_smi()) return;
 
-    OMNITRACE_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
+    ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
 
     // assign the data value to determined by rocm-smi
     data::device_count = device_count();
@@ -368,7 +368,7 @@ setup()
         {
             if(itr.find_first_not_of("0123456789-") != std::string::npos)
             {
-                OMNITRACE_THROW("Invalid GPU specification: '%s'. Only numerical values "
+                ROCPROFSYS_THROW("Invalid GPU specification: '%s'. Only numerical values "
                                 "(e.g., 0) or ranges (e.g., 0-7) are permitted.",
                                 itr.c_str());
             }
@@ -376,7 +376,7 @@ setup()
             if(itr.find('-') != std::string::npos)
             {
                 auto _v = tim::delimit(itr, "-");
-                OMNITRACE_CONDITIONAL_THROW(_v.size() != 2,
+                ROCPROFSYS_CONDITIONAL_THROW(_v.size() != 2,
                                             "Invalid GPU range specification: '%s'. "
                                             "Required format N-M, e.g. 0-4",
                                             itr.c_str());
@@ -399,7 +399,7 @@ setup()
         for(auto itr : _devices)
         {
             uint16_t dev_id = 0;
-            OMNITRACE_ROCM_SMI_CALL(rsmi_dev_id_get(itr, &dev_id));
+            ROCPROFSYS_ROCM_SMI_CALL(rsmi_dev_id_get(itr, &dev_id));
             // dev_id holds the device ID of device i, upon a successful call
 
             if(_metrics && !_metrics->empty())
@@ -417,10 +417,10 @@ setup()
                 {
                     auto iitr = supported.find(metric);
                     if(iitr == supported.end())
-                        OMNITRACE_FAIL_F("unsupported rocm-smi metric: %s\n",
+                        ROCPROFSYS_FAIL_F("unsupported rocm-smi metric: %s\n",
                                          metric.c_str());
 
-                    OMNITRACE_VERBOSE_F(1, "Enabling rocm-smi metric '%s'\n",
+                    ROCPROFSYS_VERBOSE_F(1, "Enabling rocm-smi metric '%s'\n",
                                         metric.c_str());
                     iitr->second = true;
                 }
@@ -432,7 +432,7 @@ setup()
         data::setup();
     } catch(std::runtime_error& _e)
     {
-        OMNITRACE_VERBOSE(0, "Exception thrown when initializing rocm-smi: %s\n",
+        ROCPROFSYS_VERBOSE(0, "Exception thrown when initializing rocm-smi: %s\n",
                           _e.what());
         data::device_list = {};
     }
@@ -449,11 +449,11 @@ shutdown()
     {
         if(data::shutdown())
         {
-            OMNITRACE_ROCM_SMI_CALL(rsmi_shut_down());
+            ROCPROFSYS_ROCM_SMI_CALL(rsmi_shut_down());
         }
     } catch(std::runtime_error& _e)
     {
-        OMNITRACE_VERBOSE(0, "Exception thrown when shutting down rocm-smi: %s\n",
+        ROCPROFSYS_VERBOSE(0, "Exception thrown when shutting down rocm-smi: %s\n",
                           _e.what());
     }
 
@@ -475,18 +475,18 @@ device_count()
 }  // namespace rocm_smi
 }  // namespace omnitrace
 
-OMNITRACE_INSTANTIATE_EXTERN_COMPONENT(
+ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(
     TIMEMORY_ESC(data_tracker<double, omnitrace::component::backtrace_gpu_busy>), true,
     double)
 
-OMNITRACE_INSTANTIATE_EXTERN_COMPONENT(
+ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(
     TIMEMORY_ESC(data_tracker<double, omnitrace::component::backtrace_gpu_temp>), true,
     double)
 
-OMNITRACE_INSTANTIATE_EXTERN_COMPONENT(
+ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(
     TIMEMORY_ESC(data_tracker<double, omnitrace::component::backtrace_gpu_power>), true,
     double)
 
-OMNITRACE_INSTANTIATE_EXTERN_COMPONENT(
+ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(
     TIMEMORY_ESC(data_tracker<double, omnitrace::component::backtrace_gpu_memory>), true,
     double)

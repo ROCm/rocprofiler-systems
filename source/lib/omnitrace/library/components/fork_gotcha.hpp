@@ -37,7 +37,7 @@ struct fork_gotcha : comp::base<fork_gotcha, void>
 
     using gotcha_data_t = comp::gotcha_data;
 
-    OMNITRACE_DEFAULT_OBJECT(fork_gotcha)
+    ROCPROFSYS_DEFAULT_OBJECT(fork_gotcha)
 
     // string id for component
     static std::string label() { return "fork_gotcha"; }

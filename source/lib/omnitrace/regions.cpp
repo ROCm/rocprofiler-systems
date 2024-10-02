@@ -43,9 +43,9 @@ invoke_category_region_start(omnitrace_category_t _category, const char* name,
                              omnitrace_annotation_t* _annotations,
                              size_t _annotation_count, std::index_sequence<Idx, Tail...>)
 {
-    static_assert(Idx > OMNITRACE_CATEGORY_NONE && Idx < OMNITRACE_CATEGORY_LAST,
+    static_assert(Idx > ROCPROFSYS_CATEGORY_NONE && Idx < ROCPROFSYS_CATEGORY_LAST,
                   "Error! index sequence should only contain values which are greater "
-                  "than OMNITRACE_CATEGORY_NONE and less than OMNITRACE_CATEGORY_LAST");
+                  "than ROCPROFSYS_CATEGORY_NONE and less than ROCPROFSYS_CATEGORY_LAST");
 
     if(_category == Idx)
     {
@@ -78,9 +78,9 @@ invoke_category_region_stop(omnitrace_category_t _category, const char* name,
                             omnitrace_annotation_t* _annotations,
                             size_t _annotation_count, std::index_sequence<Idx, Tail...>)
 {
-    static_assert(Idx > OMNITRACE_CATEGORY_NONE && Idx < OMNITRACE_CATEGORY_LAST,
+    static_assert(Idx > ROCPROFSYS_CATEGORY_NONE && Idx < ROCPROFSYS_CATEGORY_LAST,
                   "Error! index sequence should only contain values which are greater "
-                  "than OMNITRACE_CATEGORY_NONE and less than OMNITRACE_CATEGORY_LAST");
+                  "than ROCPROFSYS_CATEGORY_NONE and less than ROCPROFSYS_CATEGORY_LAST");
 
     if(_category == Idx)
     {
@@ -155,7 +155,7 @@ omnitrace_push_category_region_hidden(omnitrace_category_t _category, const char
 {
     omnitrace::impl::invoke_category_region_start(
         _category, name, _annotations, _annotation_count,
-        omnitrace::utility::make_index_sequence_range<1, OMNITRACE_CATEGORY_LAST>{});
+        omnitrace::utility::make_index_sequence_range<1, ROCPROFSYS_CATEGORY_LAST>{});
 }
 
 extern "C" void
@@ -165,7 +165,7 @@ omnitrace_pop_category_region_hidden(omnitrace_category_t _category, const char*
 {
     omnitrace::impl::invoke_category_region_stop(
         _category, name, _annotations, _annotation_count,
-        omnitrace::utility::make_index_sequence_range<1, OMNITRACE_CATEGORY_LAST>{});
+        omnitrace::utility::make_index_sequence_range<1, ROCPROFSYS_CATEGORY_LAST>{});
 }
 
 #if defined(__GNUC__) && (__GNUC__ == 7)

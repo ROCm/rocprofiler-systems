@@ -95,7 +95,7 @@ backtrace::global_init()
 void
 overflow::sample(int _sig)
 {
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
     static thread_local const auto& _tinfo      = thread_info::get();
     auto                            _tid        = _tinfo->index_data->sequent_value;
@@ -157,14 +157,14 @@ backtrace::sample(int _sig)
     static thread_local size_t _select_zeros = 0;
 
     if((_protect_flag & 1) == 1 ||
-       OMNITRACE_UNLIKELY(!trait::runtime_enabled<causal::component::backtrace>::get()))
+       ROCPROFSYS_UNLIKELY(!trait::runtime_enabled<causal::component::backtrace>::get()))
     {
         return;
     }
 
     ++_protect_flag;
     // on RedHat, the unw_step within get_unw_signal_frame_stack_raw involves a mutex lock
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
     m_index = causal::experiment::get_index();
     m_stack = get_unw_signal_frame_stack_raw<depth, ignore_depth>();
 
@@ -218,7 +218,7 @@ backtrace::sample(int _sig)
     }
     else
     {
-        OMNITRACE_THROW("unhandled signal %i\n", _sig);
+        ROCPROFSYS_THROW("unhandled signal %i\n", _sig);
     }
 
     ++_protect_flag;

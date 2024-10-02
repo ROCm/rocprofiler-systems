@@ -68,7 +68,7 @@ post_process();
 std::vector<component::rocm_info_entry>
 rocm_metrics();
 
-#if !defined(OMNITRACE_USE_ROCPROFILER) || OMNITRACE_USE_ROCPROFILER == 0
+#if !defined(ROCPROFSYS_USE_ROCPROFILER) || ROCPROFSYS_USE_ROCPROFILER == 0
 inline void
 post_process()
 {}

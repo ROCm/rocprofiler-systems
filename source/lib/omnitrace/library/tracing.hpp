@@ -77,10 +77,10 @@ using perfetto_annotate_component_types = tim::mpl::available_t<type_list<
 //
 //  declarations
 //
-extern OMNITRACE_HIDDEN_API bool debug_push;
-extern OMNITRACE_HIDDEN_API bool debug_pop;
-extern OMNITRACE_HIDDEN_API bool debug_user;
-extern OMNITRACE_HIDDEN_API bool debug_mark;
+extern ROCPROFSYS_HIDDEN_API bool debug_push;
+extern ROCPROFSYS_HIDDEN_API bool debug_pop;
+extern ROCPROFSYS_HIDDEN_API bool debug_user;
+extern ROCPROFSYS_HIDDEN_API bool debug_mark;
 
 std::unordered_map<hash_value_t, std::string>&
 get_perfetto_track_uuids();
@@ -166,7 +166,7 @@ get_perfetto_track(CategoryT, FuncT&& _desc_generator, Args&&... _args)
         _desc.set_name(_name);
         ::perfetto::TrackEvent::SetTrackDescriptor(_track, _desc);
 
-        OMNITRACE_VERBOSE_F(4, "[%s] Created %s(%zu) with description: \"%s\"\n",
+        ROCPROFSYS_VERBOSE_F(4, "[%s] Created %s(%zu) with description: \"%s\"\n",
                             trait::name<CategoryT>::value, demangle<TrackT>().c_str(),
                             _uuid, _name.c_str());
 
@@ -175,9 +175,9 @@ get_perfetto_track(CategoryT, FuncT&& _desc_generator, Args&&... _args)
 
     // guard this with ppdefs in addition to runtime check to avoid
     // overhead of generating string during releases
-#if defined(OMNITRACE_CI) && OMNITRACE_CI > 0
+#if defined(ROCPROFSYS_CI) && ROCPROFSYS_CI > 0
     auto _name = std::forward<FuncT>(_desc_generator)(std::forward<Args>(_args)...);
-    OMNITRACE_CI_THROW(_track_uuids.at(_uuid) != _name,
+    ROCPROFSYS_CI_THROW(_track_uuids.at(_uuid) != _name,
                        "Error! Multiple invocations of UUID %zu produced different "
                        "descriptions: \"%s\" and \"%s\"\n",
                        _uuid, _track_uuids.at(_uuid).c_str(), _name.c_str());
@@ -187,7 +187,7 @@ get_perfetto_track(CategoryT, FuncT&& _desc_generator, Args&&... _args)
 }
 
 template <typename Tp = uint64_t>
-OMNITRACE_INLINE auto
+ROCPROFSYS_INLINE auto
 now()
 {
     return ::tim::get_clock_real_now<Tp, std::nano>();
@@ -287,7 +287,7 @@ push_timemory(CategoryT, std::string_view name, Args&&... args)
     if(category_push_disabled<CategoryT>()) return;
 
     auto& _data = tracing::get_instrumentation_bundles();
-    if(OMNITRACE_LIKELY(_data != nullptr))
+    if(ROCPROFSYS_LIKELY(_data != nullptr))
     {
         // this generates a hash for the raw string array
         auto _hash = tim::add_hash_id(name);
@@ -307,15 +307,15 @@ get_timemory(CategoryT, std::string_view name)
 
     auto  _hash = tim::hash::get_hash_id(name);
     auto& _data = tracing::get_instrumentation_bundles();
-    if(OMNITRACE_UNLIKELY(_data == nullptr || _data->empty()))
+    if(ROCPROFSYS_UNLIKELY(_data == nullptr || _data->empty()))
     {
-        OMNITRACE_DEBUG("[%s] skipped %s :: empty bundle stack\n", "omnitrace_pop_trace",
+        ROCPROFSYS_DEBUG("[%s] skipped %s :: empty bundle stack\n", "omnitrace_pop_trace",
                         name.data());
         return return_type{ nullptr, -1 };
     }
 
     auto*& _v_back = _data->back();
-    if(OMNITRACE_LIKELY(_v_back->get_hash() == _hash))
+    if(ROCPROFSYS_LIKELY(_v_back->get_hash() == _hash))
     {
         return std::make_pair(_v_back, _data->size() - 1);
     }
@@ -357,7 +357,7 @@ destroy_timemory(std::pair<instrumentation_bundle_t*, size_t> _data)
     if(_data.first)
     {
         auto& _bundles = tracing::get_instrumentation_bundles();
-        if(OMNITRACE_LIKELY(_bundles != nullptr))
+        if(ROCPROFSYS_LIKELY(_bundles != nullptr))
             _bundles->destroy(_data.first, _data.second);
     }
 }

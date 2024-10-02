@@ -20,17 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#if !defined(OMNITRACE_DL_SOURCE)
-#    define OMNITRACE_DL_SOURCE 1
+#if !defined(ROCPROFSYS_DL_SOURCE)
+#    define ROCPROFSYS_DL_SOURCE 1
 #endif
 
-#define OMNITRACE_COMMON_LIBRARY_NAME "dl"
+#define ROCPROFSYS_COMMON_LIBRARY_NAME "dl"
 
 #include <timemory/log/color.hpp>
 
-#define OMNITRACE_COMMON_LIBRARY_LOG_START                                               \
+#define ROCPROFSYS_COMMON_LIBRARY_LOG_START                                               \
     fprintf(stderr, "%s", ::tim::log::color::info());
-#define OMNITRACE_COMMON_LIBRARY_LOG_END fprintf(stderr, "%s", ::tim::log::color::end());
+#define ROCPROFSYS_COMMON_LIBRARY_LOG_END fprintf(stderr, "%s", ::tim::log::color::end());
 
 #include "common/defines.h"
 #include "common/delimit.hpp"
@@ -56,23 +56,23 @@
 
 //--------------------------------------------------------------------------------------//
 
-#define OMNITRACE_DLSYM(VARNAME, HANDLE, FUNCNAME)                                       \
+#define ROCPROFSYS_DLSYM(VARNAME, HANDLE, FUNCNAME)                                       \
     if(HANDLE)                                                                           \
     {                                                                                    \
         *(void**) (&VARNAME) = dlsym(HANDLE, FUNCNAME);                                  \
         if(VARNAME == nullptr && _omnitrace_dl_verbose >= _warn_verbose)                 \
         {                                                                                \
-            OMNITRACE_COMMON_LIBRARY_LOG_START                                           \
+            ROCPROFSYS_COMMON_LIBRARY_LOG_START                                           \
             fprintf(stderr, "[rocprof-sys][dl][pid=%i]> %s :: %s\n", getpid(), FUNCNAME, \
                     dlerror());                                                          \
-            OMNITRACE_COMMON_LIBRARY_LOG_END                                             \
+            ROCPROFSYS_COMMON_LIBRARY_LOG_END                                             \
         }                                                                                \
         else if(_omnitrace_dl_verbose > _info_verbose)                                   \
         {                                                                                \
-            OMNITRACE_COMMON_LIBRARY_LOG_START                                           \
+            ROCPROFSYS_COMMON_LIBRARY_LOG_START                                           \
             fprintf(stderr, "[rocprof-sys][dl][pid=%i]> %s :: success\n", getpid(),      \
                     FUNCNAME);                                                           \
-            OMNITRACE_COMMON_LIBRARY_LOG_END                                             \
+            ROCPROFSYS_COMMON_LIBRARY_LOG_END                                             \
         }                                                                                \
     }
 
@@ -160,18 +160,18 @@ get_omnitrace_root_pid()
 }
 
 void
-omnitrace_preinit() OMNITRACE_INTERNAL_API;
+omnitrace_preinit() ROCPROFSYS_INTERNAL_API;
 
 void
-omnitrace_postinit(std::string exe = {}) OMNITRACE_INTERNAL_API;
+omnitrace_postinit(std::string exe = {}) ROCPROFSYS_INTERNAL_API;
 
 pid_t _omnitrace_root_pid = get_omnitrace_root_pid();
 
 // environment priority:
-//  - OMNITRACE_DL_DEBUG
-//  - OMNITRACE_DL_VERBOSE
-//  - OMNITRACE_DEBUG
-//  - OMNITRACE_VERBOSE
+//  - ROCPROFSYS_DL_DEBUG
+//  - ROCPROFSYS_DL_VERBOSE
+//  - ROCPROFSYS_DEBUG
+//  - ROCPROFSYS_VERBOSE
 int _omnitrace_dl_verbose = get_omnitrace_dl_env();
 
 // The docs for dlopen suggest that the combination of RTLD_LOCAL + RTLD_DEEPBIND
@@ -218,9 +218,9 @@ const char* _omnitrace_dl_dlopen_descr = "RTLD_LAZY | RTLD_LOCAL";
 #endif
 
 /// This class contains function pointers for omnitrace's instrumentation functions
-struct OMNITRACE_INTERNAL_API indirect
+struct ROCPROFSYS_INTERNAL_API indirect
 {
-    OMNITRACE_INLINE indirect(const std::string& _omnilib, const std::string& _userlib,
+    ROCPROFSYS_INLINE indirect(const std::string& _omnilib, const std::string& _userlib,
                               const std::string& _dllib)
     : m_omnilib{ common::path::find_path(_omnilib, _omnitrace_dl_verbose) }
     , m_dllib{ common::path::find_path(_dllib, _omnitrace_dl_verbose) }
@@ -228,14 +228,14 @@ struct OMNITRACE_INTERNAL_API indirect
     {
         if(_omnitrace_dl_verbose >= 1)
         {
-            OMNITRACE_COMMON_LIBRARY_LOG_START
+            ROCPROFSYS_COMMON_LIBRARY_LOG_START
             fprintf(stderr, "[rocprof-sys][dl][pid=%i] %s resolved to '%s'\n", getpid(),
                     ::basename(_omnilib.c_str()), m_omnilib.c_str());
             fprintf(stderr, "[rocprof-sys][dl][pid=%i] %s resolved to '%s'\n", getpid(),
                     ::basename(_dllib.c_str()), m_dllib.c_str());
             fprintf(stderr, "[rocprof-sys][dl][pid=%i] %s resolved to '%s'\n", getpid(),
                     ::basename(_userlib.c_str()), m_userlib.c_str());
-            OMNITRACE_COMMON_LIBRARY_LOG_END
+            ROCPROFSYS_COMMON_LIBRARY_LOG_END
         }
 
         auto _search_paths = common::join(':', common::path::dirname(_omnilib),
@@ -247,9 +247,9 @@ struct OMNITRACE_INTERNAL_API indirect
         init();
     }
 
-    OMNITRACE_INLINE ~indirect() { dlclose(m_omnihandle); }
+    ROCPROFSYS_INLINE ~indirect() { dlclose(m_omnihandle); }
 
-    static OMNITRACE_INLINE void* open(const std::string& _lib)
+    static ROCPROFSYS_INLINE void* open(const std::string& _lib)
     {
         auto* libhandle = dlopen(_lib.c_str(), _omnitrace_dl_dlopen_flags);
 
@@ -257,11 +257,11 @@ struct OMNITRACE_INTERNAL_API indirect
         {
             if(_omnitrace_dl_verbose >= 2)
             {
-                OMNITRACE_COMMON_LIBRARY_LOG_START
+                ROCPROFSYS_COMMON_LIBRARY_LOG_START
                 fprintf(stderr,
                         "[rocprof-sys][dl][pid=%i] dlopen(\"%s\", %s) :: success\n",
                         getpid(), _lib.c_str(), _omnitrace_dl_dlopen_descr);
-                OMNITRACE_COMMON_LIBRARY_LOG_END
+                ROCPROFSYS_COMMON_LIBRARY_LOG_END
             }
         }
         else
@@ -269,10 +269,10 @@ struct OMNITRACE_INTERNAL_API indirect
             if(_omnitrace_dl_verbose >= 0)
             {
                 perror("dlopen");
-                OMNITRACE_COMMON_LIBRARY_LOG_START
+                ROCPROFSYS_COMMON_LIBRARY_LOG_START
                 fprintf(stderr, "[rocprof-sys][dl][pid=%i] dlopen(\"%s\", %s) :: %s\n",
                         getpid(), _lib.c_str(), _omnitrace_dl_dlopen_descr, dlerror());
-                OMNITRACE_COMMON_LIBRARY_LOG_END
+                ROCPROFSYS_COMMON_LIBRARY_LOG_END
             }
         }
 
@@ -281,100 +281,100 @@ struct OMNITRACE_INTERNAL_API indirect
         return libhandle;
     }
 
-    OMNITRACE_INLINE void init()
+    ROCPROFSYS_INLINE void init()
     {
         if(!m_omnihandle) m_omnihandle = open(m_omnilib);
 
         int _warn_verbose = 0;
         int _info_verbose = 2;
         // Initialize all pointers
-        OMNITRACE_DLSYM(omnitrace_init_library_f, m_omnihandle, "omnitrace_init_library");
-        OMNITRACE_DLSYM(omnitrace_init_tooling_f, m_omnihandle, "omnitrace_init_tooling");
-        OMNITRACE_DLSYM(omnitrace_init_f, m_omnihandle, "omnitrace_init");
-        OMNITRACE_DLSYM(omnitrace_finalize_f, m_omnihandle, "omnitrace_finalize");
-        OMNITRACE_DLSYM(omnitrace_set_env_f, m_omnihandle, "omnitrace_set_env");
-        OMNITRACE_DLSYM(omnitrace_set_mpi_f, m_omnihandle, "omnitrace_set_mpi");
-        OMNITRACE_DLSYM(omnitrace_push_trace_f, m_omnihandle, "omnitrace_push_trace");
-        OMNITRACE_DLSYM(omnitrace_pop_trace_f, m_omnihandle, "omnitrace_pop_trace");
-        OMNITRACE_DLSYM(omnitrace_push_region_f, m_omnihandle, "omnitrace_push_region");
-        OMNITRACE_DLSYM(omnitrace_pop_region_f, m_omnihandle, "omnitrace_pop_region");
-        OMNITRACE_DLSYM(omnitrace_push_category_region_f, m_omnihandle,
+        ROCPROFSYS_DLSYM(omnitrace_init_library_f, m_omnihandle, "omnitrace_init_library");
+        ROCPROFSYS_DLSYM(omnitrace_init_tooling_f, m_omnihandle, "omnitrace_init_tooling");
+        ROCPROFSYS_DLSYM(omnitrace_init_f, m_omnihandle, "omnitrace_init");
+        ROCPROFSYS_DLSYM(omnitrace_finalize_f, m_omnihandle, "omnitrace_finalize");
+        ROCPROFSYS_DLSYM(omnitrace_set_env_f, m_omnihandle, "omnitrace_set_env");
+        ROCPROFSYS_DLSYM(omnitrace_set_mpi_f, m_omnihandle, "omnitrace_set_mpi");
+        ROCPROFSYS_DLSYM(omnitrace_push_trace_f, m_omnihandle, "omnitrace_push_trace");
+        ROCPROFSYS_DLSYM(omnitrace_pop_trace_f, m_omnihandle, "omnitrace_pop_trace");
+        ROCPROFSYS_DLSYM(omnitrace_push_region_f, m_omnihandle, "omnitrace_push_region");
+        ROCPROFSYS_DLSYM(omnitrace_pop_region_f, m_omnihandle, "omnitrace_pop_region");
+        ROCPROFSYS_DLSYM(omnitrace_push_category_region_f, m_omnihandle,
                         "omnitrace_push_category_region");
-        OMNITRACE_DLSYM(omnitrace_pop_category_region_f, m_omnihandle,
+        ROCPROFSYS_DLSYM(omnitrace_pop_category_region_f, m_omnihandle,
                         "omnitrace_pop_category_region");
-        OMNITRACE_DLSYM(omnitrace_register_source_f, m_omnihandle,
+        ROCPROFSYS_DLSYM(omnitrace_register_source_f, m_omnihandle,
                         "omnitrace_register_source");
-        OMNITRACE_DLSYM(omnitrace_register_coverage_f, m_omnihandle,
+        ROCPROFSYS_DLSYM(omnitrace_register_coverage_f, m_omnihandle,
                         "omnitrace_register_coverage");
-        OMNITRACE_DLSYM(omnitrace_progress_f, m_omnihandle, "omnitrace_progress");
-        OMNITRACE_DLSYM(omnitrace_annotated_progress_f, m_omnihandle,
+        ROCPROFSYS_DLSYM(omnitrace_progress_f, m_omnihandle, "omnitrace_progress");
+        ROCPROFSYS_DLSYM(omnitrace_annotated_progress_f, m_omnihandle,
                         "omnitrace_annotated_progress");
 
-        OMNITRACE_DLSYM(kokkosp_print_help_f, m_omnihandle, "kokkosp_print_help");
-        OMNITRACE_DLSYM(kokkosp_parse_args_f, m_omnihandle, "kokkosp_parse_args");
-        OMNITRACE_DLSYM(kokkosp_declare_metadata_f, m_omnihandle,
+        ROCPROFSYS_DLSYM(kokkosp_print_help_f, m_omnihandle, "kokkosp_print_help");
+        ROCPROFSYS_DLSYM(kokkosp_parse_args_f, m_omnihandle, "kokkosp_parse_args");
+        ROCPROFSYS_DLSYM(kokkosp_declare_metadata_f, m_omnihandle,
                         "kokkosp_declare_metadata");
-        OMNITRACE_DLSYM(kokkosp_request_tool_settings_f, m_omnihandle,
+        ROCPROFSYS_DLSYM(kokkosp_request_tool_settings_f, m_omnihandle,
                         "kokkosp_request_tool_settings");
-        OMNITRACE_DLSYM(kokkosp_init_library_f, m_omnihandle, "kokkosp_init_library");
-        OMNITRACE_DLSYM(kokkosp_finalize_library_f, m_omnihandle,
+        ROCPROFSYS_DLSYM(kokkosp_init_library_f, m_omnihandle, "kokkosp_init_library");
+        ROCPROFSYS_DLSYM(kokkosp_finalize_library_f, m_omnihandle,
                         "kokkosp_finalize_library");
-        OMNITRACE_DLSYM(kokkosp_begin_parallel_for_f, m_omnihandle,
+        ROCPROFSYS_DLSYM(kokkosp_begin_parallel_for_f, m_omnihandle,
                         "kokkosp_begin_parallel_for");
-        OMNITRACE_DLSYM(kokkosp_end_parallel_for_f, m_omnihandle,
+        ROCPROFSYS_DLSYM(kokkosp_end_parallel_for_f, m_omnihandle,
                         "kokkosp_end_parallel_for");
-        OMNITRACE_DLSYM(kokkosp_begin_parallel_reduce_f, m_omnihandle,
+        ROCPROFSYS_DLSYM(kokkosp_begin_parallel_reduce_f, m_omnihandle,
                         "kokkosp_begin_parallel_reduce");
-        OMNITRACE_DLSYM(kokkosp_end_parallel_reduce_f, m_omnihandle,
+        ROCPROFSYS_DLSYM(kokkosp_end_parallel_reduce_f, m_omnihandle,
                         "kokkosp_end_parallel_reduce");
-        OMNITRACE_DLSYM(kokkosp_begin_parallel_scan_f, m_omnihandle,
+        ROCPROFSYS_DLSYM(kokkosp_begin_parallel_scan_f, m_omnihandle,
                         "kokkosp_begin_parallel_scan");
-        OMNITRACE_DLSYM(kokkosp_end_parallel_scan_f, m_omnihandle,
+        ROCPROFSYS_DLSYM(kokkosp_end_parallel_scan_f, m_omnihandle,
                         "kokkosp_end_parallel_scan");
-        OMNITRACE_DLSYM(kokkosp_begin_fence_f, m_omnihandle, "kokkosp_begin_fence");
-        OMNITRACE_DLSYM(kokkosp_end_fence_f, m_omnihandle, "kokkosp_end_fence");
-        OMNITRACE_DLSYM(kokkosp_push_profile_region_f, m_omnihandle,
+        ROCPROFSYS_DLSYM(kokkosp_begin_fence_f, m_omnihandle, "kokkosp_begin_fence");
+        ROCPROFSYS_DLSYM(kokkosp_end_fence_f, m_omnihandle, "kokkosp_end_fence");
+        ROCPROFSYS_DLSYM(kokkosp_push_profile_region_f, m_omnihandle,
                         "kokkosp_push_profile_region");
-        OMNITRACE_DLSYM(kokkosp_pop_profile_region_f, m_omnihandle,
+        ROCPROFSYS_DLSYM(kokkosp_pop_profile_region_f, m_omnihandle,
                         "kokkosp_pop_profile_region");
-        OMNITRACE_DLSYM(kokkosp_create_profile_section_f, m_omnihandle,
+        ROCPROFSYS_DLSYM(kokkosp_create_profile_section_f, m_omnihandle,
                         "kokkosp_create_profile_section");
-        OMNITRACE_DLSYM(kokkosp_destroy_profile_section_f, m_omnihandle,
+        ROCPROFSYS_DLSYM(kokkosp_destroy_profile_section_f, m_omnihandle,
                         "kokkosp_destroy_profile_section");
-        OMNITRACE_DLSYM(kokkosp_start_profile_section_f, m_omnihandle,
+        ROCPROFSYS_DLSYM(kokkosp_start_profile_section_f, m_omnihandle,
                         "kokkosp_start_profile_section");
-        OMNITRACE_DLSYM(kokkosp_stop_profile_section_f, m_omnihandle,
+        ROCPROFSYS_DLSYM(kokkosp_stop_profile_section_f, m_omnihandle,
                         "kokkosp_stop_profile_section");
-        OMNITRACE_DLSYM(kokkosp_allocate_data_f, m_omnihandle, "kokkosp_allocate_data");
-        OMNITRACE_DLSYM(kokkosp_deallocate_data_f, m_omnihandle,
+        ROCPROFSYS_DLSYM(kokkosp_allocate_data_f, m_omnihandle, "kokkosp_allocate_data");
+        ROCPROFSYS_DLSYM(kokkosp_deallocate_data_f, m_omnihandle,
                         "kokkosp_deallocate_data");
-        OMNITRACE_DLSYM(kokkosp_begin_deep_copy_f, m_omnihandle,
+        ROCPROFSYS_DLSYM(kokkosp_begin_deep_copy_f, m_omnihandle,
                         "kokkosp_begin_deep_copy");
-        OMNITRACE_DLSYM(kokkosp_end_deep_copy_f, m_omnihandle, "kokkosp_end_deep_copy");
-        OMNITRACE_DLSYM(kokkosp_profile_event_f, m_omnihandle, "kokkosp_profile_event");
-        OMNITRACE_DLSYM(kokkosp_dual_view_sync_f, m_omnihandle, "kokkosp_dual_view_sync");
-        OMNITRACE_DLSYM(kokkosp_dual_view_modify_f, m_omnihandle,
+        ROCPROFSYS_DLSYM(kokkosp_end_deep_copy_f, m_omnihandle, "kokkosp_end_deep_copy");
+        ROCPROFSYS_DLSYM(kokkosp_profile_event_f, m_omnihandle, "kokkosp_profile_event");
+        ROCPROFSYS_DLSYM(kokkosp_dual_view_sync_f, m_omnihandle, "kokkosp_dual_view_sync");
+        ROCPROFSYS_DLSYM(kokkosp_dual_view_modify_f, m_omnihandle,
                         "kokkosp_dual_view_modify");
 
-#if OMNITRACE_USE_ROCTRACER > 0
-        OMNITRACE_DLSYM(hsa_on_load_f, m_omnihandle, "OnLoad");
-        OMNITRACE_DLSYM(hsa_on_unload_f, m_omnihandle, "OnUnload");
+#if ROCPROFSYS_USE_ROCTRACER > 0
+        ROCPROFSYS_DLSYM(hsa_on_load_f, m_omnihandle, "OnLoad");
+        ROCPROFSYS_DLSYM(hsa_on_unload_f, m_omnihandle, "OnUnload");
 #endif
 
-#if OMNITRACE_USE_ROCPROFILER > 0
-        OMNITRACE_DLSYM(rocp_on_load_tool_prop_f, m_omnihandle, "OnLoadToolProp");
-        OMNITRACE_DLSYM(rocp_on_unload_tool_f, m_omnihandle, "OnUnloadTool");
+#if ROCPROFSYS_USE_ROCPROFILER > 0
+        ROCPROFSYS_DLSYM(rocp_on_load_tool_prop_f, m_omnihandle, "OnLoadToolProp");
+        ROCPROFSYS_DLSYM(rocp_on_unload_tool_f, m_omnihandle, "OnUnloadTool");
 #endif
 
-#if OMNITRACE_USE_OMPT == 0
+#if ROCPROFSYS_USE_OMPT == 0
         _warn_verbose = 5;
 #else
-        OMNITRACE_DLSYM(ompt_start_tool_f, m_omnihandle, "ompt_start_tool");
+        ROCPROFSYS_DLSYM(ompt_start_tool_f, m_omnihandle, "ompt_start_tool");
 #endif
 
         if(!m_userhandle) m_userhandle = open(m_userlib);
         _warn_verbose = 0;
-        OMNITRACE_DLSYM(omnitrace_user_configure_f, m_userhandle,
+        ROCPROFSYS_DLSYM(omnitrace_user_configure_f, m_userhandle,
                         "omnitrace_user_configure");
 
         if(omnitrace_user_configure_f)
@@ -390,7 +390,7 @@ struct OMNITRACE_INTERNAL_API indirect
             _cb.push_annotated_region      = &omnitrace_user_push_annotated_region_dl;
             _cb.pop_annotated_region       = &omnitrace_user_pop_annotated_region_dl;
             _cb.annotated_progress         = &omnitrace_user_annotated_progress_dl;
-            (*omnitrace_user_configure_f)(OMNITRACE_USER_REPLACE_CONFIG, _cb, nullptr);
+            (*omnitrace_user_configure_f)(ROCPROFSYS_USER_REPLACE_CONFIG, _cb, nullptr);
         }
     }
 
@@ -457,19 +457,19 @@ public:
     void (*kokkosp_dual_view_modify_f)(const char*, const void* const, bool)  = nullptr;
 
     // HSA functions
-#if OMNITRACE_USE_ROCTRACER > 0
+#if ROCPROFSYS_USE_ROCTRACER > 0
     bool (*hsa_on_load_f)(HsaApiTable*, uint64_t, uint64_t, const char* const*) = nullptr;
     void (*hsa_on_unload_f)()                                                   = nullptr;
 #endif
 
     // ROCP functions
-#if OMNITRACE_USE_ROCPROFILER > 0
+#if ROCPROFSYS_USE_ROCPROFILER > 0
     void (*rocp_on_load_tool_prop_f)(void* settings) = nullptr;
     void (*rocp_on_unload_tool_f)()                  = nullptr;
 #endif
 
     // OpenMP functions
-#if defined(OMNITRACE_USE_OMPT) && OMNITRACE_USE_OMPT > 0
+#if defined(ROCPROFSYS_USE_OMPT) && ROCPROFSYS_USE_OMPT > 0
     ompt_start_tool_result_t* (*ompt_start_tool_f)(unsigned int, const char*);
 #endif
 
@@ -486,7 +486,7 @@ private:
 };
 
 inline indirect&
-get_indirect() OMNITRACE_INTERNAL_API;
+get_indirect() ROCPROFSYS_INTERNAL_API;
 
 indirect&
 get_indirect()
@@ -567,28 +567,28 @@ bool _omnitrace_dl_fini = (std::atexit([]() {
 
 //--------------------------------------------------------------------------------------//
 
-#define OMNITRACE_DL_INVOKE(...)                                                         \
+#define ROCPROFSYS_DL_INVOKE(...)                                                         \
     ::omnitrace::common::invoke(__FUNCTION__, ::omnitrace::dl::_omnitrace_dl_verbose,    \
                                 (::omnitrace::dl::get_thread_status() = false),          \
                                 __VA_ARGS__)
 
-#define OMNITRACE_DL_IGNORE(...)                                                         \
+#define ROCPROFSYS_DL_IGNORE(...)                                                         \
     ::omnitrace::common::ignore(__FUNCTION__, ::omnitrace::dl::_omnitrace_dl_verbose,    \
                                 __VA_ARGS__)
 
-#define OMNITRACE_DL_INVOKE_STATUS(STATUS, ...)                                          \
+#define ROCPROFSYS_DL_INVOKE_STATUS(STATUS, ...)                                          \
     ::omnitrace::common::invoke(__FUNCTION__, ::omnitrace::dl::_omnitrace_dl_verbose,    \
                                 STATUS, __VA_ARGS__)
 
-#define OMNITRACE_DL_LOG(LEVEL, ...)                                                     \
+#define ROCPROFSYS_DL_LOG(LEVEL, ...)                                                     \
     if(::omnitrace::dl::_omnitrace_dl_verbose >= LEVEL)                                  \
     {                                                                                    \
         fflush(stderr);                                                                  \
-        OMNITRACE_COMMON_LIBRARY_LOG_START                                               \
-        fprintf(stderr, "[rocprof-sys][" OMNITRACE_COMMON_LIBRARY_NAME "][%i] ",         \
+        ROCPROFSYS_COMMON_LIBRARY_LOG_START                                               \
+        fprintf(stderr, "[rocprof-sys][" ROCPROFSYS_COMMON_LIBRARY_NAME "][%i] ",         \
                 getpid());                                                               \
         fprintf(stderr, __VA_ARGS__);                                                    \
-        OMNITRACE_COMMON_LIBRARY_LOG_END                                                 \
+        ROCPROFSYS_COMMON_LIBRARY_LOG_END                                                 \
         fflush(stderr);                                                                  \
     }
 
@@ -610,26 +610,26 @@ extern "C"
 
     void omnitrace_init_library(void)
     {
-        OMNITRACE_DL_INVOKE(get_indirect().omnitrace_init_library_f);
+        ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_init_library_f);
     }
 
     void omnitrace_init_tooling(void)
     {
-        OMNITRACE_DL_INVOKE(get_indirect().omnitrace_init_tooling_f);
+        ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_init_tooling_f);
     }
 
     void omnitrace_init(const char* a, bool b, const char* c)
     {
         if(dl::get_inited() && dl::get_finied())
         {
-            OMNITRACE_DL_LOG(
+            ROCPROFSYS_DL_LOG(
                 2, "%s(%s) ignored :: already initialized and finalized\n", __FUNCTION__,
                 ::omnitrace::join(::omnitrace::QuoteStrings{}, ", ", a, b, c).c_str());
             return;
         }
         else if(dl::get_inited() && dl::get_active())
         {
-            OMNITRACE_DL_LOG(
+            ROCPROFSYS_DL_LOG(
                 2, "%s(%s) ignored :: already initialized and active\n", __FUNCTION__,
                 ::omnitrace::join(::omnitrace::QuoteStrings{}, ", ", a, b, c).c_str());
             return;
@@ -639,7 +639,7 @@ extern "C"
             dl::omnitrace_preinit();
 
         bool _invoked = false;
-        OMNITRACE_DL_INVOKE_STATUS(_invoked, get_indirect().omnitrace_init_f, a, b, c);
+        ROCPROFSYS_DL_INVOKE_STATUS(_invoked, get_indirect().omnitrace_init_f, a, b, c);
         if(_invoked)
         {
             dl::get_active()          = true;
@@ -654,19 +654,19 @@ extern "C"
     {
         if(dl::get_inited() && dl::get_finied())
         {
-            OMNITRACE_DL_LOG(2, "%s() ignored :: already initialized and finalized\n",
+            ROCPROFSYS_DL_LOG(2, "%s() ignored :: already initialized and finalized\n",
                              __FUNCTION__);
             return;
         }
         else if(dl::get_finied() && !dl::get_active())
         {
-            OMNITRACE_DL_LOG(2, "%s() ignored :: already finalized but not active\n",
+            ROCPROFSYS_DL_LOG(2, "%s() ignored :: already finalized but not active\n",
                              __FUNCTION__);
             return;
         }
 
         bool _invoked = false;
-        OMNITRACE_DL_INVOKE_STATUS(_invoked, get_indirect().omnitrace_finalize_f);
+        ROCPROFSYS_DL_INVOKE_STATUS(_invoked, get_indirect().omnitrace_finalize_f);
         if(_invoked)
         {
             dl::get_active() = false;
@@ -679,7 +679,7 @@ extern "C"
         if(!dl::get_active()) return;
         if(dl::get_thread_enabled())
         {
-            OMNITRACE_DL_INVOKE(get_indirect().omnitrace_push_trace_f, name);
+            ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_push_trace_f, name);
         }
         else
         {
@@ -692,7 +692,7 @@ extern "C"
         if(!dl::get_active()) return;
         if(dl::get_thread_enabled())
         {
-            OMNITRACE_DL_INVOKE(get_indirect().omnitrace_pop_trace_f, name);
+            ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_pop_trace_f, name);
         }
         else
         {
@@ -705,7 +705,7 @@ extern "C"
         if(!dl::get_active()) return 0;
         if(dl::get_thread_enabled())
         {
-            return OMNITRACE_DL_INVOKE(get_indirect().omnitrace_push_region_f, name);
+            return ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_push_region_f, name);
         }
         else
         {
@@ -719,7 +719,7 @@ extern "C"
         if(!dl::get_active()) return 0;
         if(dl::get_thread_enabled())
         {
-            return OMNITRACE_DL_INVOKE(get_indirect().omnitrace_pop_region_f, name);
+            return ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_pop_region_f, name);
         }
         else
         {
@@ -735,7 +735,7 @@ extern "C"
         if(!dl::get_active()) return 0;
         if(dl::get_thread_enabled())
         {
-            return OMNITRACE_DL_INVOKE(get_indirect().omnitrace_push_category_region_f,
+            return ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_push_category_region_f,
                                        _category, name, _annotations, _annotation_count);
         }
         else
@@ -752,7 +752,7 @@ extern "C"
         if(!dl::get_active()) return 0;
         if(dl::get_thread_enabled())
         {
-            return OMNITRACE_DL_INVOKE(get_indirect().omnitrace_pop_category_region_f,
+            return ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_pop_category_region_f,
                                        _category, name, _annotations, _annotation_count);
         }
         else
@@ -766,36 +766,36 @@ extern "C"
     {
         if(dl::get_inited() && dl::get_active())
         {
-            OMNITRACE_DL_IGNORE(2, "already initialized and active", a, b);
+            ROCPROFSYS_DL_IGNORE(2, "already initialized and active", a, b);
             return;
         }
-        OMNITRACE_DL_LOG(2, "%s(%s, %s)\n", __FUNCTION__, a, b);
+        ROCPROFSYS_DL_LOG(2, "%s(%s, %s)\n", __FUNCTION__, a, b);
         setenv(a, b, 0);
-        // OMNITRACE_DL_INVOKE(get_indirect().omnitrace_set_env_f, a, b);
+        // ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_set_env_f, a, b);
     }
 
     void omnitrace_set_mpi(bool a, bool b)
     {
         if(dl::get_inited() && dl::get_active())
         {
-            OMNITRACE_DL_IGNORE(2, "already initialized and active", a, b);
+            ROCPROFSYS_DL_IGNORE(2, "already initialized and active", a, b);
             return;
         }
-        OMNITRACE_DL_INVOKE(get_indirect().omnitrace_set_mpi_f, a, b);
+        ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_set_mpi_f, a, b);
     }
 
     void omnitrace_register_source(const char* file, const char* func, size_t line,
                                    size_t address, const char* source)
     {
-        OMNITRACE_DL_LOG(3, "%s(\"%s\", \"%s\", %zu, %zu, \"%s\")\n", __FUNCTION__, file,
+        ROCPROFSYS_DL_LOG(3, "%s(\"%s\", \"%s\", %zu, %zu, \"%s\")\n", __FUNCTION__, file,
                          func, line, address, source);
-        OMNITRACE_DL_INVOKE(get_indirect().omnitrace_register_source_f, file, func, line,
+        ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_register_source_f, file, func, line,
                             address, source);
     }
 
     void omnitrace_register_coverage(const char* file, const char* func, size_t address)
     {
-        OMNITRACE_DL_INVOKE(get_indirect().omnitrace_register_coverage_f, file, func,
+        ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_register_coverage_f, file, func,
                             address);
     }
 
@@ -826,18 +826,18 @@ extern "C"
     int omnitrace_user_push_region_dl(const char* name)
     {
         if(!dl::get_active()) return 0;
-        return OMNITRACE_DL_INVOKE(get_indirect().omnitrace_push_region_f, name);
+        return ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_push_region_f, name);
     }
 
     int omnitrace_user_pop_region_dl(const char* name)
     {
         if(!dl::get_active()) return 0;
-        return OMNITRACE_DL_INVOKE(get_indirect().omnitrace_pop_region_f, name);
+        return ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_pop_region_f, name);
     }
 
     int omnitrace_user_progress_dl(const char* name)
     {
-        OMNITRACE_DL_INVOKE(get_indirect().omnitrace_progress_f, name);
+        ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_progress_f, name);
         return 0;
     }
 
@@ -846,8 +846,8 @@ extern "C"
                                                 size_t                  _annotation_count)
     {
         if(!dl::get_active()) return 0;
-        return OMNITRACE_DL_INVOKE(get_indirect().omnitrace_push_category_region_f,
-                                   OMNITRACE_CATEGORY_USER, name, _annotations,
+        return ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_push_category_region_f,
+                                   ROCPROFSYS_CATEGORY_USER, name, _annotations,
                                    _annotation_count);
     }
 
@@ -856,8 +856,8 @@ extern "C"
                                                size_t                  _annotation_count)
     {
         if(!dl::get_active()) return 0;
-        return OMNITRACE_DL_INVOKE(get_indirect().omnitrace_pop_category_region_f,
-                                   OMNITRACE_CATEGORY_USER, name, _annotations,
+        return ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_pop_category_region_f,
+                                   ROCPROFSYS_CATEGORY_USER, name, _annotations,
                                    _annotation_count);
     }
 
@@ -865,31 +865,31 @@ extern "C"
                                              omnitrace_annotation_t* _annotations,
                                              size_t                  _annotation_count)
     {
-        OMNITRACE_DL_INVOKE(get_indirect().omnitrace_annotated_progress_f, name,
+        ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_annotated_progress_f, name,
                             _annotations, _annotation_count);
         return 0;
     }
 
     void omnitrace_progress(const char* _name)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().omnitrace_progress_f, _name);
+        return ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_progress_f, _name);
     }
 
     void omnitrace_annotated_progress(const char*             _name,
                                       omnitrace_annotation_t* _annotations,
                                       size_t                  _annotation_count)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().omnitrace_annotated_progress_f, _name,
+        return ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_annotated_progress_f, _name,
                                    _annotations, _annotation_count);
     }
 
     void omnitrace_set_instrumented(int _mode)
     {
-        OMNITRACE_DL_LOG(2, "%s(%i)\n", __FUNCTION__, _mode);
+        ROCPROFSYS_DL_LOG(2, "%s(%i)\n", __FUNCTION__, _mode);
         auto _mode_v = static_cast<dl::InstrumentMode>(_mode);
         if(_mode_v < dl::InstrumentMode::None || _mode_v >= dl::InstrumentMode::Last)
         {
-            OMNITRACE_DL_LOG(-127,
+            ROCPROFSYS_DL_LOG(-127,
                              "%s(mode=%i) invoked with invalid instrumentation mode. "
                              "mode should be %i >= mode < %i\n",
                              __FUNCTION__, _mode,
@@ -907,125 +907,125 @@ extern "C"
 
     void kokkosp_print_help(char* argv0)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_print_help_f, argv0);
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_print_help_f, argv0);
     }
 
     void kokkosp_parse_args(int argc, char** argv)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_parse_args_f, argc, argv);
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_parse_args_f, argc, argv);
     }
 
     void kokkosp_declare_metadata(const char* key, const char* value)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_declare_metadata_f, key, value);
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_declare_metadata_f, key, value);
     }
 
     void kokkosp_request_tool_settings(const uint32_t             version,
                                        Kokkos_Tools_ToolSettings* settings)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_request_tool_settings_f,
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_request_tool_settings_f,
                                    version, settings);
     }
 
     void kokkosp_init_library(const int loadSeq, const uint64_t interfaceVer,
                               const uint32_t devInfoCount, void* deviceInfo)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_init_library_f, loadSeq,
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_init_library_f, loadSeq,
                                    interfaceVer, devInfoCount, deviceInfo);
     }
 
     void kokkosp_finalize_library()
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_finalize_library_f);
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_finalize_library_f);
     }
 
     void kokkosp_begin_parallel_for(const char* name, uint32_t devid, uint64_t* kernid)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_begin_parallel_for_f, name,
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_begin_parallel_for_f, name,
                                    devid, kernid);
     }
 
     void kokkosp_end_parallel_for(uint64_t kernid)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_end_parallel_for_f, kernid);
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_end_parallel_for_f, kernid);
     }
 
     void kokkosp_begin_parallel_reduce(const char* name, uint32_t devid, uint64_t* kernid)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_begin_parallel_reduce_f, name,
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_begin_parallel_reduce_f, name,
                                    devid, kernid);
     }
 
     void kokkosp_end_parallel_reduce(uint64_t kernid)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_end_parallel_reduce_f, kernid);
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_end_parallel_reduce_f, kernid);
     }
 
     void kokkosp_begin_parallel_scan(const char* name, uint32_t devid, uint64_t* kernid)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_begin_parallel_scan_f, name,
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_begin_parallel_scan_f, name,
                                    devid, kernid);
     }
 
     void kokkosp_end_parallel_scan(uint64_t kernid)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_end_parallel_scan_f, kernid);
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_end_parallel_scan_f, kernid);
     }
 
     void kokkosp_begin_fence(const char* name, uint32_t devid, uint64_t* kernid)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_begin_fence_f, name, devid,
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_begin_fence_f, name, devid,
                                    kernid);
     }
 
     void kokkosp_end_fence(uint64_t kernid)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_end_fence_f, kernid);
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_end_fence_f, kernid);
     }
 
     void kokkosp_push_profile_region(const char* name)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_push_profile_region_f, name);
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_push_profile_region_f, name);
     }
 
     void kokkosp_pop_profile_region()
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_pop_profile_region_f);
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_pop_profile_region_f);
     }
 
     void kokkosp_create_profile_section(const char* name, uint32_t* secid)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_create_profile_section_f, name,
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_create_profile_section_f, name,
                                    secid);
     }
 
     void kokkosp_destroy_profile_section(uint32_t secid)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_destroy_profile_section_f,
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_destroy_profile_section_f,
                                    secid);
     }
 
     void kokkosp_start_profile_section(uint32_t secid)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_start_profile_section_f, secid);
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_start_profile_section_f, secid);
     }
 
     void kokkosp_stop_profile_section(uint32_t secid)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_stop_profile_section_f, secid);
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_stop_profile_section_f, secid);
     }
 
     void kokkosp_allocate_data(const SpaceHandle space, const char* label,
                                const void* const ptr, const uint64_t size)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_allocate_data_f, space, label,
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_allocate_data_f, space, label,
                                    ptr, size);
     }
 
     void kokkosp_deallocate_data(const SpaceHandle space, const char* label,
                                  const void* const ptr, const uint64_t size)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_deallocate_data_f, space, label,
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_deallocate_data_f, space, label,
                                    ptr, size);
     }
 
@@ -1033,31 +1033,31 @@ extern "C"
                                  const void* dst_ptr, SpaceHandle src_handle,
                                  const char* src_name, const void* src_ptr, uint64_t size)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_begin_deep_copy_f, dst_handle,
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_begin_deep_copy_f, dst_handle,
                                    dst_name, dst_ptr, src_handle, src_name, src_ptr,
                                    size);
     }
 
     void kokkosp_end_deep_copy()
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_end_deep_copy_f);
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_end_deep_copy_f);
     }
 
     void kokkosp_profile_event(const char* name)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_profile_event_f, name);
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_profile_event_f, name);
     }
 
     void kokkosp_dual_view_sync(const char* label, const void* const data, bool is_device)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_dual_view_sync_f, label, data,
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_dual_view_sync_f, label, data,
                                    is_device);
     }
 
     void kokkosp_dual_view_modify(const char* label, const void* const data,
                                   bool is_device)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().kokkosp_dual_view_modify_f, label, data,
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_dual_view_modify_f, label, data,
                                    is_device);
     }
 
@@ -1067,15 +1067,15 @@ extern "C"
     //
     //----------------------------------------------------------------------------------//
 
-#if OMNITRACE_USE_ROCTRACER > 0
+#if ROCPROFSYS_USE_ROCTRACER > 0
     bool OnLoad(HsaApiTable* table, uint64_t runtime_version, uint64_t failed_tool_count,
                 const char* const* failed_tool_names)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().hsa_on_load_f, table, runtime_version,
+        return ROCPROFSYS_DL_INVOKE(get_indirect().hsa_on_load_f, table, runtime_version,
                                    failed_tool_count, failed_tool_names);
     }
 
-    void OnUnload() { return OMNITRACE_DL_INVOKE(get_indirect().hsa_on_unload_f); }
+    void OnUnload() { return ROCPROFSYS_DL_INVOKE(get_indirect().hsa_on_unload_f); }
 #endif
 
     //----------------------------------------------------------------------------------//
@@ -1084,22 +1084,22 @@ extern "C"
     //
     //----------------------------------------------------------------------------------//
 
-#if OMNITRACE_USE_ROCPROFILER > 0
+#if ROCPROFSYS_USE_ROCPROFILER > 0
     void OnLoadToolProp(void* settings)
     {
-        OMNITRACE_DL_LOG(
+        ROCPROFSYS_DL_LOG(
             -16,
             "invoking %s(rocprofiler_settings_t*) within librocprof-sys-dl.so "
             "will cause a silent failure for rocprofiler. ROCP_TOOL_LIB "
             "should be set to librocprof-sys.so\n",
             __FUNCTION__);
         abort();
-        return OMNITRACE_DL_INVOKE(get_indirect().rocp_on_load_tool_prop_f, settings);
+        return ROCPROFSYS_DL_INVOKE(get_indirect().rocp_on_load_tool_prop_f, settings);
     }
 
     void OnUnloadTool()
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().rocp_on_unload_tool_f);
+        return ROCPROFSYS_DL_INVOKE(get_indirect().rocp_on_unload_tool_f);
     }
 #endif
 
@@ -1108,11 +1108,11 @@ extern "C"
     //      OMPT
     //
     //----------------------------------------------------------------------------------//
-#if OMNITRACE_USE_OMPT > 0
+#if ROCPROFSYS_USE_OMPT > 0
     ompt_start_tool_result_t* ompt_start_tool(unsigned int omp_version,
                                               const char*  runtime_version)
     {
-        return OMNITRACE_DL_INVOKE(get_indirect().ompt_start_tool_f, omp_version,
+        return ROCPROFSYS_DL_INVOKE(get_indirect().ompt_start_tool_f, omp_version,
                                    runtime_version);
     }
 #endif
@@ -1125,17 +1125,17 @@ namespace dl
 namespace
 {
 bool
-omnitrace_preload() OMNITRACE_INTERNAL_API;
+omnitrace_preload() ROCPROFSYS_INTERNAL_API;
 
 std::vector<std::string>
 get_link_map(const char*,
-             std::vector<int>&& = { (RTLD_LAZY | RTLD_NOLOAD) }) OMNITRACE_INTERNAL_API;
+             std::vector<int>&& = { (RTLD_LAZY | RTLD_NOLOAD) }) ROCPROFSYS_INTERNAL_API;
 
 const char*
-get_default_mode() OMNITRACE_INTERNAL_API;
+get_default_mode() ROCPROFSYS_INTERNAL_API;
 
 void
-verify_instrumented_preloaded() OMNITRACE_INTERNAL_API;
+verify_instrumented_preloaded() ROCPROFSYS_INTERNAL_API;
 
 std::vector<std::string>
 get_link_map(const char* _name, std::vector<int>&& _open_modes)
@@ -1207,7 +1207,7 @@ omnitrace_preinit()
                 // we may intercept the MPI init call later.
                 // If _use_mpi defaults to true above, calling this
                 // will override can current env or config value for
-                // OMNITRACE_USE_PID.
+                // ROCPROFSYS_USE_PID.
                 omnitrace_set_mpi(_use_mpi, dl::get_instrumented() ==
                                                 dl::InstrumentMode::ProcessAttach);
             }
@@ -1393,8 +1393,8 @@ main_func_t main_real       = nullptr;
 
 extern "C"
 {
-    int  omnitrace_main(int argc, char** argv, char** envp) OMNITRACE_INTERNAL_API;
-    void omnitrace_set_main(main_func_t) OMNITRACE_INTERNAL_API;
+    int  omnitrace_main(int argc, char** argv, char** envp) ROCPROFSYS_INTERNAL_API;
+    void omnitrace_set_main(main_func_t) ROCPROFSYS_INTERNAL_API;
 
     void omnitrace_set_main(main_func_t _main_real)
     {
@@ -1403,7 +1403,7 @@ extern "C"
 
     int omnitrace_main(int argc, char** argv, char** envp)
     {
-        OMNITRACE_DL_LOG(0, "%s\n", __FUNCTION__);
+        ROCPROFSYS_DL_LOG(0, "%s\n", __FUNCTION__);
         using ::omnitrace::common::get_env;
         using ::omnitrace::dl::get_default_mode;
 
@@ -1430,7 +1430,7 @@ extern "C"
                 {
                     auto _var = std::string{ _env_v }.substr(0, _pos);
                     auto _val = std::string{ _env_v }.substr(_pos + 1);
-                    OMNITRACE_DL_LOG(1, "%s(%s, %s)\n", "omnitrace_set_env", _var.c_str(),
+                    ROCPROFSYS_DL_LOG(1, "%s(%s, %s)\n", "omnitrace_set_env", _var.c_str(),
                                      _val.c_str());
                     setenv(_var.c_str(), _val.c_str(), 0);
                 }

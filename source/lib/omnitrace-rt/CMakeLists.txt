@@ -114,7 +114,7 @@ set_target_properties(
                BUILD_RPATH "\$ORIGIN"
                INSTALL_RPATH "\$ORIGIN")
 
-omnitrace_strip_target(rocprofsys-rt-library)
+rocprofsys_strip_target(rocprofsys-rt-library)
 
 install(TARGETS rocprofsys-rt-library DESTINATION ${CMAKE_INSTALL_LIBDIR})
 

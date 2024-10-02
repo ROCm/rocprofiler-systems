@@ -62,10 +62,10 @@ auto root_process_id =
 auto&
 get_sampling_on_child_threads_history(int64_t _idx = utility::get_thread_index())
 {
-    static auto _v = utility::get_filled_array<OMNITRACE_MAX_THREADS>(
+    static auto _v = utility::get_filled_array<ROCPROFSYS_MAX_THREADS>(
         []() { return utility::get_reserved_vector<bool>(32); });
 
-    if(_idx >= OMNITRACE_MAX_THREADS)
+    if(_idx >= ROCPROFSYS_MAX_THREADS)
     {
         static thread_local auto _tl_v = utility::get_reserved_vector<bool>(32);
         return _tl_v;
@@ -139,7 +139,7 @@ create_cpu_cid_entry(int64_t _tid)
 {
     using tim::auto_lock_t;
 
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
     // unique lock for _tid
     auto&       _mtx = get_cpu_cid_stack_lock(_tid);
@@ -192,7 +192,7 @@ setup_gotchas()
     if(_initialized) return;
     _initialized = true;
 
-    OMNITRACE_BASIC_DEBUG(
+    ROCPROFSYS_BASIC_DEBUG(
         "Configuring gotcha wrapper around fork, MPI_Init, and MPI_Init_thread\n");
 
     component::mpi_gotcha::configure();

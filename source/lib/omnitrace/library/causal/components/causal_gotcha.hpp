@@ -37,7 +37,7 @@ namespace component
 {
 struct causal_gotcha : tim::component::base<causal_gotcha, void>
 {
-    OMNITRACE_DEFAULT_OBJECT(causal_gotcha)
+    ROCPROFSYS_DEFAULT_OBJECT(causal_gotcha)
 
     // string id for component
     static std::string label() { return "causal_gotcha"; }

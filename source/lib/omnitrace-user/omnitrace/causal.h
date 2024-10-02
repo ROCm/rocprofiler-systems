@@ -22,65 +22,65 @@
 
 /** @file causal.h */
 
-#ifndef OMNITRACE_CAUSAL_H_
-#define OMNITRACE_CAUSAL_H_
+#ifndef ROCPROFSYS_CAUSAL_H_
+#define ROCPROFSYS_CAUSAL_H_
 
 /**
- * @defgroup OMNITRACE_CASUAL_GROUP OmniTrace Causal Profiling Defines
+ * @defgroup ROCPROFSYS_CASUAL_GROUP OmniTrace Causal Profiling Defines
  *
  * @{
  */
 
-#if !defined(OMNITRACE_CAUSAL_ENABLED)
+#if !defined(ROCPROFSYS_CAUSAL_ENABLED)
 /** Preprocessor switch to enable/disable instrumentation for causal profiling */
-#    define OMNITRACE_CAUSAL_ENABLED 1
+#    define ROCPROFSYS_CAUSAL_ENABLED 1
 #endif
 
-#if OMNITRACE_CAUSAL_ENABLED > 0
+#if ROCPROFSYS_CAUSAL_ENABLED > 0
 #    include <omnitrace/user.h>
 
-#    if !defined(OMNITRACE_CAUSAL_LABEL)
-/** @cond OMNITRACE_HIDDEN_DEFINES */
-#        define OMNITRACE_CAUSAL_STR2(x) #        x
-#        define OMNITRACE_CAUSAL_STR(x)  OMNITRACE_CAUSAL_STR2(x)
+#    if !defined(ROCPROFSYS_CAUSAL_LABEL)
+/** @cond ROCPROFSYS_HIDDEN_DEFINES */
+#        define ROCPROFSYS_CAUSAL_STR2(x) #        x
+#        define ROCPROFSYS_CAUSAL_STR(x)  ROCPROFSYS_CAUSAL_STR2(x)
 /** @endcond */
 /** Default label for a causal progress point */
-#        define OMNITRACE_CAUSAL_LABEL __FILE__ ":" OMNITRACE_CAUSAL_STR(__LINE__)
+#        define ROCPROFSYS_CAUSAL_LABEL __FILE__ ":" ROCPROFSYS_CAUSAL_STR(__LINE__)
 #    endif
-#    if !defined(OMNITRACE_CAUSAL_PROGRESS)
+#    if !defined(ROCPROFSYS_CAUSAL_PROGRESS)
 /** Adds a throughput progress point with label `<file>:<line>` */
-#        define OMNITRACE_CAUSAL_PROGRESS omnitrace_user_progress(OMNITRACE_CAUSAL_LABEL);
+#        define ROCPROFSYS_CAUSAL_PROGRESS omnitrace_user_progress(ROCPROFSYS_CAUSAL_LABEL);
 #    endif
-#    if !defined(OMNITRACE_CAUSAL_PROGRESS_NAMED)
+#    if !defined(ROCPROFSYS_CAUSAL_PROGRESS_NAMED)
 /** Adds a throughput progress point with user defined label. Each instance should use a
  * unique label. */
-#        define OMNITRACE_CAUSAL_PROGRESS_NAMED(LABEL) omnitrace_user_progress(LABEL);
+#        define ROCPROFSYS_CAUSAL_PROGRESS_NAMED(LABEL) omnitrace_user_progress(LABEL);
 #    endif
-#    if !defined(OMNITRACE_CAUSAL_BEGIN)
+#    if !defined(ROCPROFSYS_CAUSAL_BEGIN)
 /** Starts a latency progress point (region of interest) with user defined label. Each
  * instance should use a unique label. */
-#        define OMNITRACE_CAUSAL_BEGIN(LABEL) omnitrace_user_push_region(LABEL);
+#        define ROCPROFSYS_CAUSAL_BEGIN(LABEL) omnitrace_user_push_region(LABEL);
 #    endif
-#    if !defined(OMNITRACE_CAUSAL_END)
+#    if !defined(ROCPROFSYS_CAUSAL_END)
 /** End the latency progress point (region of interest) for the matching user defined
  * label. */
-#        define OMNITRACE_CAUSAL_END(LABEL) omnitrace_user_pop_region(LABEL);
+#        define ROCPROFSYS_CAUSAL_END(LABEL) omnitrace_user_pop_region(LABEL);
 #    endif
 #else
-#    if !defined(OMNITRACE_CAUSAL_PROGRESS)
-#        define OMNITRACE_CAUSAL_PROGRESS
+#    if !defined(ROCPROFSYS_CAUSAL_PROGRESS)
+#        define ROCPROFSYS_CAUSAL_PROGRESS
 #    endif
-#    if !defined(OMNITRACE_CAUSAL_PROGRESS_NAMED)
-#        define OMNITRACE_CAUSAL_PROGRESS_NAMED(LABEL)
+#    if !defined(ROCPROFSYS_CAUSAL_PROGRESS_NAMED)
+#        define ROCPROFSYS_CAUSAL_PROGRESS_NAMED(LABEL)
 #    endif
-#    if !defined(OMNITRACE_CAUSAL_BEGIN)
-#        define OMNITRACE_CAUSAL_BEGIN(LABEL)
+#    if !defined(ROCPROFSYS_CAUSAL_BEGIN)
+#        define ROCPROFSYS_CAUSAL_BEGIN(LABEL)
 #    endif
-#    if !defined(OMNITRACE_CAUSAL_END)
-#        define OMNITRACE_CAUSAL_END(LABEL)
+#    if !defined(ROCPROFSYS_CAUSAL_END)
+#        define ROCPROFSYS_CAUSAL_END(LABEL)
 #    endif
 #endif
 
 /** @} */
 
-#endif  // OMNITRACE_CAUSAL_H_
+#endif  // ROCPROFSYS_CAUSAL_H_

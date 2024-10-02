@@ -136,7 +136,7 @@ category_region<CategoryT>::start(std::string_view name, Args&&... args)
 
     if(name.empty()) return;
 
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
     // the expectation here is that if the state is not active then the call
     // to omnitrace_init_tooling_hidden will activate all the appropriate
@@ -154,7 +154,7 @@ category_region<CategoryT>::start(std::string_view name, Args&&... args)
     constexpr bool _ct_use_causal =
         (sizeof...(OptsT) == 0 || is_one_of<quirk::causal, type_list<OptsT...>>::value);
 
-    OMNITRACE_CONDITIONAL_PRINT(
+    ROCPROFSYS_CONDITIONAL_PRINT(
         tracing::debug_push,
         "[%s][PID=%i][state=%s][thread_state=%s] omnitrace_push_region(%s)\n",
         category_name, process::get_id(), std::to_string(get_state()).c_str(),
@@ -203,7 +203,7 @@ category_region<CategoryT>::stop(std::string_view name, Args&&... args)
 
     if(get_thread_state() == ThreadState::Disabled) return;
 
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
     constexpr bool _ct_use_timemory =
         (sizeof...(OptsT) == 0 || is_one_of<quirk::timemory, type_list<OptsT...>>::value);
@@ -214,7 +214,7 @@ category_region<CategoryT>::stop(std::string_view name, Args&&... args)
     constexpr bool _ct_use_causal =
         (sizeof...(OptsT) == 0 || is_one_of<quirk::causal, type_list<OptsT...>>::value);
 
-    OMNITRACE_CONDITIONAL_PRINT(
+    ROCPROFSYS_CONDITIONAL_PRINT(
         tracing::debug_pop,
         "[%s][PID=%i][state=%s][thread_state=%s] omnitrace_pop_region(%s)\n",
         category_name, process::get_id(), std::to_string(get_state()).c_str(),
@@ -260,7 +260,7 @@ category_region<CategoryT>::stop(std::string_view name, Args&&... args)
     else
     {
         static auto _debug = get_debug_env();
-        OMNITRACE_CONDITIONAL_BASIC_PRINT(
+        ROCPROFSYS_CONDITIONAL_BASIC_PRINT(
             _debug, "[%s] omnitrace_pop_region(%s) ignored :: state = %s\n",
             category_name, name.data(), std::to_string(get_state()).c_str());
     }
@@ -287,11 +287,11 @@ category_region<CategoryT>::mark(std::string_view name, Args&&...)
     // unconditionally return if thread is disabled or finalized
     if(get_thread_state() >= ThreadState::Completed) return;
 
-    OMNITRACE_SCOPED_THREAD_STATE(ThreadState::Internal);
+    ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
     if(get_use_causal())
     {
-        OMNITRACE_CONDITIONAL_PRINT(
+        ROCPROFSYS_CONDITIONAL_PRINT(
             tracing::debug_mark,
             "[%s][PID=%i][state=%s][thread_state=%s] omnitrace_progress(%s)\n",
             category_name, process::get_id(), std::to_string(get_state()).c_str(),
@@ -311,7 +311,7 @@ category_region<CategoryT>::audit(const gotcha_data_t& _data, audit::incoming,
         if(config::get_perfetto_annotations())
         {
             int64_t _n = 0;
-            OMNITRACE_FOLD_EXPRESSION(tracing::add_perfetto_annotation(
+            ROCPROFSYS_FOLD_EXPRESSION(tracing::add_perfetto_annotation(
                 ctx, tim::try_demangle<std::remove_reference_t<Args>>(), _args, _n++));
         }
     });
@@ -339,7 +339,7 @@ category_region<CategoryT>::audit(std::string_view _name, audit::incoming,
         if(config::get_perfetto_annotations())
         {
             int64_t _n = 0;
-            OMNITRACE_FOLD_EXPRESSION(tracing::add_perfetto_annotation(
+            ROCPROFSYS_FOLD_EXPRESSION(tracing::add_perfetto_annotation(
                 ctx, tim::try_demangle<std::remove_reference_t<Args>>(), _args, _n++));
         }
     });

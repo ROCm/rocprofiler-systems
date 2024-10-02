@@ -41,43 +41,43 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#if !defined(OMNITRACE_SETUP_LOG_NAME)
-#    if defined(OMNITRACE_COMMON_LIBRARY_NAME)
-#        define OMNITRACE_SETUP_LOG_NAME "[" OMNITRACE_COMMON_LIBRARY_NAME "]"
+#if !defined(ROCPROFSYS_SETUP_LOG_NAME)
+#    if defined(ROCPROFSYS_COMMON_LIBRARY_NAME)
+#        define ROCPROFSYS_SETUP_LOG_NAME "[" ROCPROFSYS_COMMON_LIBRARY_NAME "]"
 #    else
-#        define OMNITRACE_SETUP_LOG_NAME
+#        define ROCPROFSYS_SETUP_LOG_NAME
 #    endif
 #endif
 
-#if !defined(OMNITRACE_SETUP_LOG_START)
-#    if defined(OMNITRACE_COMMON_LIBRARY_LOG_START)
-#        define OMNITRACE_SETUP_LOG_START OMNITRACE_COMMON_LIBRARY_LOG_START
+#if !defined(ROCPROFSYS_SETUP_LOG_START)
+#    if defined(ROCPROFSYS_COMMON_LIBRARY_LOG_START)
+#        define ROCPROFSYS_SETUP_LOG_START ROCPROFSYS_COMMON_LIBRARY_LOG_START
 #    elif defined(TIMEMORY_LOG_COLORS_AVAILABLE)
-#        define OMNITRACE_SETUP_LOG_START                                                \
+#        define ROCPROFSYS_SETUP_LOG_START                                                \
             fprintf(stderr, "%s", ::tim::log::color::info());
 #    else
-#        define OMNITRACE_SETUP_LOG_START
+#        define ROCPROFSYS_SETUP_LOG_START
 #    endif
 #endif
 
-#if !defined(OMNITRACE_SETUP_LOG_END)
-#    if defined(OMNITRACE_COMMON_LIBRARY_LOG_END)
-#        define OMNITRACE_SETUP_LOG_END OMNITRACE_COMMON_LIBRARY_LOG_END
+#if !defined(ROCPROFSYS_SETUP_LOG_END)
+#    if defined(ROCPROFSYS_COMMON_LIBRARY_LOG_END)
+#        define ROCPROFSYS_SETUP_LOG_END ROCPROFSYS_COMMON_LIBRARY_LOG_END
 #    elif defined(TIMEMORY_LOG_COLORS_AVAILABLE)
-#        define OMNITRACE_SETUP_LOG_END fprintf(stderr, "%s", ::tim::log::color::end());
+#        define ROCPROFSYS_SETUP_LOG_END fprintf(stderr, "%s", ::tim::log::color::end());
 #    else
-#        define OMNITRACE_SETUP_LOG_END
+#        define ROCPROFSYS_SETUP_LOG_END
 #    endif
 #endif
 
-#define OMNITRACE_SETUP_LOG(CONDITION, ...)                                              \
+#define ROCPROFSYS_SETUP_LOG(CONDITION, ...)                                              \
     if(CONDITION)                                                                        \
     {                                                                                    \
         fflush(stderr);                                                                  \
-        OMNITRACE_SETUP_LOG_START                                                        \
-        fprintf(stderr, "[rocprof-sys]" OMNITRACE_SETUP_LOG_NAME "[%i] ", getpid());     \
+        ROCPROFSYS_SETUP_LOG_START                                                        \
+        fprintf(stderr, "[rocprof-sys]" ROCPROFSYS_SETUP_LOG_NAME "[%i] ", getpid());     \
         fprintf(stderr, __VA_ARGS__);                                                    \
-        OMNITRACE_SETUP_LOG_END                                                          \
+        ROCPROFSYS_SETUP_LOG_END                                                          \
         fflush(stderr);                                                                  \
     }
 
@@ -109,17 +109,17 @@ get_environ(int _verbose, std::string _search_paths = {},
     _omnilib    = common::path::find_path(_omnilib, _verbose, _search_paths);
     _omnilib_dl = common::path::find_path(_omnilib_dl, _verbose, _search_paths);
 
-#if defined(OMNITRACE_USE_ROCTRACER) && OMNITRACE_USE_ROCTRACER > 0
+#if defined(ROCPROFSYS_USE_ROCTRACER) && ROCPROFSYS_USE_ROCTRACER > 0
     _data.emplace_back(env_config{ "HSA_TOOLS_LIB", _omnilib.c_str(), 0 });
 #endif
 
-#if defined(OMNITRACE_USE_ROCPROFILER) && OMNITRACE_USE_ROCPROFILER > 0
-#    if OMNITRACE_HIP_VERSION >= 50200
+#if defined(ROCPROFSYS_USE_ROCPROFILER) && ROCPROFSYS_USE_ROCPROFILER > 0
+#    if ROCPROFSYS_HIP_VERSION >= 50200
 #        define ROCPROFILER_METRICS_DIR "lib/rocprofiler"
 #    else
 #        define ROCPROFILER_METRICS_DIR "rocprofiler/lib"
 #    endif
-#    if OMNITRACE_HIP_VERSION <= 50500
+#    if ROCPROFSYS_HIP_VERSION <= 50500
 #        define ROCPROFILER_LIBNAME "librocprofiler64.so"
 #    else
 #        define ROCPROFILER_LIBNAME "librocprofiler64.so.1"
@@ -150,9 +150,9 @@ get_environ(int _verbose, std::string _search_paths = {},
 
     // default path
     _possible_rocp_metrics.emplace_back(
-        common::join('/', OMNITRACE_DEFAULT_ROCM_PATH, "lib/rocprofiler"));
+        common::join('/', ROCPROFSYS_DEFAULT_ROCM_PATH, "lib/rocprofiler"));
     _possible_rocp_metrics.emplace_back(
-        common::join('/', OMNITRACE_DEFAULT_ROCM_PATH, "rocprofiler/lib"));
+        common::join('/', ROCPROFSYS_DEFAULT_ROCM_PATH, "rocprofiler/lib"));
 
     auto _realpath_and_unique = [](const auto& _inp_v) {
         auto _out_v = decltype(_inp_v){};
@@ -243,14 +243,14 @@ get_environ(int _verbose, std::string _search_paths = {},
                     "metrics.xml typically contains:\n\t#include "
                     "\"gfx_metrics.xml\"\nMake sure the provided path also contains this "
                     "file.\nExample:\n\texport ROCP_METRICS="
-                 << OMNITRACE_DEFAULT_ROCM_PATH << "/" << ROCPROFILER_METRICS_DIR
+                 << ROCPROFSYS_DEFAULT_ROCM_PATH << "/" << ROCPROFILER_METRICS_DIR
                  << "/metrics.xml\n";
         }
         throw std::runtime_error(_msg.str());
     }
 #endif
 
-#if defined(OMNITRACE_USE_OMPT) && OMNITRACE_USE_OMPT > 0
+#if defined(ROCPROFSYS_USE_OMPT) && ROCPROFSYS_USE_OMPT > 0
     if(get_env("ROCPROFSYS_USE_OMPT", true))
     {
         std::string _omni_omp_libs = _omnilib_dl;
@@ -262,7 +262,7 @@ get_environ(int _verbose, std::string _search_paths = {},
             _override      = 1;
             _omni_omp_libs = common::join(':', _omp_libs, _omnilib_dl);
         }
-        OMNITRACE_SETUP_LOG(_verbose >= 2, "setting OMP_TOOL_LIBRARIES to '%s'\n",
+        ROCPROFSYS_SETUP_LOG(_verbose >= 2, "setting OMP_TOOL_LIBRARIES to '%s'\n",
                             _omni_omp_libs.c_str());
         _data.emplace_back(
             env_config{ "OMP_TOOL_LIBRARIES", _omni_omp_libs.c_str(), _override });

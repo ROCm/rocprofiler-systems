@@ -29,7 +29,7 @@
 #    include <timemory/components/perfetto/backends.hpp>
 #else
 #    include <perfetto.h>
-PERFETTO_DEFINE_CATEGORIES(OMNITRACE_PERFETTO_CATEGORIES);
+PERFETTO_DEFINE_CATEGORIES(ROCPROFSYS_PERFETTO_CATEGORIES);
 #endif
 
 #include "debug.hpp"
@@ -143,7 +143,7 @@ perfetto_counter_track<Tp>::emplace(size_t _idx, const std::string& _v,
                 std::stringstream _css{};
                 for(auto&& eitr : _curr)
                     _css << " " << std::hex << std::setw(12) << std::left << eitr;
-                OMNITRACE_THROW("perfetto_counter_track emplace method for '%s' (%p) "
+                ROCPROFSYS_THROW("perfetto_counter_track emplace method for '%s' (%p) "
                                 "invalidated C-string '%s' (%p).\n%8s: %s\n%8s: %s\n",
                                 _v.c_str(), (void*) _name->c_str(),
                                 std::get<0>(itr).c_str(),

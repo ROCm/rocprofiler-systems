@@ -30,8 +30,8 @@
 #include <set>
 #include <string>
 
-#if !defined(OMNITRACE_SERIALIZE)
-#    define OMNITRACE_SERIALIZE(MEMBER_VARIABLE)                                         \
+#if !defined(ROCPROFSYS_SERIALIZE)
+#    define ROCPROFSYS_SERIALIZE(MEMBER_VARIABLE)                                         \
         ar(::tim::cereal::make_nvp(#MEMBER_VARIABLE, MEMBER_VARIABLE))
 #endif
 
@@ -39,7 +39,7 @@ namespace omnitrace
 {
 namespace coverage
 {
-#if !defined(OMNITRACE_PYBIND11_SOURCE) || OMNITRACE_PYBIND11_SOURCE == 0
+#if !defined(ROCPROFSYS_PYBIND11_SOURCE) || ROCPROFSYS_PYBIND11_SOURCE == 0
 void
 post_process();
 #endif
@@ -97,10 +97,10 @@ template <typename ArchiveT>
 void
 code_coverage::serialize(ArchiveT& ar, const unsigned version)
 {
-    OMNITRACE_SERIALIZE(count);
-    OMNITRACE_SERIALIZE(size);
-    OMNITRACE_SERIALIZE(covered);
-    OMNITRACE_SERIALIZE(possible);
+    ROCPROFSYS_SERIALIZE(count);
+    ROCPROFSYS_SERIALIZE(size);
+    ROCPROFSYS_SERIALIZE(covered);
+    ROCPROFSYS_SERIALIZE(possible);
     if constexpr(tim::concepts::is_output_archive<ArchiveT>::value)
     {
         ar.setNextName("coverage");
@@ -118,9 +118,9 @@ template <typename ArchiveT>
 void
 code_coverage::data::serialize(ArchiveT& ar, const unsigned version)
 {
-    OMNITRACE_SERIALIZE(addresses);
-    OMNITRACE_SERIALIZE(modules);
-    OMNITRACE_SERIALIZE(functions);
+    ROCPROFSYS_SERIALIZE(addresses);
+    ROCPROFSYS_SERIALIZE(modules);
+    ROCPROFSYS_SERIALIZE(functions);
     (void) version;
 }
 
@@ -160,12 +160,12 @@ template <typename ArchiveT>
 void
 coverage_data::serialize(ArchiveT& ar, const unsigned version)
 {
-    OMNITRACE_SERIALIZE(count);
-    OMNITRACE_SERIALIZE(line);
-    OMNITRACE_SERIALIZE(address);
-    OMNITRACE_SERIALIZE(module);
-    OMNITRACE_SERIALIZE(function);
-    OMNITRACE_SERIALIZE(source);
+    ROCPROFSYS_SERIALIZE(count);
+    ROCPROFSYS_SERIALIZE(line);
+    ROCPROFSYS_SERIALIZE(address);
+    ROCPROFSYS_SERIALIZE(module);
+    ROCPROFSYS_SERIALIZE(function);
+    ROCPROFSYS_SERIALIZE(source);
     (void) version;
 }
 //

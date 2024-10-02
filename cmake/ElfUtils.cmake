@@ -38,7 +38,7 @@ set(ElfUtils_MIN_VERSION
     CACHE STRING "Minimum acceptable elfutils version")
 
 if(${ElfUtils_MIN_VERSION} VERSION_LESS ${_min_version})
-    omnitrace_message(
+    rocprofsys_message(
         FATAL_ERROR
         "Requested version ${ElfUtils_MIN_VERSION} is less than minimum supported version (${_min_version})"
         )
@@ -51,7 +51,7 @@ set(ElfUtils_DOWNLOAD_VERSION
 
 # make sure we are not downloading a version less than minimum
 if(${ElfUtils_DOWNLOAD_VERSION} VERSION_LESS ${ElfUtils_MIN_VERSION})
-    omnitrace_message(
+    rocprofsys_message(
         FATAL_ERROR
         "elfutils download version is set to ${ElfUtils_DOWNLOAD_VERSION} but elfutils minimum version is set to ${ElfUtils_MIN_VERSION}"
         )
@@ -85,7 +85,7 @@ find_program(
     PATH_SUFFIXES bin)
 
 if(NOT ElfUtils_C_COMPILER OR NOT ElfUtils_CXX_COMPILER)
-    omnitrace_message(
+    rocprofsys_message(
         FATAL_ERROR
         "ElfUtils requires the GNU C and C++ compilers. ElfUtils_C_COMPILER: ${ElfUtils_C_COMPILER}, ElfUtils_CXX_COMPILER: ${ElfUtils_CXX_COMPILER}"
         )

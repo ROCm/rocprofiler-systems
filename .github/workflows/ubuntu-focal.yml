@@ -32,8 +32,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  OMNITRACE_CI: ON
-  OMNITRACE_TMPDIR: "%env{PWD}%/testing-tmp"
+  ROCPROFSYS_CI: ON
+  ROCPROFSYS_TMPDIR: "%env{PWD}%/testing-tmp"
 
 jobs:
   ubuntu-focal-external:
@@ -141,22 +141,22 @@ jobs:
           -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
           -DCMAKE_INSTALL_PREFIX=/opt/rocprof-sys
-          -DOMNITRACE_BUILD_TESTING=ON
-          -DOMNITRACE_USE_MPI=OFF
-          -DOMNITRACE_USE_HIP=OFF
-          -DOMNITRACE_USE_OMPT=OFF
-          -DOMNITRACE_USE_PAPI=OFF
-          -DOMNITRACE_USE_PYTHON=${{ matrix.python }}
-          -DOMNITRACE_USE_MPI_HEADERS=${{ matrix.mpi-headers }}
-          -DOMNITRACE_STRIP_LIBRARIES=${{ matrix.strip }}
-          -DOMNITRACE_BUILD_LTO=${{ matrix.lto }}
-          -DOMNITRACE_BUILD_STATIC_LIBGCC=${{ matrix.static-libgcc }}
-          -DOMNITRACE_BUILD_STATIC_LIBSTDCXX=${{ matrix.static-libstdcxx }}
-          -DOMNITRACE_PYTHON_PREFIX=/opt/conda/envs
-          -DOMNITRACE_PYTHON_ENVS="py3.6;py3.7;py3.8;py3.9;py3.10;py3.11"
-          -DOMNITRACE_MAX_THREADS=64
-          -DOMNITRACE_DISABLE_EXAMPLES="transpose;rccl"
-          -DOMNITRACE_BUILD_NUMBER=${{ github.run_attempt }}
+          -DROCPROFSYS_BUILD_TESTING=ON
+          -DROCPROFSYS_USE_MPI=OFF
+          -DROCPROFSYS_USE_HIP=OFF
+          -DROCPROFSYS_USE_OMPT=OFF
+          -DROCPROFSYS_USE_PAPI=OFF
+          -DROCPROFSYS_USE_PYTHON=${{ matrix.python }}
+          -DROCPROFSYS_USE_MPI_HEADERS=${{ matrix.mpi-headers }}
+          -DROCPROFSYS_STRIP_LIBRARIES=${{ matrix.strip }}
+          -DROCPROFSYS_BUILD_LTO=${{ matrix.lto }}
+          -DROCPROFSYS_BUILD_STATIC_LIBGCC=${{ matrix.static-libgcc }}
+          -DROCPROFSYS_BUILD_STATIC_LIBSTDCXX=${{ matrix.static-libstdcxx }}
+          -DROCPROFSYS_PYTHON_PREFIX=/opt/conda/envs
+          -DROCPROFSYS_PYTHON_ENVS="py3.6;py3.7;py3.8;py3.9;py3.10;py3.11"
+          -DROCPROFSYS_MAX_THREADS=64
+          -DROCPROFSYS_DISABLE_EXAMPLES="transpose;rccl"
+          -DROCPROFSYS_BUILD_NUMBER=${{ github.run_attempt }}
           -DMPI_HEADERS_ALLOW_MPICH=OFF
 
     - name: Test Build-Tree Module
@@ -167,7 +167,7 @@ jobs:
         source /usr/share/modules/init/$(basename ${SHELL})
         module use ./share/modulefiles
         module avail
-        module load rocprofsys
+        module load rocprof-sys
         echo $(which rocprof-sys-instrument)
         ldd $(which rocprof-sys-instrument)
         rocprof-sys-instrument --help
@@ -179,7 +179,7 @@ jobs:
       shell: bash
       run: |
         cd build
-        source ./share/rocprofsys/setup-env.sh
+        source ./share/rocprof-sys/setup-env.sh
         echo $(which rocprof-sys-instrument)
         ldd $(which rocprof-sys-instrument)
         rocprof-sys-instrument --help
@@ -198,7 +198,7 @@ jobs:
         source /usr/share/modules/init/$(basename ${SHELL})
         module use /opt/rocprof-sys/share/modulefiles
         module avail
-        module load rocprofsys
+        module load rocprof-sys
         ./scripts/test-install.sh --test-rocprof-sys-{instrument,avail,sample,rewrite,runtime}=1 --test-rocprof-sys-python=${{ matrix.python }}
 
     - name: Test User API
@@ -329,24 +329,24 @@ jobs:
           -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
           -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
           -DCMAKE_INSTALL_PREFIX=/opt/rocprof-sys
-          -DOMNITRACE_BUILD_TESTING=ON
-          -DOMNITRACE_BUILD_DEVELOPER=ON
-          -DOMNITRACE_BUILD_EXTRA_OPTIMIZATIONS=OFF
-          -DOMNITRACE_BUILD_LTO=OFF
-          -DOMNITRACE_USE_MPI=OFF
-          -DOMNITRACE_USE_HIP=ON
-          -DOMNITRACE_MAX_THREADS=64
-          -DOMNITRACE_USE_PAPI=OFF
-          -DOMNITRACE_USE_OMPT=OFF
-          -DOMNITRACE_USE_PYTHON=ON
-          -DOMNITRACE_USE_MPI_HEADERS=${{ matrix.mpi-headers }}
-          -DOMNITRACE_USE_SANITIZER=OFF
-          -DOMNITRACE_PYTHON_PREFIX=/opt/conda/envs
-          -DOMNITRACE_PYTHON_ENVS="py3.6;py3.7;py3.8;py3.9;py3.10;py3.11"
-          -DOMNITRACE_CI_MPI_RUN_AS_ROOT=${{ matrix.mpi-headers }}
-          -DOMNITRACE_CI_GPU=OFF
+          -DROCPROFSYS_BUILD_TESTING=ON
+          -DROCPROFSYS_BUILD_DEVELOPER=ON
+          -DROCPROFSYS_BUILD_EXTRA_OPTIMIZATIONS=OFF
+          -DROCPROFSYS_BUILD_LTO=OFF
+          -DROCPROFSYS_USE_MPI=OFF
+          -DROCPROFSYS_USE_HIP=ON
+          -DROCPROFSYS_MAX_THREADS=64
+          -DROCPROFSYS_USE_PAPI=OFF
+          -DROCPROFSYS_USE_OMPT=OFF
+          -DROCPROFSYS_USE_PYTHON=ON
+          -DROCPROFSYS_USE_MPI_HEADERS=${{ matrix.mpi-headers }}
+          -DROCPROFSYS_USE_SANITIZER=OFF
+          -DROCPROFSYS_PYTHON_PREFIX=/opt/conda/envs
+          -DROCPROFSYS_PYTHON_ENVS="py3.6;py3.7;py3.8;py3.9;py3.10;py3.11"
+          -DROCPROFSYS_CI_MPI_RUN_AS_ROOT=${{ matrix.mpi-headers }}
+          -DROCPROFSYS_CI_GPU=OFF
           -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=OFF
-          -DOMNITRACE_BUILD_NUMBER=${{ github.run_attempt }}
+          -DROCPROFSYS_BUILD_NUMBER=${{ github.run_attempt }}
           --
           ${{ matrix.ctest-exclude }}
 
@@ -358,7 +358,7 @@ jobs:
       timeout-minutes: 15
       shell: bash
       run: |
-        source /opt/rocprof-sys/share/rocprofsys/setup-env.sh
+        source /opt/rocprof-sys/share/rocprof-sys/setup-env.sh
         ./scripts/test-install.sh --test-rocprof-sys-{instrument,avail,sample,python,rewrite,runtime}=1
 
     - name: Test User API
@@ -477,13 +477,13 @@ jobs:
           -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
           -DCMAKE_INSTALL_PREFIX=/opt/rocprof-sys
-          -DOMNITRACE_BUILD_TESTING=ON
-          -DOMNITRACE_BUILD_DYNINST=ON
-          -DOMNITRACE_USE_MPI=${USE_MPI}
-          -DOMNITRACE_USE_HIP=OFF
-          -DOMNITRACE_USE_PYTHON=${{ matrix.python }}
-          -DOMNITRACE_USE_OMPT=${{ matrix.ompt }}
-          -DOMNITRACE_USE_PAPI=${{ matrix.papi }}
+          -DROCPROFSYS_BUILD_TESTING=ON
+          -DROCPROFSYS_BUILD_DYNINST=ON
+          -DROCPROFSYS_USE_MPI=${USE_MPI}
+          -DROCPROFSYS_USE_HIP=OFF
+          -DROCPROFSYS_USE_PYTHON=${{ matrix.python }}
+          -DROCPROFSYS_USE_OMPT=${{ matrix.ompt }}
+          -DROCPROFSYS_USE_PAPI=${{ matrix.papi }}
           -DDYNINST_BUILD_ELFUTILS=ON
           -DDYNINST_BUILD_LIBIBERTY=ON
           -DDYNINST_BUILD_TBB=${{ matrix.tbb }}
@@ -491,9 +491,9 @@ jobs:
           -DDYNINST_BUILD_SHARED_LIBS=ON
           -DDYNINST_BUILD_STATIC_LIBS=OFF
           -DDYNINST_ELFUTILS_DOWNLOAD_VERSION=${{ env.ELFUTILS_DOWNLOAD_VERSION }}
-          -DOMNITRACE_MAX_THREADS=64
-          -DOMNITRACE_DISABLE_EXAMPLES="transpose;rccl"
-          -DOMNITRACE_BUILD_NUMBER=${{ github.run_attempt }}
+          -DROCPROFSYS_MAX_THREADS=64
+          -DROCPROFSYS_DISABLE_EXAMPLES="transpose;rccl"
+          -DROCPROFSYS_BUILD_NUMBER=${{ github.run_attempt }}
           -DMPI_HEADERS_ALLOW_MPICH=ON
 
     - name: Test Build-Tree Env
@@ -502,13 +502,13 @@ jobs:
         source /usr/share/modules/init/$(basename ${SHELL})
         module use ${{ github.workspace }}/build/share/modulefiles
         module avail
-        module load rocprofsys
+        module load rocprof-sys
         module list
         env
-        module unload rocprofsys
+        module unload rocprof-sys
         module list
         env
-        source ${{ github.workspace }}/build/share/rocprofsys/setup-env.sh
+        source ${{ github.workspace }}/build/share/rocprof-sys/setup-env.sh
         env
 
     - name: Install
@@ -516,13 +516,13 @@ jobs:
       run: |
         cpack -G STGZ
         mkdir -p /opt/rocprof-sys
-        ./rocprofsys-*.sh --prefix=/opt/rocprof-sys --exclude-subdir --skip-license
+        ./rocprof-sys-*.sh --prefix=/opt/rocprof-sys --exclude-subdir --skip-license
 
     - name: Test Install with setup-env.sh
       timeout-minutes: 15
       run: |
         set -v
-        source /opt/rocprof-sys/share/rocprofsys/setup-env.sh
+        source /opt/rocprof-sys/share/rocprof-sys/setup-env.sh
         ${{ github.workspace }}/scripts/test-install.sh --test-rocprof-sys-{instrument,avail,sample,python,rewrite,runtime}=1
 
     - name: Test Install with Modulefile
@@ -531,7 +531,7 @@ jobs:
         set -v
         source /usr/share/modules/init/$(basename ${SHELL})
         module use /opt/rocprof-sys/share/modulefiles
-        module load rocprofsys
+        module load rocprof-sys
         ${{ github.workspace }}/scripts/test-install.sh --test-rocprof-sys-{instrument,avail,sample,python,rewrite,runtime}=1
 
     - name: Test User API
@@ -576,8 +576,8 @@ jobs:
       options: --cap-add CAP_SYS_ADMIN
 
     env:
-      OMNITRACE_VERBOSE: 2
-      OMNITRACE_CAUSAL_BACKEND: perf
+      ROCPROFSYS_VERBOSE: 2
+      ROCPROFSYS_CAUSAL_BACKEND: perf
 
     steps:
     - uses: actions/checkout@v4
@@ -619,17 +619,17 @@ jobs:
           --coverage
           --
           -DCMAKE_INSTALL_PREFIX=/opt/rocprof-sys
-          -DOMNITRACE_BUILD_CI=OFF
-          -DOMNITRACE_BUILD_TESTING=ON
-          -DOMNITRACE_BUILD_DYNINST=OFF
-          -DOMNITRACE_BUILD_DEBUG=OFF
-          -DOMNITRACE_BUILD_HIDDEN_VISIBILITY=OFF
-          -DOMNITRACE_USE_MPI=ON
-          -DOMNITRACE_USE_PYTHON=ON
-          -DOMNITRACE_USE_OMPT=ON
-          -DOMNITRACE_USE_PAPI=ON
-          -DOMNITRACE_USE_HIP=OFF
-          -DOMNITRACE_USE_RCCL=OFF
-          -DOMNITRACE_MAX_THREADS=64
-          -DOMNITRACE_DISABLE_EXAMPLES="transpose;rccl"
-          -DOMNITRACE_BUILD_NUMBER=${{ github.run_attempt }}
+          -DROCPROFSYS_BUILD_CI=OFF
+          -DROCPROFSYS_BUILD_TESTING=ON
+          -DROCPROFSYS_BUILD_DYNINST=OFF
+          -DROCPROFSYS_BUILD_DEBUG=OFF
+          -DROCPROFSYS_BUILD_HIDDEN_VISIBILITY=OFF
+          -DROCPROFSYS_USE_MPI=ON
+          -DROCPROFSYS_USE_PYTHON=ON
+          -DROCPROFSYS_USE_OMPT=ON
+          -DROCPROFSYS_USE_PAPI=ON
+          -DROCPROFSYS_USE_HIP=OFF
+          -DROCPROFSYS_USE_RCCL=OFF
+          -DROCPROFSYS_MAX_THREADS=64
+          -DROCPROFSYS_DISABLE_EXAMPLES="transpose;rccl"
+          -DROCPROFSYS_BUILD_NUMBER=${{ github.run_attempt }}

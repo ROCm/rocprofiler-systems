@@ -105,7 +105,7 @@ comm_data::configure()
     comm_data_tracker_t::set_format_flags(_fmt_flags);
 }
 
-#if defined(OMNITRACE_USE_MPI)
+#if defined(ROCPROFSYS_USE_MPI)
 // MPI_Send
 void
 comm_data::audit(const gotcha_data& _data, audit::incoming, const void*, int count,
@@ -297,7 +297,7 @@ comm_data::audit(const gotcha_data& _data, audit::incoming, const void*, int sen
 }
 #endif
 
-#if defined(OMNITRACE_USE_RCCL)
+#if defined(ROCPROFSYS_USE_RCCL)
 // ncclReduce
 void
 comm_data::audit(const gotcha_data& _data, audit::incoming, const void*, const void*,
@@ -340,7 +340,7 @@ comm_data::audit(const gotcha_data& _data, audit::incoming, const void*, size_t 
     }
     else
     {
-        OMNITRACE_CI_THROW(true, "RCCL function not handled: %s", _data.tool_id.c_str());
+        ROCPROFSYS_CI_THROW(true, "RCCL function not handled: %s", _data.tool_id.c_str());
     }
 
     write_perfetto_counter_track<rccl_recv>(count * _size);
@@ -395,7 +395,7 @@ comm_data::audit(const gotcha_data& _data, audit::incoming, const void*, const v
     }
     else
     {
-        OMNITRACE_CI_THROW(true, "RCCL function not handled: %s", _data.tool_id.c_str());
+        ROCPROFSYS_CI_THROW(true, "RCCL function not handled: %s", _data.tool_id.c_str());
     }
 
     if(!omnitrace::get_use_timemory()) return;
@@ -419,7 +419,7 @@ comm_data::audit(const gotcha_data& _data, audit::incoming, const void*, const v
 }  // namespace component
 }  // namespace omnitrace
 
-OMNITRACE_INSTANTIATE_EXTERN_COMPONENT(
+ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(
     TIMEMORY_ESC(data_tracker<float, tim::project::omnitrace>), true, float)
 
-OMNITRACE_INSTANTIATE_EXTERN_COMPONENT(comm_data, false, void)
+ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(comm_data, false, void)

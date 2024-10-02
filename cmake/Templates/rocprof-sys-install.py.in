@@ -10,7 +10,7 @@ import subprocess as sp
 from urllib import request
 from urllib.error import HTTPError
 
-omnitrace_version = "@OMNITRACE_VERSION@"
+omnitrace_version = "@ROCPROFSYS_VERSION@"
 _rocm_path = os.environ.get("ROCM_PATH", "/opt/rocm")
 _rocm_version = None
 

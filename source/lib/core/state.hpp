@@ -74,33 +74,33 @@ enum class CausalMode : unsigned short
 //      Runtime configuration data
 //
 State
-get_state() OMNITRACE_HOT;
+get_state() ROCPROFSYS_HOT;
 
 ThreadState
-get_thread_state() OMNITRACE_HOT;
+get_thread_state() ROCPROFSYS_HOT;
 
 /// returns old state
-State set_state(State) OMNITRACE_COLD;  // does not change often
+State set_state(State) ROCPROFSYS_COLD;  // does not change often
 
 /// returns old state
-ThreadState set_thread_state(ThreadState) OMNITRACE_HOT;  // changes often
+ThreadState set_thread_state(ThreadState) ROCPROFSYS_HOT;  // changes often
 
 /// return current state (state change may be ignored)
-ThreadState push_thread_state(ThreadState) OMNITRACE_HOT;
+ThreadState push_thread_state(ThreadState) ROCPROFSYS_HOT;
 
 /// return current state (state change may be ignored)
 ThreadState
-pop_thread_state() OMNITRACE_HOT;
+pop_thread_state() ROCPROFSYS_HOT;
 
 struct scoped_thread_state
 {
-    OMNITRACE_INLINE scoped_thread_state(ThreadState _v) { push_thread_state(_v); }
-    OMNITRACE_INLINE ~scoped_thread_state() { pop_thread_state(); }
+    ROCPROFSYS_INLINE scoped_thread_state(ThreadState _v) { push_thread_state(_v); }
+    ROCPROFSYS_INLINE ~scoped_thread_state() { pop_thread_state(); }
 };
 }  // namespace omnitrace
 
-#define OMNITRACE_SCOPED_THREAD_STATE(STATE)                                             \
-    ::omnitrace::scoped_thread_state OMNITRACE_VARIABLE(_scoped_thread_state_, __LINE__) \
+#define ROCPROFSYS_SCOPED_THREAD_STATE(STATE)                                             \
+    ::omnitrace::scoped_thread_state ROCPROFSYS_VARIABLE(_scoped_thread_state_, __LINE__) \
     {                                                                                    \
         ::omnitrace::STATE                                                               \
     }

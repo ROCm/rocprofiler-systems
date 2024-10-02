@@ -100,14 +100,14 @@ dynamic_library::dynamic_library(std::string _env, std::string _fname, int _flag
             }
             else if(_env_val.find('/') == 0)
             {
-                OMNITRACE_VERBOSE_F(1,
+                ROCPROFSYS_VERBOSE_F(1,
                                     "Ignoring environment variable %s=\"%s\" because the "
                                     "filepath does not exist. Using \"%s\" instead...\n",
                                     envname.c_str(), _env_val.c_str(), filename.c_str())
             }
             else if(_env_val.find('/') != 0 && filename.find('/') == 0)
             {
-                OMNITRACE_VERBOSE_F(
+                ROCPROFSYS_VERBOSE_F(
                     1,
                     "Ignoring environment variable %s=\"%s\" because the "
                     "filepath is relative. Using absolute path \"%s\" instead...\n",
@@ -129,7 +129,7 @@ dynamic_library::open()
         handle = dlopen(filename.c_str(), flags);
         if(!handle)
         {
-            OMNITRACE_VERBOSE(2, "[dynamic_library] Error opening %s=\"%s\" :: %s.\n",
+            ROCPROFSYS_VERBOSE(2, "[dynamic_library] Error opening %s=\"%s\" :: %s.\n",
                               envname.c_str(), filename.c_str(), dlerror());
         }
         dlerror();  // Clear any existing error

@@ -26,15 +26,15 @@ custom_push_region(const char* name);
 
 namespace
 {
-omnitrace_user_callbacks_t custom_callbacks   = OMNITRACE_USER_CALLBACKS_INIT;
-omnitrace_user_callbacks_t original_callbacks = OMNITRACE_USER_CALLBACKS_INIT;
+omnitrace_user_callbacks_t custom_callbacks   = ROCPROFSYS_USER_CALLBACKS_INIT;
+omnitrace_user_callbacks_t original_callbacks = ROCPROFSYS_USER_CALLBACKS_INIT;
 }  // namespace
 
 int
 main(int argc, char** argv)
 {
     custom_callbacks.push_region = &custom_push_region;
-    omnitrace_user_configure(OMNITRACE_USER_UNION_CONFIG, custom_callbacks,
+    omnitrace_user_configure(ROCPROFSYS_USER_UNION_CONFIG, custom_callbacks,
                              &original_callbacks);
 
     omnitrace_user_push_region(argv[0]);
@@ -102,7 +102,7 @@ int
 custom_push_region(const char* name)
 {
     if(!original_callbacks.push_region || !original_callbacks.push_annotated_region)
-        return OMNITRACE_USER_ERROR_NO_BINDING;
+        return ROCPROFSYS_USER_ERROR_NO_BINDING;
 
     printf("Pushing custom region :: %s\n", name);
 
@@ -114,7 +114,7 @@ custom_push_region(const char* name)
         if(_err != 0) _msg = strerror_r(_err, _buff, sizeof(_buff));
 
         omnitrace_annotation_t _annotations[] = {
-            { "errno", OMNITRACE_INT32, &_err }, { "strerror", OMNITRACE_STRING, _msg }
+            { "errno", ROCPROFSYS_INT32, &_err }, { "strerror", ROCPROFSYS_STRING, _msg }
         };
 
         errno = 0;  // reset errno

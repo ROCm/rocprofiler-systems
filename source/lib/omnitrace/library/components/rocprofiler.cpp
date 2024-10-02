@@ -168,7 +168,7 @@ rocprofiler::remove_shutdown(const std::string&)
 void
 rocprofiler::setup()
 {
-    OMNITRACE_VERBOSE_F(1, "rocprofiler is setup\n");
+    ROCPROFSYS_VERBOSE_F(1, "rocprofiler is setup\n");
 }
 
 void
@@ -176,7 +176,7 @@ rocprofiler::shutdown()
 {
     omnitrace::rocprofiler::post_process();
     omnitrace::rocprofiler::rocm_cleanup();
-    OMNITRACE_VERBOSE_F(1, "rocprofiler is shutdown\n");
+    ROCPROFSYS_VERBOSE_F(1, "rocprofiler is shutdown\n");
 }
 
 scope::transient_destructor
@@ -188,6 +188,6 @@ rocprofiler::protect_flush_activity()
 }  // namespace component
 }  // namespace omnitrace
 
-OMNITRACE_INSTANTIATE_EXTERN_COMPONENT(rocprofiler, false, void)
-OMNITRACE_INSTANTIATE_EXTERN_COMPONENT(rocprofiler_data, true,
+ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(rocprofiler, false, void)
+ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(rocprofiler_data, true,
                                        tim::component::rocprofiler_value)

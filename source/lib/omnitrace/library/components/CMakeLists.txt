@@ -37,16 +37,16 @@ set(component_headers
 target_sources(rocprofsys-object-library PRIVATE ${component_sources}
                                                  ${component_headers})
 
-if(OMNITRACE_USE_ROCPROFILER)
+if(ROCPROFSYS_USE_ROCPROFILER)
     target_sources(rocprofsys-object-library
                    PRIVATE ${CMAKE_CURRENT_LIST_DIR}/rocprofiler.cpp)
 endif()
 
-if(OMNITRACE_USE_ROCTRACER)
+if(ROCPROFSYS_USE_ROCTRACER)
     target_sources(rocprofsys-object-library
                    PRIVATE ${CMAKE_CURRENT_LIST_DIR}/roctracer.cpp)
 endif()
 
-if(OMNITRACE_USE_RCCL)
+if(ROCPROFSYS_USE_RCCL)
     target_sources(rocprofsys-object-library PRIVATE ${CMAKE_CURRENT_LIST_DIR}/rcclp.cpp)
 endif()

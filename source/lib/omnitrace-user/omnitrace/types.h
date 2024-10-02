@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef OMNITRACE_TYPES_H_
-#define OMNITRACE_TYPES_H_
+#ifndef ROCPROFSYS_TYPES_H_
+#define ROCPROFSYS_TYPES_H_
 
 #include <stddef.h>
 #include <stdint.h>
@@ -76,42 +76,42 @@ extern "C"
         /// @brief callback for marking an causal profiling event + annotations
     } omnitrace_user_callbacks_t;
 
-    /// @enum OMNITRACE_USER_CONFIGURE_MODE
+    /// @enum ROCPROFSYS_USER_CONFIGURE_MODE
     /// @brief Identifier for errors
-    /// @typedef OMNITRACE_USER_CONFIGURE_MODE omnitrace_user_configure_mode_t
-    typedef enum OMNITRACE_USER_CONFIGURE_MODE
+    /// @typedef ROCPROFSYS_USER_CONFIGURE_MODE omnitrace_user_configure_mode_t
+    typedef enum ROCPROFSYS_USER_CONFIGURE_MODE
     {
         // clang-format off
-        OMNITRACE_USER_UNION_CONFIG = 0,    ///< Replace the callbacks in the current config with the non-null callbacks in the provided config
-        OMNITRACE_USER_REPLACE_CONFIG,      ///< Replace the entire config even if the provided config has null callbacks
-        OMNITRACE_USER_INTERSECT_CONFIG,    ///< Produce a config which is the intersection of the current config and the provided config
-        OMNITRACE_USER_CONFIGURE_MODE_LAST
+        ROCPROFSYS_USER_UNION_CONFIG = 0,    ///< Replace the callbacks in the current config with the non-null callbacks in the provided config
+        ROCPROFSYS_USER_REPLACE_CONFIG,      ///< Replace the entire config even if the provided config has null callbacks
+        ROCPROFSYS_USER_INTERSECT_CONFIG,    ///< Produce a config which is the intersection of the current config and the provided config
+        ROCPROFSYS_USER_CONFIGURE_MODE_LAST
         // clang-format on
     } omnitrace_user_configure_mode_t;
 
-    /// @enum OMNITRACE_USER_ERROR
+    /// @enum ROCPROFSYS_USER_ERROR
     /// @brief Identifier for errors
-    /// @typedef OMNITRACE_USER_ERROR omnitrace_user_error_t
+    /// @typedef ROCPROFSYS_USER_ERROR omnitrace_user_error_t
     ///
-    typedef enum OMNITRACE_USER_ERROR
+    typedef enum ROCPROFSYS_USER_ERROR
     {
-        OMNITRACE_USER_SUCCESS = 0,             ///< No error
-        OMNITRACE_USER_ERROR_NO_BINDING,        ///< Function pointer was not assigned
-        OMNITRACE_USER_ERROR_BAD_VALUE,         ///< Provided value was invalid
-        OMNITRACE_USER_ERROR_INVALID_CATEGORY,  ///< Invalid user binding category
-        OMNITRACE_USER_ERROR_INTERNAL,  ///< Internal error occurred within librocprof-sys
-        OMNITRACE_USER_ERROR_LAST
+        ROCPROFSYS_USER_SUCCESS = 0,             ///< No error
+        ROCPROFSYS_USER_ERROR_NO_BINDING,        ///< Function pointer was not assigned
+        ROCPROFSYS_USER_ERROR_BAD_VALUE,         ///< Provided value was invalid
+        ROCPROFSYS_USER_ERROR_INVALID_CATEGORY,  ///< Invalid user binding category
+        ROCPROFSYS_USER_ERROR_INTERNAL,  ///< Internal error occurred within librocprof-sys
+        ROCPROFSYS_USER_ERROR_LAST
     } omnitrace_user_error_t;
 
 #if defined(__cplusplus)
 }
 #endif
 
-#ifndef OMNITRACE_USER_CALLBACKS_INIT
-#    define OMNITRACE_USER_CALLBACKS_INIT                                                \
+#ifndef ROCPROFSYS_USER_CALLBACKS_INIT
+#    define ROCPROFSYS_USER_CALLBACKS_INIT                                                \
         {                                                                                \
             NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL                   \
         }
 #endif
 
-#endif  // OMNITRACE_TYPES_H_
+#endif  // ROCPROFSYS_TYPES_H_

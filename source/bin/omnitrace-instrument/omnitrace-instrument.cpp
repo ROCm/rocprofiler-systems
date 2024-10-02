@@ -65,12 +65,12 @@
 #include <utility>
 #include <vector>
 
-#if !defined(OMNITRACE_USE_MPI)
-#    define OMNITRACE_USE_MPI 0
+#if !defined(ROCPROFSYS_USE_MPI)
+#    define ROCPROFSYS_USE_MPI 0
 #endif
 
-#if !defined(OMNITRACE_USE_MPI_HEADERS)
-#    define OMNITRACE_USE_MPI_HEADERS 0
+#if !defined(ROCPROFSYS_USE_MPI_HEADERS)
+#    define ROCPROFSYS_USE_MPI_HEADERS 0
 #endif
 
 namespace
@@ -268,7 +268,7 @@ activate_signal_handlers(const std::vector<sys_signal>& _signals)
         TIMEMORY_PRINTF_FATAL(
             stderr,
             "These were the last %i log entries from rocprof-sys. You can control the "
-            "number of log entries via the '--log <N>' option or OMNITRACE_LOG_COUNT "
+            "number of log entries via the '--log <N>' option or ROCPROFSYS_LOG_COUNT "
             "env variable.\n",
             num_log_entries);
 
@@ -322,7 +322,7 @@ main(int argc, char** argv)
         lib_search_paths.emplace_back(JOIN('/', _omni_root, "lib", "rocprofsys", "lib"));
         lib_search_paths.emplace_back(
             JOIN('/', _omni_root, "lib", "rocprofsys", "lib64"));
-        OMNITRACE_ADD_LOG_ENTRY(argv[0], "::", "rocprofsys root path: ", _omni_root);
+        ROCPROFSYS_ADD_LOG_ENTRY(argv[0], "::", "rocprofsys root path: ", _omni_root);
     }
 
     auto _omni_exe_path = get_realpath(get_absolute_exe_filepath(argv[0]));
@@ -340,8 +340,8 @@ main(int argc, char** argv)
     lib_search_paths.emplace_back(JOIN('/', _omni_lib_path, "rocprofsys", "lib"));
     lib_search_paths.emplace_back(JOIN('/', _omni_lib_path, "rocprofsys", "lib64"));
 
-    OMNITRACE_ADD_LOG_ENTRY(argv[0], "::", "rocprofsys bin path: ", _omni_exe_path);
-    OMNITRACE_ADD_LOG_ENTRY(argv[0], "::", "rocprofsys lib path: ", _omni_lib_path);
+    ROCPROFSYS_ADD_LOG_ENTRY(argv[0], "::", "rocprofsys bin path: ", _omni_exe_path);
+    ROCPROFSYS_ADD_LOG_ENTRY(argv[0], "::", "rocprofsys lib path: ", _omni_lib_path);
 
     for(const auto& itr : omnitrace_get_link_map(nullptr))
     {
@@ -366,12 +366,12 @@ main(int argc, char** argv)
 
     for(const auto& itr : bin_search_paths)
     {
-        OMNITRACE_ADD_LOG_ENTRY("bin search path:", itr);
+        ROCPROFSYS_ADD_LOG_ENTRY("bin search path:", itr);
     }
 
     for(const auto& itr : lib_search_paths)
     {
-        OMNITRACE_ADD_LOG_ENTRY("lib search path:", itr);
+        ROCPROFSYS_ADD_LOG_ENTRY("lib search path:", itr);
     }
 
     address_space_t*      addr_space    = nullptr;
@@ -471,7 +471,7 @@ main(int argc, char** argv)
     string_t extra_help = "-- <CMD> <ARGS>";
 
     parser.enable_help();
-    parser.enable_version("rocprof-sys-instrument", OMNITRACE_ARGPARSE_VERSION_INFO);
+    parser.enable_version("rocprof-sys-instrument", ROCPROFSYS_ARGPARSE_VERSION_INFO);
 
     parser.add_argument({ "" }, "");
     parser.add_argument({ "[DEBUG OPTIONS]" }, "");
@@ -887,7 +887,7 @@ main(int argc, char** argv)
                      "defaults in the executable");
     parser.add_argument({ "--env" },
                         "Environment variables to add to the runtime in form "
-                        "VARIABLE=VALUE. E.g. use '--env OMNITRACE_PROFILE=ON' to "
+                        "VARIABLE=VALUE. E.g. use '--env ROCPROFSYS_PROFILE=ON' to "
                         "default to using timemory instead of perfetto");
     parser
         .add_argument({ "--mpi" },
@@ -898,7 +898,7 @@ main(int argc, char** argv)
         .max_count(1)
         .action([](parser_t& p) {
             use_mpi = p.get<bool>("mpi");
-#if OMNITRACE_USE_MPI == 0 && OMNITRACE_USE_MPI_HEADERS == 0
+#if ROCPROFSYS_USE_MPI == 0 && ROCPROFSYS_USE_MPI_HEADERS == 0
             errprintf(0, "omnitrace was not built with full or partial MPI support\n");
             use_mpi = false;
 #endif
@@ -1255,7 +1255,7 @@ main(int argc, char** argv)
     {
         //  Helper function for adding regex expressions
         auto add_regex = [](auto& regex_array, const string_t& regex_expr) {
-            OMNITRACE_ADD_DETAILED_LOG_ENTRY("", "Adding regular expression \"",
+            ROCPROFSYS_ADD_DETAILED_LOG_ENTRY("", "Adding regular expression \"",
                                              regex_expr, "\" to regex_array@",
                                              &regex_array);
             if(!regex_expr.empty())
@@ -1464,13 +1464,13 @@ main(int argc, char** argv)
     };
 
     auto _add_overlapping = [](module_t* mitr, procedure_t* pitr) {
-        OMNITRACE_ADD_LOG_ENTRY("Checking if procedure", get_name(pitr), "in module",
+        ROCPROFSYS_ADD_LOG_ENTRY("Checking if procedure", get_name(pitr), "in module",
                                 get_name(mitr), "is overlapping");
         if(!pitr->isInstrumentable()) return;
         std::vector<procedure_t*> _overlapping{};
         if(pitr->findOverlapping(_overlapping))
         {
-            OMNITRACE_ADD_LOG_ENTRY("Adding overlapping procedure", get_name(pitr),
+            ROCPROFSYS_ADD_LOG_ENTRY("Adding overlapping procedure", get_name(pitr),
                                     "and module", get_name(mitr));
             _insert_module_function(overlapping_module_functions,
                                     module_function{ mitr, pitr });
@@ -1591,7 +1591,7 @@ main(int argc, char** argv)
 
     is_static_exe = addr_space->isStaticExecutable();
 
-    OMNITRACE_ADD_LOG_ENTRY("address space is", (is_static_exe) ? "" : "not",
+    ROCPROFSYS_ADD_LOG_ENTRY("address space is", (is_static_exe) ? "" : "not",
                             "a static executable");
     if(binary_rewrite)
         app_binary = static_cast<BPatch_binaryEdit*>(addr_space);
@@ -1600,7 +1600,7 @@ main(int argc, char** argv)
 
     is_attached = (_pid >= 0 && app_thread != nullptr);
 
-    OMNITRACE_ADD_LOG_ENTRY("address space is attached:", is_attached);
+    ROCPROFSYS_ADD_LOG_ENTRY("address space is attached:", is_attached);
 
     if(!app_binary && !app_thread)
     {
@@ -1620,7 +1620,7 @@ main(int argc, char** argv)
         string_t _tried_libs;
         for(auto _libname : _libnames)
         {
-            OMNITRACE_ADD_LOG_ENTRY("Getting the absolute lib filepath to", _libname);
+            ROCPROFSYS_ADD_LOG_ENTRY("Getting the absolute lib filepath to", _libname);
             _libname = get_realpath(get_absolute_lib_filepath(_libname));
             _tried_libs += string_t("|") + _libname;
             verbprintf(1, "loading library: '%s'...\n", _libname.c_str());
@@ -1629,7 +1629,7 @@ main(int argc, char** argv)
                        (result) ? "success" : "failure");
             if(result)
             {
-                OMNITRACE_ADD_LOG_ENTRY("Using library:", _libname);
+                ROCPROFSYS_ADD_LOG_ENTRY("Using library:", _libname);
                 break;
             }
         }
@@ -1658,7 +1658,7 @@ main(int argc, char** argv)
         };
         for(auto& lname : lnames)
             lname = _get_library_ext(lname);
-        OMNITRACE_ADD_LOG_ENTRY("Using library:", lnames);
+        ROCPROFSYS_ADD_LOG_ENTRY("Using library:", lnames);
         return lnames;
     };
 
@@ -1674,7 +1674,7 @@ main(int argc, char** argv)
                                           { "omnitrace_user_start_thread_trace" });
     auto* user_stop_func  = find_function(app_image, "omnitrace_user_stop_trace",
                                          { "omnitrace_user_stop_thread_trace" });
-#if OMNITRACE_USE_MPI > 0 || OMNITRACE_USE_MPI_HEADERS > 0
+#if ROCPROFSYS_USE_MPI > 0 || ROCPROFSYS_USE_MPI_HEADERS > 0
     // if any of the below MPI functions are found, enable MPI support
     for(const auto* itr : { "MPI_Init", "MPI_Init_thread", "MPI_Finalize",
                             "MPI_Comm_rank", "MPI_Comm_size" })
@@ -2686,7 +2686,7 @@ get_absolute_filepath(std::string _name, const strvec_t& _search_paths)
             if(!is_directory(itr) || is_file(itr)) itr = filepath::dirname(itr);
 
             auto _exists = false;
-            OMNITRACE_ADD_LOG_ENTRY("searching", itr, "for", _name);
+            ROCPROFSYS_ADD_LOG_ENTRY("searching", itr, "for", _name);
             for(const auto& pitr :
                 { absolute(JOIN('/', itr, _name)),
                   absolute(JOIN('/', itr, filepath::basename(_name))) })
@@ -2815,7 +2815,7 @@ using tim::dirname;
 void
 find_dyn_api_rt()
 {
-#if defined(OMNITRACE_BUILD_DYNINST)
+#if defined(ROCPROFSYS_BUILD_DYNINST)
     std::string _dyn_api_rt_base =
         (binary_rewrite) ? "librocprof-sys-rt" : "libdyninstAPI_RT";
 #else

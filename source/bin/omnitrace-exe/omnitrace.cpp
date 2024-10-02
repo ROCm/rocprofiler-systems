@@ -66,14 +66,14 @@ main(int argc, char** argv)
                                                                                                                                    gggggg
 
 
-    ROCm Systems Profiler has renamed the "omnitrace" executable to "rocprof-sys-instrument" to reduce confusion.
+    ROCm Systems Profiler has renamed the "omnitrace" executable to "rocprof-sys-instrument".
 
     This executable only exists to provide this deprecation warning and maintain backwards compatibility for a few releases.
     This executable will soon invoke "rocprof-sys-instrument" with the arguments you just provided after we've given you
     a chance to read this message.
 
     If you are running this job interactively, please acknowledge that you've read this message and whether you want to continue.
-    If you are running this job non-interactively, we will resume executing after ~1 minute unless CI or OMNITRACE_CI is defined
+    If you are running this job non-interactively, we will resume executing after ~1 minute unless CI or ROCPROFSYS_CI is defined
     in the environment, in which case, we will throw an error.
 
     Thanks for using ROCm Systems Profiler and happy optimizing!
