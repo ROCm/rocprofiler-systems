@@ -202,14 +202,14 @@ extern "C"
         if(_force_rocprofiler_init || (get_use_rocprofiler() && !_is_empty))
         {
 #if OMNITRACE_HIP_VERSION < 50500
-            auto _rocprof =
-                dynamic_library{ "ROCPROFSYS_ROCPROFILER_LIBRARY",
-                                 find_library_path("librocprofiler64.so",
-                                                   { "ROCPROFSYS_ROCM_PATH", "ROCM_PATH" },
-                                                   { OMNITRACE_DEFAULT_ROCM_PATH },
-                                                   { "lib", "lib64", "rocprofiler/lib",
-                                                     "rocprofiler/lib64" }),
-                                 (RTLD_LAZY | RTLD_GLOBAL), false };
+            auto _rocprof = dynamic_library{
+                "ROCPROFSYS_ROCPROFILER_LIBRARY",
+                find_library_path(
+                    "librocprofiler64.so", { "ROCPROFSYS_ROCM_PATH", "ROCM_PATH" },
+                    { OMNITRACE_DEFAULT_ROCM_PATH },
+                    { "lib", "lib64", "rocprofiler/lib", "rocprofiler/lib64" }),
+                (RTLD_LAZY | RTLD_GLOBAL), false
+            };
 
             OMNITRACE_VERBOSE_F(1 || rocm::on_load_trace,
                                 "Loading rocprofiler library (%s=%s)...\n",

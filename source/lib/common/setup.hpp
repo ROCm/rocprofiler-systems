@@ -75,7 +75,7 @@
     {                                                                                    \
         fflush(stderr);                                                                  \
         OMNITRACE_SETUP_LOG_START                                                        \
-        fprintf(stderr, "[rocprof-sys]" OMNITRACE_SETUP_LOG_NAME "[%i] ", getpid());       \
+        fprintf(stderr, "[rocprof-sys]" OMNITRACE_SETUP_LOG_NAME "[%i] ", getpid());     \
         fprintf(stderr, __VA_ARGS__);                                                    \
         OMNITRACE_SETUP_LOG_END                                                          \
         fflush(stderr);                                                                  \

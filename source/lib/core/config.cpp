@@ -121,7 +121,7 @@ using utility::parse_numeric_range;
     [&]() {                                                                              \
         auto _ret = _config->insert<TYPE, TYPE>(                                         \
             ENV_NAME, get_setting_name(ENV_NAME), DESCRIPTION, TYPE{ INITIAL_VALUE },    \
-            std::set<std::string>{ "custom", "rocprofsys", "librocprof-sys",              \
+            std::set<std::string>{ "custom", "rocprofsys", "librocprof-sys",             \
                                    __VA_ARGS__ });                                       \
         if(!_ret.second)                                                                 \
         {                                                                                \
@@ -136,7 +136,7 @@ using utility::parse_numeric_range;
     [&]() {                                                                              \
         auto _ret = _config->insert<TYPE, TYPE>(                                         \
             ENV_NAME, get_setting_name(ENV_NAME), DESCRIPTION, TYPE{ INITIAL_VALUE },    \
-            std::set<std::string>{ "custom", "rocprofsys", __VA_ARGS__ });                \
+            std::set<std::string>{ "custom", "rocprofsys", __VA_ARGS__ });               \
         if(!_ret.second)                                                                 \
         {                                                                                \
             OMNITRACE_PRINT("Warning! Duplicate setting: %s / %s\n",                     \
@@ -151,7 +151,7 @@ using utility::parse_numeric_range;
     [&]() {                                                                              \
         auto _ret = _config->insert<TYPE, TYPE>(                                         \
             ENV_NAME, get_setting_name(ENV_NAME), DESCRIPTION, TYPE{ INITIAL_VALUE },    \
-            std::set<std::string>{ "custom", "rocprofsys", "librocprof-sys",              \
+            std::set<std::string>{ "custom", "rocprofsys", "librocprof-sys",             \
                                    __VA_ARGS__ },                                        \
             std::vector<std::string>{ CMD_LINE });                                       \
         if(!_ret.second)                                                                 \
@@ -267,7 +267,8 @@ configure_settings(bool _init)
         "communicates with an allocator instance running in a background thread. Each "
         "allocator only handles N sampling instances (where N is the value of "
         "ROCPROFSYS_SAMPLING_ALLOCATOR_SIZE). When this hint is set to >= the number of "
-        "threads that get sampled, rocprof-sys can start all the background threads during "
+        "threads that get sampled, rocprof-sys can start all the background threads "
+        "during "
         "initialization",
         get_env<size_t>("ROCPROFSYS_NUM_THREADS", 1), "threading", "performance",
         "sampling", "parallelism", "advanced");
@@ -727,11 +728,12 @@ configure_settings(bool _init)
                              std::string{ "perfetto-trace.proto" }, "perfetto", "io",
                              "filename", "advanced");
 
-    OMNITRACE_CONFIG_SETTING(bool, "ROCPROFSYS_USE_TEMPORARY_FILES",
-                             "Write data to temporary files to minimize the memory usage "
-                             "of rocprof-sys, e.g. call-stack samples will be periodically "
-                             "written to a file and re-loaded during finalization",
-                             true, "io", "data", "advanced");
+    OMNITRACE_CONFIG_SETTING(
+        bool, "ROCPROFSYS_USE_TEMPORARY_FILES",
+        "Write data to temporary files to minimize the memory usage "
+        "of rocprof-sys, e.g. call-stack samples will be periodically "
+        "written to a file and re-loaded during finalization",
+        true, "io", "data", "advanced");
 
     OMNITRACE_CONFIG_SETTING(
         std::string, "ROCPROFSYS_TMPDIR", "Base directory for temporary files",
@@ -740,7 +742,8 @@ configure_settings(bool _init)
     OMNITRACE_CONFIG_SETTING(
         std::string, "ROCPROFSYS_CAUSAL_BACKEND",
         "Backend for call-stack sampling. See "
-        "https://rocm.docs.amd.com/projects/omnitrace/en/latest/how-to/performing-causal-profiling.html#backends for more "
+        "https://rocm.docs.amd.com/projects/omnitrace/en/latest/how-to/"
+        "performing-causal-profiling.html#backends for more "
         "info. If set to \"auto\", rocprof-sys will attempt to use the perf backend and "
         "fallback on the timer backend if unavailable",
         std::string{ "auto" }, "causal", "analysis")
@@ -1823,8 +1826,9 @@ get_debug_sampling()
 int
 get_verbose_env()
 {
-    return (settings_are_configured()) ? get_verbose()
-                                       : tim::get_env<int>("ROCPROFSYS_VERBOSE", 0, false);
+    return (settings_are_configured())
+               ? get_verbose()
+               : tim::get_env<int>("ROCPROFSYS_VERBOSE", 0, false);
 }
 
 int
@@ -1917,8 +1921,8 @@ get_use_sampling()
     static auto _v = get_config()->find("ROCPROFSYS_USE_SAMPLING");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 #else
-    OMNITRACE_THROW(
-        "Error! sampling was enabled but rocprof-sys was not built with libunwind support");
+    OMNITRACE_THROW("Error! sampling was enabled but rocprof-sys was not built with "
+                    "libunwind support");
     static bool _v = false;
     return _v;
 #endif
@@ -2617,8 +2621,8 @@ get_causal_mode()
 {
     if(!settings_are_configured())
     {
-        auto _mode = tim::get_env_choice<std::string>("ROCPROFSYS_CAUSAL_MODE", "function",
-                                                      { "line", "function" });
+        auto _mode = tim::get_env_choice<std::string>("ROCPROFSYS_CAUSAL_MODE",
+                                                      "function", { "line", "function" });
         if(_mode == "line") return CausalMode::Line;
         return CausalMode::Function;
     }

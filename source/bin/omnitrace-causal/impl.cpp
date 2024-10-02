@@ -121,10 +121,10 @@ forward_signal(int sig)
 int
 get_verbose()
 {
-    verbose = get_env("ROCPROFSYS_CAUSAL_VERBOSE",
+    verbose     = get_env("ROCPROFSYS_CAUSAL_VERBOSE",
                       get_env<int>("ROCPROFSYS_VERBOSE", verbose, false));
-    auto _debug =
-        get_env("ROCPROFSYS_CAUSAL_DEBUG", get_env<bool>("ROCPROFSYS_DEBUG", false, false));
+    auto _debug = get_env("ROCPROFSYS_CAUSAL_DEBUG",
+                          get_env<bool>("ROCPROFSYS_DEBUG", false, false));
     if(_debug) verbose += 8;
     return verbose;
 }
@@ -861,8 +861,8 @@ parse_args(int argc, char** argv, std::vector<char*>& _env,
         auto _is_omni_cfg = [](std::string_view itr) {
             return (itr.find("ROCPROFSYS") == 0 && itr.find("ROCPROFSYS_MODE") != 0 &&
                     itr.find("ROCPROFSYS_DEBUG_") != 0 && itr.find('=') < itr.length());
-            // rocprof-sys has miscellaneous env options starting with ROCPROFSYS_DEBUG_ that
-            // are not official options
+            // rocprof-sys has miscellaneous env options starting with ROCPROFSYS_DEBUG_
+            // that are not official options
         };
 
         auto _omni_env_m = std::map<std::string, std::string>{};

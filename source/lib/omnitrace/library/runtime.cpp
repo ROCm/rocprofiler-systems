@@ -56,7 +56,8 @@ namespace omnitrace
 {
 namespace
 {
-auto root_process_id = get_env<pid_t>("ROCPROFSYS_ROOT_PROCESS", process::get_id(), false);
+auto root_process_id =
+    get_env<pid_t>("ROCPROFSYS_ROOT_PROCESS", process::get_id(), false);
 
 auto&
 get_sampling_on_child_threads_history(int64_t _idx = utility::get_thread_index())

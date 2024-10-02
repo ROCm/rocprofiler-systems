@@ -71,7 +71,7 @@
     {                                                                                    \
         fflush(stderr);                                                                  \
         OMNITRACE_PATH_LOG_START                                                         \
-        fprintf(stderr, "[rocprof-sys]" OMNITRACE_PATH_LOG_NAME "[%i] ", getpid());        \
+        fprintf(stderr, "[rocprof-sys]" OMNITRACE_PATH_LOG_NAME "[%i] ", getpid());      \
         fprintf(stderr, __VA_ARGS__);                                                    \
         OMNITRACE_PATH_LOG_END                                                           \
         fflush(stderr);                                                                  \
@@ -181,8 +181,9 @@ template <typename RetT>
 RetT
 get_default_lib_search_paths()
 {
-    auto _paths = join(":", get_env("ROCPROFSYS_PATH", ""), get_env("LD_LIBRARY_PATH", ""),
-                       get_env("LIBRARY_PATH", ""), get_env("PWD", ""), ".");
+    auto _paths =
+        join(":", get_env("ROCPROFSYS_PATH", ""), get_env("LD_LIBRARY_PATH", ""),
+             get_env("LIBRARY_PATH", ""), get_env("PWD", ""), ".");
     if constexpr(std::is_same<RetT, std::string>::value)
         return _paths;
     else

@@ -455,7 +455,8 @@ module_function::is_internal_constrained() const
                                          "rocprofsys-user)/.*/.*\\.(h|c|cpp|hpp)$" }))
         return _report("Excluding", "module", "rocprofsys", 3);
 
-    if(std::regex_search(function_name, std::regex{ "9omnitrace|omnitrace|rocprofsys(::|_)" }))
+    if(std::regex_search(function_name,
+                         std::regex{ "9omnitrace|omnitrace|rocprofsys(::|_)" }))
         return _report("Excluding", "function", "rocprofsys", 3);
     else if(std::regex_search(function_name, std::regex{ "3tim|tim::|timemory(::|_)" }))
         return _report("Excluding", "function", "timemory", 3);
@@ -572,8 +573,9 @@ module_function::is_routine_constrained() const
         return _report("Skipping", "function-constraint", 2);
     }
 
-    static std::regex exclude(
-        "(rocprofsys|rocprof-sys|omnitrace|tim::|MPI_Init|MPI_Finalize|dyninst|DYNINST|tm_clones)", regex_opts);
+    static std::regex exclude("(rocprofsys|rocprof-sys|omnitrace|tim::|MPI_Init|MPI_"
+                              "Finalize|dyninst|DYNINST|tm_clones)",
+                              regex_opts);
     // static std::regex exclude_printf("(|v|f)printf$", regex_opts);
     static std::regex exclude_cxx(
         "(std::_Sp_counted_base|std::(use|has)_facet|std::locale|::sentry|^std::_|::_(M|"

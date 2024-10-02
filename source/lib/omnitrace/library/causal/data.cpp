@@ -106,8 +106,9 @@ auto&
 get_engine()
 {
     static auto _seed = []() -> hash_value_t {
-        auto _seed_v = config::get_setting_value<uint64_t>("ROCPROFSYS_CAUSAL_RANDOM_SEED")
-                           .value_or(0);
+        auto _seed_v =
+            config::get_setting_value<uint64_t>("ROCPROFSYS_CAUSAL_RANDOM_SEED")
+                .value_or(0);
         if(_seed_v == 0) _seed_v = std::random_device{}();
         return _seed_v;
     }();
@@ -134,9 +135,9 @@ get_filters(const std::set<binary::scope_filter::filter_scope>& _scopes = {
 
     // exclude internal libraries used by rocprof-sys
     if(_scopes.count(sf::BINARY_FILTER) > 0)
-        _filters.emplace_back(
-            sf{ sf::FILTER_EXCLUDE, sf::BINARY_FILTER,
-                "lib(omnitrace[-\\.]|rocprof-sys[-\\.]|dyninst|tbbmalloc|gotcha\\.|unwind\\.so\\.99)" });
+        _filters.emplace_back(sf{ sf::FILTER_EXCLUDE, sf::BINARY_FILTER,
+                                  "lib(omnitrace[-\\.]|rocprof-sys[-\\.]|dyninst|"
+                                  "tbbmalloc|gotcha\\.|unwind\\.so\\.99)" });
 
     // in function mode, it generally doesn't help to experiment on main function since
     // telling the user to "make the main function" faster is literally useless since it

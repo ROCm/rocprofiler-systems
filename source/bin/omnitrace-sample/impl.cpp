@@ -499,7 +499,8 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
         .count(1)
         .dtype("filepath")
         .action([&](parser_t& p) {
-            update_env(_env, "ROCPROFSYS_PERFETTO_FILE", p.get<std::string>("trace-file"));
+            update_env(_env, "ROCPROFSYS_PERFETTO_FILE",
+                       p.get<std::string>("trace-file"));
         });
     parser
         .add_argument({ "--trace-buffer-size" },
@@ -534,7 +535,8 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
                       "that can changed via --trace-clock-id.")
         .count(1)
         .action([&](parser_t& p) {
-            update_env(_env, "ROCPROFSYS_TRACE_DURATION", p.get<double>("trace-duration"));
+            update_env(_env, "ROCPROFSYS_TRACE_DURATION",
+                       p.get<double>("trace-duration"));
         });
     parser
         .add_argument(
