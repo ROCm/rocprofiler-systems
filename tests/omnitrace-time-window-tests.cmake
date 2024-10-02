@@ -71,7 +71,8 @@ omnitrace_add_test(
     RUNTIME_ARGS -e -v 1 --caller-include inner -i 4096
     LABELS "time-window"
     ENVIRONMENT
-        "${_window_environment};ROCPROFSYS_TRACE_DELAY=0.75;ROCPROFSYS_TRACE_DURATION=0.75")
+        "${_window_environment};ROCPROFSYS_TRACE_DELAY=0.75;ROCPROFSYS_TRACE_DURATION=0.75"
+    )
 
 omnitrace_add_validation_test(
     NAME trace-time-window-delay-binary-rewrite

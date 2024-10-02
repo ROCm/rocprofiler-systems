@@ -9,9 +9,14 @@ target_compile_definitions(thread-limit PRIVATE MAX_THREADS=${OMNITRACE_MAX_THRE
 target_link_libraries(thread-limit PRIVATE Threads::Threads tests-compile-options)
 
 set(_thread_limit_environment
-    "${_base_environment}" "ROCPROFSYS_TRACE=ON" "ROCPROFSYS_PROFILE=ON"
-    "ROCPROFSYS_COUT_OUTPUT=ON" "ROCPROFSYS_USE_SAMPLING=ON" "ROCPROFSYS_SAMPLING_FREQ=250"
-    "ROCPROFSYS_VERBOSE=2" "ROCPROFSYS_TIMEMORY_COMPONENTS=wall_clock,peak_rss,page_rss")
+    "${_base_environment}"
+    "ROCPROFSYS_TRACE=ON"
+    "ROCPROFSYS_PROFILE=ON"
+    "ROCPROFSYS_COUT_OUTPUT=ON"
+    "ROCPROFSYS_USE_SAMPLING=ON"
+    "ROCPROFSYS_SAMPLING_FREQ=250"
+    "ROCPROFSYS_VERBOSE=2"
+    "ROCPROFSYS_TIMEMORY_COMPONENTS=wall_clock,peak_rss,page_rss")
 
 math(EXPR THREAD_LIMIT_TEST_VALUE "${ROCPROFSYS_MAX_THREADS} + 24")
 math(EXPR THREAD_LIMIT_TEST_VALUE_PLUS_ONE "${THREAD_LIMIT_TEST_VALUE} + 1")

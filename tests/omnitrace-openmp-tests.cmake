@@ -18,7 +18,8 @@ omnitrace_add_test(
     RUNTIME_ARGS -e -v 1 --label return args
     REWRITE_TIMEOUT 180
     RUNTIME_TIMEOUT 360
-    ENVIRONMENT "${_ompt_environment};ROCPROFSYS_USE_SAMPLING=OFF;ROCPROFSYS_COUT_OUTPUT=ON"
+    ENVIRONMENT
+        "${_ompt_environment};ROCPROFSYS_USE_SAMPLING=OFF;ROCPROFSYS_COUT_OUTPUT=ON"
     REWRITE_RUN_PASS_REGEX "${_OMPT_PASS_REGEX}"
     RUNTIME_PASS_REGEX "${_OMPT_PASS_REGEX}"
     REWRITE_FAIL_REGEX "0 instrumented loops in procedure")
