@@ -69,8 +69,8 @@ jobs:
       run:
         echo "CC=$(echo '${{ matrix.compiler }}' | sed 's/+/c/g')" >> $GITHUB_ENV &&
         echo "CXX=${{ matrix.compiler }}" >> $GITHUB_ENV &&
-        echo "/opt/omnitrace/bin:${HOME}/.local/bin" >> $GITHUB_PATH &&
-        echo "LD_LIBRARY_PATH=/opt/omnitrace/lib:${LD_LIBRARY_PATH}" >> $GITHUB_ENV
+        echo "/opt/rocprof-sys/bin:${HOME}/.local/bin" >> $GITHUB_PATH &&
+        echo "LD_LIBRARY_PATH=/opt/rocprof-sys/lib:${LD_LIBRARY_PATH}" >> $GITHUB_ENV
 
     - name: Configure, Build, and Test
       timeout-minutes: 115
@@ -86,7 +86,7 @@ jobs:
           -DCMAKE_C_COMPILER=$(echo '${{ matrix.compiler }}' | sed 's/+/c/g')
           -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
-          -DCMAKE_INSTALL_PREFIX=/opt/omnitrace
+          -DCMAKE_INSTALL_PREFIX=/opt/rocprof-sys
           -DOMNITRACE_BUILD_TESTING=ON
           -DOMNITRACE_USE_MPI=OFF
           -DOMNITRACE_USE_HIP=OFF
@@ -130,7 +130,7 @@ jobs:
       timeout-minutes: 10
       run: |
         set -v
-        ./scripts/test-find-package.sh --install-dir /opt/omnitrace
+        ./scripts/test-find-package.sh --install-dir /opt/rocprof-sys
 
     - name: CTest Artifacts
       if: failure()

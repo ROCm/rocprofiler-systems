@@ -297,7 +297,7 @@ jobs:
           shopt -s nullglob
           for i in $(find build-release -type f | egrep '/(stgz|deb|rpm)/.*\.(sh|deb|rpm)$'); do mv ${i} ./; done
           sudo rm -rf build-release
-          sudo rm -rf /opt/omnitrace
+          sudo rm -rf /opt/rocprof-sys
 
       - name: Test STGZ Install
         timeout-minutes: 20

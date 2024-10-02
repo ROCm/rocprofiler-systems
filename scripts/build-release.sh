@@ -265,13 +265,13 @@ build-and-package-base()
                 DEST="stgz"
                 ;;
             DEB)
-                verbose-run cpack -G DEB -D CPACK_PACKAGING_INSTALL_PREFIX=/opt/omnitrace
+                verbose-run cpack -G DEB -D CPACK_PACKAGING_INSTALL_PREFIX=/opt/rocprof-sys
                 EXT="deb"
                 SEP="_"
                 DEST="deb"
                 ;;
             RPM)
-                verbose-run cpack -G RPM -D CPACK_PACKAGING_INSTALL_PREFIX=/opt/omnitrace
+                verbose-run cpack -G RPM -D CPACK_PACKAGING_INSTALL_PREFIX=/opt/rocprof-sys
                 EXT="rpm"
                 SEP="-"
                 DEST="rpm"

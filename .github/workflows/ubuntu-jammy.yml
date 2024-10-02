@@ -178,7 +178,7 @@ jobs:
           -DCMAKE_C_COMPILER=$(echo '${{ matrix.compiler }}' | sed 's/+/c/g')
           -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
-          -DCMAKE_INSTALL_PREFIX=/opt/omnitrace-dev
+          -DCMAKE_INSTALL_PREFIX=/opt/rocprof-sys-dev
           -DOMNITRACE_BUILD_TESTING=ON
           -DOMNITRACE_USE_MPI=${{ matrix.mpi }}
           -DOMNITRACE_USE_HIP=${{ matrix.hip }}
@@ -208,8 +208,8 @@ jobs:
       run: |
         cd build
         cpack -G STGZ
-        mkdir -p /opt/omnitrace
-        ./omnitrace-*.sh --prefix=/opt/omnitrace --exclude-subdir --skip-license
+        mkdir -p /opt/rocprof-sys
+        ./omnitrace-*.sh --prefix=/opt/rocprof-sys --exclude-subdir --skip-license
 
     - name: Test Install with Modulefile
       timeout-minutes: 15
@@ -217,7 +217,7 @@ jobs:
       run: |
         set -v
         source /usr/share/modules/init/$(basename ${SHELL})
-        module use /opt/omnitrace/share/modulefiles
+        module use /opt/rocprof-sys/share/modulefiles
         module avail
         module load omnitrace
         ./scripts/test-install.sh --test-rocprof-sys-{instrument,avail,sample,python,rewrite,runtime}=1
@@ -226,7 +226,7 @@ jobs:
       timeout-minutes: 10
       run: |
         set -v
-        ./scripts/test-find-package.sh --install-dir /opt/omnitrace
+        ./scripts/test-find-package.sh --install-dir /opt/rocprof-sys
 
     - name: CTest Artifacts
       if: failure()

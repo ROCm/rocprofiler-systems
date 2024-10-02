@@ -110,7 +110,7 @@ jobs:
           -DCMAKE_C_COMPILER=$(echo '${{ matrix.compiler }}' | sed 's/+/c/g')
           -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
-          -DCMAKE_INSTALL_PREFIX=/opt/omnitrace
+          -DCMAKE_INSTALL_PREFIX=/opt/rocprof-sys
           -DOMNITRACE_BUILD_TESTING=ON
           -DOMNITRACE_USE_MPI=OFF
           -DOMNITRACE_USE_HIP=${USE_HIP}
@@ -137,14 +137,14 @@ jobs:
       shell: bash
       run: |
         set -v
-        source /opt/omnitrace/share/rocprofsys/setup-env.sh
+        source /opt/rocprof-sys/share/rocprofsys/setup-env.sh
         ./scripts/test-install.sh --test-rocprof-sys-{instrument,avail,sample,rewrite,runtime,python}=1
 
     - name: Test User API
       timeout-minutes: 10
       run: |
         set -v
-        ./scripts/test-find-package.sh --install-dir /opt/omnitrace
+        ./scripts/test-find-package.sh --install-dir /opt/rocprof-sys
 
     - name: CTest Artifacts
       if: failure()
