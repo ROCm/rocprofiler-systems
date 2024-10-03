@@ -558,12 +558,12 @@ function(rocprofsys_custom_compilation)
     # find rocprofsys-launch-compiler
     find_program(
         ROCPROFSYS_COMPILE_LAUNCHER
-        NAMES rocprofsys-launch-compiler
+        NAMES rocprof-sys-launch-compiler
         HINTS ${PROJECT_SOURCE_DIR} ${CMAKE_SOURCE_DIR}
         PATHS ${PROJECT_SOURCE_DIR} ${CMAKE_SOURCE_DIR}
         PATH_SUFFIXES scripts bin)
 
-    message(STATUS "rocprofsys_compile_launcher: ${ROCPROFSYS_COMPILE_LAUNCHER}")
+    message(STATUS "rocprof_sys_compile_launcher: ${ROCPROFSYS_COMPILE_LAUNCHER}")
 
     if(NOT COMP_COMPILER)
         message(FATAL_ERROR "rocprofsys_custom_compilation not provided COMPILER argument")
