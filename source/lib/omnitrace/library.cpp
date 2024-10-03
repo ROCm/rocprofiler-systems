@@ -935,7 +935,7 @@ omnitrace_finalize_hidden(void)
     {
         ROCPROFSYS_VERBOSE_F(0, "Finalizing perfetto...\n");
         rocprofsys::perfetto::post_process(_timemory_manager.get(),
-                                          _perfetto_output_error);
+                                           _perfetto_output_error);
     }
 
     if(_timemory_manager && _timemory_manager != nullptr)

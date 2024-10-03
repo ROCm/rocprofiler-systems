@@ -515,8 +515,8 @@ pthread_create_gotcha::operator()(pthread_t* thread, const pthread_attr_t* attr,
     auto        _enabled      = (_thr_state == ThreadState::Enabled);
     auto        _bundle       = std::optional<bundle_t>{};
     auto        _sample_child = sampling_enabled_on_child_threads();
-    auto        _active       = (_glob_state == ::rocprofsys::State::Active && !_disabled);
-    const auto& _info = thread_info::init(!_active || !_sample_child || _disabled);
+    auto        _active = (_glob_state == ::rocprofsys::State::Active && !_disabled);
+    const auto& _info   = thread_info::init(!_active || !_sample_child || _disabled);
 
     ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 

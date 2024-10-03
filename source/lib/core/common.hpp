@@ -51,7 +51,7 @@
 #include <vector>
 
 #define ROCPROFSYS_DECLARE_COMPONENT(NAME)                                               \
-    namespace rocprofsys                                                                  \
+    namespace rocprofsys                                                                 \
     {                                                                                    \
     namespace component                                                                  \
     {                                                                                    \
@@ -63,7 +63,7 @@
     namespace trait                                                                      \
     {                                                                                    \
     template <>                                                                          \
-    struct is_component<rocprofsys::component::NAME> : true_type                          \
+    struct is_component<rocprofsys::component::NAME> : true_type                         \
     {};                                                                                  \
     }                                                                                    \
     }                                                                                    \
@@ -71,12 +71,12 @@
     {                                                                                    \
     namespace component                                                                  \
     {                                                                                    \
-    using ::rocprofsys::component::NAME;                                                  \
+    using ::rocprofsys::component::NAME;                                                 \
     }                                                                                    \
     }
 
 #define ROCPROFSYS_COMPONENT_ALIAS(NAME, ...)                                            \
-    namespace rocprofsys                                                                  \
+    namespace rocprofsys                                                                 \
     {                                                                                    \
     namespace component                                                                  \
     {                                                                                    \
@@ -87,7 +87,7 @@
     {                                                                                    \
     namespace component                                                                  \
     {                                                                                    \
-    using ::rocprofsys::component::NAME;                                                  \
+    using ::rocprofsys::component::NAME;                                                 \
     }                                                                                    \
     }
 
@@ -97,7 +97,7 @@
     namespace trait                                                                      \
     {                                                                                    \
     template <>                                                                          \
-    struct TRAIT<::rocprofsys::TYPE> : VALUE                                              \
+    struct TRAIT<::rocprofsys::TYPE> : VALUE                                             \
     {};                                                                                  \
     }                                                                                    \
     }

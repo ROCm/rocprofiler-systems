@@ -133,8 +133,8 @@ is_child_process();
 }  // namespace rocprofsys
 
 #define ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(VALUE)                               \
-    ::rocprofsys::scoped_child_sampling ROCPROFSYS_VARIABLE(_scoped_child_sampling_,      \
-                                                           __LINE__)                     \
+    ::rocprofsys::scoped_child_sampling ROCPROFSYS_VARIABLE(_scoped_child_sampling_,     \
+                                                            __LINE__)                    \
     {                                                                                    \
         VALUE                                                                            \
     }

@@ -100,10 +100,10 @@ struct scoped_thread_state
 }  // namespace rocprofsys
 
 #define ROCPROFSYS_SCOPED_THREAD_STATE(STATE)                                            \
-    ::rocprofsys::scoped_thread_state ROCPROFSYS_VARIABLE(_scoped_thread_state_,          \
-                                                         __LINE__)                       \
+    ::rocprofsys::scoped_thread_state ROCPROFSYS_VARIABLE(_scoped_thread_state_,         \
+                                                          __LINE__)                      \
     {                                                                                    \
-        ::rocprofsys::STATE                                                               \
+        ::rocprofsys::STATE                                                              \
     }
 
 namespace std

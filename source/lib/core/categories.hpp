@@ -62,7 +62,7 @@ using category_type_id_t = typename category_type_id<Idx>::type;
 }  // namespace rocprofsys
 
 #define ROCPROFSYS_DEFINE_CATEGORY_TRAIT(TYPE, ENUM)                                     \
-    namespace rocprofsys                                                                  \
+    namespace rocprofsys                                                                 \
     {                                                                                    \
     template <>                                                                          \
     struct category_type_id<ENUM>                                                        \

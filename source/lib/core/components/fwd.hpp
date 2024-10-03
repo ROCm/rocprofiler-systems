@@ -239,16 +239,16 @@ ROCPROFSYS_DEFINE_CONCRETE_TRAIT(report_self, component::sampling_percent, false
 
 #define ROCPROFSYS_DECLARE_EXTERN_COMPONENT(NAME, HAS_DATA, ...)                         \
     TIMEMORY_DECLARE_EXTERN_TEMPLATE(                                                    \
-        struct tim::component::base<TIMEMORY_ESC(rocprofsys::component::NAME),            \
+        struct tim::component::base<TIMEMORY_ESC(rocprofsys::component::NAME),           \
                                     __VA_ARGS__>)                                        \
-    TIMEMORY_DECLARE_EXTERN_OPERATIONS(TIMEMORY_ESC(rocprofsys::component::NAME),         \
+    TIMEMORY_DECLARE_EXTERN_OPERATIONS(TIMEMORY_ESC(rocprofsys::component::NAME),        \
                                        HAS_DATA)                                         \
     TIMEMORY_DECLARE_EXTERN_STORAGE(TIMEMORY_ESC(rocprofsys::component::NAME))
 
 #define ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(NAME, HAS_DATA, ...)                     \
     TIMEMORY_INSTANTIATE_EXTERN_TEMPLATE(                                                \
-        struct tim::component::base<TIMEMORY_ESC(rocprofsys::component::NAME),            \
+        struct tim::component::base<TIMEMORY_ESC(rocprofsys::component::NAME),           \
                                     __VA_ARGS__>)                                        \
-    TIMEMORY_INSTANTIATE_EXTERN_OPERATIONS(TIMEMORY_ESC(rocprofsys::component::NAME),     \
+    TIMEMORY_INSTANTIATE_EXTERN_OPERATIONS(TIMEMORY_ESC(rocprofsys::component::NAME),    \
                                            HAS_DATA)                                     \
     TIMEMORY_INSTANTIATE_EXTERN_STORAGE(TIMEMORY_ESC(rocprofsys::component::NAME))

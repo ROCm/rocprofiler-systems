@@ -212,8 +212,9 @@ extern "C"
             "Initializing rocprof-sys kokkos connector (sequence %d, version: %llu)... ",
             loadSeq, (unsigned long long) interfaceVer);
 
-        if(_standalone_initialized || (!rocprofsys::config::settings_are_configured() &&
-                                       rocprofsys::get_state() < rocprofsys::State::Active))
+        if(_standalone_initialized ||
+           (!rocprofsys::config::settings_are_configured() &&
+            rocprofsys::get_state() < rocprofsys::State::Active))
         {
             auto _kokkos_profile_lib =
                 tim::get_env<std::string>("KOKKOS_PROFILE_LIBRARY");
@@ -272,9 +273,9 @@ extern "C"
         _name_len_limit = rocprofsys::config::get_setting_value<int64_t>(
                               "ROCPROFSYS_KOKKOSP_NAME_LENGTH_MAX")
                               .value_or(_name_len_limit);
-        _kp_prefix =
-            rocprofsys::config::get_setting_value<std::string>("ROCPROFSYS_KOKKOSP_PREFIX")
-                .value_or(_kp_prefix);
+        _kp_prefix = rocprofsys::config::get_setting_value<std::string>(
+                         "ROCPROFSYS_KOKKOSP_PREFIX")
+                         .value_or(_kp_prefix);
 
         _kp_deep_copy =
             rocprofsys::config::get_setting_value<bool>("ROCPROFSYS_KOKKOSP_DEEP_COPY")

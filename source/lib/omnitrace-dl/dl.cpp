@@ -571,20 +571,20 @@ bool _omnitrace_dl_fini = (std::atexit([]() {
 //--------------------------------------------------------------------------------------//
 
 #define ROCPROFSYS_DL_INVOKE(...)                                                        \
-    ::rocprofsys::common::invoke(__FUNCTION__, ::rocprofsys::dl::_omnitrace_dl_verbose,    \
-                                (::rocprofsys::dl::get_thread_status() = false),          \
-                                __VA_ARGS__)
+    ::rocprofsys::common::invoke(__FUNCTION__, ::rocprofsys::dl::_omnitrace_dl_verbose,  \
+                                 (::rocprofsys::dl::get_thread_status() = false),        \
+                                 __VA_ARGS__)
 
 #define ROCPROFSYS_DL_IGNORE(...)                                                        \
-    ::rocprofsys::common::ignore(__FUNCTION__, ::rocprofsys::dl::_omnitrace_dl_verbose,    \
-                                __VA_ARGS__)
+    ::rocprofsys::common::ignore(__FUNCTION__, ::rocprofsys::dl::_omnitrace_dl_verbose,  \
+                                 __VA_ARGS__)
 
 #define ROCPROFSYS_DL_INVOKE_STATUS(STATUS, ...)                                         \
-    ::rocprofsys::common::invoke(__FUNCTION__, ::rocprofsys::dl::_omnitrace_dl_verbose,    \
-                                STATUS, __VA_ARGS__)
+    ::rocprofsys::common::invoke(__FUNCTION__, ::rocprofsys::dl::_omnitrace_dl_verbose,  \
+                                 STATUS, __VA_ARGS__)
 
 #define ROCPROFSYS_DL_LOG(LEVEL, ...)                                                    \
-    if(::rocprofsys::dl::_omnitrace_dl_verbose >= LEVEL)                                  \
+    if(::rocprofsys::dl::_omnitrace_dl_verbose >= LEVEL)                                 \
     {                                                                                    \
         fflush(stderr);                                                                  \
         ROCPROFSYS_COMMON_LIBRARY_LOG_START                                              \

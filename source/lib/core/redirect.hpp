@@ -68,10 +68,11 @@ struct redirect
         if(_v != _expect)
         {
             if(get_verbose() > 0)
-                std::cerr << "[rocprofsys::redirect] Expected:\n[rocprofsys::redirect]    "
-                          << _expect
-                          << "\n[rocprofsys::redirect] Found:\n[rocprofsys::redirect]    "
-                          << _v << "\n";
+                std::cerr
+                    << "[rocprofsys::redirect] Expected:\n[rocprofsys::redirect]    "
+                    << _expect
+                    << "\n[rocprofsys::redirect] Found:\n[rocprofsys::redirect]    " << _v
+                    << "\n";
             if(get_verbose() <= 0 || (&m_os != &std::cerr && &m_os != &std::cout))
                 m_os << m_buffer.str() << std::flush;
         }
