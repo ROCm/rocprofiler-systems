@@ -134,11 +134,11 @@ ensure_ci_timeout_backtrace(double             _ci_timeout_seconds,
                 }
                 else
                 {
-                    ROCPROFSYS_WARNING_F(0,
-                                        "pthread_kill(%zu, %i) failed. executing generic "
-                                        "kill(%i, %i)...\n",
-                                        _handle, timeout_signal_v, process::get_id(),
-                                        timeout_signal_v);
+                    ROCPROFSYS_WARNING_F(
+                        0,
+                        "pthread_kill(%zu, %i) failed. executing generic "
+                        "kill(%i, %i)...\n",
+                        _handle, timeout_signal_v, process::get_id(), timeout_signal_v);
                 }
 
                 ::kill(process::get_id(), timeout_signal_v);
@@ -152,9 +152,9 @@ ensure_ci_timeout_backtrace(double             _ci_timeout_seconds,
 
         _tids.erase(main_thread_native_handle);
         ROCPROFSYS_WARNING_F(-127,
-                            "timeout after %8.3f seconds... Generating backtraces for "
-                            "%zu threads...\n",
-                            _ci_timeout_seconds, _tids.size() + 1);
+                             "timeout after %8.3f seconds... Generating backtraces for "
+                             "%zu threads...\n",
+                             _ci_timeout_seconds, _tids.size() + 1);
 
         for(auto itr : _tids)
             _kill_thread(itr);

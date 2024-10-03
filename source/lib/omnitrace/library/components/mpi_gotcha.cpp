@@ -76,7 +76,7 @@ struct comm_rank_data
     friend bool operator>(const comm_rank_data& _lhs, const comm_rank_data& _rhs)
     {
         ROCPROFSYS_CI_THROW(!_lhs.updated() && !_rhs.updated(),
-                           "Error! comparing rank data that is not updated");
+                            "Error! comparing rank data that is not updated");
 
         if(_lhs.updated() && !_rhs.updated()) return true;
         if(!_lhs.updated() && _rhs.updated()) return false;
@@ -212,8 +212,8 @@ mpi_gotcha::update()
         tim::settings::default_process_suffix() = _rank;
 
         ROCPROFSYS_BASIC_VERBOSE(0, "[pid=%i] MPI rank: %i (%i), MPI size: %i (%i)\n",
-                                process::get_id(), tim::mpi::rank(), _rank,
-                                tim::mpi::size(), _size);
+                                 process::get_id(), tim::mpi::rank(), _rank,
+                                 tim::mpi::size(), _size);
         last_comm_record      = _rank_data;
         config::get_use_pid() = true;
         return true;
@@ -294,7 +294,7 @@ mpi_gotcha::audit(const gotcha_data_t& _data, audit::incoming, comm_t _comm, int
     else
     {
         ROCPROFSYS_BASIC_PRINT_F("%s(<comm>, %p) :: unexpected function wrapper\n",
-                                _data.tool_id.c_str(), static_cast<void*>(_val));
+                                 _data.tool_id.c_str(), static_cast<void*>(_val));
     }
 }
 

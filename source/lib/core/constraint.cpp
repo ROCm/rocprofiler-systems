@@ -47,7 +47,7 @@ namespace units = ::tim::units;
 using clock_type    = std::chrono::high_resolution_clock;
 using duration_type = std::chrono::duration<double, std::nano>;
 
-#define ROCPROFSYS_CLOCK_IDENTIFIER(VAL)                                                  \
+#define ROCPROFSYS_CLOCK_IDENTIFIER(VAL)                                                 \
     clock_identifier { #VAL, VAL }
 
 auto
@@ -102,8 +102,8 @@ find_clock_identifier(const Tp& _v)
     }
 
     ROCPROFSYS_THROW("Unknown clock id %s: %s. Valid choices: %s\n", _descript,
-                    timemory::join::join("", _v).c_str(),
-                    timemory::join::join("", accepted_clock_ids).c_str());
+                     timemory::join::join("", _v).c_str(),
+                     timemory::join::join("", accepted_clock_ids).c_str());
 }
 
 void
@@ -267,10 +267,10 @@ spec::operator()(const stages& _stages) const
         };
 
         ROCPROFSYS_VERBOSE(2,
-                          "Executing constraint spec %lu of %lu :: delay: %6.3f, "
-                          "duration: %6.3f, clock: %s\n",
-                          i, _spec.repeat, _spec.delay, _spec.duration,
-                          _spec.clock_id.as_string().c_str());
+                           "Executing constraint spec %lu of %lu :: delay: %6.3f, "
+                           "duration: %6.3f, clock: %s\n",
+                           i, _spec.repeat, _spec.delay, _spec.duration,
+                           _spec.clock_id.as_string().c_str());
 
         if(_stages.init(_spec) && _wait(_stages.wait, _spec.delay) &&
            _stages.start(_spec) && _wait(_stages.collect, _spec.duration) &&

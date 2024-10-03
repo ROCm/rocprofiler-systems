@@ -160,8 +160,8 @@ void
 post_process()
 {
     ROCPROFSYS_VERBOSE(1,
-                      "Post-processing %zu cpu frequency and memory usage entries...\n",
-                      data.size());
+                       "Post-processing %zu cpu frequency and memory usage entries...\n",
+                       data.size());
     auto _process_frequencies = [](size_t _idx, size_t _offset) {
         using freq_track = perfetto_counter_track<category::cpu_freq>;
 

@@ -190,4 +190,4 @@ rocprofiler::protect_flush_activity()
 
 ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(rocprofiler, false, void)
 ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(rocprofiler_data, true,
-                                       tim::component::rocprofiler_value)
+                                        tim::component::rocprofiler_value)

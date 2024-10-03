@@ -31,7 +31,7 @@
 #include <string>
 
 #if !defined(ROCPROFSYS_SERIALIZE)
-#    define ROCPROFSYS_SERIALIZE(MEMBER_VARIABLE)                                         \
+#    define ROCPROFSYS_SERIALIZE(MEMBER_VARIABLE)                                        \
         ar(::tim::cereal::make_nvp(#MEMBER_VARIABLE, MEMBER_VARIABLE))
 #endif
 

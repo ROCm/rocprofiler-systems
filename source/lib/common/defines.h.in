@@ -59,16 +59,16 @@
 #cmakedefine ROCPROFSYS_ROCM_MAX_COUNTERS @ROCPROFSYS_ROCM_MAX_COUNTERS@
 // clang-format on
 
-#define ROCPROFSYS_VERSION                                                                \
-    ((10000 * ROCPROFSYS_VERSION_MAJOR) + (100 * ROCPROFSYS_VERSION_MINOR) +               \
+#define ROCPROFSYS_VERSION                                                               \
+    ((10000 * ROCPROFSYS_VERSION_MAJOR) + (100 * ROCPROFSYS_VERSION_MINOR) +             \
      ROCPROFSYS_VERSION_PATCH)
 
-#define ROCPROFSYS_HIP_VERSION                                                            \
-    ((10000 * ROCPROFSYS_HIP_VERSION_MAJOR) + (100 * ROCPROFSYS_HIP_VERSION_MINOR) +       \
+#define ROCPROFSYS_HIP_VERSION                                                           \
+    ((10000 * ROCPROFSYS_HIP_VERSION_MAJOR) + (100 * ROCPROFSYS_HIP_VERSION_MINOR) +     \
      ROCPROFSYS_HIP_VERSION_PATCH)
 
 #if ROCPROFSYS_HIP_VERSION_MAJOR > 0
-#    define ROCPROFSYS_HIP_VERSION_COMPAT_STRING                                          \
+#    define ROCPROFSYS_HIP_VERSION_COMPAT_STRING                                         \
         "v@ROCPROFSYS_HIP_VERSION_MAJOR@.@ROCPROFSYS_HIP_VERSION_MINOR@.x"
 #else
 #    define ROCPROFSYS_HIP_VERSION_COMPAT_STRING ""
@@ -78,12 +78,12 @@
 // Example:
 //      parser.enable_version(<name>, ROCPROFSYS_ARGPARSE_VERSION_INFO);
 #if !defined(ROCPROFSYS_ARGPARSE_VERSION_INFO)
-#    define ROCPROFSYS_ARGPARSE_VERSION_INFO                                              \
-        "v" ROCPROFSYS_VERSION_STRING, ROCPROFSYS_GIT_DESCRIBE, ROCPROFSYS_GIT_REVISION,    \
+#    define ROCPROFSYS_ARGPARSE_VERSION_INFO                                             \
+        "v" ROCPROFSYS_VERSION_STRING, ROCPROFSYS_GIT_DESCRIBE, ROCPROFSYS_GIT_REVISION, \
         {                                                                                \
-            { "", ROCPROFSYS_LIBRARY_ARCH }, { "compiler", ROCPROFSYS_COMPILER_STRING },   \
+            { "", ROCPROFSYS_LIBRARY_ARCH }, { "compiler", ROCPROFSYS_COMPILER_STRING }, \
             {                                                                            \
-                "rocm", ROCPROFSYS_HIP_VERSION_COMPAT_STRING                              \
+                "rocm", ROCPROFSYS_HIP_VERSION_COMPAT_STRING                             \
             }                                                                            \
         }
 #endif
@@ -116,22 +116,23 @@
 #    define ROCPROFSYS_ROCM_MAX_COUNTERS 25
 #endif
 
-#define ROCPROFSYS_ATTRIBUTE(...)    __attribute__((__VA_ARGS__))
-#define ROCPROFSYS_VISIBILITY(MODE)  ROCPROFSYS_ATTRIBUTE(visibility(MODE))
-#define ROCPROFSYS_PUBLIC_API        ROCPROFSYS_VISIBILITY("default")
-#define ROCPROFSYS_HIDDEN_API        ROCPROFSYS_VISIBILITY("hidden")
-#define ROCPROFSYS_INTERNAL_API      ROCPROFSYS_VISIBILITY("internal")
-#define ROCPROFSYS_INLINE            ROCPROFSYS_ATTRIBUTE(always_inline) inline
-#define ROCPROFSYS_NOINLINE          ROCPROFSYS_ATTRIBUTE(noinline)
-#define ROCPROFSYS_HOT               ROCPROFSYS_ATTRIBUTE(hot)
-#define ROCPROFSYS_COLD              ROCPROFSYS_ATTRIBUTE(cold)
-#define ROCPROFSYS_CONST             ROCPROFSYS_ATTRIBUTE(const)
-#define ROCPROFSYS_PURE              ROCPROFSYS_ATTRIBUTE(pure)
-#define ROCPROFSYS_WEAK              ROCPROFSYS_ATTRIBUTE(weak)
-#define ROCPROFSYS_PACKED            ROCPROFSYS_ATTRIBUTE(__packed__)
-#define ROCPROFSYS_PACKED_ALIGN(VAL) ROCPROFSYS_PACKED ROCPROFSYS_ATTRIBUTE(__aligned__(VAL))
-#define ROCPROFSYS_LIKELY(...)       __builtin_expect((__VA_ARGS__), 1)
-#define ROCPROFSYS_UNLIKELY(...)     __builtin_expect((__VA_ARGS__), 0)
+#define ROCPROFSYS_ATTRIBUTE(...)   __attribute__((__VA_ARGS__))
+#define ROCPROFSYS_VISIBILITY(MODE) ROCPROFSYS_ATTRIBUTE(visibility(MODE))
+#define ROCPROFSYS_PUBLIC_API       ROCPROFSYS_VISIBILITY("default")
+#define ROCPROFSYS_HIDDEN_API       ROCPROFSYS_VISIBILITY("hidden")
+#define ROCPROFSYS_INTERNAL_API     ROCPROFSYS_VISIBILITY("internal")
+#define ROCPROFSYS_INLINE           ROCPROFSYS_ATTRIBUTE(always_inline) inline
+#define ROCPROFSYS_NOINLINE         ROCPROFSYS_ATTRIBUTE(noinline)
+#define ROCPROFSYS_HOT              ROCPROFSYS_ATTRIBUTE(hot)
+#define ROCPROFSYS_COLD             ROCPROFSYS_ATTRIBUTE(cold)
+#define ROCPROFSYS_CONST            ROCPROFSYS_ATTRIBUTE(const)
+#define ROCPROFSYS_PURE             ROCPROFSYS_ATTRIBUTE(pure)
+#define ROCPROFSYS_WEAK             ROCPROFSYS_ATTRIBUTE(weak)
+#define ROCPROFSYS_PACKED           ROCPROFSYS_ATTRIBUTE(__packed__)
+#define ROCPROFSYS_PACKED_ALIGN(VAL)                                                     \
+    ROCPROFSYS_PACKED ROCPROFSYS_ATTRIBUTE(__aligned__(VAL))
+#define ROCPROFSYS_LIKELY(...)   __builtin_expect((__VA_ARGS__), 1)
+#define ROCPROFSYS_UNLIKELY(...) __builtin_expect((__VA_ARGS__), 0)
 
 #if defined(ROCPROFSYS_CI) && ROCPROFSYS_CI > 0
 #    if defined(NDEBUG)

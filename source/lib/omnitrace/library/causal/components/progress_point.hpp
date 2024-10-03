@@ -113,13 +113,13 @@ private:
 }  // namespace omnitrace
 
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(uses_storage, causal::component::progress_point,
-                                false_type)
+                                 false_type)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(flat_storage, causal::component::progress_point,
-                                true_type)
+                                 true_type)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(uses_timing_units, causal::component::progress_point,
-                                true_type)
+                                 true_type)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_timing_category, causal::component::progress_point,
-                                true_type)
+                                 true_type)
 
 namespace tim
 {

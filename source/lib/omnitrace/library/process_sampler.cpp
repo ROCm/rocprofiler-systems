@@ -121,7 +121,7 @@ sampler::poll(std::atomic<State>* _state, nsec_t _interval, promise_t* _ready)
     }
 
     ROCPROFSYS_CONDITIONAL_BASIC_PRINT(get_debug(),
-                                      "Thread sampler polling completed...\n");
+                                       "Thread sampler polling completed...\n");
 
     if(polling_finished) polling_finished->set_value();
 }

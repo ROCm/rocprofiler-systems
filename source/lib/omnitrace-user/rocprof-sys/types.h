@@ -99,7 +99,8 @@ extern "C"
         ROCPROFSYS_USER_ERROR_NO_BINDING,        ///< Function pointer was not assigned
         ROCPROFSYS_USER_ERROR_BAD_VALUE,         ///< Provided value was invalid
         ROCPROFSYS_USER_ERROR_INVALID_CATEGORY,  ///< Invalid user binding category
-        ROCPROFSYS_USER_ERROR_INTERNAL,  ///< Internal error occurred within librocprof-sys
+        ROCPROFSYS_USER_ERROR_INTERNAL,          ///< Internal error occurred within
+                                                 ///< librocprof-sys
         ROCPROFSYS_USER_ERROR_LAST
     } omnitrace_user_error_t;
 
@@ -108,7 +109,7 @@ extern "C"
 #endif
 
 #ifndef ROCPROFSYS_USER_CALLBACKS_INIT
-#    define ROCPROFSYS_USER_CALLBACKS_INIT                                                \
+#    define ROCPROFSYS_USER_CALLBACKS_INIT                                               \
         {                                                                                \
             NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL                   \
         }

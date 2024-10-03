@@ -296,13 +296,13 @@ roctracer::flush()
     else
     {
         ROCPROFSYS_CI_FAIL(true,
-                          "roctracer_activity_count() != 0 (== %li). "
-                          "roctracer::shutdown() most likely called during abort",
-                          roctracer_activity_count().load());
+                           "roctracer_activity_count() != 0 (== %li). "
+                           "roctracer::shutdown() most likely called during abort",
+                           roctracer_activity_count().load());
     }
 
     ROCPROFSYS_VERBOSE_F(2, "executing hip_exec_activity_callbacks(0..%zu)\n",
-                        thread_info::get_peak_num_threads());
+                         thread_info::get_peak_num_threads());
     // make sure all async operations are executed
     for(size_t i = 0; i < thread_info::get_peak_num_threads(); ++i)
         hip_exec_activity_callbacks(i);
@@ -322,7 +322,7 @@ roctracer::shutdown()
 
     // callback for hsa
     ROCPROFSYS_VERBOSE_F(2, "executing %zu roctracer_shutdown_routines...\n",
-                        roctracer_shutdown_routines().size());
+                         roctracer_shutdown_routines().size());
     for(auto& itr : roctracer_shutdown_routines())
         itr.second();
 

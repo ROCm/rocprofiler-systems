@@ -145,12 +145,13 @@ cpu_freq::configure()
     if(!cpuinfo::freq{})
     {
         ROCPROFSYS_VERBOSE(0, "[cpu_freq::config] Warning! CPU frequencies are disabled "
-                             ":: unable to open /proc/cpuinfo");
+                              ":: unable to open /proc/cpuinfo");
         _enabled_freqs.clear();
     }
 
-    ROCPROFSYS_CI_FAIL(!cpuinfo::freq{}, "[cpu_freq::config] CPU frequencies are disabled "
-                                        ":: unable to open /proc/cpuinfo");
+    ROCPROFSYS_CI_FAIL(!cpuinfo::freq{},
+                       "[cpu_freq::config] CPU frequencies are disabled "
+                       ":: unable to open /proc/cpuinfo");
 
     get_enabled_cpus() = _enabled_freqs;
 }

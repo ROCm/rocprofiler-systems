@@ -84,7 +84,7 @@ start_bundle(bundle_t& _bundle, int64_t _tid, Args&&... _args)
     if(!get_use_timemory() && !get_use_perfetto()) return;
     trait::runtime_enabled<comp::roctracer_data>::set(get_use_roctracer());
     ROCPROFSYS_BASIC_VERBOSE_F(3, "starting bundle '%s' in thread %li...\n",
-                              _bundle.key().c_str(), _tid);
+                               _bundle.key().c_str(), _tid);
     if constexpr(sizeof...(Args) > 0)
     {
         const char* _name = nullptr;
@@ -118,7 +118,7 @@ stop_bundle(bundle_t& _bundle, int64_t _tid, Args&&... _args)
         return;
 
     ROCPROFSYS_BASIC_VERBOSE_F(3, "stopping bundle '%s' in thread %li...\n",
-                              _bundle.key().c_str(), _tid);
+                               _bundle.key().c_str(), _tid);
     if(get_use_timemory())
     {
         auto _wc = *_bundle.get<comp::wall_clock>();
@@ -231,9 +231,9 @@ pthread_create_gotcha::wrapper::operator()() const
     {
         _tid = _info->index_data->sequent_value;
         ROCPROFSYS_BASIC_VERBOSE(1, "[PID=%i][rank=%i] Thread %s (parent: %s) created\n",
-                                process::get_id(), dmp::rank(),
-                                _info->index_data->as_string().c_str(),
-                                _parent_info->index_data->as_string().c_str());
+                                 process::get_id(), dmp::rank(),
+                                 _info->index_data->as_string().c_str(),
+                                 _parent_info->index_data->as_string().c_str());
         threading::set_thread_name(TIMEMORY_JOIN(" ", "Thread", _tid).c_str());
         auto _manager = tim::manager::instance();
         if(_manager) _manager->initialize();
@@ -459,8 +459,8 @@ pthread_create_gotcha::shutdown()
     if(config::settings_are_configured())
     {
         ROCPROFSYS_VERBOSE(2 && _ndangling > 0,
-                          "[pthread_create_gotcha] cleaned up %lu dangling bundles\n",
-                          _ndangling);
+                           "[pthread_create_gotcha] cleaned up %lu dangling bundles\n",
+                           _ndangling);
     }
     else
     {
@@ -558,8 +558,8 @@ pthread_create_gotcha::operator()(pthread_t* thread, const pthread_attr_t* attr,
     if(_active && !_disabled && !_info->is_offset)
     {
         ROCPROFSYS_BASIC_VERBOSE(2, "[PID=%i][rank=%i] Starting new thread on %s...\n",
-                                process::get_id(), dmp::rank(),
-                                _info->index_data->as_string().c_str());
+                                 process::get_id(), dmp::rank(),
+                                 _info->index_data->as_string().c_str());
     }
 
     // ensure that cpu cid stack exists on the parent thread if active

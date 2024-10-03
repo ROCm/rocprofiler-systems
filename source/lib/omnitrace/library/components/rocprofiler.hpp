@@ -222,15 +222,15 @@ ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::rocprofiler_data, fals
 TIMEMORY_SET_COMPONENT_API(component::rocprofiler_data, project::timemory,
                            category::timing, os::supports_unix)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_timing_category, component::rocprofiler_data,
-                                false_type)
+                                 false_type)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(uses_timing_units, component::rocprofiler_data,
-                                false_type)
+                                 false_type)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(report_units, component::rocprofiler_data, false_type)
 TIMEMORY_STATISTICS_TYPE(component::rocprofiler_data, component::rocprofiler_value)
 TIMEMORY_STATISTICS_TYPE(component::rocm_data_tracker, component::rocm_feature_value)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(report_units, component::rocm_data_tracker, false_type)
 
-#if !defined(ROCPROFSYS_EXTERN_COMPONENTS) ||                                             \
+#if !defined(ROCPROFSYS_EXTERN_COMPONENTS) ||                                            \
     (defined(ROCPROFSYS_EXTERN_COMPONENTS) && ROCPROFSYS_EXTERN_COMPONENTS > 0)
 
 #    include <timemory/operations.hpp>

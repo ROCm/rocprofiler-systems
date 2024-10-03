@@ -1256,8 +1256,8 @@ main(int argc, char** argv)
         //  Helper function for adding regex expressions
         auto add_regex = [](auto& regex_array, const string_t& regex_expr) {
             ROCPROFSYS_ADD_DETAILED_LOG_ENTRY("", "Adding regular expression \"",
-                                             regex_expr, "\" to regex_array@",
-                                             &regex_array);
+                                              regex_expr, "\" to regex_array@",
+                                              &regex_array);
             if(!regex_expr.empty())
                 regex_array.emplace_back(std::regex(regex_expr, regex_opts));
         };
@@ -1465,13 +1465,13 @@ main(int argc, char** argv)
 
     auto _add_overlapping = [](module_t* mitr, procedure_t* pitr) {
         ROCPROFSYS_ADD_LOG_ENTRY("Checking if procedure", get_name(pitr), "in module",
-                                get_name(mitr), "is overlapping");
+                                 get_name(mitr), "is overlapping");
         if(!pitr->isInstrumentable()) return;
         std::vector<procedure_t*> _overlapping{};
         if(pitr->findOverlapping(_overlapping))
         {
             ROCPROFSYS_ADD_LOG_ENTRY("Adding overlapping procedure", get_name(pitr),
-                                    "and module", get_name(mitr));
+                                     "and module", get_name(mitr));
             _insert_module_function(overlapping_module_functions,
                                     module_function{ mitr, pitr });
             for(auto* oitr : _overlapping)
@@ -1592,7 +1592,7 @@ main(int argc, char** argv)
     is_static_exe = addr_space->isStaticExecutable();
 
     ROCPROFSYS_ADD_LOG_ENTRY("address space is", (is_static_exe) ? "" : "not",
-                            "a static executable");
+                             "a static executable");
     if(binary_rewrite)
         app_binary = static_cast<BPatch_binaryEdit*>(addr_space);
     else

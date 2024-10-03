@@ -95,7 +95,7 @@ extern "C"
         if(!rocm::is_loaded)
         {
             ROCPROFSYS_BASIC_VERBOSE_F(1 || rocm::on_load_trace,
-                                      "rocprofiler is not loaded\n");
+                                       "rocprofiler is not loaded\n");
             return;
         }
         rocm::is_loaded = false;
@@ -121,7 +121,7 @@ extern "C"
         if(rocm::is_loaded)
         {
             ROCPROFSYS_BASIC_VERBOSE_F(1 || rocm::on_load_trace,
-                                      "rocprofiler is already loaded\n");
+                                       "rocprofiler is already loaded\n");
             return;
         }
         rocm::is_loaded = true;
@@ -142,7 +142,7 @@ extern "C"
         // settings->timeout           = 0;
 
         ROCPROFSYS_BASIC_VERBOSE_F(1 || rocm::on_load_trace, "rocprofiler settings: %s\n",
-                                  JOIN("", *settings).c_str());
+                                   JOIN("", *settings).c_str());
 
         // Initialize profiling
         omnitrace::rocprofiler::rocm_initialize();
@@ -176,14 +176,14 @@ extern "C"
 
 #if ROCPROFSYS_HIP_VERSION < 50300
         ROCPROFSYS_VERBOSE_F(1 || rocm::on_load_trace,
-                            "Computing the roctracer clock skew...\n");
+                             "Computing the roctracer clock skew...\n");
         (void) omnitrace::get_clock_skew();
 #endif
 
         if(get_use_process_sampling() && get_use_rocm_smi())
         {
             ROCPROFSYS_VERBOSE_F(1 || rocm::on_load_trace,
-                                "Setting rocm_smi state to active...\n");
+                                 "Setting rocm_smi state to active...\n");
             rocm_smi::set_state(State::Active);
         }
 
@@ -212,21 +212,21 @@ extern "C"
             };
 
             ROCPROFSYS_VERBOSE_F(1 || rocm::on_load_trace,
-                                "Loading rocprofiler library (%s=%s)...\n",
-                                _rocprof.envname.c_str(), _rocprof.filename.c_str());
+                                 "Loading rocprofiler library (%s=%s)...\n",
+                                 _rocprof.envname.c_str(), _rocprof.filename.c_str());
             _rocprof.open();
 
             on_load_t _rocprof_load = nullptr;
             _success = _rocprof.invoke("OnLoad", _rocprof_load, table, runtime_version,
                                        failed_tool_count, failed_tool_names);
             ROCPROFSYS_CONDITIONAL_PRINT_F(!_success,
-                                          "Warning! Invoking rocprofiler's OnLoad "
-                                          "failed! ROCPROFSYS_ROCPROFILER_LIBRARY=%s\n",
-                                          _rocprof.filename.c_str());
+                                           "Warning! Invoking rocprofiler's OnLoad "
+                                           "failed! ROCPROFSYS_ROCPROFILER_LIBRARY=%s\n",
+                                           _rocprof.filename.c_str());
             ROCPROFSYS_CI_THROW(!_success,
-                               "Warning! Invoking rocprofiler's OnLoad "
-                               "failed! ROCPROFSYS_ROCPROFILER_LIBRARY=%s\n",
-                               _rocprof.filename.c_str());
+                                "Warning! Invoking rocprofiler's OnLoad "
+                                "failed! ROCPROFSYS_ROCPROFILER_LIBRARY=%s\n",
+                                _rocprof.filename.c_str());
 #endif
         }
         else
@@ -239,7 +239,7 @@ extern "C"
         gpu::add_hip_device_metadata();
 
         ROCPROFSYS_BASIC_VERBOSE_F(2 || rocm::on_load_trace, "Loading... %s\n",
-                                  (_success) ? "Done" : "Failed");
+                                   (_success) ? "Done" : "Failed");
         return _success;
     }
 

@@ -32,8 +32,8 @@
 
 // Import a 2-type-argument operator template into boost (if necessary) and
 // provide a specialization of 'is_chained_base<>' for it.
-#define ROCPROFSYS_OPERATOR_TEMPLATE2(template_name2)                                     \
-    ROCPROFSYS_IMPORT_TEMPLATE2(template_name2)                                           \
+#define ROCPROFSYS_OPERATOR_TEMPLATE2(template_name2)                                    \
+    ROCPROFSYS_IMPORT_TEMPLATE2(template_name2)                                          \
     template <typename T, typename U, typename B>                                        \
     struct is_chained_base<::omnitrace::container::template_name2<T, U, B>>              \
     {                                                                                    \
@@ -42,15 +42,15 @@
 
 // Import a 1-type-argument operator template into boost (if necessary) and
 // provide a specialization of 'is_chained_base<>' for it.
-#define ROCPROFSYS_OPERATOR_TEMPLATE1(template_name1)                                     \
-    ROCPROFSYS_IMPORT_TEMPLATE1(template_name1)                                           \
+#define ROCPROFSYS_OPERATOR_TEMPLATE1(template_name1)                                    \
+    ROCPROFSYS_IMPORT_TEMPLATE1(template_name1)                                          \
     template <typename T, typename B>                                                    \
     struct is_chained_base<::omnitrace::container::template_name1<T, B>>                 \
     {                                                                                    \
         using value = ::omnitrace::container::true_t;                                    \
     };
 
-#define ROCPROFSYS_OPERATOR_TEMPLATE(template_name)                                       \
+#define ROCPROFSYS_OPERATOR_TEMPLATE(template_name)                                      \
     template <typename T, typename U = T, typename B = empty_base<T>,                    \
               typename O = typename is_chained_base<U>::value>                           \
     struct template_name;                                                                \
@@ -77,10 +77,10 @@
         using value = ::omnitrace::container::true_t;                                    \
     };                                                                                   \
                                                                                          \
-    ROCPROFSYS_OPERATOR_TEMPLATE2(template_name##2)                                       \
+    ROCPROFSYS_OPERATOR_TEMPLATE2(template_name##2)                                      \
     ROCPROFSYS_OPERATOR_TEMPLATE1(template_name##1)
 
-#define ROCPROFSYS_BINARY_OPERATOR_COMMUTATIVE(NAME, OP)                                  \
+#define ROCPROFSYS_BINARY_OPERATOR_COMMUTATIVE(NAME, OP)                                 \
     template <typename T, typename U, typename B = empty_base<T>>                        \
     struct NAME##2                                                                       \
     : B{ friend T operator OP(T lhs, const U& rhs){ return lhs OP## = rhs;               \
@@ -96,7 +96,7 @@
     }                                                                                    \
     ;
 
-#define ROCPROFSYS_BINARY_OPERATOR_NON_COMMUTATIVE(NAME, OP)                              \
+#define ROCPROFSYS_BINARY_OPERATOR_NON_COMMUTATIVE(NAME, OP)                             \
     template <typename T, typename U, typename B = empty_base<T>>                        \
     struct NAME##2                                                                       \
     : B{ friend T operator OP(T lhs, const U& rhs){ return lhs OP## = rhs;               \

@@ -167,8 +167,8 @@ get_perfetto_track(CategoryT, FuncT&& _desc_generator, Args&&... _args)
         ::perfetto::TrackEvent::SetTrackDescriptor(_track, _desc);
 
         ROCPROFSYS_VERBOSE_F(4, "[%s] Created %s(%zu) with description: \"%s\"\n",
-                            trait::name<CategoryT>::value, demangle<TrackT>().c_str(),
-                            _uuid, _name.c_str());
+                             trait::name<CategoryT>::value, demangle<TrackT>().c_str(),
+                             _uuid, _name.c_str());
 
         _track_uuids.emplace(_uuid, _name);
     }
@@ -178,9 +178,9 @@ get_perfetto_track(CategoryT, FuncT&& _desc_generator, Args&&... _args)
 #if defined(ROCPROFSYS_CI) && ROCPROFSYS_CI > 0
     auto _name = std::forward<FuncT>(_desc_generator)(std::forward<Args>(_args)...);
     ROCPROFSYS_CI_THROW(_track_uuids.at(_uuid) != _name,
-                       "Error! Multiple invocations of UUID %zu produced different "
-                       "descriptions: \"%s\" and \"%s\"\n",
-                       _uuid, _track_uuids.at(_uuid).c_str(), _name.c_str());
+                        "Error! Multiple invocations of UUID %zu produced different "
+                        "descriptions: \"%s\" and \"%s\"\n",
+                        _uuid, _track_uuids.at(_uuid).c_str(), _name.c_str());
 #endif
 
     return TrackT(_uuid, ::perfetto::ProcessTrack::Current());
@@ -310,7 +310,7 @@ get_timemory(CategoryT, std::string_view name)
     if(ROCPROFSYS_UNLIKELY(_data == nullptr || _data->empty()))
     {
         ROCPROFSYS_DEBUG("[%s] skipped %s :: empty bundle stack\n", "omnitrace_pop_trace",
-                        name.data());
+                         name.data());
         return return_type{ nullptr, -1 };
     }
 

@@ -35,7 +35,7 @@
 #include <timemory/mpl/macros.hpp>
 #include <timemory/mpl/types.hpp>
 
-#define ROCPROFSYS_DEFINE_NAME_TRAIT(NAME, DESC, ...)                                     \
+#define ROCPROFSYS_DEFINE_NAME_TRAIT(NAME, DESC, ...)                                    \
     namespace tim                                                                        \
     {                                                                                    \
     namespace trait                                                                      \
@@ -61,7 +61,7 @@ template <size_t Idx>
 using category_type_id_t = typename category_type_id<Idx>::type;
 }  // namespace omnitrace
 
-#define ROCPROFSYS_DEFINE_CATEGORY_TRAIT(TYPE, ENUM)                                      \
+#define ROCPROFSYS_DEFINE_CATEGORY_TRAIT(TYPE, ENUM)                                     \
     namespace omnitrace                                                                  \
     {                                                                                    \
     template <>                                                                          \
@@ -76,13 +76,13 @@ using category_type_id_t = typename category_type_id<Idx>::type;
     };                                                                                   \
     }
 
-#define ROCPROFSYS_DECLARE_CATEGORY(NS, VALUE, ENUM, NAME, DESC)                          \
+#define ROCPROFSYS_DECLARE_CATEGORY(NS, VALUE, ENUM, NAME, DESC)                         \
     TIMEMORY_DECLARE_NS_API(NS, VALUE)                                                   \
-    ROCPROFSYS_DEFINE_NAME_TRAIT(NAME, DESC, NS::VALUE)                                   \
+    ROCPROFSYS_DEFINE_NAME_TRAIT(NAME, DESC, NS::VALUE)                                  \
     ROCPROFSYS_DEFINE_CATEGORY_TRAIT(::tim::NS::VALUE, ENUM)
-#define ROCPROFSYS_DEFINE_CATEGORY(NS, VALUE, ENUM, NAME, DESC)                           \
+#define ROCPROFSYS_DEFINE_CATEGORY(NS, VALUE, ENUM, NAME, DESC)                          \
     TIMEMORY_DEFINE_NS_API(NS, VALUE)                                                    \
-    ROCPROFSYS_DEFINE_NAME_TRAIT(NAME, DESC, NS::VALUE)                                   \
+    ROCPROFSYS_DEFINE_NAME_TRAIT(NAME, DESC, NS::VALUE)                                  \
     ROCPROFSYS_DEFINE_CATEGORY_TRAIT(::tim::NS::VALUE, ENUM)
 
 // clang-format off
@@ -142,54 +142,54 @@ using name = perfetto_category<Tp...>;
 }
 }  // namespace tim
 
-#define ROCPROFSYS_PERFETTO_CATEGORY(TYPE)                                                \
+#define ROCPROFSYS_PERFETTO_CATEGORY(TYPE)                                               \
     ::perfetto::Category(::tim::trait::perfetto_category<::tim::TYPE>::value)            \
         .SetDescription(::tim::trait::perfetto_category<::tim::TYPE>::description)
 
-#define ROCPROFSYS_PERFETTO_CATEGORIES                                                    \
-    ROCPROFSYS_PERFETTO_CATEGORY(category::host),                                         \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::user),                                     \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::python),                                   \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::sampling),                                 \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::device_hip),                               \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::device_hsa),                               \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_hip),                                 \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_hsa),                                 \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_roctx),                               \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_smi),                                 \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_smi_busy),                            \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_smi_temp),                            \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_smi_power),                           \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_smi_memory_usage),                    \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_rccl),                                \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::roctracer),                                \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::rocprofiler),                              \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::pthread),                                  \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::kokkos),                                   \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::mpi),                                      \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::ompt),                                     \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::sampling),                                 \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::process_sampling),                         \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::comm_data),                                \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::causal),                                   \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::cpu_freq),                                 \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::process_page),                             \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::process_virt),                             \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::process_peak),                             \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::process_context_switch),                   \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::process_page_fault),                       \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::process_user_mode_time),                   \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::process_kernel_mode_time),                 \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::thread_wall_time),                         \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::thread_cpu_time),                          \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::thread_page_fault),                        \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::thread_peak_memory),                       \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::thread_context_switch),                    \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::thread_hardware_counter),                  \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::kernel_hardware_counter),                  \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::numa),                                     \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::timer_sampling),                           \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::overflow_sampling),                        \
+#define ROCPROFSYS_PERFETTO_CATEGORIES                                                   \
+    ROCPROFSYS_PERFETTO_CATEGORY(category::host),                                        \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::user),                                    \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::python),                                  \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::sampling),                                \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::device_hip),                              \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::device_hsa),                              \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_hip),                                \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_hsa),                                \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_roctx),                              \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_smi),                                \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_smi_busy),                           \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_smi_temp),                           \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_smi_power),                          \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_smi_memory_usage),                   \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_rccl),                               \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::roctracer),                               \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::rocprofiler),                             \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::pthread),                                 \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::kokkos),                                  \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::mpi),                                     \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::ompt),                                    \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::sampling),                                \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::process_sampling),                        \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::comm_data),                               \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::causal),                                  \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::cpu_freq),                                \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::process_page),                            \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::process_virt),                            \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::process_peak),                            \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::process_context_switch),                  \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::process_page_fault),                      \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::process_user_mode_time),                  \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::process_kernel_mode_time),                \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::thread_wall_time),                        \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::thread_cpu_time),                         \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::thread_page_fault),                       \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::thread_peak_memory),                      \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::thread_context_switch),                   \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::thread_hardware_counter),                 \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::kernel_hardware_counter),                 \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::numa),                                    \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::timer_sampling),                          \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::overflow_sampling),                       \
         ::perfetto::Category("timemory").SetDescription("Events from the timemory API")
 
 #if defined(TIMEMORY_USE_PERFETTO)

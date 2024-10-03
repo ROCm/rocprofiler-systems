@@ -50,7 +50,7 @@
 #include <utility>
 
 ROCPROFSYS_COMPONENT_ALIAS(comm_data_tracker_t,
-                          ::tim::component::data_tracker<float, project::omnitrace>)
+                           ::tim::component::data_tracker<float, project::omnitrace>)
 
 namespace omnitrace
 {
@@ -230,7 +230,7 @@ private:
 }  // namespace component
 }  // namespace omnitrace
 
-#if !defined(ROCPROFSYS_EXTERN_COMPONENTS) ||                                             \
+#if !defined(ROCPROFSYS_EXTERN_COMPONENTS) ||                                            \
     (defined(ROCPROFSYS_EXTERN_COMPONENTS) && ROCPROFSYS_EXTERN_COMPONENTS > 0)
 
 #    include <timemory/components/base.hpp>

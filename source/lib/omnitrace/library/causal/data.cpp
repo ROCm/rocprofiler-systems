@@ -88,7 +88,7 @@ auto speedup_dist      = []() {
     _v.resize(_v.size() + _nzero, 0);
     std::sort(_v.begin(), _v.end());
     ROCPROFSYS_CI_THROW(_v.back() > 100, "Error! last value is too large: %i\n",
-                       (int) _v.back());
+                        (int) _v.back());
     return _v;
 }();
 
@@ -192,13 +192,13 @@ get_filters(const std::set<binary::scope_filter::filter_scope>& _scopes = {
         {
             if(!_binary_include.empty())
                 ROCPROFSYS_VERBOSE(0, "[causal] binary scope     : %s\n",
-                                  _binary_include.c_str());
+                                   _binary_include.c_str());
             if(!_source_include.empty())
                 ROCPROFSYS_VERBOSE(0, "[causal] source scope     : %s\n",
-                                  _source_include.c_str());
+                                   _source_include.c_str());
             if(!_function_include.empty())
                 ROCPROFSYS_VERBOSE(0, "[causal] function scope   : %s\n",
-                                  _function_include.c_str());
+                                   _function_include.c_str());
             _former_include = _current_include;
         }
 
@@ -230,13 +230,13 @@ get_filters(const std::set<binary::scope_filter::filter_scope>& _scopes = {
         {
             if(!_binary_exclude.empty())
                 ROCPROFSYS_VERBOSE(0, "[causal] binary exclude   : %s\n",
-                                  _binary_exclude.c_str());
+                                   _binary_exclude.c_str());
             if(!_source_exclude.empty())
                 ROCPROFSYS_VERBOSE(0, "[causal] source exclude   : %s\n",
-                                  _source_exclude.c_str());
+                                   _source_exclude.c_str());
             if(!_function_exclude.empty())
                 ROCPROFSYS_VERBOSE(0, "[causal] function exclude : %s\n",
-                                  _function_exclude.c_str());
+                                   _function_exclude.c_str());
             _former_exclude = _current_exclude;
         }
 
@@ -470,7 +470,7 @@ perform_experiment_impl(std::shared_ptr<std::promise<void>> _started)  // NOLINT
     const auto& _thr_info = thread_info::init(true);
     set_thread_state(ThreadState::Disabled);
     ROCPROFSYS_CONDITIONAL_THROW(!_thr_info->is_offset,
-                                "Error! causal profiling thread should be offset");
+                                 "Error! causal profiling thread should be offset");
 
     if(!perform_experiment_impl_completed)
         perform_experiment_impl_completed = std::make_unique<std::promise<void>>();
@@ -505,7 +505,7 @@ perform_experiment_impl(std::shared_ptr<std::promise<void>> _started)  // NOLINT
     if(_delay_sec > 0.0)
     {
         ROCPROFSYS_VERBOSE(1, "[causal] delaying experimentation for %.2f seconds...\n",
-                          _delay_sec);
+                           _delay_sec);
         uint64_t _delay_nsec = _delay_sec * units::sec;
         std::this_thread::yield();
         std::this_thread::sleep_for(std::chrono::nanoseconds{ _delay_nsec });
@@ -644,7 +644,7 @@ perform_experiment_impl(std::shared_ptr<std::promise<void>> _started)  // NOLINT
                 if(!(get_causal_end_to_end() && _omni_causal_launcher))
                 {
                     ROCPROFSYS_CONDITIONAL_THROW(_impl_no == 0,
-                                                "causal experiment never started");
+                                                 "causal experiment never started");
                 }
 
                 return;
@@ -659,8 +659,8 @@ perform_experiment_impl(std::shared_ptr<std::promise<void>> _started)  // NOLINT
         }
 
         ROCPROFSYS_VERBOSE(3,
-                          "[causal] experiment started. Number of PC candidates: %zu\n",
-                          eligible_pc_candidates.load());
+                           "[causal] experiment started. Number of PC candidates: %zu\n",
+                           eligible_pc_candidates.load());
 
         reset_sample_selection();
 
@@ -823,7 +823,7 @@ sample_selection(size_t _nitr, size_t _wait_ns)
 
             // debugging for continuous integration
             if(ROCPROFSYS_UNLIKELY(config::get_is_continuous_integration() ||
-                                  config::get_debug()))
+                                   config::get_debug()))
             {
                 auto _location =
                     (_dl_info.location)
@@ -1061,9 +1061,9 @@ start_experimenting()
         for(auto itr : _user_speedup_dist)
         {
             ROCPROFSYS_CONDITIONAL_ABORT_F(itr > 100,
-                                          "Virtual speedups must be in range [0, 100]. "
-                                          "Invalid virtual speedup: %lu\n",
-                                          itr);
+                                           "Virtual speedups must be in range [0, 100]. "
+                                           "Invalid virtual speedup: %lu\n",
+                                           itr);
             speedup_dist.emplace_back(static_cast<uint16_t>(itr));
         }
     }

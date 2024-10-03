@@ -48,7 +48,7 @@ struct annotation_value_type;
 template <size_t Idx>
 using annotation_value_type_t = typename annotation_value_type<Idx>::type;
 
-#define ROCPROFSYS_DEFINE_ANNOTATION_TYPE(ENUM, TYPE)                                     \
+#define ROCPROFSYS_DEFINE_ANNOTATION_TYPE(ENUM, TYPE)                                    \
     template <>                                                                          \
     struct annotation_value_type<ENUM>                                                   \
     {                                                                                    \
@@ -183,10 +183,11 @@ add_perfetto_annotation(perfetto_event_context_t&     ctx,
             if(!(_annotation.type > ROCPROFSYS_VALUE_NONE &&
                  _annotation.type < ROCPROFSYS_VALUE_LAST))
             {
-                ROCPROFSYS_FAIL_F("Error! annotation '%s' has an invalid type designation "
-                                 "%lu which is outside of acceptable range [%i, %i]\n",
-                                 _annotation.name, _annotation.type,
-                                 ROCPROFSYS_VALUE_NONE + 1, ROCPROFSYS_VALUE_LAST - 1);
+                ROCPROFSYS_FAIL_F(
+                    "Error! annotation '%s' has an invalid type designation "
+                    "%lu which is outside of acceptable range [%i, %i]\n",
+                    _annotation.name, _annotation.type, ROCPROFSYS_VALUE_NONE + 1,
+                    ROCPROFSYS_VALUE_LAST - 1);
             }
         }
 

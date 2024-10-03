@@ -45,7 +45,7 @@ ROCPROFSYS_DECLARE_COMPONENT(rcclp_handle)
 ROCPROFSYS_DECLARE_COMPONENT(comm_data)
 
 ROCPROFSYS_COMPONENT_ALIAS(comm_data_tracker_t,
-                          ::tim::component::data_tracker<float, project::omnitrace>)
+                           ::tim::component::data_tracker<float, project::omnitrace>)
 
 namespace omnitrace
 {
@@ -199,27 +199,27 @@ TIMEMORY_STATISTICS_TYPE(omnitrace::component::comm_data_tracker_t, float)
 
 // enable timing units
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_timing_category, component::sampling_wall_clock,
-                                true_type)
+                                 true_type)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_timing_category, component::sampling_cpu_clock,
-                                true_type)
+                                 true_type)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_timing_category, component::sampling_percent,
-                                true_type)
+                                 true_type)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(uses_timing_units, component::sampling_wall_clock,
-                                true_type)
+                                 true_type)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(uses_timing_units, component::sampling_cpu_clock,
-                                true_type)
+                                 true_type)
 
 // enable percent units
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(uses_percent_units, component::sampling_gpu_busy,
-                                true_type)
+                                 true_type)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(uses_percent_units, component::sampling_percent,
-                                true_type)
+                                 true_type)
 
 // enable memory units
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_memory_category, component::sampling_gpu_memory,
-                                true_type)
+                                 true_type)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(uses_memory_units, component::sampling_gpu_memory,
-                                true_type)
+                                 true_type)
 
 // reporting categories (sum)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(report_sum, component::sampling_gpu_busy, false_type)
@@ -232,12 +232,12 @@ ROCPROFSYS_DEFINE_CONCRETE_TRAIT(report_mean, component::sampling_percent, false
 
 // reporting categories (stats)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(report_statistics, component::sampling_percent,
-                                false_type)
+                                 false_type)
 
 // reporting categories (self)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(report_self, component::sampling_percent, false_type)
 
-#define ROCPROFSYS_DECLARE_EXTERN_COMPONENT(NAME, HAS_DATA, ...)                          \
+#define ROCPROFSYS_DECLARE_EXTERN_COMPONENT(NAME, HAS_DATA, ...)                         \
     TIMEMORY_DECLARE_EXTERN_TEMPLATE(                                                    \
         struct tim::component::base<TIMEMORY_ESC(omnitrace::component::NAME),            \
                                     __VA_ARGS__>)                                        \
@@ -245,7 +245,7 @@ ROCPROFSYS_DEFINE_CONCRETE_TRAIT(report_self, component::sampling_percent, false
                                        HAS_DATA)                                         \
     TIMEMORY_DECLARE_EXTERN_STORAGE(TIMEMORY_ESC(omnitrace::component::NAME))
 
-#define ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(NAME, HAS_DATA, ...)                      \
+#define ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(NAME, HAS_DATA, ...)                     \
     TIMEMORY_INSTANTIATE_EXTERN_TEMPLATE(                                                \
         struct tim::component::base<TIMEMORY_ESC(omnitrace::component::NAME),            \
                                     __VA_ARGS__>)                                        \

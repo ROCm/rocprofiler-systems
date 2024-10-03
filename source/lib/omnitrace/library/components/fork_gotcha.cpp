@@ -76,7 +76,7 @@ prefork_setup()
     tim::set_env("ROCPROFSYS_ROOT_PROCESS", process::get_id(), 0);
     omnitrace_reset_preload_hidden();
     ROCPROFSYS_BASIC_VERBOSE(0, "fork() called on PID %i (rank: %i), TID %li\n",
-                            process::get_id(), dmp::rank(), threading::get_id());
+                             process::get_id(), dmp::rank(), threading::get_id());
     ROCPROFSYS_BASIC_DEBUG(
         "Warning! Calling fork() within an OpenMPI application using libfabric "
         "may result is segmentation fault\n");
@@ -156,7 +156,7 @@ fork_gotcha::operator()(const gotcha_data_t&, pid_t (*_real_fork)()) const
     if(_pid != 0)
     {
         ROCPROFSYS_BASIC_VERBOSE(0, "fork() called on PID %i created PID %i\n", getpid(),
-                                _pid);
+                                 _pid);
 
         postfork_parent();
     }

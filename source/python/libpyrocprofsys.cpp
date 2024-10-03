@@ -53,7 +53,7 @@
 #include <stdexcept>
 #include <unordered_map>
 
-#define ROCPROFSYS_PYTHON_VERSION                                                         \
+#define ROCPROFSYS_PYTHON_VERSION                                                        \
     ((10000 * PY_MAJOR_VERSION) + (100 * PY_MINOR_VERSION) + PY_MICRO_VERSION)
 
 namespace pyrocprofsys

@@ -117,7 +117,7 @@ get_available_categories()
 
 using utility::parse_numeric_range;
 
-#define ROCPROFSYS_CONFIG_SETTING(TYPE, ENV_NAME, DESCRIPTION, INITIAL_VALUE, ...)        \
+#define ROCPROFSYS_CONFIG_SETTING(TYPE, ENV_NAME, DESCRIPTION, INITIAL_VALUE, ...)       \
     [&]() {                                                                              \
         auto _ret = _config->insert<TYPE, TYPE>(                                         \
             ENV_NAME, get_setting_name(ENV_NAME), DESCRIPTION, TYPE{ INITIAL_VALUE },    \
@@ -125,29 +125,29 @@ using utility::parse_numeric_range;
                                    __VA_ARGS__ });                                       \
         if(!_ret.second)                                                                 \
         {                                                                                \
-            ROCPROFSYS_PRINT("Warning! Duplicate setting: %s / %s\n",                     \
-                            get_setting_name(ENV_NAME).c_str(), ENV_NAME);               \
+            ROCPROFSYS_PRINT("Warning! Duplicate setting: %s / %s\n",                    \
+                             get_setting_name(ENV_NAME).c_str(), ENV_NAME);              \
         }                                                                                \
         return _config->find(ENV_NAME)->second;                                          \
     }()
 
 // below does not include "librocprof-sys"
-#define ROCPROFSYS_CONFIG_EXT_SETTING(TYPE, ENV_NAME, DESCRIPTION, INITIAL_VALUE, ...)    \
+#define ROCPROFSYS_CONFIG_EXT_SETTING(TYPE, ENV_NAME, DESCRIPTION, INITIAL_VALUE, ...)   \
     [&]() {                                                                              \
         auto _ret = _config->insert<TYPE, TYPE>(                                         \
             ENV_NAME, get_setting_name(ENV_NAME), DESCRIPTION, TYPE{ INITIAL_VALUE },    \
             std::set<std::string>{ "custom", "rocprofsys", __VA_ARGS__ });               \
         if(!_ret.second)                                                                 \
         {                                                                                \
-            ROCPROFSYS_PRINT("Warning! Duplicate setting: %s / %s\n",                     \
-                            get_setting_name(ENV_NAME).c_str(), ENV_NAME);               \
+            ROCPROFSYS_PRINT("Warning! Duplicate setting: %s / %s\n",                    \
+                             get_setting_name(ENV_NAME).c_str(), ENV_NAME);              \
         }                                                                                \
         return _config->find(ENV_NAME)->second;                                          \
     }()
 
 // setting + command line option
-#define ROCPROFSYS_CONFIG_CL_SETTING(TYPE, ENV_NAME, DESCRIPTION, INITIAL_VALUE,          \
-                                    CMD_LINE, ...)                                       \
+#define ROCPROFSYS_CONFIG_CL_SETTING(TYPE, ENV_NAME, DESCRIPTION, INITIAL_VALUE,         \
+                                     CMD_LINE, ...)                                      \
     [&]() {                                                                              \
         auto _ret = _config->insert<TYPE, TYPE>(                                         \
             ENV_NAME, get_setting_name(ENV_NAME), DESCRIPTION, TYPE{ INITIAL_VALUE },    \
@@ -156,8 +156,8 @@ using utility::parse_numeric_range;
             std::vector<std::string>{ CMD_LINE });                                       \
         if(!_ret.second)                                                                 \
         {                                                                                \
-            ROCPROFSYS_PRINT("Warning! Duplicate setting: %s / %s\n",                     \
-                            get_setting_name(ENV_NAME).c_str(), ENV_NAME);               \
+            ROCPROFSYS_PRINT("Warning! Duplicate setting: %s / %s\n",                    \
+                             get_setting_name(ENV_NAME).c_str(), ENV_NAME);              \
         }                                                                                \
         return _config->find(ENV_NAME)->second;                                          \
     }()
@@ -199,8 +199,8 @@ configure_settings(bool _init)
     {
         timemory_print_demangled_backtrace<64>();
         ROCPROFSYS_THROW("config::configure_settings() called before "
-                        "omnitrace_init_library. state = %s",
-                        std::to_string(get_state()).c_str());
+                         "omnitrace_init_library. state = %s",
+                         std::to_string(get_state()).c_str());
     }
 
     tim::manager::add_metadata("ROCPROFSYS_VERSION", ROCPROFSYS_VERSION_STRING);
@@ -212,11 +212,13 @@ configure_settings(bool _init)
 
     tim::manager::add_metadata("ROCPROFSYS_LIBRARY_ARCH", ROCPROFSYS_LIBRARY_ARCH);
     tim::manager::add_metadata("ROCPROFSYS_SYSTEM_NAME", ROCPROFSYS_SYSTEM_NAME);
-    tim::manager::add_metadata("ROCPROFSYS_SYSTEM_PROCESSOR", ROCPROFSYS_SYSTEM_PROCESSOR);
+    tim::manager::add_metadata("ROCPROFSYS_SYSTEM_PROCESSOR",
+                               ROCPROFSYS_SYSTEM_PROCESSOR);
     tim::manager::add_metadata("ROCPROFSYS_SYSTEM_VERSION", ROCPROFSYS_SYSTEM_VERSION);
 
     tim::manager::add_metadata("ROCPROFSYS_COMPILER_ID", ROCPROFSYS_COMPILER_ID);
-    tim::manager::add_metadata("ROCPROFSYS_COMPILER_VERSION", ROCPROFSYS_COMPILER_VERSION);
+    tim::manager::add_metadata("ROCPROFSYS_COMPILER_VERSION",
+                               ROCPROFSYS_COMPILER_VERSION);
 
 #if ROCPROFSYS_HIP_VERSION > 0
     tim::manager::add_metadata("ROCPROFSYS_HIP_VERSION", ROCPROFSYS_HIP_VERSION_STRING);
@@ -247,16 +249,16 @@ configure_settings(bool _init)
         ->set_choices({ "trace", "sampling", "causal", "coverage" });
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_CI",
-                             "Enable some runtime validation checks (typically enabled "
-                             "for continuous integration)",
-                             false, "debugging", "advanced");
+                              "Enable some runtime validation checks (typically enabled "
+                              "for continuous integration)",
+                              false, "debugging", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_MONOCHROME", "Disable colorized logging",
-                             false, "debugging", "advanced");
+                              false, "debugging", "advanced");
 
     ROCPROFSYS_CONFIG_EXT_SETTING(int, "ROCPROFSYS_DL_VERBOSE",
-                                 "Verbosity within the rocprof-sys-dl library", 0,
-                                 "debugging", "librocprof-sys-dl", "advanced");
+                                  "Verbosity within the rocprof-sys-dl library", 0,
+                                  "debugging", "librocprof-sys-dl", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(
         size_t, "ROCPROFSYS_NUM_THREADS_HINT",
@@ -274,31 +276,31 @@ configure_settings(bool _init)
         "sampling", "parallelism", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_TRACE", "Enable perfetto backend",
-                             _default_perfetto_v, "backend", "perfetto");
+                              _default_perfetto_v, "backend", "perfetto");
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_USE_PERFETTO",
-                             "[DEPRECATED] Renamed to ROCPROFSYS_TRACE",
-                             _default_perfetto_v, "backend", "perfetto", "deprecated");
+                              "[DEPRECATED] Renamed to ROCPROFSYS_TRACE",
+                              _default_perfetto_v, "backend", "perfetto", "deprecated");
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_PROFILE", "Enable timemory backend",
-                             !_config->get<bool>("ROCPROFSYS_TRACE"), "backend",
-                             "timemory");
+                              !_config->get<bool>("ROCPROFSYS_TRACE"), "backend",
+                              "timemory");
 
     ROCPROFSYS_CONFIG_SETTING(
         bool, "ROCPROFSYS_USE_TIMEMORY", "[DEPRECATED] Renamed to ROCPROFSYS_PROFILE",
         !_config->get<bool>("ROCPROFSYS_TRACE"), "backend", "timemory", "deprecated");
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_USE_CAUSAL",
-                             "Enable causal profiling analysis", false, "backend",
-                             "causal", "analysis");
+                              "Enable causal profiling analysis", false, "backend",
+                              "causal", "analysis");
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_USE_ROCTRACER",
-                             "Enable ROCm API and kernel tracing", true, "backend",
-                             "roctracer", "rocm");
+                              "Enable ROCm API and kernel tracing", true, "backend",
+                              "roctracer", "rocm");
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_USE_ROCPROFILER",
-                             "Enable ROCm hardware counters", true, "backend",
-                             "rocprofiler", "rocm");
+                              "Enable ROCm hardware counters", true, "backend",
+                              "rocprofiler", "rocm");
 
     ROCPROFSYS_CONFIG_SETTING(
         bool, "ROCPROFSYS_USE_ROCM_SMI",
@@ -311,13 +313,13 @@ configure_settings(bool _init)
         false, "backend", "roctracer", "rocm", "roctx");
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_USE_SAMPLING",
-                             "Enable statistical sampling of call-stack", false,
-                             "backend", "sampling");
+                              "Enable statistical sampling of call-stack", false,
+                              "backend", "sampling");
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_USE_THREAD_SAMPLING",
-                             "[DEPRECATED] Renamed to ROCPROFSYS_USE_PROCESS_SAMPLING",
-                             true, "backend", "sampling", "process_sampling",
-                             "deprecated", "advanced");
+                              "[DEPRECATED] Renamed to ROCPROFSYS_USE_PROCESS_SAMPLING",
+                              true, "backend", "sampling", "process_sampling",
+                              "deprecated", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(
         bool, "ROCPROFSYS_USE_PROCESS_SAMPLING",
@@ -331,12 +333,12 @@ configure_settings(bool _init)
         "io", "filename");
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_USE_KOKKOSP",
-                             "Enable support for Kokkos Tools", false, "kokkos",
-                             "backend");
+                              "Enable support for Kokkos Tools", false, "kokkos",
+                              "backend");
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_USE_MPIP",
-                             "Enable support for MPI functions", true, "mpi", "backend",
-                             "parallelism");
+                              "Enable support for MPI functions", true, "mpi", "backend",
+                              "parallelism");
 
     ROCPROFSYS_CONFIG_SETTING(
         bool, "ROCPROFSYS_USE_RCCLP",
@@ -347,15 +349,16 @@ configure_settings(bool _init)
         bool, "ROCPROFSYS_KOKKOSP_KERNEL_LOGGER", "Enables kernel logging", false,
         "--omnitrace-kokkos-kernel-logger", "kokkos", "debugging", "advanced");
 
-    ROCPROFSYS_CONFIG_SETTING(int64_t, "ROCPROFSYS_KOKKOSP_NAME_LENGTH_MAX",
-                             "Set this to a value > 0 to help avoid unnamed Kokkos Tools "
-                             "callbacks. Generally, unnamed callbacks are the demangled "
-                             "name of the function, which is very long",
-                             0, "kokkos", "debugging", "advanced");
+    ROCPROFSYS_CONFIG_SETTING(
+        int64_t, "ROCPROFSYS_KOKKOSP_NAME_LENGTH_MAX",
+        "Set this to a value > 0 to help avoid unnamed Kokkos Tools "
+        "callbacks. Generally, unnamed callbacks are the demangled "
+        "name of the function, which is very long",
+        0, "kokkos", "debugging", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(std::string, "ROCPROFSYS_KOKKOSP_PREFIX",
-                             "Set to [kokkos] to maintain old naming convention", "",
-                             "kokkos", "debugging", "advanced");
+                              "Set to [kokkos] to maintain old naming convention", "",
+                              "kokkos", "debugging", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(
         bool, "ROCPROFSYS_KOKKOSP_DEEP_COPY",
@@ -363,12 +366,12 @@ configure_settings(bool _init)
         false, "kokkos", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_USE_OMPT",
-                             "Enable support for OpenMP-Tools", false, "openmp", "ompt",
-                             "backend");
+                              "Enable support for OpenMP-Tools", false, "openmp", "ompt",
+                              "backend");
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_USE_CODE_COVERAGE",
-                             "Enable support for code coverage", false, "coverage",
-                             "backend", "advanced");
+                              "Enable support for code coverage", false, "coverage",
+                              "backend", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(
         double, "ROCPROFSYS_TRACE_DELAY",
@@ -390,10 +393,10 @@ configure_settings(bool _init)
     }
 
     ROCPROFSYS_CONFIG_SETTING(std::string, "ROCPROFSYS_TRACE_PERIODS",
-                             "Similar to specify trace delay and/or duration except in "
-                             "the form <DELAY>:<DURATION>, <DELAY>:<DURATION>:<REPEAT>, "
-                             "and/or <DELAY>:<DURATION>:<REPEAT>:<CLOCK_ID>",
-                             std::string{}, "trace", "profile", "perfetto", "timemory");
+                              "Similar to specify trace delay and/or duration except in "
+                              "the form <DELAY>:<DURATION>, <DELAY>:<DURATION>:<REPEAT>, "
+                              "and/or <DELAY>:<DURATION>:<REPEAT>:<CLOCK_ID>",
+                              std::string{}, "trace", "profile", "perfetto", "timemory");
 
     ROCPROFSYS_CONFIG_SETTING(
         std::string, "ROCPROFSYS_TRACE_PERIOD_CLOCK_ID",
@@ -412,9 +415,9 @@ configure_settings(bool _init)
         "sampling", "process_sampling");
 
     ROCPROFSYS_CONFIG_SETTING(double, "ROCPROFSYS_SAMPLING_CPUTIME_FREQ",
-                             "Number of software interrupts per second of CPU-time. "
-                             "Defaults to ROCPROFSYS_SAMPLING_FREQ when <= 0.0",
-                             -1.0, "sampling", "advanced");
+                              "Number of software interrupts per second of CPU-time. "
+                              "Defaults to ROCPROFSYS_SAMPLING_FREQ when <= 0.0",
+                              -1.0, "sampling", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(
         double, "ROCPROFSYS_SAMPLING_REALTIME_FREQ",
@@ -423,9 +426,9 @@ configure_settings(bool _init)
         -1.0, "sampling", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(double, "ROCPROFSYS_SAMPLING_OVERFLOW_FREQ",
-                             "Number of events in between each sample. "
-                             "Defaults to ROCPROFSYS_SAMPLING_FREQ when <= 0.0",
-                             -1.0, "sampling", "advanced");
+                              "Number of events in between each sample. "
+                              "Defaults to ROCPROFSYS_SAMPLING_FREQ when <= 0.0",
+                              -1.0, "sampling", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(
         double, "ROCPROFSYS_SAMPLING_DELAY",
@@ -434,10 +437,10 @@ configure_settings(bool _init)
         0.5, "sampling", "process_sampling");
 
     ROCPROFSYS_CONFIG_SETTING(double, "ROCPROFSYS_SAMPLING_CPUTIME_DELAY",
-                             "Time (in seconds) to wait before the first CPU-time "
-                             "sampling signal is delivered. "
-                             "Defaults to ROCPROFSYS_SAMPLING_DELAY when <= 0.0",
-                             -1.0, "sampling", "advanced");
+                              "Time (in seconds) to wait before the first CPU-time "
+                              "sampling signal is delivered. "
+                              "Defaults to ROCPROFSYS_SAMPLING_DELAY when <= 0.0",
+                              -1.0, "sampling", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(
         double, "ROCPROFSYS_SAMPLING_REALTIME_DELAY",
@@ -446,8 +449,8 @@ configure_settings(bool _init)
         -1.0, "sampling", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(double, "ROCPROFSYS_SAMPLING_DURATION",
-                             "If > 0.0, time (in seconds) to sample before stopping", 0.0,
-                             "sampling", "process_sampling");
+                              "If > 0.0, time (in seconds) to sample before stopping",
+                              0.0, "sampling", "process_sampling");
 
     ROCPROFSYS_CONFIG_SETTING(
         double, "ROCPROFSYS_PROCESS_SAMPLING_FREQ",
@@ -456,9 +459,9 @@ configure_settings(bool _init)
         0.0, "process_sampling");
 
     ROCPROFSYS_CONFIG_SETTING(double, "ROCPROFSYS_PROCESS_SAMPLING_DURATION",
-                             "If > 0.0, time (in seconds) to sample before stopping. If "
-                             "less than zero, uses ROCPROFSYS_SAMPLING_DURATION",
-                             -1.0, "sampling", "process_sampling");
+                              "If > 0.0, time (in seconds) to sample before stopping. If "
+                              "less than zero, uses ROCPROFSYS_SAMPLING_DURATION",
+                              -1.0, "sampling", "process_sampling");
 
     ROCPROFSYS_CONFIG_SETTING(
         std::string, "ROCPROFSYS_SAMPLING_CPUS",
@@ -468,9 +471,9 @@ configure_settings(bool _init)
         std::string{}, "process_sampling");
 
     ROCPROFSYS_CONFIG_SETTING(std::string, "ROCPROFSYS_ROCM_SMI_DEVICES",
-                             "[DEPRECATED] Renamed to ROCPROFSYS_SAMPLING_GPUS",
-                             std::string{ "all" }, "rocm_smi", "rocm", "process_sampling",
-                             "deprecated", "advanced");
+                              "[DEPRECATED] Renamed to ROCPROFSYS_SAMPLING_GPUS",
+                              std::string{ "all" }, "rocm_smi", "rocm",
+                              "process_sampling", "deprecated", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(
         std::string, "ROCPROFSYS_SAMPLING_GPUS",
@@ -511,39 +514,39 @@ configure_settings(bool _init)
 
     auto _backend = tim::get_env_choice<std::string>(
         "ROCPROFSYS_PERFETTO_BACKEND",
-        (_system_backend) ? "system"      // if ROCPROFSYS_PERFETTO_BACKEND_SYSTEM is true,
-                                          // default to system.
+        (_system_backend) ? "system"  // if ROCPROFSYS_PERFETTO_BACKEND_SYSTEM is true,
+                                      // default to system.
                           : "inprocess",  // Otherwise, default to inprocess
         { "inprocess", "system", "all" }, false);
 
     ROCPROFSYS_CONFIG_SETTING(std::string, "ROCPROFSYS_PERFETTO_BACKEND",
-                             "Specify the perfetto backend to activate. Options are: "
-                             "'inprocess', 'system', or 'all'",
-                             _backend, "perfetto")
+                              "Specify the perfetto backend to activate. Options are: "
+                              "'inprocess', 'system', or 'all'",
+                              _backend, "perfetto")
         ->set_choices({ "inprocess", "system", "all" });
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_TRACE_THREAD_LOCKS",
-                             "Enable tracing calls to pthread_mutex_lock, "
-                             "pthread_mutex_unlock, pthread_mutex_trylock",
-                             false, "backend", "parallelism", "gotcha", "advanced");
+                              "Enable tracing calls to pthread_mutex_lock, "
+                              "pthread_mutex_unlock, pthread_mutex_trylock",
+                              false, "backend", "parallelism", "gotcha", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_TRACE_THREAD_RW_LOCKS",
-                             "Enable tracing calls to pthread_rwlock_* functions. May "
-                             "cause deadlocks with ROCm-enabled OpenMPI.",
-                             false, "backend", "parallelism", "gotcha", "advanced");
+                              "Enable tracing calls to pthread_rwlock_* functions. May "
+                              "cause deadlocks with ROCm-enabled OpenMPI.",
+                              false, "backend", "parallelism", "gotcha", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_TRACE_THREAD_SPIN_LOCKS",
-                             "Enable tracing calls to pthread_spin_* functions. May "
-                             "cause deadlocks with MPI distributions.",
-                             false, "backend", "parallelism", "gotcha", "advanced");
+                              "Enable tracing calls to pthread_spin_* functions. May "
+                              "cause deadlocks with MPI distributions.",
+                              false, "backend", "parallelism", "gotcha", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_TRACE_THREAD_BARRIERS",
-                             "Enable tracing calls to pthread_barrier functions.", true,
-                             "backend", "parallelism", "gotcha", "advanced");
+                              "Enable tracing calls to pthread_barrier functions.", true,
+                              "backend", "parallelism", "gotcha", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_TRACE_THREAD_JOIN",
-                             "Enable tracing calls to pthread_join functions.", true,
-                             "backend", "parallelism", "gotcha", "advanced");
+                              "Enable tracing calls to pthread_join functions.", true,
+                              "backend", "parallelism", "gotcha", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(
         bool, "ROCPROFSYS_SAMPLING_KEEP_INTERNAL",
@@ -554,8 +557,8 @@ configure_settings(bool _init)
         true, "sampling", "data", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_SAMPLING_INCLUDE_INLINES",
-                             "Create entries for inlined functions when available", false,
-                             "sampling", "data", "advanced");
+                              "Create entries for inlined functions when available",
+                              false, "sampling", "data", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(
         size_t, "ROCPROFSYS_SAMPLING_ALLOCATOR_SIZE",
@@ -570,10 +573,10 @@ configure_settings(bool _init)
         8, "sampling", "debugging", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_SAMPLING_OVERFLOW",
-                             "Enable sampling via an overflow of a HW counter. This "
-                             "requires Linux perf (/proc/sys/kernel/perf_event_paranoid "
-                             "created by OS) with a value of 2 or less in that file",
-                             false, "sampling", "advanced");
+                              "Enable sampling via an overflow of a HW counter. This "
+                              "requires Linux perf (/proc/sys/kernel/perf_event_paranoid "
+                              "created by OS) with a value of 2 or less in that file",
+                              false, "sampling", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(
         bool, "ROCPROFSYS_SAMPLING_REALTIME",
@@ -588,30 +591,33 @@ configure_settings(bool _init)
         "This is recommended.",
         false, "sampling", "advanced");
 
-    ROCPROFSYS_CONFIG_SETTING(int, "ROCPROFSYS_SAMPLING_CPUTIME_SIGNAL",
-                             "Modify this value only if the target process is also using "
-                             "the same signal (SIGPROF)",
-                             SIGPROF, "sampling", "advanced");
+    ROCPROFSYS_CONFIG_SETTING(
+        int, "ROCPROFSYS_SAMPLING_CPUTIME_SIGNAL",
+        "Modify this value only if the target process is also using "
+        "the same signal (SIGPROF)",
+        SIGPROF, "sampling", "advanced");
 
-    ROCPROFSYS_CONFIG_SETTING(int, "ROCPROFSYS_SAMPLING_REALTIME_SIGNAL",
-                             "Modify this value only if the target process is also using "
-                             "the same signal (SIGRTMIN)",
-                             SIGRTMIN, "sampling", "advanced");
+    ROCPROFSYS_CONFIG_SETTING(
+        int, "ROCPROFSYS_SAMPLING_REALTIME_SIGNAL",
+        "Modify this value only if the target process is also using "
+        "the same signal (SIGRTMIN)",
+        SIGRTMIN, "sampling", "advanced");
 
-    ROCPROFSYS_CONFIG_SETTING(int, "ROCPROFSYS_SAMPLING_OVERFLOW_SIGNAL",
-                             "Modify this value only if the target process is also using "
-                             "the same signal (SIGRTMIN + 1)",
-                             SIGRTMIN + 1, "sampling", "advanced");
+    ROCPROFSYS_CONFIG_SETTING(
+        int, "ROCPROFSYS_SAMPLING_OVERFLOW_SIGNAL",
+        "Modify this value only if the target process is also using "
+        "the same signal (SIGRTMIN + 1)",
+        SIGRTMIN + 1, "sampling", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(std::string, "ROCPROFSYS_SAMPLING_OVERFLOW_EVENT",
-                             "Metric for overflow sampling",
-                             std::string{ "perf::PERF_COUNT_HW_CACHE_REFERENCES" },
-                             "sampling", "hardware_counters")
+                              "Metric for overflow sampling",
+                              std::string{ "perf::PERF_COUNT_HW_CACHE_REFERENCES" },
+                              "sampling", "hardware_counters")
         ->set_choices(perf::get_config_choices());
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_ROCTRACER_HIP_API",
-                             "Enable HIP API tracing support", true, "roctracer", "rocm",
-                             "advanced");
+                              "Enable HIP API tracing support", true, "roctracer", "rocm",
+                              "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(
         bool, "ROCPROFSYS_ROCTRACER_HIP_API_BACKTRACE",
@@ -619,24 +625,24 @@ configure_settings(bool _init)
         "roctracer", "rocm", "perfetto", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_ROCTRACER_HIP_ACTIVITY",
-                             "Enable HIP activity tracing support", true, "roctracer",
-                             "rocm", "advanced");
+                              "Enable HIP activity tracing support", true, "roctracer",
+                              "rocm", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_ROCTRACER_HSA_ACTIVITY",
-                             "Enable HSA activity tracing support", false, "roctracer",
-                             "rocm", "advanced");
+                              "Enable HSA activity tracing support", false, "roctracer",
+                              "rocm", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_ROCTRACER_HSA_API",
-                             "Enable HSA API tracing support", false, "roctracer", "rocm",
-                             "advanced");
+                              "Enable HSA API tracing support", false, "roctracer",
+                              "rocm", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(std::string, "ROCPROFSYS_ROCTRACER_HSA_API_TYPES",
-                             "HSA API type to collect", "", "roctracer", "rocm",
-                             "advanced");
+                              "HSA API type to collect", "", "roctracer", "rocm",
+                              "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_ROCTRACER_DISCARD_BARRIERS",
-                             "Skip barrier marker events in traces", false, "roctracer",
-                             "rocm", "advanced");
+                              "Skip barrier marker events in traces", false, "roctracer",
+                              "rocm", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(
         std::string, "ROCPROFSYS_ROCM_EVENTS",
@@ -646,22 +652,22 @@ configure_settings(bool _init)
         "", "rocprofiler", "rocm", "hardware_counters");
 
     ROCPROFSYS_CONFIG_SETTING(std::string, "ROCPROFSYS_ROCM_SMI_METRICS",
-                             "rocm-smi metrics to collect: busy, temp, power, mem_usage",
-                             "busy,temp,power,mem_usage", "backend", "rocm_smi", "rocm",
-                             "process_sampling", "advanced");
+                              "rocm-smi metrics to collect: busy, temp, power, mem_usage",
+                              "busy,temp,power,mem_usage", "backend", "rocm_smi", "rocm",
+                              "process_sampling", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(size_t, "ROCPROFSYS_PERFETTO_SHMEM_SIZE_HINT_KB",
-                             "Hint for shared-memory buffer size in perfetto (in KB)",
-                             size_t{ 4096 }, "perfetto", "data", "advanced");
+                              "Hint for shared-memory buffer size in perfetto (in KB)",
+                              size_t{ 4096 }, "perfetto", "data", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(size_t, "ROCPROFSYS_PERFETTO_BUFFER_SIZE_KB",
-                             "Size of perfetto buffer (in KB)", size_t{ 1024000 },
-                             "perfetto", "data");
+                              "Size of perfetto buffer (in KB)", size_t{ 1024000 },
+                              "perfetto", "data");
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_PERFETTO_COMBINE_TRACES",
-                             "Combine Perfetto traces. If not explicitly set, it will "
-                             "default to the value of ROCPROFSYS_COLLAPSE_PROCESSES",
-                             false, "perfetto", "data", "advanced");
+                              "Combine Perfetto traces. If not explicitly set, it will "
+                              "default to the value of ROCPROFSYS_COLLAPSE_PROCESSES",
+                              false, "perfetto", "data", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(
         bool, "ROCPROFSYS_PERFETTO_ROCTRACER_PER_STREAM",
@@ -677,10 +683,10 @@ configure_settings(bool _init)
         ->set_choices({ "fill", "discard" });
 
     ROCPROFSYS_CONFIG_SETTING(std::string, "ROCPROFSYS_ENABLE_CATEGORIES",
-                             "Enable collecting profiling and trace data for these "
-                             "categories and disable all other categories",
-                             "", "trace", "profile", "perfetto", "timemory", "data",
-                             "category", "advanced")
+                              "Enable collecting profiling and trace data for these "
+                              "categories and disable all other categories",
+                              "", "trace", "profile", "perfetto", "timemory", "data",
+                              "category", "advanced")
         ->set_choices(get_available_categories<std::vector<std::string>>());
 
     ROCPROFSYS_CONFIG_SETTING(
@@ -689,12 +695,13 @@ configure_settings(bool _init)
         "profile", "perfetto", "timemory", "data", "category", "advanced")
         ->set_choices(get_available_categories<std::vector<std::string>>());
 
-    ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_PERFETTO_ANNOTATIONS",
-                             "Include debug annotations in perfetto trace. When enabled, "
-                             "this feature will encode information such as the values of "
-                             "the function arguments (when available). Disabling this "
-                             "feature may dramatically reduce the size of the trace",
-                             true, "perfetto", "data", "debugging", "advanced");
+    ROCPROFSYS_CONFIG_SETTING(
+        bool, "ROCPROFSYS_PERFETTO_ANNOTATIONS",
+        "Include debug annotations in perfetto trace. When enabled, "
+        "this feature will encode information such as the values of "
+        "the function arguments (when available). Disabling this "
+        "feature may dramatically reduce the size of the trace",
+        true, "perfetto", "data", "debugging", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(
         bool, "ROCPROFSYS_PERFETTO_COMPACT_ROCTRACER_ANNOTATIONS",
@@ -721,12 +728,12 @@ configure_settings(bool _init)
         "wall_clock", "timemory", "component");
 
     ROCPROFSYS_CONFIG_SETTING(std::string, "ROCPROFSYS_OUTPUT_FILE",
-                             "[DEPRECATED] See ROCPROFSYS_PERFETTO_FILE", std::string{},
-                             "perfetto", "io", "filename", "deprecated", "advanced");
+                              "[DEPRECATED] See ROCPROFSYS_PERFETTO_FILE", std::string{},
+                              "perfetto", "io", "filename", "deprecated", "advanced");
 
-    ROCPROFSYS_CONFIG_SETTING(std::string, "ROCPROFSYS_PERFETTO_FILE", "Perfetto filename",
-                             std::string{ "perfetto-trace.proto" }, "perfetto", "io",
-                             "filename", "advanced");
+    ROCPROFSYS_CONFIG_SETTING(std::string, "ROCPROFSYS_PERFETTO_FILE",
+                              "Perfetto filename", std::string{ "perfetto-trace.proto" },
+                              "perfetto", "io", "filename", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(
         bool, "ROCPROFSYS_USE_TEMPORARY_FILES",
@@ -777,9 +784,9 @@ configure_settings(bool _init)
         "causal", "analysis", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(std::string, "ROCPROFSYS_CAUSAL_FILE",
-                             "Name of causal output filename (w/o extension)",
-                             std::string{ "experiments" }, "causal", "analysis",
-                             "advanced", "io");
+                              "Name of causal output filename (w/o extension)",
+                              std::string{ "experiments" }, "causal", "analysis",
+                              "advanced", "io");
 
     ROCPROFSYS_CONFIG_SETTING(
         bool, "ROCPROFSYS_CAUSAL_FILE_RESET",
@@ -795,9 +802,9 @@ configure_settings(bool _init)
         0, "causal", "analysis");
 
     ROCPROFSYS_CONFIG_SETTING(std::string, "ROCPROFSYS_CAUSAL_FIXED_SPEEDUP",
-                             "List of virtual speedups between 0 and 100 (inclusive) to "
-                             "sample from for causal profiling",
-                             std::string{}, "causal", "analysis", "advanced");
+                              "List of virtual speedups between 0 and 100 (inclusive) to "
+                              "sample from for causal profiling",
+                              std::string{}, "causal", "analysis", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(
         std::string, "ROCPROFSYS_CAUSAL_BINARY_SCOPE",
@@ -952,10 +959,11 @@ configure_settings(bool _init)
 
     if(_paranoid > 2 && !_has_cap_sys_admin)
     {
-        ROCPROFSYS_BASIC_VERBOSE(0,
-                                "/proc/sys/kernel/perf_event_paranoid has a value of %i. "
-                                "Disabling PAPI (requires a value <= 2)...\n",
-                                _paranoid);
+        ROCPROFSYS_BASIC_VERBOSE(
+            0,
+            "/proc/sys/kernel/perf_event_paranoid has a value of %i. "
+            "Disabling PAPI (requires a value <= 2)...\n",
+            _paranoid);
         ROCPROFSYS_BASIC_VERBOSE(
             0, "In order to enable PAPI support, run 'echo N | sudo tee "
                "/proc/sys/kernel/perf_event_paranoid' where N is <= 2\n");
@@ -1029,7 +1037,7 @@ configure_settings(bool _init)
             if(!_iss.str().empty())
             {
                 ROCPROFSYS_BASIC_VERBOSE(1, "config file '%s':\n%s\n", fitr.c_str(),
-                                        _iss.str().c_str());
+                                         _iss.str().c_str());
             }
         }
     }
@@ -1157,7 +1165,7 @@ configure_mode_settings(const std::shared_ptr<settings>& _config)
     {
 #if ROCPROFSYS_HIP_VERSION > 0
         ROCPROFSYS_BASIC_VERBOSE(1, "No HIP devices were found: disabling roctracer, "
-                                   "rocprofiler, and rocm_smi...\n");
+                                    "rocprofiler, and rocm_smi...\n");
 #endif
         _set("ROCPROFSYS_USE_ROCPROFILER", false);
         _set("ROCPROFSYS_USE_ROCTRACER", false);
@@ -1179,7 +1187,7 @@ configure_mode_settings(const std::shared_ptr<settings>& _config)
                     JOIN("", " (forced. Previous value: '", _current_kokkosp_lib, "')");
             }
             ROCPROFSYS_BASIC_VERBOSE_F(1, "Setting KOKKOS_PROFILE_LIBRARY=%s%s\n",
-                                      "librocprof-sys.so", _message.c_str());
+                                       "librocprof-sys.so", _message.c_str());
             tim::set_env("KOKKOS_PROFILE_LIBRARY", "librocprof-sys.so", _force);
         }
     }
@@ -1225,7 +1233,7 @@ omnitrace_exit_action(int nsig)
     tim::signals::block_signals(get_sampling_signals(),
                                 tim::signals::sigmask_scope::process);
     ROCPROFSYS_BASIC_PRINT("Finalizing after signal %i :: %s\n", nsig,
-                          signal_settings::str(static_cast<sys_signal>(nsig)).c_str());
+                           signal_settings::str(static_cast<sys_signal>(nsig)).c_str());
     auto _handler = get_signal_handler().load();
     if(_handler) (*_handler)();
     kill(process::get_id(), nsig);
@@ -1338,7 +1346,7 @@ std::set<int> get_sampling_signals(int64_t)
            !get_use_sampling_realtime() && !get_use_sampling_overflow())
         {
             ROCPROFSYS_VERBOSE_F(1, "sampling enabled by cputime/realtime/overflow not "
-                                   "specified. defaulting to cputime...\n");
+                                    "specified. defaulting to cputime...\n");
             set_setting_value("ROCPROFSYS_SAMPLING_CPUTIME", true);
         }
 
@@ -1361,13 +1369,13 @@ configure_disabled_settings(const std::shared_ptr<settings>& _config)
             _config->enable(_opt);
             for(auto&& itr : _disabled)
                 ROCPROFSYS_BASIC_VERBOSE(3, "[%s=OFF]    disabled option :: '%s'\n",
-                                        _opt.c_str(), itr.c_str());
+                                         _opt.c_str(), itr.c_str());
             return false;
         }
         auto _enabled = _config->enable_category(_category);
         for(auto&& itr : _enabled)
             ROCPROFSYS_BASIC_VERBOSE(3, "[%s=ON]      enabled option :: '%s'\n",
-                                    _opt.c_str(), itr.c_str());
+                                     _opt.c_str(), itr.c_str());
         return true;
     };
 
@@ -1479,7 +1487,7 @@ handle_deprecated_setting(const std::string& _old, const std::string& _new, int 
     if(_old_setting == _config->end()) return;
 
     ROCPROFSYS_CI_THROW(_new_setting == _config->end(),
-                       "New configuration setting not found: '%s'", _new.c_str());
+                        "New configuration setting not found: '%s'", _new.c_str());
 
     if(_old_setting->second->get_environ_updated() ||
        _old_setting->second->get_config_updated())
@@ -1509,9 +1517,9 @@ handle_deprecated_setting(const std::string& _old, const std::string& _new, int 
                     (_old_setting->second->get_environ_updated()) ? "environ" : "config";
                 ROCPROFSYS_BASIC_VERBOSE(_verbose, "#\n");
                 ROCPROFSYS_BASIC_VERBOSE(_verbose, "# %s :: '%s' -> '%s'\n", _new.c_str(),
-                                        _before.c_str(), _after.c_str());
+                                         _before.c_str(), _after.c_str());
                 ROCPROFSYS_BASIC_VERBOSE(_verbose, "#   via %s (%s)\n", _old.c_str(),
-                                        _cause.c_str());
+                                         _cause.c_str());
             }
         }
 
@@ -1759,7 +1767,7 @@ get_mode()
             _ss << ", " << itr;
         auto _msg = (_ss.str().length() > 2) ? _ss.str().substr(2) : std::string{};
         ROCPROFSYS_THROW("[%s] invalid mode %s. Choices: %s\n", __FUNCTION__,
-                        _mode.c_str(), _msg.c_str());
+                         _mode.c_str(), _msg.c_str());
     }
     return Mode::Trace;
 }
@@ -1922,7 +1930,7 @@ get_use_sampling()
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 #else
     ROCPROFSYS_THROW("Error! sampling was enabled but rocprof-sys was not built with "
-                    "libunwind support");
+                     "libunwind support");
     static bool _v = false;
     return _v;
 #endif
@@ -2126,14 +2134,15 @@ get_category_config()
         }
         else
         {
-            ROCPROFSYS_ABORT("Error! Conflicting options ROCPROFSYS_ENABLE_CATEGORIES and "
-                            "ROCPROFSYS_DISABLE_CATEGORIES were both provided.");
+            ROCPROFSYS_ABORT(
+                "Error! Conflicting options ROCPROFSYS_ENABLE_CATEGORIES and "
+                "ROCPROFSYS_DISABLE_CATEGORIES were both provided.");
         }
 
         ROCPROFSYS_CI_THROW(_enabled.size() + _disabled.size() != _avail.size(),
-                           "Error! Internal error for categories: %zu (enabled) + %zu "
-                           "(disabled) != %zu (total)\n",
-                           _enabled.size(), _disabled.size(), _avail.size());
+                            "Error! Internal error for categories: %zu (enabled) + %zu "
+                            "(disabled) != %zu (total)\n",
+                            _enabled.size(), _disabled.size(), _avail.size());
 
         return std::make_pair(_enabled, _disabled);
     }();
@@ -2533,7 +2542,8 @@ tmp_file::remove()
     close();
     if(filepath::exists(filename))
     {
-        ROCPROFSYS_BASIC_VERBOSE(2, "Removing temporary file '%s'...\n", filename.c_str());
+        ROCPROFSYS_BASIC_VERBOSE(2, "Removing temporary file '%s'...\n",
+                                 filename.c_str());
         auto _ret = ::remove(filename.c_str());
         return (_ret == 0);
     }
@@ -2580,8 +2590,8 @@ get_tmp_file(std::string _basename, std::string _ext)
     if(_fname.empty() || _fname.front() != '/')
     {
         ROCPROFSYS_THROW("Error! temporary file '%s' (based on '%s.%s') is either empty "
-                        "or is not an absolute path",
-                        _fname.c_str(), _basename.c_str(), _ext.c_str());
+                         "or is not an absolute path",
+                         _fname.c_str(), _basename.c_str(), _ext.c_str());
     }
     auto itr = _existing_files.find(_fname);
     if(itr != _existing_files.end()) return itr->second;
@@ -2607,11 +2617,11 @@ get_causal_backend()
     } catch(std::runtime_error& _e)
     {
         auto _mode = static_cast<tim::tsettings<std::string>&>(*_v->second).get();
-        ROCPROFSYS_THROW("[%s] invalid causal backend %s. Choices: %s\n", __FUNCTION__,
-                        _mode.c_str(),
-                        timemory::join::join(timemory::join::array_config{ ", ", "", "" },
-                                             _v->second->get_choices())
-                            .c_str());
+        ROCPROFSYS_THROW(
+            "[%s] invalid causal backend %s. Choices: %s\n", __FUNCTION__, _mode.c_str(),
+            timemory::join::join(timemory::join::array_config{ ", ", "", "" },
+                                 _v->second->get_choices())
+                .c_str());
     }
     return CausalBackend::Auto;
 }

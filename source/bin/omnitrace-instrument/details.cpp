@@ -531,7 +531,7 @@ omnitrace_get_exe_realpath()
         {
             using array_config_t = timemory::join::array_config;
             ROCPROFSYS_ADD_DETAILED_LOG_ENTRY(array_config_t{ " ", "[ ", " ]" },
-                                             "cmdline:: ", _cmd_line);
+                                              "cmdline:: ", _cmd_line);
             return _cmd_line.front();
             // return tim::filepath::realpath(_cmd_line.front(), nullptr, false);
         }
@@ -696,7 +696,7 @@ error_func_real(error_level_t level, int num, const char* const* params)
     bpatch->formatErrorString(line, sizeof(line), msg, params);
 
     ROCPROFSYS_ADD_LOG_ENTRY("Dyninst error function called with level", level,
-                            ":: ID# =", num, "::", line)
+                             ":: ID# =", num, "::", line)
         .force(level < BPatchInfo);
 
     if(num == 0)
@@ -743,7 +743,7 @@ error_func_fake(error_level_t level, int num, const char* const* params)
 
     // just log it
     ROCPROFSYS_ADD_LOG_ENTRY("Dyninst error function called with level", level,
-                            ":: ID# =", num, "::", line)
+                             ":: ID# =", num, "::", line)
         .force(level < BPatchInfo);
 }
 

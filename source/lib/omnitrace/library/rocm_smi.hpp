@@ -155,7 +155,7 @@ inline void set_state(State) {}
 }  // namespace omnitrace
 
 #if defined(ROCPROFSYS_USE_ROCM_SMI) && ROCPROFSYS_USE_ROCM_SMI > 0
-#    if !defined(ROCPROFSYS_EXTERN_COMPONENTS) ||                                         \
+#    if !defined(ROCPROFSYS_EXTERN_COMPONENTS) ||                                        \
         (defined(ROCPROFSYS_EXTERN_COMPONENTS) && ROCPROFSYS_EXTERN_COMPONENTS > 0)
 
 #        include <timemory/components/base.hpp>

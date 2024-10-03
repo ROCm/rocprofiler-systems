@@ -210,7 +210,7 @@ get_clock_skew()
         ROCPROFSYS_BASIC_VERBOSE(2, "CPU timestamp: %li\n", _cpu_ave);
         ROCPROFSYS_BASIC_VERBOSE(2, "HIP timestamp: %li\n", _gpu_ave);
         ROCPROFSYS_BASIC_VERBOSE(1, "CPU/HIP timestamp skew: %li (used: %s)\n", _diff,
-                                _use ? "yes" : "no");
+                                 _use ? "yes" : "no");
         _diff /= _n;
         return _diff;
     }();
@@ -363,7 +363,7 @@ hsa_activity_callback(uint32_t op, const void* vrecord, void* arg)
     }
 
     ROCPROFSYS_CI_FAIL(_name == nullptr, "Error! HSA operation type not handled: %u\n",
-                      op);
+                       op);
 
     if(!_name) return;
 
@@ -468,7 +468,7 @@ roctx_api_callback(uint32_t domain, uint32_t cid, const void* callback_data,
             else
             {
                 ROCPROFSYS_THROW("Error! roctxRangePop stack is empty! Expected "
-                                "roctxRangePush/roctxRangePop on same thread\n");
+                                 "roctxRangePush/roctxRangePop on same thread\n");
             }
             break;
         }
@@ -492,12 +492,12 @@ roctx_api_callback(uint32_t domain, uint32_t cid, const void* callback_data,
                 if(!_lk.owns_lock()) _lk.lock();
                 auto itr = _range_map.find(roctx_range_id_t{ _data->args.id });
                 ROCPROFSYS_CI_THROW(itr == _range_map.end(),
-                                   "Error! could not find range with id %lu\n",
-                                   _data->args.id);
+                                    "Error! could not find range with id %lu\n",
+                                    _data->args.id);
                 if(itr == _range_map.end())
                 {
                     ROCPROFSYS_VERBOSE(0, "Warning! could not find range with id %lu\n",
-                                      _data->args.id);
+                                       _data->args.id);
                     return;
                 }
                 else
@@ -546,7 +546,7 @@ hip_api_callback(uint32_t domain, uint32_t cid, const void* callback_data, void*
         case HIP_API_ID___hipPushCallConfiguration:
         case HIP_API_ID___hipPopCallConfiguration:
         case HIP_API_ID_hipDeviceEnablePeerAccess:
-#if ROCPROFSYS_HIP_VERSION_MAJOR > 4 ||                                                   \
+#if ROCPROFSYS_HIP_VERSION_MAJOR > 4 ||                                                  \
     (ROCPROFSYS_HIP_VERSION_MAJOR == 4 && ROCPROFSYS_HIP_VERSION_MINOR >= 3)
         case HIP_API_ID_hipImportExternalMemory:
         case HIP_API_ID_hipDestroyExternalMemory:

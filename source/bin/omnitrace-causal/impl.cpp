@@ -819,7 +819,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env,
         add_default_env(_env, "ROCPROFSYS_USE_OMPT", true);
 #endif
 
-#if(defined(ROCPROFSYS_USE_MPI) && ROCPROFSYS_USE_MPI > 0) ||                              \
+#if(defined(ROCPROFSYS_USE_MPI) && ROCPROFSYS_USE_MPI > 0) ||                            \
     (defined(ROCPROFSYS_USE_MPI_HEADERS) && ROCPROFSYS_USE_MPI_HEADERS > 0)
         add_default_env(_env, "ROCPROFSYS_USE_MPIP", true);
 #endif

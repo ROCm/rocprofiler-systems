@@ -87,7 +87,7 @@ setup()
     for(const auto& itr : config::get_disabled_categories())
     {
         ROCPROFSYS_VERBOSE_F(1, "Disabling perfetto track event category: %s\n",
-                            itr.c_str());
+                             itr.c_str());
         track_event_cfg.add_disabled_categories(itr);
     }
 
@@ -143,7 +143,8 @@ stop()
 
     auto& tracing_session = get_perfetto_session();
 
-    ROCPROFSYS_CI_THROW(tracing_session == nullptr, "Null pointer to the tracing session");
+    ROCPROFSYS_CI_THROW(tracing_session == nullptr,
+                        "Null pointer to the tracing session");
 
     if(tracing_session)
     {

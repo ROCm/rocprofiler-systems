@@ -52,11 +52,11 @@
 #    include <timemory/components/hip/backends.hpp>
 
 #    if !defined(ROCPROFSYS_HIP_RUNTIME_CALL)
-#        define ROCPROFSYS_HIP_RUNTIME_CALL(err)                                          \
+#        define ROCPROFSYS_HIP_RUNTIME_CALL(err)                                         \
             {                                                                            \
                 if(err != ::tim::hip::success_v && (int) err != 0)                       \
                 {                                                                        \
-                    ROCPROFSYS_THROW(                                                     \
+                    ROCPROFSYS_THROW(                                                    \
                         "[%s:%d] Warning! HIP API call failed with code %i :: %s\n",     \
                         __FILE__, __LINE__, (int) err, hipGetErrorString(err));          \
                 }                                                                        \
@@ -73,7 +73,7 @@ namespace
 namespace scope = ::tim::scope;
 
 #if ROCPROFSYS_USE_ROCM_SMI > 0
-#    define ROCPROFSYS_ROCM_SMI_CALL(ERROR_CODE)                                          \
+#    define ROCPROFSYS_ROCM_SMI_CALL(ERROR_CODE)                                         \
         ::omnitrace::gpu::check_rsmi_error(ERROR_CODE, __FILE__, __LINE__)
 
 void
@@ -84,10 +84,10 @@ check_rsmi_error(rsmi_status_t _code, const char* _file, int _line)
     auto        _err = rsmi_status_string(_code, &_msg);
     if(_err != RSMI_STATUS_SUCCESS)
         ROCPROFSYS_THROW("rsmi_status_string failed. No error message available. "
-                        "Error code %i originated at %s:%i\n",
-                        static_cast<int>(_code), _file, _line);
+                         "Error code %i originated at %s:%i\n",
+                         static_cast<int>(_code), _file, _line);
     ROCPROFSYS_THROW("[%s:%i] Error code %i :: %s", _file, _line, static_cast<int>(_code),
-                    _msg);
+                     _msg);
 }
 
 bool
@@ -100,7 +100,7 @@ rsmi_init()
         } catch(std::exception& _e)
         {
             ROCPROFSYS_BASIC_VERBOSE(1, "Exception thrown initializing rocm-smi: %s\n",
-                                    _e.what());
+                                     _e.what());
             return false;
         }
         return true;
@@ -164,7 +164,7 @@ device_prop_serialize(ArchiveT& archive, const char* name, hipDeviceArch_t arg)
     namespace cereal = tim::cereal;
     using cereal::make_nvp;
 
-#    define ROCPROFSYS_SERIALIZE_HIP_DEVICE_ARCH(NAME)                                    \
+#    define ROCPROFSYS_SERIALIZE_HIP_DEVICE_ARCH(NAME)                                   \
         {                                                                                \
             auto val = arg.NAME;                                                         \
             archive(make_nvp(#NAME, val));                                               \
@@ -289,10 +289,10 @@ add_hip_device_metadata(ArchiveT& ar)
 #    if ROCPROFSYS_HIP_VERSION < 60000
         using intvec_t = std::vector<int>;
 
-#        define ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(NAME)                                \
+#        define ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(NAME)                               \
             ar(make_nvp(#NAME, _device_prop.NAME));
 
-#        define ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP_ARRAY(NAME, ...)                     \
+#        define ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP_ARRAY(NAME, ...)                    \
             ar(make_nvp(NAME, __VA_ARGS__));
 
         ar(make_nvp("name", std::string{ _device_prop.name }));
@@ -321,10 +321,10 @@ add_hip_device_metadata(ArchiveT& ar)
             "maxThreadsDim",
             intvec_t{ _device_prop.maxThreadsDim[0], _device_prop.maxThreadsDim[1],
                       _device_prop.maxThreadsDim[2] })
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP_ARRAY("maxGridSize",
-                                                  intvec_t{ _device_prop.maxGridSize[0],
-                                                            _device_prop.maxGridSize[1],
-                                                            _device_prop.maxGridSize[2] })
+        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP_ARRAY(
+            "maxGridSize",
+            intvec_t{ _device_prop.maxGridSize[0], _device_prop.maxGridSize[1],
+                      _device_prop.maxGridSize[2] })
         ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(memPitch)
         ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(textureAlignment)
         ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(kernelExecTimeoutEnabled)
@@ -349,7 +349,7 @@ add_hip_device_metadata(ArchiveT& ar)
         ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(maxSharedMemoryPerMultiProcessor)
         ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(asicRevision)
 #    else
-#        define ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(NAME)                                \
+#        define ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(NAME)                               \
             device_prop_serialize(ar, #NAME, _device_prop.NAME);
 
         ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(name)

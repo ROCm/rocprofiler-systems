@@ -33,13 +33,13 @@
 #include <memory>
 
 // Macro to check ROC-tracer calls status
-#define ROCPROFSYS_ROCTRACER_CALL(call)                                                   \
+#define ROCPROFSYS_ROCTRACER_CALL(call)                                                  \
     {                                                                                    \
-        ROCPROFSYS_DEBUG_F(#call);                                                        \
+        ROCPROFSYS_DEBUG_F(#call);                                                       \
         int err = call;                                                                  \
         if(err != 0)                                                                     \
         {                                                                                \
-            ROCPROFSYS_PRINT_F("%s in: %s\n", roctracer_error_string(), #call);           \
+            ROCPROFSYS_PRINT_F("%s in: %s\n", roctracer_error_string(), #call);          \
         }                                                                                \
     }
 

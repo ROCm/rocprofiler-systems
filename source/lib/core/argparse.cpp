@@ -56,7 +56,7 @@ get_clock_id_choices()
         return _v;
     };
 
-#define ROCPROFSYS_CLOCK_IDENTIFIER(VAL)                                                  \
+#define ROCPROFSYS_CLOCK_IDENTIFIER(VAL)                                                 \
     std::make_tuple(clock_name(#VAL), VAL, std::string_view{ #VAL })
 
     auto _choices = strvec_t{};

@@ -99,8 +99,9 @@ struct scoped_thread_state
 };
 }  // namespace omnitrace
 
-#define ROCPROFSYS_SCOPED_THREAD_STATE(STATE)                                             \
-    ::omnitrace::scoped_thread_state ROCPROFSYS_VARIABLE(_scoped_thread_state_, __LINE__) \
+#define ROCPROFSYS_SCOPED_THREAD_STATE(STATE)                                            \
+    ::omnitrace::scoped_thread_state ROCPROFSYS_VARIABLE(_scoped_thread_state_,          \
+                                                         __LINE__)                       \
     {                                                                                    \
         ::omnitrace::STATE                                                               \
     }

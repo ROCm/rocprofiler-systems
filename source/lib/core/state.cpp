@@ -78,8 +78,8 @@ State
 set_state(State _n)
 {
     ROCPROFSYS_CONDITIONAL_PRINT_F(get_debug_init(), "Setting state :: %s -> %s\n",
-                                  std::to_string(get_state()).c_str(),
-                                  std::to_string(_n).c_str());
+                                   std::to_string(get_state()).c_str(),
+                                   std::to_string(_n).c_str());
     // state should always be increased, not decreased
     ROCPROFSYS_CI_BASIC_THROW(
         _n < get_state(), "State is being assigned to a lesser value :: %s -> %s",

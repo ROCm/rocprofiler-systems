@@ -50,7 +50,7 @@
 #include <unistd.h>
 
 #if !defined(ROCPROFSYS_RETURN_ERROR_MSG)
-#    define ROCPROFSYS_RETURN_ERROR_MSG(COND, ...)                                        \
+#    define ROCPROFSYS_RETURN_ERROR_MSG(COND, ...)                                       \
         if((COND))                                                                       \
         {                                                                                \
             auto _msg_ss = std::stringstream{};                                          \
@@ -168,13 +168,13 @@ perf_event::open(struct perf_event_attr& _pe, pid_t _pid, int _cpu)
         auto file = std::ifstream{ path.c_str() };
 
         ROCPROFSYS_RETURN_ERROR_MSG(!file,
-                                   "Failed to open " << path << ": " << strerror(errno));
+                                    "Failed to open " << path << ": " << strerror(errno));
 
         int value = 4;
         file >> value;
 
-        ROCPROFSYS_RETURN_ERROR_MSG(file.bad(), "Failed to read from " << path << ": "
-                                                                      << strerror(errno));
+        ROCPROFSYS_RETURN_ERROR_MSG(file.bad(), "Failed to read from "
+                                                    << path << ": " << strerror(errno));
 
         ROCPROFSYS_RETURN_ERROR_MSG(
             true, "Failed to open perf event. Consider tweaking "
@@ -449,7 +449,7 @@ uint64_t
 perf_event::record::get_ip() const
 {
     ROCPROFSYS_ASSERT(is_sample() && m_source != nullptr &&
-                     m_source->is_sampling(sample::ip))
+                      m_source->is_sampling(sample::ip))
         << "Record does not have an ip field (" << is_sample() << "|" << m_source << ")";
     return *locate_field<sample::ip, uint64_t*>();
 }
@@ -458,7 +458,7 @@ uint64_t
 perf_event::record::get_pid() const
 {
     ROCPROFSYS_ASSERT(is_sample() && m_source != nullptr &&
-                     m_source->is_sampling(sample::pid_tid))
+                      m_source->is_sampling(sample::pid_tid))
         << "Record does not have a `pid` field (" << is_sample() << "|" << m_source
         << ")";
     return locate_field<sample::pid_tid, uint32_t*>()[0];
@@ -468,7 +468,7 @@ uint64_t
 perf_event::record::get_tid() const
 {
     ROCPROFSYS_ASSERT(is_sample() && m_source != nullptr &&
-                     m_source->is_sampling(sample::pid_tid))
+                      m_source->is_sampling(sample::pid_tid))
         << "Record does not have a `tid` field (" << is_sample() << "|" << m_source
         << ")";
     return locate_field<sample::pid_tid, uint32_t*>()[1];
@@ -478,7 +478,7 @@ uint64_t
 perf_event::record::get_time() const
 {
     ROCPROFSYS_ASSERT(is_sample() && m_source != nullptr &&
-                     m_source->is_sampling(sample::time))
+                      m_source->is_sampling(sample::time))
         << "Record does not have a 'time' field (" << is_sample() << "|" << m_source
         << ")";
     return *locate_field<sample::time, uint64_t*>();
@@ -488,7 +488,7 @@ uint64_t
 perf_event::record::get_period() const
 {
     ROCPROFSYS_ASSERT(is_sample() && m_source != nullptr &&
-                     m_source->is_sampling(sample::period))
+                      m_source->is_sampling(sample::period))
         << "Record does not have a 'period' field (" << is_sample() << "|" << m_source
         << ")";
     return *locate_field<sample::period, uint64_t*>();
@@ -498,7 +498,7 @@ uint32_t
 perf_event::record::get_cpu() const
 {
     ROCPROFSYS_ASSERT(is_sample() && m_source != nullptr &&
-                     m_source->is_sampling(sample::cpu))
+                      m_source->is_sampling(sample::cpu))
         << "Record does not have a 'cpu' field (" << is_sample() << "|" << m_source
         << ")";
     return *locate_field<sample::cpu, uint32_t*>();
@@ -508,7 +508,7 @@ container::c_array<uint64_t>
 perf_event::record::get_callchain() const
 {
     ROCPROFSYS_ASSERT(is_sample() && m_source != nullptr &&
-                     m_source->is_sampling(sample::callchain))
+                      m_source->is_sampling(sample::callchain))
         << "Record does not have a callchain field (" << is_sample() << "|" << m_source
         << ")";
 

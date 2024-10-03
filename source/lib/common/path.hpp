@@ -50,7 +50,8 @@
 #    if defined(ROCPROFSYS_COMMON_LIBRARY_LOG_START)
 #        define ROCPROFSYS_PATH_LOG_START ROCPROFSYS_COMMON_LIBRARY_LOG_START
 #    elif defined(TIMEMORY_LOG_COLORS_AVAILABLE)
-#        define ROCPROFSYS_PATH_LOG_START fprintf(stderr, "%s", ::tim::log::color::info());
+#        define ROCPROFSYS_PATH_LOG_START                                                \
+            fprintf(stderr, "%s", ::tim::log::color::info());
 #    else
 #        define ROCPROFSYS_PATH_LOG_START
 #    endif
@@ -66,14 +67,14 @@
 #    endif
 #endif
 
-#define ROCPROFSYS_PATH_LOG(CONDITION, ...)                                               \
+#define ROCPROFSYS_PATH_LOG(CONDITION, ...)                                              \
     if(CONDITION)                                                                        \
     {                                                                                    \
         fflush(stderr);                                                                  \
-        ROCPROFSYS_PATH_LOG_START                                                         \
-        fprintf(stderr, "[rocprof-sys]" ROCPROFSYS_PATH_LOG_NAME "[%i] ", getpid());      \
+        ROCPROFSYS_PATH_LOG_START                                                        \
+        fprintf(stderr, "[rocprof-sys]" ROCPROFSYS_PATH_LOG_NAME "[%i] ", getpid());     \
         fprintf(stderr, __VA_ARGS__);                                                    \
-        ROCPROFSYS_PATH_LOG_END                                                           \
+        ROCPROFSYS_PATH_LOG_END                                                          \
         fflush(stderr);                                                                  \
     }
 
@@ -206,12 +207,12 @@ find_path(const std::string& _path, int _verbose, const std::string& _search_pat
     {
         auto _f = join('/', itr, _path);
         ROCPROFSYS_PATH_LOG(_verbose >= _verbose_lvl + 1,
-                           "searching for '%s' in '%s' ...\n", _path.c_str(),
-                           itr.c_str());
+                            "searching for '%s' in '%s' ...\n", _path.c_str(),
+                            itr.c_str());
         if(exists(_f))
         {
             ROCPROFSYS_PATH_LOG(_verbose >= _verbose_lvl, "found '%s' in '%s' ...\n",
-                               _path.c_str(), itr.c_str());
+                                _path.c_str(), itr.c_str());
             return _f;
         }
     }
@@ -226,13 +227,13 @@ find_path(const std::string& _path, int _verbose, const std::string& _search_pat
             {
                 auto _f = join('/', dirname(itr), sitr, _path);
                 ROCPROFSYS_PATH_LOG(_verbose >= _verbose_lvl + 1,
-                                   "searching for '%s' in '%s' ...\n", _path.c_str(),
-                                   common::join('/', itr, sitr).c_str());
+                                    "searching for '%s' in '%s' ...\n", _path.c_str(),
+                                    common::join('/', itr, sitr).c_str());
                 if(exists(_f))
                 {
                     ROCPROFSYS_PATH_LOG(_verbose >= _verbose_lvl,
-                                       "found '%s' in '%s' ...\n", _path.c_str(),
-                                       itr.c_str());
+                                        "found '%s' in '%s' ...\n", _path.c_str(),
+                                        itr.c_str());
                     return _f;
                 }
             }

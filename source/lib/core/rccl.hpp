@@ -25,7 +25,7 @@
 #include "core/defines.hpp"
 #include "core/hip_runtime.hpp"
 
-#if defined(ROCPROFSYS_USE_HIP) && ROCPROFSYS_USE_HIP > 0 &&                               \
+#if defined(ROCPROFSYS_USE_HIP) && ROCPROFSYS_USE_HIP > 0 &&                             \
     defined(ROCPROFSYS_USE_RCCL) && ROCPROFSYS_USE_RCCL > 0
 #    if ROCPROFSYS_HIP_VERSION == 0 || ROCPROFSYS_HIP_VERSION >= 50200
 #        include <rccl/rccl.h>

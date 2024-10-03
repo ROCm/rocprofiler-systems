@@ -389,7 +389,7 @@ insert_instr(address_space_t* mutatee, const std::vector<point_t*>& _points, Tp 
     }();
 
     ROCPROFSYS_ADD_LOG_ENTRY("Inserting", _points.size(),
-                            "instrumentation points into function(s)", _names);
+                             "instrumentation points into function(s)", _names);
 
     auto _trace = traceFunc.get();
     auto _traps = std::set<point_t*>{};
@@ -402,7 +402,7 @@ insert_instr(address_space_t* mutatee, const std::vector<point_t*>& _points, Tp 
     }
 
     ROCPROFSYS_ADD_LOG_ENTRY("Found", _traps.size(),
-                            "instrumentation points using traps in function(s)", _names);
+                             "instrumentation points using traps in function(s)", _names);
 
     size_t _n = 0;
     for(const auto& itr : _points)
@@ -413,7 +413,7 @@ insert_instr(address_space_t* mutatee, const std::vector<point_t*>& _points, Tp 
     }
 
     ROCPROFSYS_ADD_LOG_ENTRY("Inserted", _n, "instrumentation points in function(s)",
-                            _names);
+                             _names);
 
     return (_n > 0);
 }
@@ -435,7 +435,7 @@ insert_instr(address_space_t* mutatee, procedure_t* funcToInstr, Tp traceFunc,
     auto                   _trace  = traceFunc.get();
 
     ROCPROFSYS_ADD_LOG_ENTRY("Searching for loop instrumentation points in function",
-                            get_name(funcToInstr));
+                             get_name(funcToInstr));
 
     if(!cfGraph) funcToInstr->getCFG();
     if(cfGraph && loopToInstrument)
@@ -454,8 +454,8 @@ insert_instr(address_space_t* mutatee, procedure_t* funcToInstr, Tp traceFunc,
     if(_points->empty()) return false;
 
     ROCPROFSYS_ADD_LOG_ENTRY("Inserting max of", _points->size(),
-                            "loop instrumentation points in function",
-                            get_name(funcToInstr));
+                             "loop instrumentation points in function",
+                             get_name(funcToInstr));
 
     std::set<point_t*> _traps{};
     if(!allow_traps)
@@ -467,8 +467,8 @@ insert_instr(address_space_t* mutatee, procedure_t* funcToInstr, Tp traceFunc,
     }
 
     ROCPROFSYS_ADD_LOG_ENTRY("Found", _traps.size(),
-                            "loop instrumentation points using traps in function",
-                            get_name(funcToInstr));
+                             "loop instrumentation points using traps in function",
+                             get_name(funcToInstr));
 
     size_t _n = 0;
     for(auto& itr : *_points)
@@ -479,7 +479,7 @@ insert_instr(address_space_t* mutatee, procedure_t* funcToInstr, Tp traceFunc,
     }
 
     ROCPROFSYS_ADD_LOG_ENTRY("Inserted", _n, "loop instrumentation points in function",
-                            get_name(funcToInstr));
+                             get_name(funcToInstr));
 
     return (_n > 0);
 }
@@ -515,14 +515,14 @@ insert_instr(address_space_t* mutatee, Tp traceFunc, procedure_loc_t traceLoc,
     if(_point == nullptr)
     {
         ROCPROFSYS_ADD_LOG_ENTRY("No instrumentation points were found in basic-block ",
-                                *basicBlock);
+                                 *basicBlock);
         return false;
     }
 
     if(!allow_traps && _point->usesTrap_NP())
     {
         ROCPROFSYS_ADD_LOG_ENTRY("Basic-block", *basicBlock,
-                                "uses traps and traps are disallowed");
+                                 "uses traps and traps are disallowed");
         return false;
     }
 

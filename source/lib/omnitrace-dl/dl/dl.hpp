@@ -160,7 +160,8 @@ extern "C"
     void kokkosp_deallocate_data(const SpaceHandle, const char*, const void* const,
                                  const uint64_t) ROCPROFSYS_PUBLIC_API;
     void kokkosp_begin_deep_copy(SpaceHandle, const char*, const void*, SpaceHandle,
-                                 const char*, const void*, uint64_t) ROCPROFSYS_PUBLIC_API;
+                                 const char*, const void*,
+                                 uint64_t) ROCPROFSYS_PUBLIC_API;
     void kokkosp_end_deep_copy() ROCPROFSYS_PUBLIC_API;
     void kokkosp_profile_event(const char*) ROCPROFSYS_PUBLIC_API;
     void kokkosp_dual_view_sync(const char*, const void* const,

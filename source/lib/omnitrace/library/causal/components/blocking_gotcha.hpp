@@ -96,8 +96,8 @@ using blocking_gotcha_t =
 }  // namespace omnitrace
 
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(prevent_reentry, causal::component::blocking_gotcha_t,
-                                false_type)
+                                 false_type)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(static_data, causal::component::blocking_gotcha_t,
-                                false_type)
+                                 false_type)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(fast_gotcha, causal::component::blocking_gotcha_t,
-                                true_type)
+                                 true_type)

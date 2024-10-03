@@ -78,13 +78,13 @@ using overflow_enabled  = trait::runtime_enabled<component::overflow>;
 }  // namespace omnitrace
 
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(prevent_reentry, causal::sampling::causal_sampler_t,
-                                std::true_type)
+                                 std::true_type)
 
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(provide_backtrace, causal::sampling::causal_sampler_t,
-                                std::false_type)
+                                 std::false_type)
 
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(buffer_size, causal::sampling::causal_sampler_t,
-                                TIMEMORY_ESC(std::integral_constant<size_t, 4096>))
+                                 TIMEMORY_ESC(std::integral_constant<size_t, 4096>))
 
 namespace omnitrace
 {
@@ -220,8 +220,8 @@ configure(bool _setup, int64_t _tid)
     auto&       _signal_types = get_causal_sampler_signals(_tid);
 
     ROCPROFSYS_CONDITIONAL_THROW(get_use_sampling(),
-                                "Internal error! configuring causal profiling not "
-                                "permitted when sampling is enabled");
+                                 "Internal error! configuring causal profiling not "
+                                 "permitted when sampling is enabled");
 
     ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
 
@@ -569,7 +569,7 @@ post_process()
     ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
     ROCPROFSYS_VERBOSE(2 || get_debug_sampling(),
-                      "Stopping causal sampling components...\n");
+                       "Stopping causal sampling components...\n");
 
     block_samples();
 

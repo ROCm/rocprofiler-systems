@@ -45,7 +45,7 @@ configure_categories(bool _enable, const std::set<std::string>& _categories)
     if(_categories.count(_name) > 0)
     {
         ROCPROFSYS_VERBOSE_F(3, "%s category: %s\n", (_enable) ? "Enabling" : "Disabling",
-                            _name);
+                             _name);
         trait::runtime_enabled<Tp>::set(_enable);
     }
 }

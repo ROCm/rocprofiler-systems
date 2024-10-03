@@ -77,8 +77,10 @@ using pthread_mutex_gotcha_t = comp::gotcha<pthread_mutex_gotcha::gotcha_capacit
 }  // namespace component
 }  // namespace omnitrace
 
-ROCPROFSYS_DEFINE_CONCRETE_TRAIT(fast_gotcha, component::pthread_mutex_gotcha_t, true_type)
-ROCPROFSYS_DEFINE_CONCRETE_TRAIT(static_data, component::pthread_mutex_gotcha_t, true_type)
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(fast_gotcha, component::pthread_mutex_gotcha_t,
+                                 true_type)
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(static_data, component::pthread_mutex_gotcha_t,
+                                 true_type)
 
 namespace tim
 {

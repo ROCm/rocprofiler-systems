@@ -241,7 +241,7 @@ metrics_input(unsigned _device, rocprofiler_feature_t** ret)
     for(auto itr : _events)
     {
         ROCPROFSYS_VERBOSE_F(3, "Processing feature '%s' for device %u...\n", itr.c_str(),
-                            _device);
+                             _device);
         auto _pos = itr.find(":device=");
         if(_pos != std::string::npos)
         {
@@ -263,7 +263,7 @@ metrics_input(unsigned _device, rocprofiler_feature_t** ret)
     for(unsigned i = 0; i < feature_count; ++i)
     {
         ROCPROFSYS_VERBOSE_F(3, "Adding feature '%s' for device %u...\n",
-                            _features.at(i).c_str(), _device);
+                             _features.at(i).c_str(), _device);
         features[i].kind            = ROCPROFILER_FEATURE_KIND_METRIC;
         features[i].name            = strdup(_features.at(i).c_str());
         features[i].parameters      = nullptr;
@@ -373,7 +373,7 @@ rocm_metrics()
                               { HSA_STATUS_ERROR_NOT_INITIALIZED }))
         {
             ROCPROFSYS_WARNING_F(-1, "rocprofiler_iterate_info failed for gpu agent %u\n",
-                                i);
+                                 i);
         }
     }
 
@@ -384,8 +384,8 @@ rocm_metrics()
                                   info_data_callback, reinterpret_cast<void*>(&_data)),
                               { HSA_STATUS_ERROR_NOT_INITIALIZED }))
         {
-            ROCPROFSYS_WARNING_F(-1, "rocprofiler_iterate_info failed for %i gpu agents\n",
-                                gpu_count);
+            ROCPROFSYS_WARNING_F(
+                -1, "rocprofiler_iterate_info failed for %i gpu agents\n", gpu_count);
         }
     }
 
@@ -753,7 +753,7 @@ post_process_timemory()
     for(auto& ditr : _device_data)
     {
         ROCPROFSYS_VERBOSE_F(1, "Post-processing %zu entries for device %u...\n",
-                            ditr.second.size(), ditr.first);
+                             ditr.second.size(), ditr.first);
         auto _storage = std::vector<local_storage>{};
         for(auto& itr : ditr.second)
         {
@@ -796,7 +796,7 @@ post_process_timemory()
         }
 
         ROCPROFSYS_VERBOSE_F(3, "Average # of iterations before match: %.1f\n",
-                            _avg / ditr.second.size() * 100.0);
+                             _avg / ditr.second.size() * 100.0);
 
         for(auto& sitr : _storage)
         {

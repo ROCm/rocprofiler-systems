@@ -80,9 +80,9 @@ init_index_data(int64_t _tid, bool _offset = false)
         itr = thread_index_data{};
 
         ROCPROFSYS_CONDITIONAL_THROW(itr->internal_value != _tid,
-                                    "Error! thread_info::init_index_data was called for "
-                                    "thread %zi on thread %zi\n",
-                                    _tid, itr->internal_value);
+                                     "Error! thread_info::init_index_data was called for "
+                                     "thread %zi on thread %zi\n",
+                                     _tid, itr->internal_value);
 
         int _verb = 2;
         // if thread created using finalization, bump up the minimum verbosity level
@@ -90,18 +90,18 @@ init_index_data(int64_t _tid, bool _offset = false)
         if(!config::settings_are_configured())
         {
             ROCPROFSYS_BASIC_VERBOSE_F(_verb,
-                                      "Thread %li on PID %i (rank: %i) assigned "
-                                      "omnitrace TID %li (internal: %li)\n",
-                                      itr->system_value, process::get_id(), dmp::rank(),
-                                      itr->sequent_value, itr->internal_value);
+                                       "Thread %li on PID %i (rank: %i) assigned "
+                                       "omnitrace TID %li (internal: %li)\n",
+                                       itr->system_value, process::get_id(), dmp::rank(),
+                                       itr->sequent_value, itr->internal_value);
         }
         else
         {
             ROCPROFSYS_VERBOSE_F(_verb,
-                                "Thread %li on PID %i (rank: %i) assigned omnitrace TID "
-                                "%li (internal: %li)\n",
-                                itr->system_value, process::get_id(), dmp::rank(),
-                                itr->sequent_value, itr->internal_value);
+                                 "Thread %li on PID %i (rank: %i) assigned omnitrace TID "
+                                 "%li (internal: %li)\n",
+                                 itr->system_value, process::get_id(), dmp::rank(),
+                                 itr->sequent_value, itr->internal_value);
         }
     }
     return itr;
@@ -286,12 +286,12 @@ thread_info::get(int64_t _tid, ThreadIdType _type)
     else if(_type == ThreadIdType::PthreadID)
     {
         ROCPROFSYS_THROW("omnitrace does not support thread_info::get(int64_t, "
-                        "ThreadIdType) with ThreadIdType::PthreadID\n");
+                         "ThreadIdType) with ThreadIdType::PthreadID\n");
     }
     else if(_type == ThreadIdType::StlThreadID)
     {
         ROCPROFSYS_THROW("omnitrace does not support thread_info::get(int64_t, "
-                        "ThreadIdType) with ThreadIdType::StlThreadID\n");
+                         "ThreadIdType) with ThreadIdType::StlThreadID\n");
     }
 
     ROCPROFSYS_CI_THROW(unknown_thread, "Unknown thread has been assigned a value");

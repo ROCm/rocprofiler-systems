@@ -139,7 +139,7 @@ ROCPROFSYS_DEFINE_CONCRETE_TRAIT(prevent_reentry, sampling::sampler_t, std::true
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(provide_backtrace, sampling::sampler_t, std::false_type)
 
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(buffer_size, sampling::sampler_t,
-                                TIMEMORY_ESC(std::integral_constant<size_t, 2048>))
+                                 TIMEMORY_ESC(std::integral_constant<size_t, 2048>))
 
 namespace omnitrace
 {
@@ -369,16 +369,16 @@ start_duration_thread()
                 {
                     get_duration_disabled().store(true);
                     ROCPROFSYS_VERBOSE(1,
-                                      "Sampling duration of %f seconds has elapsed. "
-                                      "Shutting down sampling...\n",
-                                      config::get_sampling_duration());
+                                       "Sampling duration of %f seconds has elapsed. "
+                                       "Shutting down sampling...\n",
+                                       config::get_sampling_duration());
                     configure(false, 0);
                 }
             }
         };
 
         ROCPROFSYS_VERBOSE(1, "Sampling will be disabled after %f seconds...\n",
-                          config::get_sampling_duration());
+                           config::get_sampling_duration());
 
         ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
         get_duration_thread() = std::make_unique<std::thread>(_func);
@@ -395,8 +395,8 @@ get_offload_file()
         {
             auto _success = _tmp_v->open();
             ROCPROFSYS_CI_FAIL(!_success,
-                              "Error opening sampling offload temporary file '%s'\n",
-                              _tmp_v->filename.c_str());
+                               "Error opening sampling offload temporary file '%s'\n",
+                               _tmp_v->filename.c_str());
         }
         return _tmp_v;
     }();
@@ -433,12 +433,12 @@ offload_buffer(int64_t _seq, sampler_buffer_t&& _buf)
         << _seq << " but the offload file does not exist\n";
 
     ROCPROFSYS_VERBOSE_F(2, "Offloading %zu samples for thread %li to %s...\n",
-                        _buf.count(), _seq, _file->filename.c_str());
+                         _buf.count(), _seq, _file->filename.c_str());
     auto& _fs = _file->stream;
 
     ROCPROFSYS_REQUIRE(_fs.good()) << "Error! temporary file for offloading buffer is in "
-                                     "an invalid state during offload for thread "
-                                  << _seq << "\n";
+                                      "an invalid state during offload for thread "
+                                   << _seq << "\n";
 
     offload_seq_data[_seq].emplace(_fs.tellg());
     _fs.write(reinterpret_cast<char*>(&_seq), sizeof(_seq));
@@ -507,7 +507,7 @@ load_offload_buffer(int64_t _thread_idx)
     }
 
     ROCPROFSYS_VERBOSE_F(2, "[sampling] Loaded %zu samples for thread %li...\n", _count,
-                        _thread_idx);
+                         _thread_idx);
 
     _file->close();
 
@@ -524,9 +524,9 @@ configure(bool _setup, int64_t _tid)
     bool        _is_running   = (!_running) ? false : *_running;
     auto&       _signal_types = sampling::get_signal_types(_tid);
 
-    ROCPROFSYS_CONDITIONAL_THROW(get_use_causal(),
-                                "Internal error! configuring sampling not permitted when "
-                                "causal profiling is enabled");
+    ROCPROFSYS_CONDITIONAL_THROW(
+        get_use_causal(), "Internal error! configuring sampling not permitted when "
+                          "causal profiling is enabled");
 
     ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
     ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
@@ -691,9 +691,9 @@ configure(bool _setup, int64_t _tid)
                     get_setting_value<std::string>("ROCPROFSYS_SAMPLING_OVERFLOW_EVENT")
                         .value_or("perf::PERF_COUNT_HW_CACHE_REFERENCES");
                 ROCPROFSYS_VERBOSE(2,
-                                  "[SIG%i] Sampler for thread %lu will be triggered "
-                                  "every %.1f %s events...\n",
-                                  itr, _tid, _freq, _overflow_event.c_str());
+                                   "[SIG%i] Sampler for thread %lu will be triggered "
+                                   "every %.1f %s events...\n",
+                                   itr, _tid, _freq, _overflow_event.c_str());
             }
             else
             {
@@ -862,7 +862,7 @@ block_signals(std::set<int> _signals)
     }
 
     ROCPROFSYS_DEBUG("Blocking signals [%s] on thread #%lu...\n",
-                    get_signal_names(_signals).c_str(), threading::get_id());
+                     get_signal_names(_signals).c_str(), threading::get_id());
 
     sigset_t _v = get_signal_set(_signals);
     thread_sigmask(SIG_BLOCK, &_v, nullptr);
@@ -879,7 +879,7 @@ unblock_signals(std::set<int> _signals)
     }
 
     ROCPROFSYS_DEBUG("Unblocking signals [%s] on thread #%lu...\n",
-                    get_signal_names(_signals).c_str(), threading::get_id());
+                     get_signal_names(_signals).c_str(), threading::get_id());
 
     sigset_t _v = get_signal_set(_signals);
     thread_sigmask(SIG_UNBLOCK, &_v, nullptr);
@@ -923,15 +923,15 @@ post_process()
         {
             // this is not common
             ROCPROFSYS_PRINT("Post-processing sampling entries for thread %lu skipped "
-                            "(not initialized)\n",
-                            i);
+                             "(not initialized)\n",
+                             i);
             continue;
         }
 
         const auto& _thread_info = thread_info::get(i, SequentTID);
 
         ROCPROFSYS_VERBOSE(3 || get_debug_sampling(),
-                          "Getting sampler data for thread %lu...\n", i);
+                           "Getting sampler data for thread %lu...\n", i);
 
         auto _raw_data    = _sampler->get_data();
         auto _loaded_data = load_offload_buffer(i);
@@ -947,8 +947,8 @@ post_process()
         }
 
         ROCPROFSYS_VERBOSE(2 || get_debug_sampling(),
-                          "Sampler data for thread %lu has %zu initial entries...\n", i,
-                          _raw_data.size());
+                           "Sampler data for thread %lu has %zu initial entries...\n", i,
+                           _raw_data.size());
 
         ROCPROFSYS_CI_THROW(
             _sampler->get_sample_count() != _raw_data.size(),
@@ -976,8 +976,8 @@ post_process()
         if(!_data.empty())
         {
             ROCPROFSYS_VERBOSE(2 || get_debug_sampling(),
-                              "Sampler data for thread %lu has %zu valid entries...\n", i,
-                              _data.size());
+                               "Sampler data for thread %lu has %zu valid entries...\n",
+                               i, _data.size());
 
             auto _timer_data    = post_process_timer_data(i, _init, _data);
             auto _overflow_data = post_process_overflow_data(i, _init, _data);
@@ -987,15 +987,16 @@ post_process()
         }
         else
         {
-            ROCPROFSYS_VERBOSE(2 || get_debug_sampling(),
-                              "Sampler data for thread %lu has zero valid entries out of "
-                              "%zu... (skipped)\n",
-                              i, _raw_data.size());
+            ROCPROFSYS_VERBOSE(
+                2 || get_debug_sampling(),
+                "Sampler data for thread %lu has zero valid entries out of "
+                "%zu... (skipped)\n",
+                i, _raw_data.size());
         }
     }
 
     ROCPROFSYS_VERBOSE(3 || get_debug_sampling(),
-                      "Destroying samplers and allocators...\n");
+                       "Destroying samplers and allocators...\n");
 
     get_offload_file().reset();  // remove the temporary file
 
@@ -1014,10 +1015,10 @@ post_process()
     }
 
     ROCPROFSYS_VERBOSE(1 || get_debug_sampling(),
-                      "Collected %zu samples from %zu threads... %zu samples out of %zu "
-                      "were taken while within instrumented routines\n",
-                      _total_data, _total_threads, _internal_samples.load(),
-                      (_internal_samples + _external_samples));
+                       "Collected %zu samples from %zu threads... %zu samples out of %zu "
+                       "were taken while within instrumented routines\n",
+                       _total_data, _total_threads, _internal_samples.load(),
+                       (_internal_samples + _external_samples));
 }
 
 namespace
@@ -1124,7 +1125,7 @@ post_process_perfetto(int64_t _tid, const std::vector<timer_sampling_data>& _tim
     if(trait::runtime_enabled<backtrace_metrics>::get())
     {
         ROCPROFSYS_VERBOSE(3 || get_debug_sampling(),
-                          "[%li] Post-processing metrics for perfetto...\n", _tid);
+                           "[%li] Post-processing metrics for perfetto...\n", _tid);
         backtrace_metrics::init_perfetto(_tid, _valid_metrics);
         for(const auto& itr : _timer_data)
             itr.m_metrics.post_process_perfetto(_tid, 0.5 * (itr.m_beg + itr.m_end));
@@ -1132,7 +1133,7 @@ post_process_perfetto(int64_t _tid, const std::vector<timer_sampling_data>& _tim
     }
 
     ROCPROFSYS_VERBOSE(3 || get_debug_sampling(),
-                      "[%li] Post-processing backtraces for perfetto...\n", _tid);
+                       "[%li] Post-processing backtraces for perfetto...\n", _tid);
 
     const auto& _thread_info = thread_info::get(_tid, SequentTID);
     ROCPROFSYS_CI_THROW(!_thread_info, "No valid thread info for tid=%li\n", _tid);
@@ -1371,7 +1372,7 @@ post_process_timemory(int64_t _tid, const std::vector<timer_sampling_data>& _tim
                       const std::vector<overflow_sampling_data>& _overflow_data)
 {
     ROCPROFSYS_VERBOSE(3 || get_debug_sampling(),
-                      "[%li] Post-processing data for timemory...\n", _tid);
+                       "[%li] Post-processing data for timemory...\n", _tid);
 
     // compute the total number of entries
     int64_t _sum = 0;

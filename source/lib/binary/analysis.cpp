@@ -75,7 +75,8 @@ parse_line_info(const std::string& _name, bool _process_dwarf, bool _process_bfd
     auto& _bfd = _info.bfd;
     _bfd       = std::make_shared<bfd_file>(_name);
 
-    ROCPROFSYS_BASIC_VERBOSE(0, "[binary] Reading line info for '%s'...\n", _name.c_str());
+    ROCPROFSYS_BASIC_VERBOSE(0, "[binary] Reading line info for '%s'...\n",
+                             _name.c_str());
 
     if(_bfd && _bfd->is_good())
     {
@@ -125,7 +126,7 @@ parse_line_info(const std::string& _name, bool _process_dwarf, bool _process_bfd
     }
 
     ROCPROFSYS_BASIC_VERBOSE(1, "[binary] Reading line info for '%s'... %zu entries\n",
-                            _bfd->name.c_str(), _info.symbols.size());
+                             _bfd->name.c_str(), _info.symbols.size());
 
     return _info;
 }

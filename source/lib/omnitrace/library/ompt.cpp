@@ -146,8 +146,8 @@ tool_finalize(ompt_data_t*)
 extern "C" ompt_start_tool_result_t*
 ompt_start_tool(unsigned int omp_version, const char* runtime_version)
 {
-    ROCPROFSYS_BASIC_VERBOSE_F(0, "OpenMP version: %u, runtime version: %s\n", omp_version,
-                              runtime_version);
+    ROCPROFSYS_BASIC_VERBOSE_F(0, "OpenMP version: %u, runtime version: %s\n",
+                               omp_version, runtime_version);
     ROCPROFSYS_METADATA("OMP_VERSION", omp_version);
     ROCPROFSYS_METADATA("OMP_RUNTIME_VERSION", runtime_version);
 

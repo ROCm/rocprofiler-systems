@@ -164,7 +164,7 @@ bool backtrace_metrics::operator()(Tp) const
 }  // namespace component
 }  // namespace omnitrace
 
-#if !defined(ROCPROFSYS_EXTERN_COMPONENTS) ||                                             \
+#if !defined(ROCPROFSYS_EXTERN_COMPONENTS) ||                                            \
     (defined(ROCPROFSYS_EXTERN_COMPONENTS) && ROCPROFSYS_EXTERN_COMPONENTS > 0)
 
 #    include <timemory/operations.hpp>

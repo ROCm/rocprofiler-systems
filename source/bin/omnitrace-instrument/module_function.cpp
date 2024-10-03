@@ -64,7 +64,8 @@ module_function::module_function(module_t* mod, procedure_t* proc)
 , module_name{ get_name(module) }
 , function_name{ get_name(function) }
 {
-    ROCPROFSYS_ADD_LOG_ENTRY("Adding function", function_name, "from module", module_name);
+    ROCPROFSYS_ADD_LOG_ENTRY("Adding function", function_name, "from module",
+                             module_name);
 
     if(!function->isInstrumentable())
     {

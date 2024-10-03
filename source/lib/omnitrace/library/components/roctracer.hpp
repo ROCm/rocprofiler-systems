@@ -37,7 +37,7 @@
 #include <timemory/utility/transient_function.hpp>
 
 ROCPROFSYS_COMPONENT_ALIAS(roctracer_data,
-                          ::tim::component::data_tracker<double, roctracer>)
+                           ::tim::component::data_tracker<double, roctracer>)
 
 namespace omnitrace
 {
@@ -105,7 +105,7 @@ ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_timing_category, component::roctracer_data, 
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(uses_timing_units, component::roctracer_data, true_type)
 
 #if defined(ROCPROFSYS_USE_ROCTRACER) && ROCPROFSYS_USE_ROCTRACER > 0
-#    if !defined(ROCPROFSYS_EXTERN_COMPONENTS) ||                                         \
+#    if !defined(ROCPROFSYS_EXTERN_COMPONENTS) ||                                        \
         (defined(ROCPROFSYS_EXTERN_COMPONENTS) && ROCPROFSYS_EXTERN_COMPONENTS > 0)
 
 #        include <timemory/operations.hpp>

@@ -28,7 +28,7 @@
 
 #include <timemory/log/color.hpp>
 
-#define ROCPROFSYS_COMMON_LIBRARY_LOG_START                                               \
+#define ROCPROFSYS_COMMON_LIBRARY_LOG_START                                              \
     fprintf(stderr, "%s", ::tim::log::color::info());
 #define ROCPROFSYS_COMMON_LIBRARY_LOG_END fprintf(stderr, "%s", ::tim::log::color::end());
 
@@ -56,23 +56,23 @@
 
 //--------------------------------------------------------------------------------------//
 
-#define ROCPROFSYS_DLSYM(VARNAME, HANDLE, FUNCNAME)                                       \
+#define ROCPROFSYS_DLSYM(VARNAME, HANDLE, FUNCNAME)                                      \
     if(HANDLE)                                                                           \
     {                                                                                    \
         *(void**) (&VARNAME) = dlsym(HANDLE, FUNCNAME);                                  \
         if(VARNAME == nullptr && _omnitrace_dl_verbose >= _warn_verbose)                 \
         {                                                                                \
-            ROCPROFSYS_COMMON_LIBRARY_LOG_START                                           \
+            ROCPROFSYS_COMMON_LIBRARY_LOG_START                                          \
             fprintf(stderr, "[rocprof-sys][dl][pid=%i]> %s :: %s\n", getpid(), FUNCNAME, \
                     dlerror());                                                          \
-            ROCPROFSYS_COMMON_LIBRARY_LOG_END                                             \
+            ROCPROFSYS_COMMON_LIBRARY_LOG_END                                            \
         }                                                                                \
         else if(_omnitrace_dl_verbose > _info_verbose)                                   \
         {                                                                                \
-            ROCPROFSYS_COMMON_LIBRARY_LOG_START                                           \
+            ROCPROFSYS_COMMON_LIBRARY_LOG_START                                          \
             fprintf(stderr, "[rocprof-sys][dl][pid=%i]> %s :: success\n", getpid(),      \
                     FUNCNAME);                                                           \
-            ROCPROFSYS_COMMON_LIBRARY_LOG_END                                             \
+            ROCPROFSYS_COMMON_LIBRARY_LOG_END                                            \
         }                                                                                \
     }
 
@@ -221,7 +221,7 @@ const char* _omnitrace_dl_dlopen_descr = "RTLD_LAZY | RTLD_LOCAL";
 struct ROCPROFSYS_INTERNAL_API indirect
 {
     ROCPROFSYS_INLINE indirect(const std::string& _omnilib, const std::string& _userlib,
-                              const std::string& _dllib)
+                               const std::string& _dllib)
     : m_omnilib{ common::path::find_path(_omnilib, _omnitrace_dl_verbose) }
     , m_dllib{ common::path::find_path(_dllib, _omnitrace_dl_verbose) }
     , m_userlib{ common::path::find_path(_userlib, _omnitrace_dl_verbose) }
@@ -288,8 +288,10 @@ struct ROCPROFSYS_INTERNAL_API indirect
         int _warn_verbose = 0;
         int _info_verbose = 2;
         // Initialize all pointers
-        ROCPROFSYS_DLSYM(omnitrace_init_library_f, m_omnihandle, "omnitrace_init_library");
-        ROCPROFSYS_DLSYM(omnitrace_init_tooling_f, m_omnihandle, "omnitrace_init_tooling");
+        ROCPROFSYS_DLSYM(omnitrace_init_library_f, m_omnihandle,
+                         "omnitrace_init_library");
+        ROCPROFSYS_DLSYM(omnitrace_init_tooling_f, m_omnihandle,
+                         "omnitrace_init_tooling");
         ROCPROFSYS_DLSYM(omnitrace_init_f, m_omnihandle, "omnitrace_init");
         ROCPROFSYS_DLSYM(omnitrace_finalize_f, m_omnihandle, "omnitrace_finalize");
         ROCPROFSYS_DLSYM(omnitrace_set_env_f, m_omnihandle, "omnitrace_set_env");
@@ -299,62 +301,63 @@ struct ROCPROFSYS_INTERNAL_API indirect
         ROCPROFSYS_DLSYM(omnitrace_push_region_f, m_omnihandle, "omnitrace_push_region");
         ROCPROFSYS_DLSYM(omnitrace_pop_region_f, m_omnihandle, "omnitrace_pop_region");
         ROCPROFSYS_DLSYM(omnitrace_push_category_region_f, m_omnihandle,
-                        "omnitrace_push_category_region");
+                         "omnitrace_push_category_region");
         ROCPROFSYS_DLSYM(omnitrace_pop_category_region_f, m_omnihandle,
-                        "omnitrace_pop_category_region");
+                         "omnitrace_pop_category_region");
         ROCPROFSYS_DLSYM(omnitrace_register_source_f, m_omnihandle,
-                        "omnitrace_register_source");
+                         "omnitrace_register_source");
         ROCPROFSYS_DLSYM(omnitrace_register_coverage_f, m_omnihandle,
-                        "omnitrace_register_coverage");
+                         "omnitrace_register_coverage");
         ROCPROFSYS_DLSYM(omnitrace_progress_f, m_omnihandle, "omnitrace_progress");
         ROCPROFSYS_DLSYM(omnitrace_annotated_progress_f, m_omnihandle,
-                        "omnitrace_annotated_progress");
+                         "omnitrace_annotated_progress");
 
         ROCPROFSYS_DLSYM(kokkosp_print_help_f, m_omnihandle, "kokkosp_print_help");
         ROCPROFSYS_DLSYM(kokkosp_parse_args_f, m_omnihandle, "kokkosp_parse_args");
         ROCPROFSYS_DLSYM(kokkosp_declare_metadata_f, m_omnihandle,
-                        "kokkosp_declare_metadata");
+                         "kokkosp_declare_metadata");
         ROCPROFSYS_DLSYM(kokkosp_request_tool_settings_f, m_omnihandle,
-                        "kokkosp_request_tool_settings");
+                         "kokkosp_request_tool_settings");
         ROCPROFSYS_DLSYM(kokkosp_init_library_f, m_omnihandle, "kokkosp_init_library");
         ROCPROFSYS_DLSYM(kokkosp_finalize_library_f, m_omnihandle,
-                        "kokkosp_finalize_library");
+                         "kokkosp_finalize_library");
         ROCPROFSYS_DLSYM(kokkosp_begin_parallel_for_f, m_omnihandle,
-                        "kokkosp_begin_parallel_for");
+                         "kokkosp_begin_parallel_for");
         ROCPROFSYS_DLSYM(kokkosp_end_parallel_for_f, m_omnihandle,
-                        "kokkosp_end_parallel_for");
+                         "kokkosp_end_parallel_for");
         ROCPROFSYS_DLSYM(kokkosp_begin_parallel_reduce_f, m_omnihandle,
-                        "kokkosp_begin_parallel_reduce");
+                         "kokkosp_begin_parallel_reduce");
         ROCPROFSYS_DLSYM(kokkosp_end_parallel_reduce_f, m_omnihandle,
-                        "kokkosp_end_parallel_reduce");
+                         "kokkosp_end_parallel_reduce");
         ROCPROFSYS_DLSYM(kokkosp_begin_parallel_scan_f, m_omnihandle,
-                        "kokkosp_begin_parallel_scan");
+                         "kokkosp_begin_parallel_scan");
         ROCPROFSYS_DLSYM(kokkosp_end_parallel_scan_f, m_omnihandle,
-                        "kokkosp_end_parallel_scan");
+                         "kokkosp_end_parallel_scan");
         ROCPROFSYS_DLSYM(kokkosp_begin_fence_f, m_omnihandle, "kokkosp_begin_fence");
         ROCPROFSYS_DLSYM(kokkosp_end_fence_f, m_omnihandle, "kokkosp_end_fence");
         ROCPROFSYS_DLSYM(kokkosp_push_profile_region_f, m_omnihandle,
-                        "kokkosp_push_profile_region");
+                         "kokkosp_push_profile_region");
         ROCPROFSYS_DLSYM(kokkosp_pop_profile_region_f, m_omnihandle,
-                        "kokkosp_pop_profile_region");
+                         "kokkosp_pop_profile_region");
         ROCPROFSYS_DLSYM(kokkosp_create_profile_section_f, m_omnihandle,
-                        "kokkosp_create_profile_section");
+                         "kokkosp_create_profile_section");
         ROCPROFSYS_DLSYM(kokkosp_destroy_profile_section_f, m_omnihandle,
-                        "kokkosp_destroy_profile_section");
+                         "kokkosp_destroy_profile_section");
         ROCPROFSYS_DLSYM(kokkosp_start_profile_section_f, m_omnihandle,
-                        "kokkosp_start_profile_section");
+                         "kokkosp_start_profile_section");
         ROCPROFSYS_DLSYM(kokkosp_stop_profile_section_f, m_omnihandle,
-                        "kokkosp_stop_profile_section");
+                         "kokkosp_stop_profile_section");
         ROCPROFSYS_DLSYM(kokkosp_allocate_data_f, m_omnihandle, "kokkosp_allocate_data");
         ROCPROFSYS_DLSYM(kokkosp_deallocate_data_f, m_omnihandle,
-                        "kokkosp_deallocate_data");
+                         "kokkosp_deallocate_data");
         ROCPROFSYS_DLSYM(kokkosp_begin_deep_copy_f, m_omnihandle,
-                        "kokkosp_begin_deep_copy");
+                         "kokkosp_begin_deep_copy");
         ROCPROFSYS_DLSYM(kokkosp_end_deep_copy_f, m_omnihandle, "kokkosp_end_deep_copy");
         ROCPROFSYS_DLSYM(kokkosp_profile_event_f, m_omnihandle, "kokkosp_profile_event");
-        ROCPROFSYS_DLSYM(kokkosp_dual_view_sync_f, m_omnihandle, "kokkosp_dual_view_sync");
+        ROCPROFSYS_DLSYM(kokkosp_dual_view_sync_f, m_omnihandle,
+                         "kokkosp_dual_view_sync");
         ROCPROFSYS_DLSYM(kokkosp_dual_view_modify_f, m_omnihandle,
-                        "kokkosp_dual_view_modify");
+                         "kokkosp_dual_view_modify");
 
 #if ROCPROFSYS_USE_ROCTRACER > 0
         ROCPROFSYS_DLSYM(hsa_on_load_f, m_omnihandle, "OnLoad");
@@ -375,7 +378,7 @@ struct ROCPROFSYS_INTERNAL_API indirect
         if(!m_userhandle) m_userhandle = open(m_userlib);
         _warn_verbose = 0;
         ROCPROFSYS_DLSYM(omnitrace_user_configure_f, m_userhandle,
-                        "omnitrace_user_configure");
+                         "omnitrace_user_configure");
 
         if(omnitrace_user_configure_f)
         {
@@ -567,28 +570,28 @@ bool _omnitrace_dl_fini = (std::atexit([]() {
 
 //--------------------------------------------------------------------------------------//
 
-#define ROCPROFSYS_DL_INVOKE(...)                                                         \
+#define ROCPROFSYS_DL_INVOKE(...)                                                        \
     ::omnitrace::common::invoke(__FUNCTION__, ::omnitrace::dl::_omnitrace_dl_verbose,    \
                                 (::omnitrace::dl::get_thread_status() = false),          \
                                 __VA_ARGS__)
 
-#define ROCPROFSYS_DL_IGNORE(...)                                                         \
+#define ROCPROFSYS_DL_IGNORE(...)                                                        \
     ::omnitrace::common::ignore(__FUNCTION__, ::omnitrace::dl::_omnitrace_dl_verbose,    \
                                 __VA_ARGS__)
 
-#define ROCPROFSYS_DL_INVOKE_STATUS(STATUS, ...)                                          \
+#define ROCPROFSYS_DL_INVOKE_STATUS(STATUS, ...)                                         \
     ::omnitrace::common::invoke(__FUNCTION__, ::omnitrace::dl::_omnitrace_dl_verbose,    \
                                 STATUS, __VA_ARGS__)
 
-#define ROCPROFSYS_DL_LOG(LEVEL, ...)                                                     \
+#define ROCPROFSYS_DL_LOG(LEVEL, ...)                                                    \
     if(::omnitrace::dl::_omnitrace_dl_verbose >= LEVEL)                                  \
     {                                                                                    \
         fflush(stderr);                                                                  \
-        ROCPROFSYS_COMMON_LIBRARY_LOG_START                                               \
-        fprintf(stderr, "[rocprof-sys][" ROCPROFSYS_COMMON_LIBRARY_NAME "][%i] ",         \
+        ROCPROFSYS_COMMON_LIBRARY_LOG_START                                              \
+        fprintf(stderr, "[rocprof-sys][" ROCPROFSYS_COMMON_LIBRARY_NAME "][%i] ",        \
                 getpid());                                                               \
         fprintf(stderr, __VA_ARGS__);                                                    \
-        ROCPROFSYS_COMMON_LIBRARY_LOG_END                                                 \
+        ROCPROFSYS_COMMON_LIBRARY_LOG_END                                                \
         fflush(stderr);                                                                  \
     }
 
@@ -655,13 +658,13 @@ extern "C"
         if(dl::get_inited() && dl::get_finied())
         {
             ROCPROFSYS_DL_LOG(2, "%s() ignored :: already initialized and finalized\n",
-                             __FUNCTION__);
+                              __FUNCTION__);
             return;
         }
         else if(dl::get_finied() && !dl::get_active())
         {
             ROCPROFSYS_DL_LOG(2, "%s() ignored :: already finalized but not active\n",
-                             __FUNCTION__);
+                              __FUNCTION__);
             return;
         }
 
@@ -736,7 +739,7 @@ extern "C"
         if(dl::get_thread_enabled())
         {
             return ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_push_category_region_f,
-                                       _category, name, _annotations, _annotation_count);
+                                        _category, name, _annotations, _annotation_count);
         }
         else
         {
@@ -753,7 +756,7 @@ extern "C"
         if(dl::get_thread_enabled())
         {
             return ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_pop_category_region_f,
-                                       _category, name, _annotations, _annotation_count);
+                                        _category, name, _annotations, _annotation_count);
         }
         else
         {
@@ -788,15 +791,15 @@ extern "C"
                                    size_t address, const char* source)
     {
         ROCPROFSYS_DL_LOG(3, "%s(\"%s\", \"%s\", %zu, %zu, \"%s\")\n", __FUNCTION__, file,
-                         func, line, address, source);
+                          func, line, address, source);
         ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_register_source_f, file, func, line,
-                            address, source);
+                             address, source);
     }
 
     void omnitrace_register_coverage(const char* file, const char* func, size_t address)
     {
         ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_register_coverage_f, file, func,
-                            address);
+                             address);
     }
 
     int omnitrace_user_start_trace_dl(void)
@@ -847,8 +850,8 @@ extern "C"
     {
         if(!dl::get_active()) return 0;
         return ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_push_category_region_f,
-                                   ROCPROFSYS_CATEGORY_USER, name, _annotations,
-                                   _annotation_count);
+                                    ROCPROFSYS_CATEGORY_USER, name, _annotations,
+                                    _annotation_count);
     }
 
     int omnitrace_user_pop_annotated_region_dl(const char*             name,
@@ -857,8 +860,8 @@ extern "C"
     {
         if(!dl::get_active()) return 0;
         return ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_pop_category_region_f,
-                                   ROCPROFSYS_CATEGORY_USER, name, _annotations,
-                                   _annotation_count);
+                                    ROCPROFSYS_CATEGORY_USER, name, _annotations,
+                                    _annotation_count);
     }
 
     int omnitrace_user_annotated_progress_dl(const char*             name,
@@ -866,7 +869,7 @@ extern "C"
                                              size_t                  _annotation_count)
     {
         ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_annotated_progress_f, name,
-                            _annotations, _annotation_count);
+                             _annotations, _annotation_count);
         return 0;
     }
 
@@ -880,7 +883,7 @@ extern "C"
                                       size_t                  _annotation_count)
     {
         return ROCPROFSYS_DL_INVOKE(get_indirect().omnitrace_annotated_progress_f, _name,
-                                   _annotations, _annotation_count);
+                                    _annotations, _annotation_count);
     }
 
     void omnitrace_set_instrumented(int _mode)
@@ -890,11 +893,11 @@ extern "C"
         if(_mode_v < dl::InstrumentMode::None || _mode_v >= dl::InstrumentMode::Last)
         {
             ROCPROFSYS_DL_LOG(-127,
-                             "%s(mode=%i) invoked with invalid instrumentation mode. "
-                             "mode should be %i >= mode < %i\n",
-                             __FUNCTION__, _mode,
-                             static_cast<int>(dl::InstrumentMode::None),
-                             static_cast<int>(dl::InstrumentMode::Last));
+                              "%s(mode=%i) invoked with invalid instrumentation mode. "
+                              "mode should be %i >= mode < %i\n",
+                              __FUNCTION__, _mode,
+                              static_cast<int>(dl::InstrumentMode::None),
+                              static_cast<int>(dl::InstrumentMode::Last));
         }
         dl::get_instrumented() = _mode_v;
     }
@@ -917,21 +920,22 @@ extern "C"
 
     void kokkosp_declare_metadata(const char* key, const char* value)
     {
-        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_declare_metadata_f, key, value);
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_declare_metadata_f, key,
+                                    value);
     }
 
     void kokkosp_request_tool_settings(const uint32_t             version,
                                        Kokkos_Tools_ToolSettings* settings)
     {
         return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_request_tool_settings_f,
-                                   version, settings);
+                                    version, settings);
     }
 
     void kokkosp_init_library(const int loadSeq, const uint64_t interfaceVer,
                               const uint32_t devInfoCount, void* deviceInfo)
     {
         return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_init_library_f, loadSeq,
-                                   interfaceVer, devInfoCount, deviceInfo);
+                                    interfaceVer, devInfoCount, deviceInfo);
     }
 
     void kokkosp_finalize_library()
@@ -942,7 +946,7 @@ extern "C"
     void kokkosp_begin_parallel_for(const char* name, uint32_t devid, uint64_t* kernid)
     {
         return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_begin_parallel_for_f, name,
-                                   devid, kernid);
+                                    devid, kernid);
     }
 
     void kokkosp_end_parallel_for(uint64_t kernid)
@@ -953,7 +957,7 @@ extern "C"
     void kokkosp_begin_parallel_reduce(const char* name, uint32_t devid, uint64_t* kernid)
     {
         return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_begin_parallel_reduce_f, name,
-                                   devid, kernid);
+                                    devid, kernid);
     }
 
     void kokkosp_end_parallel_reduce(uint64_t kernid)
@@ -964,7 +968,7 @@ extern "C"
     void kokkosp_begin_parallel_scan(const char* name, uint32_t devid, uint64_t* kernid)
     {
         return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_begin_parallel_scan_f, name,
-                                   devid, kernid);
+                                    devid, kernid);
     }
 
     void kokkosp_end_parallel_scan(uint64_t kernid)
@@ -975,7 +979,7 @@ extern "C"
     void kokkosp_begin_fence(const char* name, uint32_t devid, uint64_t* kernid)
     {
         return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_begin_fence_f, name, devid,
-                                   kernid);
+                                    kernid);
     }
 
     void kokkosp_end_fence(uint64_t kernid)
@@ -996,18 +1000,19 @@ extern "C"
     void kokkosp_create_profile_section(const char* name, uint32_t* secid)
     {
         return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_create_profile_section_f, name,
-                                   secid);
+                                    secid);
     }
 
     void kokkosp_destroy_profile_section(uint32_t secid)
     {
         return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_destroy_profile_section_f,
-                                   secid);
+                                    secid);
     }
 
     void kokkosp_start_profile_section(uint32_t secid)
     {
-        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_start_profile_section_f, secid);
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_start_profile_section_f,
+                                    secid);
     }
 
     void kokkosp_stop_profile_section(uint32_t secid)
@@ -1019,14 +1024,14 @@ extern "C"
                                const void* const ptr, const uint64_t size)
     {
         return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_allocate_data_f, space, label,
-                                   ptr, size);
+                                    ptr, size);
     }
 
     void kokkosp_deallocate_data(const SpaceHandle space, const char* label,
                                  const void* const ptr, const uint64_t size)
     {
-        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_deallocate_data_f, space, label,
-                                   ptr, size);
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_deallocate_data_f, space,
+                                    label, ptr, size);
     }
 
     void kokkosp_begin_deep_copy(SpaceHandle dst_handle, const char* dst_name,
@@ -1034,8 +1039,8 @@ extern "C"
                                  const char* src_name, const void* src_ptr, uint64_t size)
     {
         return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_begin_deep_copy_f, dst_handle,
-                                   dst_name, dst_ptr, src_handle, src_name, src_ptr,
-                                   size);
+                                    dst_name, dst_ptr, src_handle, src_name, src_ptr,
+                                    size);
     }
 
     void kokkosp_end_deep_copy()
@@ -1051,14 +1056,14 @@ extern "C"
     void kokkosp_dual_view_sync(const char* label, const void* const data, bool is_device)
     {
         return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_dual_view_sync_f, label, data,
-                                   is_device);
+                                    is_device);
     }
 
     void kokkosp_dual_view_modify(const char* label, const void* const data,
                                   bool is_device)
     {
-        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_dual_view_modify_f, label, data,
-                                   is_device);
+        return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_dual_view_modify_f, label,
+                                    data, is_device);
     }
 
     //----------------------------------------------------------------------------------//
@@ -1072,7 +1077,7 @@ extern "C"
                 const char* const* failed_tool_names)
     {
         return ROCPROFSYS_DL_INVOKE(get_indirect().hsa_on_load_f, table, runtime_version,
-                                   failed_tool_count, failed_tool_names);
+                                    failed_tool_count, failed_tool_names);
     }
 
     void OnUnload() { return ROCPROFSYS_DL_INVOKE(get_indirect().hsa_on_unload_f); }
@@ -1113,7 +1118,7 @@ extern "C"
                                               const char*  runtime_version)
     {
         return ROCPROFSYS_DL_INVOKE(get_indirect().ompt_start_tool_f, omp_version,
-                                   runtime_version);
+                                    runtime_version);
     }
 #endif
 }
@@ -1430,8 +1435,8 @@ extern "C"
                 {
                     auto _var = std::string{ _env_v }.substr(0, _pos);
                     auto _val = std::string{ _env_v }.substr(_pos + 1);
-                    ROCPROFSYS_DL_LOG(1, "%s(%s, %s)\n", "omnitrace_set_env", _var.c_str(),
-                                     _val.c_str());
+                    ROCPROFSYS_DL_LOG(1, "%s(%s, %s)\n", "omnitrace_set_env",
+                                      _var.c_str(), _val.c_str());
                     setenv(_var.c_str(), _val.c_str(), 0);
                 }
             }

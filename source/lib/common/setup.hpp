@@ -53,7 +53,7 @@
 #    if defined(ROCPROFSYS_COMMON_LIBRARY_LOG_START)
 #        define ROCPROFSYS_SETUP_LOG_START ROCPROFSYS_COMMON_LIBRARY_LOG_START
 #    elif defined(TIMEMORY_LOG_COLORS_AVAILABLE)
-#        define ROCPROFSYS_SETUP_LOG_START                                                \
+#        define ROCPROFSYS_SETUP_LOG_START                                               \
             fprintf(stderr, "%s", ::tim::log::color::info());
 #    else
 #        define ROCPROFSYS_SETUP_LOG_START
@@ -70,14 +70,14 @@
 #    endif
 #endif
 
-#define ROCPROFSYS_SETUP_LOG(CONDITION, ...)                                              \
+#define ROCPROFSYS_SETUP_LOG(CONDITION, ...)                                             \
     if(CONDITION)                                                                        \
     {                                                                                    \
         fflush(stderr);                                                                  \
-        ROCPROFSYS_SETUP_LOG_START                                                        \
-        fprintf(stderr, "[rocprof-sys]" ROCPROFSYS_SETUP_LOG_NAME "[%i] ", getpid());     \
+        ROCPROFSYS_SETUP_LOG_START                                                       \
+        fprintf(stderr, "[rocprof-sys]" ROCPROFSYS_SETUP_LOG_NAME "[%i] ", getpid());    \
         fprintf(stderr, __VA_ARGS__);                                                    \
-        ROCPROFSYS_SETUP_LOG_END                                                          \
+        ROCPROFSYS_SETUP_LOG_END                                                         \
         fflush(stderr);                                                                  \
     }
 
@@ -263,7 +263,7 @@ get_environ(int _verbose, std::string _search_paths = {},
             _omni_omp_libs = common::join(':', _omp_libs, _omnilib_dl);
         }
         ROCPROFSYS_SETUP_LOG(_verbose >= 2, "setting OMP_TOOL_LIBRARIES to '%s'\n",
-                            _omni_omp_libs.c_str());
+                             _omni_omp_libs.c_str());
         _data.emplace_back(
             env_config{ "OMP_TOOL_LIBRARIES", _omni_omp_libs.c_str(), _override });
     }

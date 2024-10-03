@@ -49,7 +49,8 @@
 #    endif
 #    if !defined(ROCPROFSYS_CAUSAL_PROGRESS)
 /** Adds a throughput progress point with label `<file>:<line>` */
-#        define ROCPROFSYS_CAUSAL_PROGRESS omnitrace_user_progress(ROCPROFSYS_CAUSAL_LABEL);
+#        define ROCPROFSYS_CAUSAL_PROGRESS                                               \
+            omnitrace_user_progress(ROCPROFSYS_CAUSAL_LABEL);
 #    endif
 #    if !defined(ROCPROFSYS_CAUSAL_PROGRESS_NAMED)
 /** Adds a throughput progress point with user defined label. Each instance should use a

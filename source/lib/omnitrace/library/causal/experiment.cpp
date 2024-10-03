@@ -252,7 +252,7 @@ experiment::start()
     start_time      = tracing::now();
 
     ROCPROFSYS_VERBOSE(0, "Starting causal experiment #%-3u: %s\n", index,
-                      as_string().c_str());
+                       as_string().c_str());
 
     if(get_state() < State::Finalized)
     {
@@ -321,9 +321,9 @@ experiment::stop()
     if(_lowv <= 3 && (_mean < 5 || _medi < 5))
     {
         ROCPROFSYS_VERBOSE(2,
-                          "[progress points] increasing experiment time :: low: %6.3f, "
-                          "high: %6.3f, mean: %6.3f, median: %zi\n",
-                          _lowv, _high, _mean, _medi);
+                           "[progress points] increasing experiment time :: low: %6.3f, "
+                           "high: %6.3f, mean: %6.3f, median: %zi\n",
+                           _lowv, _high, _mean, _medi);
         global_scaling *= 2;
         ++global_scaling_increments;  // keep track of how many successive increments have
                                       // been performed
@@ -331,9 +331,9 @@ experiment::stop()
     else if(_mean > 10 && _lowv >= 8 && global_scaling > 1)
     {
         ROCPROFSYS_VERBOSE(2,
-                          "[progress points] decreasing experiment time :: low: %6.3f, "
-                          "high: %6.3f, mean: %6.3f, median: %zi\n",
-                          _lowv, _high, _mean, _medi);
+                           "[progress points] decreasing experiment time :: low: %6.3f, "
+                           "high: %6.3f, mean: %6.3f, median: %zi\n",
+                           _lowv, _high, _mean, _medi);
         global_scaling /= 2;
         global_scaling_increments = 0;
     }
@@ -522,7 +522,7 @@ experiment::save_experiments(std::string _fname_base, const filename_config_t& _
         }
 
         ROCPROFSYS_VERBOSE_F(1, "Processing line info for %zu sampled addresses...\n",
-                            _total_samples.size());
+                             _total_samples.size());
 
         for(const auto& itr : _total_samples)
         {
@@ -570,7 +570,7 @@ experiment::save_experiments(std::string _fname_base, const filename_config_t& _
         else
         {
             ROCPROFSYS_THROW("Error opening causal experiments output file: %s",
-                            _fname.c_str());
+                             _fname.c_str());
         }
     }
 
@@ -666,7 +666,7 @@ experiment::save_experiments(std::string _fname_base, const filename_config_t& _
     else
     {
         ROCPROFSYS_THROW("Error opening causal experiments output file: %s",
-                        _fname.c_str());
+                         _fname.c_str());
     }
 }
 
@@ -704,7 +704,7 @@ experiment::load_experiments(std::string _fname, const filename_config_t& _cfg,
         if(_throw_on_error)
         {
             ROCPROFSYS_THROW("Error opening causal experiments input file: %s",
-                            _fname.c_str());
+                             _fname.c_str());
         }
     }
 

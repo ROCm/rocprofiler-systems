@@ -50,8 +50,8 @@ ROCPROFSYS_COMPONENT_ALIAS(
                             omnitrace::component::category_region<category::rocm_rccl>,
                             comm_data>)
 ROCPROFSYS_COMPONENT_ALIAS(rcclp_gotcha_t,
-                          ::tim::component::gotcha<ROCPROFSYS_NUM_RCCLP_WRAPPERS,
-                                                   rccl_toolset_t, category::rocm_rccl>)
+                           ::tim::component::gotcha<ROCPROFSYS_NUM_RCCLP_WRAPPERS,
+                                                    rccl_toolset_t, category::rocm_rccl>)
 
 #if !defined(ROCPROFSYS_USE_RCCL)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::rcclp_gotcha_t, false_type)

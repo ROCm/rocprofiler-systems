@@ -81,12 +81,12 @@ private:
                                   bool);
 };
 
-#define ROCPROFSYS_ADD_LOG_ENTRY(...)                                                     \
+#define ROCPROFSYS_ADD_LOG_ENTRY(...)                                                    \
     log_entry::add_log_entry(                                                            \
         { log_entry::source_location{ __FUNCTION__, __FILE__, __LINE__ },                \
           timemory::join::join(' ', __VA_ARGS__) })
 
-#define ROCPROFSYS_ADD_DETAILED_LOG_ENTRY(DELIM, ...)                                     \
+#define ROCPROFSYS_ADD_DETAILED_LOG_ENTRY(DELIM, ...)                                    \
     log_entry::add_log_entry(                                                            \
         { log_entry::source_location{ __FUNCTION__, __FILE__, __LINE__ },                \
           timemory::join::join(DELIM, __VA_ARGS__) })

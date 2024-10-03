@@ -46,7 +46,7 @@
 #    if defined(ROCPROFSYS_COMMON_LIBRARY_LOG_START)
 #        define ROCPROFSYS_ENVIRON_LOG_START ROCPROFSYS_COMMON_LIBRARY_LOG_START
 #    elif defined(TIMEMORY_LOG_COLORS_AVAILABLE)
-#        define ROCPROFSYS_ENVIRON_LOG_START                                              \
+#        define ROCPROFSYS_ENVIRON_LOG_START                                             \
             fprintf(stderr, "%s", ::tim::log::color::info());
 #    else
 #        define ROCPROFSYS_ENVIRON_LOG_START
@@ -57,20 +57,21 @@
 #    if defined(ROCPROFSYS_COMMON_LIBRARY_LOG_END)
 #        define ROCPROFSYS_ENVIRON_LOG_END ROCPROFSYS_COMMON_LIBRARY_LOG_END
 #    elif defined(TIMEMORY_LOG_COLORS_AVAILABLE)
-#        define ROCPROFSYS_ENVIRON_LOG_END fprintf(stderr, "%s", ::tim::log::color::end());
+#        define ROCPROFSYS_ENVIRON_LOG_END                                               \
+            fprintf(stderr, "%s", ::tim::log::color::end());
 #    else
 #        define ROCPROFSYS_ENVIRON_LOG_END
 #    endif
 #endif
 
-#define ROCPROFSYS_ENVIRON_LOG(CONDITION, ...)                                            \
+#define ROCPROFSYS_ENVIRON_LOG(CONDITION, ...)                                           \
     if(CONDITION)                                                                        \
     {                                                                                    \
         fflush(stderr);                                                                  \
-        ROCPROFSYS_ENVIRON_LOG_START                                                      \
-        fprintf(stderr, "[rocprof-sys]" ROCPROFSYS_ENVIRON_LOG_NAME "[%i] ", getpid());   \
+        ROCPROFSYS_ENVIRON_LOG_START                                                     \
+        fprintf(stderr, "[rocprof-sys]" ROCPROFSYS_ENVIRON_LOG_NAME "[%i] ", getpid());  \
         fprintf(stderr, __VA_ARGS__);                                                    \
-        ROCPROFSYS_ENVIRON_LOG_END                                                        \
+        ROCPROFSYS_ENVIRON_LOG_END                                                       \
         fflush(stderr);                                                                  \
     }
 
@@ -172,7 +173,7 @@ struct ROCPROFSYS_INTERNAL_API env_config
     {
         if(env_name.empty()) return -1;
         ROCPROFSYS_ENVIRON_LOG(_verbose, "setenv(\"%s\", \"%s\", %i)\n", env_name.c_str(),
-                              env_value.c_str(), override);
+                               env_value.c_str(), override);
         return setenv(env_name.c_str(), env_value.c_str(), override);
     }
 };
