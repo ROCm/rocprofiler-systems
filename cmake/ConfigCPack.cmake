@@ -84,7 +84,7 @@ if(ROCPROFSYS_USE_MPI)
             )
     else()
         rocprofsys_add_feature(ROCPROFSYS_MPI_IMPL
-                              "MPI implementation for CPack DEBIAN depends")
+                               "MPI implementation for CPack DEBIAN depends")
     endif()
 
     if("${ROCPROFSYS_MPI_IMPL}" STREQUAL "openmpi")
@@ -249,13 +249,13 @@ rocprofsys_add_feature(CPACK_DEBIAN_FILE_NAME "Debian file name")
 rocprofsys_add_feature(CPACK_DEBIAN_PACKAGE_RELEASE "Debian package release version")
 rocprofsys_add_feature(CPACK_DEBIAN_PACKAGE_DEPENDS "Debian package dependencies")
 rocprofsys_add_feature(CPACK_DEBIAN_PACKAGE_SHLIBDEPS
-                      "Debian package shared library dependencies")
+                       "Debian package shared library dependencies")
 
 rocprofsys_add_feature(CPACK_RPM_FILE_NAME "RPM file name")
 rocprofsys_add_feature(CPACK_RPM_PACKAGE_RELEASE "RPM package release version")
 rocprofsys_add_feature(CPACK_RPM_PACKAGE_REQUIRES "RPM package dependencies")
 rocprofsys_add_feature(CPACK_RPM_PACKAGE_AUTOREQPROV
-                      "RPM package auto generate requires and provides")
+                       "RPM package auto generate requires and provides")
 rocprofsys_add_feature(CPACK_RPM_PACKAGE_REQUIRES "RPM package requires")
 rocprofsys_add_feature(CPACK_RPM_PACKAGE_PROVIDES "RPM package provides")
 

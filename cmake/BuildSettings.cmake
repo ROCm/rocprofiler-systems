@@ -19,28 +19,28 @@ rocprofsys_add_option(ROCPROFSYS_BUILD_RELEASE "Build with minimal debug line in
 rocprofsys_add_option(ROCPROFSYS_BUILD_EXTRA_OPTIMIZATIONS "Extra optimization flags" OFF)
 rocprofsys_add_option(ROCPROFSYS_BUILD_LTO "Build with link-time optimization" OFF)
 rocprofsys_add_option(ROCPROFSYS_USE_COMPILE_TIMING
-                     "Build with timing metrics for compilation" OFF)
+                      "Build with timing metrics for compilation" OFF)
 rocprofsys_add_option(ROCPROFSYS_USE_SANITIZER
-                     "Build with -fsanitze=\${ROCPROFSYS_SANITIZER_TYPE}" OFF)
+                      "Build with -fsanitze=\${ROCPROFSYS_SANITIZER_TYPE}" OFF)
 rocprofsys_add_option(ROCPROFSYS_BUILD_STATIC_LIBGCC
-                     "Build with -static-libgcc if possible" OFF)
+                      "Build with -static-libgcc if possible" OFF)
 rocprofsys_add_option(ROCPROFSYS_BUILD_STATIC_LIBSTDCXX
-                     "Build with -static-libstdc++ if possible" OFF)
+                      "Build with -static-libstdc++ if possible" OFF)
 rocprofsys_add_option(ROCPROFSYS_BUILD_STACK_PROTECTOR "Build with -fstack-protector" ON)
 rocprofsys_add_cache_option(
     ROCPROFSYS_BUILD_LINKER
     "If set to a non-empty value, pass -fuse-ld=\${ROCPROFSYS_BUILD_LINKER}" STRING "bfd")
 rocprofsys_add_cache_option(ROCPROFSYS_BUILD_NUMBER "Internal CI use" STRING "0" ADVANCED
-                           NO_FEATURE)
+                            NO_FEATURE)
 
 rocprofsys_add_interface_library(rocprofsys-static-libgcc
-                                "Link to static version of libgcc")
+                                 "Link to static version of libgcc")
 rocprofsys_add_interface_library(rocprofsys-static-libstdcxx
-                                "Link to static version of libstdc++")
+                                 "Link to static version of libstdc++")
 rocprofsys_add_interface_library(rocprofsys-static-libgcc-optional
-                                "Link to static version of libgcc")
+                                 "Link to static version of libgcc")
 rocprofsys_add_interface_library(rocprofsys-static-libstdcxx-optional
-                                "Link to static version of libstdc++")
+                                 "Link to static version of libstdc++")
 
 target_compile_definitions(rocprofsys-compile-options INTERFACE $<$<CONFIG:DEBUG>:DEBUG>)
 
@@ -49,12 +49,12 @@ set(ROCPROFSYS_SANITIZER_TYPE
     CACHE STRING "Sanitizer type")
 if(ROCPROFSYS_USE_SANITIZER)
     rocprofsys_add_feature(ROCPROFSYS_SANITIZER_TYPE
-                          "Sanitizer type, e.g. leak, thread, address, memory, etc.")
+                           "Sanitizer type, e.g. leak, thread, address, memory, etc.")
 endif()
 
 if(ROCPROFSYS_BUILD_CI)
     rocprofsys_target_compile_definitions(${LIBNAME}-compile-options
-                                         INTERFACE ROCPROFSYS_CI)
+                                          INTERFACE ROCPROFSYS_CI)
 endif()
 
 # ----------------------------------------------------------------------------------------#
@@ -218,7 +218,7 @@ endif()
 # fstack-protector
 #
 rocprofsys_add_interface_library(rocprofsys-stack-protector
-                                "Adds stack-protector compiler flags")
+                                 "Adds stack-protector compiler flags")
 add_target_flag_if_avail(rocprofsys-stack-protector "-fstack-protector-strong"
                          "-Wstack-protector")
 
@@ -259,9 +259,9 @@ endif()
 # visibility build flags
 #
 rocprofsys_add_interface_library(rocprofsys-default-visibility
-                                "Adds -fvisibility=default compiler flag")
+                                 "Adds -fvisibility=default compiler flag")
 rocprofsys_add_interface_library(rocprofsys-hidden-visibility
-                                "Adds -fvisibility=hidden compiler flag")
+                                 "Adds -fvisibility=hidden compiler flag")
 
 add_target_flag_if_avail(rocprofsys-default-visibility "-fvisibility=default")
 add_target_flag_if_avail(rocprofsys-hidden-visibility "-fvisibility=hidden"
@@ -291,9 +291,9 @@ set(ROCPROFSYS_SANITIZER_TYPES
     bounds
     alignment)
 set_property(CACHE ROCPROFSYS_SANITIZER_TYPE PROPERTY STRINGS
-                                                     "${ROCPROFSYS_SANITIZER_TYPES}")
+                                                      "${ROCPROFSYS_SANITIZER_TYPES}")
 rocprofsys_add_interface_library(rocprofsys-sanitizer-compile-options
-                                "Adds compiler flags for sanitizers")
+                                 "Adds compiler flags for sanitizers")
 rocprofsys_add_interface_library(
     rocprofsys-sanitizer
     "Adds compiler flags to enable ${ROCPROFSYS_SANITIZER_TYPE} sanitizer (-fsanitizer=${ROCPROFSYS_SANITIZER_TYPE})"

@@ -120,8 +120,8 @@ function(ROCPROFSYS_STRIP_TARGET)
     if(NUM_UNPARSED EQUAL 1)
         set(_TARGET "${STRIP_UNPARSED_ARGUMENTS}")
     else()
-        rocprofsys_message(FATAL_ERROR
-                          "rocprofsys_strip_target cannot deduce target from \"${ARGN}\"")
+        rocprofsys_message(
+            FATAL_ERROR "rocprofsys_strip_target cannot deduce target from \"${ARGN}\"")
     endif()
 
     if(NOT TARGET "${_TARGET}")
@@ -566,7 +566,8 @@ function(rocprofsys_custom_compilation)
     message(STATUS "rocprof_sys_compile_launcher: ${ROCPROFSYS_COMPILE_LAUNCHER}")
 
     if(NOT COMP_COMPILER)
-        message(FATAL_ERROR "rocprofsys_custom_compilation not provided COMPILER argument")
+        message(
+            FATAL_ERROR "rocprofsys_custom_compilation not provided COMPILER argument")
     endif()
 
     if(NOT ROCPROFSYS_COMPILE_LAUNCHER)

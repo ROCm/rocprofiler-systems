@@ -249,7 +249,7 @@ if(ROCPROFSYS_USE_HIP AND (NOT DEFINED ROCPROFSYS_CI_GPU OR ROCPROFSYS_CI_GPU))
     endif()
     if(NOT _VALID_GPU)
         rocprofsys_message(AUTHOR_WARNING
-                          "rocm-smi did not successfully run. Disabling GPU tests...")
+                           "rocm-smi did not successfully run. Disabling GPU tests...")
     endif()
 endif()
 
@@ -389,7 +389,7 @@ function(ROCPROFSYS_ADD_TEST)
 
     if(TEST_GPU AND NOT _VALID_GPU)
         rocprofsys_message(STATUS
-                          "${TEST_NAME} requires a GPU and no valid GPUs were found")
+                           "${TEST_NAME} requires a GPU and no valid GPUs were found")
         return()
     endif()
 
@@ -579,7 +579,7 @@ function(ROCPROFSYS_ADD_TEST)
             list(APPEND _environ "ROCPROFSYS_CI_TIMEOUT=${_timeout}")
 
             rocprofsys_check_pass_fail_regex("${TEST_NAME}-${_TEST}" "${_PASS_REGEX}"
-                                            "${_FAIL_REGEX}")
+                                             "${_FAIL_REGEX}")
             if(TEST ${TEST_NAME}-${_TEST})
                 rocprofsys_write_test_config(${TEST_NAME}-${_TEST}.cfg _environ)
                 set_tests_properties(
@@ -875,7 +875,7 @@ if(NOT ROCPROFSYS_USE_PYTHON)
 
         if(NOT ROCPROFSYS_VALIDATION_PYTHON_PERFETTO EQUAL 0)
             rocprofsys_message(AUTHOR_WARNING
-                              "Python3 found but perfetto support is disabled")
+                               "Python3 found but perfetto support is disabled")
         endif()
     endif()
 else()
@@ -913,7 +913,7 @@ endif()
 
 if(NOT ROCPROFSYS_VALIDATION_PYTHON)
     rocprofsys_message(AUTHOR_WARNING
-                      "Python3 interpreter not found. Validation tests will be disabled")
+                       "Python3 interpreter not found. Validation tests will be disabled")
 endif()
 
 # -------------------------------------------------------------------------------------- #

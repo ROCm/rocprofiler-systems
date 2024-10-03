@@ -45,7 +45,8 @@ if(NOT EXISTS "${ROCPROFSYS_PAPI_INSTALL_DIR}")
         ${ROCPROFSYS_PAPI_INSTALL_DIR}/lib/libpfm.so)
 endif()
 
-rocprofsys_add_option(ROCPROFSYS_PAPI_AUTO_COMPONENTS "Automatically enable components" OFF)
+rocprofsys_add_option(ROCPROFSYS_PAPI_AUTO_COMPONENTS "Automatically enable components"
+                      OFF)
 
 # -------------- PACKAGES -----------------------------------------------------
 
@@ -114,7 +115,7 @@ if(ROCPROFSYS_PAPI_AUTO_COMPONENTS)
 
     # lmsensors
     find_path(ROCPROFSYS_PAPI_LMSENSORS_ROOT_DIR NAMES include/sensors/sensors.h
-                                                      include/sensors.h)
+                                                       include/sensors.h)
 
     if(ROCPROFSYS_PAPI_LMSENSORS_ROOT_DIR)
         list(APPEND _ROCPROFSYS_PAPI_COMPONENTS lmsensors)
@@ -167,7 +168,7 @@ if("pcp" IN_LIST ROCPROFSYS_PAPI_COMPONENTS AND ROCPROFSYS_PAPI_PCP_ROOT_DIR)
 endif()
 
 if("perf_event_uncore" IN_LIST ROCPROFSYS_PAPI_COMPONENTS AND NOT "perf_event" IN_LIST
-                                                             ROCPROFSYS_PAPI_COMPONENTS)
+                                                              ROCPROFSYS_PAPI_COMPONENTS)
     rocprofsys_message(
         FATAL_ERROR
         "ROCPROFSYS_PAPI_COMPONENTS :: 'perf_event_uncore' requires 'perf_event' component"
@@ -208,7 +209,8 @@ externalproject_add(
         CFLAGS=-fPIC\ -O3\ -Wno-stringop-truncation LIBS=-lrt LDFLAGS=-lrt
         ${ROCPROFSYS_PAPI_EXTRA_ENV} <SOURCE_DIR>/configure --quiet
         --prefix=${ROCPROFSYS_PAPI_INSTALL_DIR} --with-static-lib=yes --with-shared-lib=no
-        --with-perf-events --with-tests=no --with-components=${_ROCPROFSYS_PAPI_COMPONENTS}
+        --with-perf-events --with-tests=no
+        --with-components=${_ROCPROFSYS_PAPI_COMPONENTS}
     CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env CFLAGS=-fPIC\ -O3\ -Wno-stringop-truncation
                       ${ROCPROFSYS_PAPI_EXTRA_ENV} ${MAKE_EXECUTABLE} static install -s
     BUILD_COMMAND ${CMAKE_COMMAND} -E env CFLAGS=-fPIC\ -O3\ -Wno-stringop-truncation

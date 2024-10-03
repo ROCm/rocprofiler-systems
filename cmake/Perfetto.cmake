@@ -150,8 +150,8 @@ if(ROCPROFSYS_INSTALL_PERFETTO_TOOLS)
         PATCH_COMMAND ${ROCPROFSYS_PERFETTO_TOOLS_DIR}/install-build-deps
         CONFIGURE_COMMAND ${ROCPROFSYS_PERFETTO_TOOLS_DIR}/gn gen
                           ${ROCPROFSYS_PERFETTO_BINARY_DIR}
-        BUILD_COMMAND ${ROCPROFSYS_NINJA_EXECUTABLE} -C ${ROCPROFSYS_PERFETTO_BINARY_DIR} -j
-                      ${ROCPROFSYS_PERFETTO_BUILD_THREADS}
+        BUILD_COMMAND ${ROCPROFSYS_NINJA_EXECUTABLE} -C ${ROCPROFSYS_PERFETTO_BINARY_DIR}
+                      -j ${ROCPROFSYS_PERFETTO_BUILD_THREADS}
         INSTALL_COMMAND ""
         BUILD_BYPRODUCTS ${ROCPROFSYS_PERFETTO_BINARY_DIR}/args.gn)
 
@@ -229,7 +229,8 @@ mark_as_advanced(PERFETTO_LIBRARY)
 #
 # ---------------------------------------------------------------------------------------#
 
-rocprofsys_target_compile_definitions(rocprofsys-perfetto INTERFACE ROCPROFSYS_USE_PERFETTO)
+rocprofsys_target_compile_definitions(rocprofsys-perfetto
+                                      INTERFACE ROCPROFSYS_USE_PERFETTO)
 target_include_directories(rocprofsys-perfetto SYSTEM
                            INTERFACE $<BUILD_INTERFACE:${PERFETTO_INCLUDE_DIR}>)
 target_link_libraries(

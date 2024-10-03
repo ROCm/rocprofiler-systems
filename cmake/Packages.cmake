@@ -15,11 +15,11 @@ rocprofsys_add_interface_library(
     "Provides flags and libraries for Dyninst (dynamic instrumentation)")
 rocprofsys_add_interface_library(rocprofsys-hip "Provides flags and libraries for HIP")
 rocprofsys_add_interface_library(rocprofsys-roctracer
-                                "Provides flags and libraries for roctracer")
+                                 "Provides flags and libraries for roctracer")
 rocprofsys_add_interface_library(rocprofsys-rocprofiler
-                                "Provides flags and libraries for rocprofiler")
+                                 "Provides flags and libraries for rocprofiler")
 rocprofsys_add_interface_library(rocprofsys-rocm-smi
-                                "Provides flags and libraries for rocm-smi")
+                                 "Provides flags and libraries for rocm-smi")
 rocprofsys_add_interface_library(
     rocprofsys-rccl "Provides flags for ROCm Communication Collectives Library (RCCL)")
 rocprofsys_add_interface_library(rocprofsys-mpi "Provides MPI or MPI headers")
@@ -31,8 +31,8 @@ rocprofsys_add_interface_library(rocprofsys-python "Enables Python support")
 rocprofsys_add_interface_library(rocprofsys-elfutils "Provides ElfUtils")
 rocprofsys_add_interface_library(rocprofsys-perfetto "Enables Perfetto support")
 rocprofsys_add_interface_library(rocprofsys-timemory "Provides timemory libraries")
-rocprofsys_add_interface_library(rocprofsys-timemory-config
-                                "CMake interface library applied to all timemory targets")
+rocprofsys_add_interface_library(
+    rocprofsys-timemory-config "CMake interface library applied to all timemory targets")
 rocprofsys_add_interface_library(rocprofsys-compile-definitions "Compile definitions")
 
 # libraries with relevant compile definitions
@@ -68,8 +68,8 @@ set(ROCPROFSYS_DEFAULT_ROCM_PATH
     /opt/rocm
     CACHE PATH "Default search path for ROCM")
 if(EXISTS ${ROCPROFSYS_DEFAULT_ROCM_PATH})
-    get_filename_component(_ROCPROFSYS_DEFAULT_ROCM_PATH "${ROCPROFSYS_DEFAULT_ROCM_PATH}"
-                           REALPATH)
+    get_filename_component(_ROCPROFSYS_DEFAULT_ROCM_PATH
+                           "${ROCPROFSYS_DEFAULT_ROCM_PATH}" REALPATH)
 
     if(NOT "${_ROCPROFSYS_DEFAULT_ROCM_PATH}" STREQUAL "${ROCPROFSYS_DEFAULT_ROCM_PATH}")
         set(ROCPROFSYS_DEFAULT_ROCM_PATH
@@ -123,8 +123,9 @@ if(ROCPROFSYS_USE_HIP
     find_package(ROCmVersion)
 
     if(NOT ROCmVersion_FOUND)
-        find_package(hip ${rocprofsys_FIND_QUIETLY} REQUIRED HINTS
-                     ${ROCPROFSYS_DEFAULT_ROCM_PATH} PATHS ${ROCPROFSYS_DEFAULT_ROCM_PATH})
+        find_package(
+            hip ${rocprofsys_FIND_QUIETLY} REQUIRED HINTS ${ROCPROFSYS_DEFAULT_ROCM_PATH}
+            PATHS ${ROCPROFSYS_DEFAULT_ROCM_PATH})
         if(SPACK_BUILD)
             find_package(ROCmVersion HINTS ${ROCM_PATH} PATHS ${ROCM_PATH})
         else()
@@ -154,7 +155,7 @@ if(ROCPROFSYS_USE_HIP
     set(ROCPROFSYS_HIP_VERSION ${ROCmVersion_TRIPLE_VERSION})
 
     if(ROCPROFSYS_HIP_VERSION_MAJOR GREATER_EQUAL 4 AND ROCPROFSYS_HIP_VERSION_MINOR
-                                                       GREATER 3)
+                                                        GREATER 3)
         set(roctracer_kfdwrapper_LIBRARY)
     endif()
 
@@ -191,7 +192,7 @@ endif()
 if(ROCPROFSYS_USE_ROCTRACER)
     find_package(roctracer ${rocprofsys_FIND_QUIETLY} REQUIRED)
     rocprofsys_target_compile_definitions(rocprofsys-roctracer
-                                         INTERFACE ROCPROFSYS_USE_ROCTRACER)
+                                          INTERFACE ROCPROFSYS_USE_ROCTRACER)
     target_link_libraries(rocprofsys-roctracer INTERFACE roctracer::roctracer
                                                          rocprofsys::rocprofsys-hip)
 endif()
@@ -204,7 +205,7 @@ endif()
 if(ROCPROFSYS_USE_ROCPROFILER)
     find_package(rocprofiler ${rocprofsys_FIND_QUIETLY} REQUIRED)
     rocprofsys_target_compile_definitions(rocprofsys-rocprofiler
-                                         INTERFACE ROCPROFSYS_USE_ROCPROFILER)
+                                          INTERFACE ROCPROFSYS_USE_ROCPROFILER)
     target_link_libraries(rocprofsys-rocprofiler INTERFACE rocprofiler::rocprofiler)
 endif()
 
@@ -217,7 +218,7 @@ endif()
 if(ROCPROFSYS_USE_ROCM_SMI)
     find_package(rocm-smi ${rocprofsys_FIND_QUIETLY} REQUIRED)
     rocprofsys_target_compile_definitions(rocprofsys-rocm-smi
-                                         INTERFACE ROCPROFSYS_USE_ROCM_SMI)
+                                          INTERFACE ROCPROFSYS_USE_ROCM_SMI)
     target_link_libraries(rocprofsys-rocm-smi INTERFACE rocm-smi::rocm-smi)
 endif()
 
@@ -246,7 +247,7 @@ if(ROCPROFSYS_USE_MPI)
     find_package(MPI ${rocprofsys_FIND_QUIETLY} REQUIRED)
     target_link_libraries(rocprofsys-mpi INTERFACE MPI::MPI_C MPI::MPI_CXX)
     rocprofsys_target_compile_definitions(rocprofsys-mpi INTERFACE TIMEMORY_USE_MPI=1
-                                                                  ROCPROFSYS_USE_MPI)
+                                                                   ROCPROFSYS_USE_MPI)
 elseif(ROCPROFSYS_USE_MPI_HEADERS)
     find_package(MPI-Headers ${rocprofsys_FIND_QUIETLY} REQUIRED)
     rocprofsys_target_compile_definitions(
@@ -442,7 +443,7 @@ else()
             rocprofsys-dyninst SYSTEM INTERFACE ${TBB_INCLUDE_DIR} ${Boost_INCLUDE_DIRS}
                                                 ${DYNINST_HEADER_DIR})
         rocprofsys_target_compile_definitions(rocprofsys-dyninst
-                                             INTERFACE ROCPROFSYS_USE_DYNINST)
+                                              INTERFACE ROCPROFSYS_USE_DYNINST)
     endif()
 endif()
 

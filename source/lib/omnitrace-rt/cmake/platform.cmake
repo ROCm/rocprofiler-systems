@@ -30,7 +30,7 @@ if(INVALID_PLATFORM)
         OUTPUT_STRIP_TRAILING_WHITESPACE)
     string(REPLACE "\n" "" PLATFORM ${DYNSYSNAME_OUT})
     rocprofsys_message(STATUS
-                      "-- Attempting to automatically identify platform: ${PLATFORM}")
+                       "-- Attempting to automatically identify platform: ${PLATFORM}")
 endif()
 
 list(FIND VALID_PLATFORMS ${PLATFORM} PLATFORM_FOUND)

@@ -38,7 +38,7 @@ endmacro()
 # ------------------------------------------------------------------------------#
 
 find_program(ROCPROFSYS_CLANG_FORMAT_EXE NAMES clang-format-11 clang-format-mp-11
-                                              clang-format)
+                                               clang-format)
 
 find_program(ROCPROFSYS_CMAKE_FORMAT_EXE NAMES cmake-format)
 find_program(ROCPROFSYS_BLACK_FORMAT_EXE NAMES black)
@@ -89,8 +89,8 @@ if(ROCPROFSYS_CLANG_FORMAT_EXE
             format-rocprofsys-source
             ${ROCPROFSYS_CLANG_FORMAT_EXE} -i ${sources} ${headers} ${examples}
             ${tests_source}
-            COMMENT "[rocprof-sys] Running C++ formatter ${ROCPROFSYS_CLANG_FORMAT_EXE}..."
-            )
+            COMMENT
+                "[rocprof-sys] Running C++ formatter ${ROCPROFSYS_CLANG_FORMAT_EXE}...")
     endif()
 
     if(ROCPROFSYS_BLACK_FORMAT_EXE)
@@ -98,7 +98,8 @@ if(ROCPROFSYS_CLANG_FORMAT_EXE
             format-rocprofsys-python
             ${ROCPROFSYS_BLACK_FORMAT_EXE} -q ${PROJECT_SOURCE_DIR}
             COMMENT
-                "[rocprof-sys] Running Python formatter ${ROCPROFSYS_BLACK_FORMAT_EXE}...")
+                "[rocprof-sys] Running Python formatter ${ROCPROFSYS_BLACK_FORMAT_EXE}..."
+            )
         if(NOT TARGET format-python)
             add_custom_target(format-python)
         endif()
