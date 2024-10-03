@@ -219,7 +219,10 @@ def parse_args(args=None):
     cdash_args = parse_cdash_args(input_args)
 
     if cdash_args.coverage:
-        cmake_args += ["-DROCPROFSYS_BUILD_CODECOV=ON", "-DROCPROFSYS_STRIP_LIBRARIES=OFF"]
+        cmake_args += [
+            "-DROCPROFSYS_BUILD_CODECOV=ON",
+            "-DROCPROFSYS_STRIP_LIBRARIES=OFF",
+        ]
 
     def get_repeat_val(_param):
         _value = getattr(cdash_args, f"repeat_{_param}".replace("-", "_"))
