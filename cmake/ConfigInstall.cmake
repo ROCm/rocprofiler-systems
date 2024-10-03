@@ -7,7 +7,7 @@ set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME config)
 
 install(
     EXPORT rocprofsys-library-targets
-    FILE rocprofsys-library-targets.cmake
+    FILE ${PACKAGE_NAME}-library-targets.cmake
     NAMESPACE rocprofsys::
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PACKAGE_NAME})
 
@@ -20,21 +20,21 @@ set(LIB_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR})
 set(PROJECT_BUILD_TARGETS user)
 
 configure_package_config_file(
-    ${PROJECT_SOURCE_DIR}/cmake/Templates/${PROJECT_NAME}-config.cmake.in
-    ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PACKAGE_NAME}/${PROJECT_NAME}-config.cmake
-    INSTALL_DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PROJECT_NAME}
+    ${PROJECT_SOURCE_DIR}/cmake/Templates/${PACKAGE_NAME}-config.cmake.in
+    ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PACKAGE_NAME}/${PACKAGE_NAME}-config.cmake
+    INSTALL_DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PACKAGE_NAME}
     INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}
     PATH_VARS PROJECT_INSTALL_DIR INCLUDE_INSTALL_DIR LIB_INSTALL_DIR)
 
 write_basic_package_version_file(
-    ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PACKAGE_NAME}/${PROJECT_NAME}-version.cmake
+    ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PACKAGE_NAME}/${PACKAGE_NAME}-version.cmake
     VERSION ${PROJECT_VERSION}
     COMPATIBILITY SameMinorVersion)
 
 install(
     FILES
-        ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PACKAGE_NAME}/${PROJECT_NAME}-config.cmake
-        ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PACKAGE_NAME}/${PROJECT_NAME}-version.cmake
+        ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PACKAGE_NAME}/${PACKAGE_NAME}-config.cmake
+        ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PACKAGE_NAME}/${PACKAGE_NAME}-version.cmake
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PACKAGE_NAME}
     OPTIONAL)
 
@@ -64,17 +64,15 @@ if(NOT EXISTS "${_BUILDTREE_EXPORT_DIR}")
     file(MAKE_DIRECTORY "${_BUILDTREE_EXPORT_DIR}")
 endif()
 
-if(NOT EXISTS "${_BUILDTREE_EXPORT_DIR}/${PROJECT_NAME}-library-targets.cmake")
-    file(TOUCH "${_BUILDTREE_EXPORT_DIR}/${PROJECT_NAME}-library-targets.cmake")
+if(NOT EXISTS "${_BUILDTREE_EXPORT_DIR}/${PACKAGE_NAME}-library-targets.cmake")
+    file(TOUCH "${_BUILDTREE_EXPORT_DIR}/${PACKAGE_NAME}-library-targets.cmake")
 endif()
 
 export(
     EXPORT ${PROJECT_NAME}-library-targets
     NAMESPACE ${PROJECT_NAME}::
-    FILE "${_BUILDTREE_EXPORT_DIR}/${PROJECT_NAME}-library-targets.cmake")
+    FILE "${_BUILDTREE_EXPORT_DIR}/${PACKAGE_NAME}-library-targets.cmake")
 
-set(${PROJECT_NAME}_DIR
+set(${PACKAGE_NAME}_DIR
     "${_BUILDTREE_EXPORT_DIR}"
-    CACHE PATH "${PROJECT_NAME}" FORCE)
-
-message(STATUS "Exported ${PROJECT_NAME} build-tree to ${_BUILDTREE_EXPORT_DIR}")
+    CACHE PATH "${PACKAGE_NAME}" FORCE)

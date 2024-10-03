@@ -37,7 +37,7 @@
 #endif
 
 #if ROCPROFSYS_CAUSAL_ENABLED > 0
-#    include <omnitrace/user.h>
+#    include <rocprof-sys/user.h>
 
 #    if !defined(ROCPROFSYS_CAUSAL_LABEL)
 /** @cond ROCPROFSYS_HIDDEN_DEFINES */

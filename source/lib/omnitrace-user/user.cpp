@@ -24,9 +24,9 @@
 #    define ROCPROFSYS_USER_SOURCE 1
 #endif
 
-#include "omnitrace/user.h"
-#include "omnitrace/categories.h"
-#include "omnitrace/types.h"
+#include "rocprof-sys/user.h"
+#include "rocprof-sys/categories.h"
+#include "rocprof-sys/types.h"
 
 #include <atomic>
 #include <cstdio>

@@ -39,8 +39,8 @@
 #include "common/join.hpp"
 #include "common/setup.hpp"
 #include "dl/dl.hpp"
-#include "omnitrace/categories.h"
-#include "omnitrace/types.h"
+#include "rocprof-sys/categories.h"
+#include "rocprof-sys/types.h"
 
 #include <timemory/utility/filepath.hpp>
 

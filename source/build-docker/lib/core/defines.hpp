@@ -22,25 +22,23 @@
 
 #pragma once
 
-#define CAUSAL_STR2(x) #x
-#define CAUSAL_STR(x)  CAUSAL_STR2(x)
-#define CAUSAL_LABEL   __FILE__ ":" CAUSAL_STR(__LINE__)
+#include "common/defines.h"
 
-#if defined(USE_OMNI) && USE_OMNI > 0
-#    include <rocprof-sys/causal.h>
-#    define CAUSAL_PROGRESS              ROCPROFSYS_CAUSAL_PROGRESS
-#    define CAUSAL_PROGRESS_NAMED(LABEL) ROCPROFSYS_CAUSAL_PROGRESS_NAMED(LABEL)
-#    define CAUSAL_BEGIN(LABEL)          ROCPROFSYS_CAUSAL_BEGIN(LABEL)
-#    define CAUSAL_END(LABEL)            ROCPROFSYS_CAUSAL_END(LABEL)
-#elif defined(USE_COZ) && USE_COZ > 0
-#    include <coz.h>
-#    define CAUSAL_PROGRESS              COZ_PROGRESS_NAMED(CAUSAL_LABEL)
-#    define CAUSAL_PROGRESS_NAMED(LABEL) COZ_PROGRESS_NAMED(LABEL)
-#    define CAUSAL_BEGIN(LABEL)          COZ_BEGIN(LABEL)
-#    define CAUSAL_END(LABEL)            COZ_END(LABEL)
-#else
-#    define CAUSAL_PROGRESS
-#    define CAUSAL_PROGRESS_NAMED(LABEL)
-#    define CAUSAL_BEGIN(LABEL)
-#    define CAUSAL_END(LABEL)
+#define ROCPROFSYS_METADATA(...) ::tim::manager::add_metadata(__VA_ARGS__)
+
+#if !defined(ROCPROFSYS_DEFAULT_OBJECT)
+#    define ROCPROFSYS_DEFAULT_OBJECT(NAME)                                               \
+        NAME()                = default;                                                 \
+        NAME(const NAME&)     = default;                                                 \
+        NAME(NAME&&) noexcept = default;                                                 \
+        NAME& operator=(const NAME&) = default;                                          \
+        NAME& operator=(NAME&&) noexcept = default;
+#endif
+
+#if !defined(ROCPROFSYS_DEFAULT_COPY_MOVE)
+#    define ROCPROFSYS_DEFAULT_COPY_MOVE(NAME)                                            \
+        NAME(const NAME&)     = default;                                                 \
+        NAME(NAME&&) noexcept = default;                                                 \
+        NAME& operator=(const NAME&) = default;                                          \
+        NAME& operator=(NAME&&) noexcept = default;
 #endif

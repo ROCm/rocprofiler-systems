@@ -24,8 +24,8 @@
 #include "dl/dl.hpp"
 #include "library/coverage.hpp"
 #include "library/coverage/impl.hpp"
-#include "omnitrace/categories.h"
-#include "omnitrace/user.h"
+#include "rocprof-sys/categories.h"
+#include "rocprof-sys/user.h"
 
 #include <timemory/backends/process.hpp>
 #include <timemory/backends/threading.hpp>

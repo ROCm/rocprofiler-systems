@@ -31,7 +31,7 @@
 #    endif
 #endif
 
-#include "omnitrace/user.h"
+#include "rocprof-sys/user.h"
 
 #include <atomic>
 #include <cstdint>

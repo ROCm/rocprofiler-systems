@@ -1,5 +1,5 @@
 
-#include <omnitrace/user.h>
+#include <rocprof-sys/user.h>
 
 #include <chrono>
 #include <cstdio>

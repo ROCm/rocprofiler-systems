@@ -4,7 +4,7 @@
 include_guard(DIRECTORY)
 
 if(NOT TARGET rocprofsys::rocprofsys-user-library)
-    find_package(rocprofsys REQUIRED COMPONENTS user)
+    find_package(rocprof-sys REQUIRED COMPONENTS user)
 endif()
 
 if(NOT coz-profiler_FOUND)

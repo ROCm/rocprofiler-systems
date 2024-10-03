@@ -563,6 +563,8 @@ function(rocprofsys_custom_compilation)
         PATHS ${PROJECT_SOURCE_DIR} ${CMAKE_SOURCE_DIR}
         PATH_SUFFIXES scripts bin)
 
+    message(STATUS "rocprofsys_compile_launcher: ${ROCPROFSYS_COMPILE_LAUNCHER}")
+
     if(NOT COMP_COMPILER)
         message(FATAL_ERROR "rocprofsys_custom_compilation not provided COMPILER argument")
     endif()

@@ -14,10 +14,10 @@ add_library(rocprofsys-user-library SHARED)
 add_library(rocprofsys::rocprofsys-user-library ALIAS rocprofsys-user-library)
 
 set(_user_headers
-    ${CMAKE_CURRENT_SOURCE_DIR}/omnitrace/user.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/omnitrace/types.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/omnitrace/causal.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/omnitrace/categories.h)
+    ${CMAKE_CURRENT_SOURCE_DIR}/rocprof-sys/user.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/rocprof-sys/types.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/rocprof-sys/causal.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/rocprof-sys/categories.h)
 
 set(_user_sources ${CMAKE_CURRENT_SOURCE_DIR}/user.cpp)
 

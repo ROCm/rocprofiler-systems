@@ -14,7 +14,7 @@ endif()
 set(CMAKE_BUILD_TYPE "Debug")
 find_package(Threads REQUIRED)
 if(NOT TARGET rocprofsys::rocprofsys-user-library)
-    find_package(rocprofsys REQUIRED COMPONENTS user)
+    find_package(rocprof-sys REQUIRED COMPONENTS user)
 endif()
 add_executable(user-api user-api.cpp)
 target_link_libraries(user-api PRIVATE Threads::Threads

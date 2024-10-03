@@ -14,7 +14,7 @@ endif()
 set(CMAKE_BUILD_TYPE "Release")
 find_package(Threads REQUIRED)
 if(NOT TARGET rocprofsys::rocprofsys-user-library)
-    find_package(rocprofsys REQUIRED COMPONENTS user)
+    find_package(rocprof-sys REQUIRED COMPONENTS user)
 endif()
 
 add_library(causal-interface-library INTERFACE)

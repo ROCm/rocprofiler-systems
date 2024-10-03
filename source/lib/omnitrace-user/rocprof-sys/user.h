@@ -33,8 +33,8 @@
 #    endif
 #endif
 
-#include "omnitrace/categories.h"
-#include "omnitrace/types.h"
+#include "rocprof-sys/categories.h"
+#include "rocprof-sys/types.h"
 
 #if defined(__cplusplus)
 extern "C"

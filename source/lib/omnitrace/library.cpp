@@ -58,7 +58,7 @@
 #include "library/thread_data.hpp"
 #include "library/thread_info.hpp"
 #include "library/tracing.hpp"
-#include "omnitrace/categories.h"  // in omnitrace-user
+#include "rocprof-sys/categories.h"  // in omnitrace-user
 
 #include <timemory/hash/types.hpp>
 #include <timemory/log/logger.hpp>
