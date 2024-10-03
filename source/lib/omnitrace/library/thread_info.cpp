@@ -37,7 +37,7 @@
 
 #include <cstdint>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace
 {
@@ -386,4 +386,4 @@ thread_info::as_string() const
     _ss << ", lifetime=(" << lifetime.first << ":" << lifetime.second << ")";
     return _ss.str();
 }
-}  // namespace omnitrace
+}  // namespace rocprofsys

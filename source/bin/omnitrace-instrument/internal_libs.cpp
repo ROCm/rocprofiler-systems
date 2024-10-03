@@ -428,7 +428,7 @@ get_internal_libs_data_impl()
         }
     }
 
-    omnitrace::utility::filter_sort_unique(
+    rocprofsys::utility::filter_sort_unique(
         _libs, [](const auto& itr) { return itr.empty() || !filepath::exists(itr); });
 
     auto _data = library_module_map_t{};

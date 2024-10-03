@@ -22,7 +22,7 @@
 
 #pragma once
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace ompt
 {
@@ -32,4 +32,4 @@ setup();
 void
 shutdown();
 }  // namespace ompt
-}  // namespace omnitrace
+}  // namespace rocprofsys

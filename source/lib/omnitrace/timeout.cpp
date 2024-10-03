@@ -37,7 +37,7 @@
 #include <sstream>
 #include <thread>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace timeout
 {
@@ -161,8 +161,8 @@ ensure_ci_timeout_backtrace(double             _ci_timeout_seconds,
 
         _kill_thread(main_thread_native_handle);
 
-        ::omnitrace::debug::flush();
-        ::omnitrace::debug::lock _debug_lk{};
+        ::rocprofsys::debug::flush();
+        ::rocprofsys::debug::lock _debug_lk{};
 
         if(++_ci_timeout_nitr >= _ci_timeout_total_count)
         {
@@ -228,4 +228,4 @@ setup()
     }
 }
 }  // namespace timeout
-}  // namespace omnitrace
+}  // namespace rocprofsys

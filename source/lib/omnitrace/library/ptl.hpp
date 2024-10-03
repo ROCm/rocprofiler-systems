@@ -29,7 +29,7 @@
 
 #include <mutex>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace tasking
 {
@@ -68,4 +68,4 @@ PTL::TaskGroup<void>&
 get_task_group(int64_t _tid = utility::get_thread_index());
 }  // namespace roctracer
 }  // namespace tasking
-}  // namespace omnitrace
+}  // namespace rocprofsys

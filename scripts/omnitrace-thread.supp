@@ -1,5 +1,5 @@
 # false positive
-race:omnitrace::component::pthread_create_gotcha::operator()
+race:rocprofsys::component::pthread_create_gotcha::operator()
 race:pthread_create
 race:tim::impl::storage<*>::_data()
 race:tim::graph<*>::append_child

@@ -34,7 +34,7 @@
 #include <chrono>
 #include <cstdint>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -69,4 +69,4 @@ private:
     uint64_t m_real = 0;
 };
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys

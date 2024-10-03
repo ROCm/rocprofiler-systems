@@ -35,7 +35,7 @@
 #    define ROCPROFSYS_FOLD_EXPRESSION(...) ((__VA_ARGS__), ...)
 #endif
 
-namespace omnitrace
+namespace rocprofsys
 {
 inline namespace common
 {
@@ -177,4 +177,4 @@ join(QuoteStrings&&, std::tuple<DelimB, DelimT, DelimE>&& _delim, Args&&... _arg
 }
 }  // namespace
 }  // namespace common
-}  // namespace omnitrace
+}  // namespace rocprofsys

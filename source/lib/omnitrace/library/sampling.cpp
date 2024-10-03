@@ -99,7 +99,7 @@ plus(Tp&& _lhs, const Up& _rhs)
 }
 }  // namespace math
 }  // namespace tim
-namespace omnitrace
+namespace rocprofsys
 {
 namespace sampling
 {
@@ -132,7 +132,7 @@ using component::sampling_gpu_temp;
 using component::sampling_percent;
 using component::sampling_wall_clock;
 }  // namespace sampling
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(prevent_reentry, sampling::sampler_t, std::true_type)
 
@@ -141,7 +141,7 @@ ROCPROFSYS_DEFINE_CONCRETE_TRAIT(provide_backtrace, sampling::sampler_t, std::fa
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(buffer_size, sampling::sampler_t,
                                  TIMEMORY_ESC(std::integral_constant<size_t, 2048>))
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace sampling
 {
@@ -814,7 +814,7 @@ unique_ptr_t<std::set<int>>&
 get_signal_types(int64_t _tid)
 {
     return signal_type_instances::instance(construct_on_thread{ _tid },
-                                           omnitrace::get_sampling_signals(_tid));
+                                           rocprofsys::get_sampling_signals(_tid));
 }
 
 std::set<int>
@@ -897,7 +897,7 @@ post_process()
 
     ROCPROFSYS_VERBOSE(2 || get_debug_sampling(), "Stopping sampling components...\n");
 
-    omnitrace::component::backtrace::stop();
+    rocprofsys::component::backtrace::stop();
     configure(false, 0);
 
     for(auto& itr : get_sampler_allocators())
@@ -1576,6 +1576,6 @@ struct sampling_initialization
 };
 }  // namespace
 }  // namespace sampling
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
-TIMEMORY_INVOKE_PREINIT(omnitrace::sampling::sampling_initialization)
+TIMEMORY_INVOKE_PREINIT(rocprofsys::sampling::sampling_initialization)

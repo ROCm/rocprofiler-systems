@@ -119,7 +119,7 @@ write_hw_counter_info(std::ostream&, const array_t<bool, N>& = {},
 namespace
 {
 // initialize HIP before main so that librocprof-sys is not HSA_TOOLS_LIB
-int gpu_count = omnitrace::gpu::hip_device_count();
+int gpu_count = rocprofsys::gpu::hip_device_count();
 
 // statically allocated shared_ptrs to prevent use after free errors
 auto timemory_manager      = tim::manager::master_instance();
@@ -516,7 +516,7 @@ main(int argc, char** argv)
         {
             // call to rocm_metrics() will add choices to ROCPROFSYS_ROCM_EVENTS setting
             // so always perform this call even if list of HW counters is not requested
-            _num_metrics = omnitrace::rocprofiler::rocm_metrics().size();
+            _num_metrics = rocprofsys::rocprofiler::rocm_metrics().size();
         } catch(std::runtime_error& _e)
         {
             verbprintf(0, "Retrieving the GPU HW counters failed: %s", _e.what());
@@ -1076,7 +1076,7 @@ write_hw_counter_info(std::ostream& os, const array_t<bool, N>& options,
 
     auto _papi_events = tim::papi::available_events_info();
     auto _rocm_events =
-        (gpu_count > 0) ? omnitrace::rocprofiler::rocm_metrics() : hwcounter_info_t{};
+        (gpu_count > 0) ? rocprofsys::rocprofiler::rocm_metrics() : hwcounter_info_t{};
 
     if(alphabetical)
     {

@@ -35,7 +35,7 @@
         ar(::tim::cereal::make_nvp(#MEMBER_VARIABLE, MEMBER_VARIABLE))
 #endif
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace coverage
 {
@@ -170,4 +170,4 @@ coverage_data::serialize(ArchiveT& ar, const unsigned version)
 }
 //
 }  // namespace coverage
-}  // namespace omnitrace
+}  // namespace rocprofsys

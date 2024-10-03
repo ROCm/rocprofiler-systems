@@ -44,7 +44,7 @@
 #    define ROCPROFSYS_COMMON_LIBRARY_LOG_END
 #endif
 
-namespace omnitrace
+namespace rocprofsys
 {
 inline namespace common
 {
@@ -147,4 +147,4 @@ invoke(const char* _name, int _verbose, bool& _toggle, FuncT&& _func, Args... _a
 }
 }  // namespace
 }  // namespace common
-}  // namespace omnitrace
+}  // namespace rocprofsys

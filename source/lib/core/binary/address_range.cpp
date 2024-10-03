@@ -23,7 +23,7 @@
 #include "binary/address_range.hpp"
 #include "debug.hpp"
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace binary
 {
@@ -187,4 +187,4 @@ address_range::hash() const
                         : hash_value_t{ low };
 }
 }  // namespace binary
-}  // namespace omnitrace
+}  // namespace rocprofsys

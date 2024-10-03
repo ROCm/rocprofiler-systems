@@ -45,7 +45,7 @@
 #include <tuple>
 #include <type_traits>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace rocm_smi
 {
@@ -113,11 +113,11 @@ struct data
     }
 
 private:
-    friend void omnitrace::rocm_smi::setup();
-    friend void omnitrace::rocm_smi::config();
-    friend void omnitrace::rocm_smi::sample();
-    friend void omnitrace::rocm_smi::shutdown();
-    friend void omnitrace::rocm_smi::post_process();
+    friend void rocprofsys::rocm_smi::setup();
+    friend void rocprofsys::rocm_smi::config();
+    friend void rocprofsys::rocm_smi::sample();
+    friend void rocprofsys::rocm_smi::shutdown();
+    friend void rocprofsys::rocm_smi::post_process();
 
     static size_t                        device_count;
     static std::set<uint32_t>            device_list;
@@ -152,7 +152,7 @@ post_process()
 inline void set_state(State) {}
 #endif
 }  // namespace rocm_smi
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 #if defined(ROCPROFSYS_USE_ROCM_SMI) && ROCPROFSYS_USE_ROCM_SMI > 0
 #    if !defined(ROCPROFSYS_EXTERN_COMPONENTS) ||                                        \
@@ -163,19 +163,19 @@ inline void set_state(State) {}
 #        include <timemory/operations.hpp>
 
 ROCPROFSYS_DECLARE_EXTERN_COMPONENT(
-    TIMEMORY_ESC(data_tracker<double, omnitrace::component::backtrace_gpu_busy>), true,
+    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_busy>), true,
     double)
 
 ROCPROFSYS_DECLARE_EXTERN_COMPONENT(
-    TIMEMORY_ESC(data_tracker<double, omnitrace::component::backtrace_gpu_temp>), true,
+    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_temp>), true,
     double)
 
 ROCPROFSYS_DECLARE_EXTERN_COMPONENT(
-    TIMEMORY_ESC(data_tracker<double, omnitrace::component::backtrace_gpu_power>), true,
+    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_power>), true,
     double)
 
 ROCPROFSYS_DECLARE_EXTERN_COMPONENT(
-    TIMEMORY_ESC(data_tracker<double, omnitrace::component::backtrace_gpu_memory>), true,
+    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_memory>), true,
     double)
 
 #    endif

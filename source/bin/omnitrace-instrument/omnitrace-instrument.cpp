@@ -89,7 +89,7 @@ get_default_min_address_range()
 }
 }  // namespace
 
-using InstrumentMode = ::omnitrace::dl::InstrumentMode;
+using InstrumentMode = ::rocprofsys::dl::InstrumentMode;
 
 bool   use_return_info              = false;
 bool   use_args_info                = false;
@@ -195,7 +195,7 @@ get_internal_libpath()
     auto _pos = _exe.find_last_of('/');
     auto _dir = std::string{ "./" };
     if(_pos != std::string_view::npos) _dir = _exe.substr(0, _pos);
-    return omnitrace::common::join("/", _dir, "..", "lib");
+    return rocprofsys::common::join("/", _dir, "..", "lib");
 }
 
 strvec_t lib_search_paths = tim::delimit(

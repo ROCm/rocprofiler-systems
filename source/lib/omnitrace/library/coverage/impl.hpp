@@ -36,7 +36,7 @@
 #include <tuple>
 #include <vector>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace coverage
 {
@@ -191,4 +191,4 @@ coverage_data::operator>=(const coverage_data& rhs) const
 }
 //
 }  // namespace coverage
-}  // namespace omnitrace
+}  // namespace rocprofsys

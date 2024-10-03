@@ -37,7 +37,7 @@
 #include <type_traits>
 #include <vector>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace process_sampler
 {
@@ -100,4 +100,4 @@ post_process()
 }
 //
 }  // namespace process_sampler
-}  // namespace omnitrace
+}  // namespace rocprofsys

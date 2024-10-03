@@ -30,7 +30,7 @@
 #include <cstdint>
 #include <future>
 
-namespace omnitrace
+namespace rocprofsys
 {
 struct pthread_gotcha;
 
@@ -84,7 +84,7 @@ struct pthread_create_gotcha : tim::component::base<pthread_create_gotcha, void>
     void set_data(wrappee_t);
 
 private:
-    friend struct ::omnitrace::pthread_gotcha;
+    friend struct ::rocprofsys::pthread_gotcha;
 
     static std::set<native_handle_t> get_native_handles();
 
@@ -95,4 +95,4 @@ using pthread_create_gotcha_t =
     tim::component::gotcha<pthread_create_gotcha::gotcha_capacity, std::tuple<>,
                            pthread_create_gotcha>;
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys

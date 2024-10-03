@@ -32,7 +32,7 @@
 #include <cstdlib>
 #include <new>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace container
 {
@@ -323,4 +323,4 @@ aligned_static_vector<Tp, N, AlignN, AtomicSizeV>::emplace_back(Args&&... _v)
 }
 
 }  // namespace container
-}  // namespace omnitrace
+}  // namespace rocprofsys

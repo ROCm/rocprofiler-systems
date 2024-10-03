@@ -38,7 +38,7 @@
 
 namespace cpuinfo = tim::procfs::cpuinfo;
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -217,6 +217,6 @@ cpu_freq::get(int64_t _unit) const
     return _v;
 }
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
-TIMEMORY_INITIALIZE_STORAGE(omnitrace::component::cpu_freq)
+TIMEMORY_INITIALIZE_STORAGE(rocprofsys::component::cpu_freq)

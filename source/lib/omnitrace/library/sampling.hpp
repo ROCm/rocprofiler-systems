@@ -40,7 +40,7 @@
 #include <set>
 #include <type_traits>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace sampling
 {
@@ -66,4 +66,4 @@ void unblock_signals(std::set<int> = {});
 void
 post_process();
 }  // namespace sampling
-}  // namespace omnitrace
+}  // namespace rocprofsys

@@ -24,7 +24,7 @@
 #include "core/common.hpp"
 #include "core/timemory.hpp"
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace causal
 {
@@ -49,4 +49,4 @@ template void
 selected_entry::serialize<cereal::PrettyJSONOutputArchive>(
     cereal::PrettyJSONOutputArchive&, const unsigned int);
 }  // namespace causal
-}  // namespace omnitrace
+}  // namespace rocprofsys

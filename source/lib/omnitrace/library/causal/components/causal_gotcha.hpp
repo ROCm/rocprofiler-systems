@@ -29,7 +29,7 @@
 #include <cstdint>
 #include <future>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace causal
 {
@@ -53,4 +53,4 @@ struct causal_gotcha : tim::component::base<causal_gotcha, void>
 };
 }  // namespace component
 }  // namespace causal
-}  // namespace omnitrace
+}  // namespace rocprofsys

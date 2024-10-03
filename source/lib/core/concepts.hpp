@@ -31,7 +31,7 @@
 #include <optional>
 #include <type_traits>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace concepts = ::tim::concepts;  // NOLINT
 
@@ -59,7 +59,7 @@ make_unique(Args&&... args)
 {
     return unique_ptr_t<Tp>{ new Tp{ std::forward<Args>(args)... } };
 }
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 namespace tim
 {
@@ -70,7 +70,7 @@ struct is_unique_pointer : std::false_type
 {};
 
 template <typename Tp>
-struct is_unique_pointer<::omnitrace::unique_ptr_t<Tp>> : std::true_type
+struct is_unique_pointer<::rocprofsys::unique_ptr_t<Tp>> : std::true_type
 {};
 
 template <typename Tp>

@@ -70,7 +70,7 @@
 #include <pthread.h>
 #include <signal.h>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -121,7 +121,6 @@ backtrace::filter_and_patch(const std::vector<entry_type>& _data)
         if(_keep_internal) return 1;
         if(_lbl.find("omnitrace_main") != _npos) return 0;
         if(_lbl.find("rocprofsys_main") != _npos) return 0;
-        if(_lbl.find("omnitrace::") != _npos) return 0;
         if(_lbl.find("rocprofsys::") != _npos) return 0;
         if(_lbl.find("tim::openmp::") != _npos) return -1;
         if(_lbl.find("tim::") != _npos) return 0;
@@ -207,6 +206,6 @@ backtrace::sample(int signo)
     m_data = get_unw_stack<stack_depth, ignore_depth, with_signal_frame>();
 }
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
-TIMEMORY_INITIALIZE_STORAGE(omnitrace::component::backtrace)
+TIMEMORY_INITIALIZE_STORAGE(rocprofsys::component::backtrace)

@@ -54,7 +54,7 @@ struct timemory : concepts::quirk_type
 }  // namespace quirk
 }  // namespace tim
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -417,4 +417,4 @@ private:
     std::string_view m_prefix = {};
 };
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys

@@ -38,7 +38,7 @@
 #include <string>
 #include <sys/types.h>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace perf
 {
@@ -209,4 +209,4 @@ private:
 std::unique_ptr<perf_event>&
 get_instance(int64_t _tid);
 }  // namespace perf
-}  // namespace omnitrace
+}  // namespace rocprofsys

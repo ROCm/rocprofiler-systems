@@ -33,7 +33,7 @@ operator<<(std::ostream& _os, const ncclUniqueId& _v)
     return _os;
 }
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -192,4 +192,4 @@ rcclp_handle::get_tool_count()
     return get_persistent_data().m_count;
 }
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys

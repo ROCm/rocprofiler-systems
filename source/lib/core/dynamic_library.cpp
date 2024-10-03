@@ -33,7 +33,7 @@
 #include <string>
 #include <utility>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace procfs = ::tim::procfs;
 
@@ -150,4 +150,4 @@ dynamic_library::is_open() const
 {
     return (handle != nullptr);
 }
-}  // namespace omnitrace
+}  // namespace rocprofsys

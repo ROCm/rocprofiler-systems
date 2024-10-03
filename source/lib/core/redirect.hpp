@@ -31,7 +31,7 @@
 #include <streambuf>
 #include <string>
 
-namespace omnitrace
+namespace rocprofsys
 {
 inline namespace config
 {
@@ -68,9 +68,9 @@ struct redirect
         if(_v != _expect)
         {
             if(get_verbose() > 0)
-                std::cerr << "[omnitrace::redirect] Expected:\n[omnitrace::redirect]    "
+                std::cerr << "[rocprofsys::redirect] Expected:\n[rocprofsys::redirect]    "
                           << _expect
-                          << "\n[omnitrace::redirect] Found:\n[omnitrace::redirect]    "
+                          << "\n[rocprofsys::redirect] Found:\n[rocprofsys::redirect]    "
                           << _v << "\n";
             if(get_verbose() <= 0 || (&m_os != &std::cerr && &m_os != &std::cout))
                 m_os << m_buffer.str() << std::flush;
@@ -99,4 +99,4 @@ private:
     std::stringstream m_buffer{};
     std::streambuf*   m_strm_buffer = nullptr;
 };
-}  // namespace omnitrace
+}  // namespace rocprofsys

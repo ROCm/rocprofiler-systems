@@ -47,7 +47,7 @@
 #include <variant>
 #include <vector>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -95,7 +95,7 @@ struct rocm_event
 using rocm_data_t       = std::vector<rocm_event>;
 using rocm_data_tracker = data_tracker<rocm_feature_value, rocm_event>;
 
-omnitrace::unique_ptr_t<rocm_data_t>&
+rocprofsys::unique_ptr_t<rocm_data_t>&
 rocm_data(int64_t _tid = threading::get_id());
 
 using rocprofiler_value = typename rocm_event::value_type;
@@ -147,16 +147,16 @@ rocprofiler::is_setup()
 }
 #endif
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 namespace tim
 {
 namespace component
 {
-using ::omnitrace::component::rocm_data_tracker;
-using ::omnitrace::component::rocm_feature_value;
-using ::omnitrace::component::rocprofiler_data;
-using ::omnitrace::component::rocprofiler_value;
+using ::rocprofsys::component::rocm_data_tracker;
+using ::rocprofsys::component::rocm_feature_value;
+using ::rocprofsys::component::rocprofiler_data;
+using ::rocprofsys::component::rocprofiler_value;
 }  // namespace component
 }  // namespace tim
 

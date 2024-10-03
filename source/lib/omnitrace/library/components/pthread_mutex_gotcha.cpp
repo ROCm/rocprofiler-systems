@@ -36,7 +36,7 @@
 #include <pthread.h>
 #include <stdexcept>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -210,7 +210,7 @@ int
 pthread_mutex_gotcha::operator()(int (*_callee)(pthread_mutex_t*),
                                  pthread_mutex_t* _mutex) const
 {
-    if(get_state() != ::omnitrace::State::Active || m_protect) return (*_callee)(_mutex);
+    if(get_state() != ::rocprofsys::State::Active || m_protect) return (*_callee)(_mutex);
     return (*this)(reinterpret_cast<uintptr_t>(_mutex), _callee, _mutex);
 }
 
@@ -218,7 +218,7 @@ int
 pthread_mutex_gotcha::operator()(int (*_callee)(pthread_spinlock_t*),
                                  pthread_spinlock_t* _lock) const
 {
-    if(get_state() != ::omnitrace::State::Active || m_protect) return (*_callee)(_lock);
+    if(get_state() != ::rocprofsys::State::Active || m_protect) return (*_callee)(_lock);
     return (*this)(reinterpret_cast<uintptr_t>(_lock), _callee, _lock);
 }
 
@@ -226,7 +226,7 @@ int
 pthread_mutex_gotcha::operator()(int (*_callee)(pthread_rwlock_t*),
                                  pthread_rwlock_t* _lock) const
 {
-    if(get_state() != ::omnitrace::State::Active || m_protect) return (*_callee)(_lock);
+    if(get_state() != ::rocprofsys::State::Active || m_protect) return (*_callee)(_lock);
     return (*this)(reinterpret_cast<uintptr_t>(_lock), _callee, _lock);
 }
 
@@ -234,7 +234,7 @@ int
 pthread_mutex_gotcha::operator()(int (*_callee)(pthread_barrier_t*),
                                  pthread_barrier_t* _barrier) const
 {
-    if(get_state() != ::omnitrace::State::Active || m_protect)
+    if(get_state() != ::rocprofsys::State::Active || m_protect)
         return (*_callee)(_barrier);
     return (*this)(reinterpret_cast<uintptr_t>(_barrier), _callee, _barrier);
 }
@@ -243,7 +243,7 @@ int
 pthread_mutex_gotcha::operator()(int (*_callee)(pthread_t, void**), pthread_t _thr,
                                  void** _tinfo) const
 {
-    if(get_state() != ::omnitrace::State::Active || m_protect)
+    if(get_state() != ::rocprofsys::State::Active || m_protect)
         return (*_callee)(_thr, _tinfo);
     return (*this)(static_cast<uintptr_t>(threading::get_id()), _callee, _thr, _tinfo);
 }
@@ -252,11 +252,11 @@ bool
 pthread_mutex_gotcha::is_disabled()
 {
     static thread_local const auto& _info = thread_info::get();
-    return (!_info || _info->is_offset || get_state() != ::omnitrace::State::Active ||
+    return (!_info || _info->is_offset || get_state() != ::rocprofsys::State::Active ||
             get_thread_state() != ThreadState::Enabled);
 }
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 namespace tim
 {
@@ -268,9 +268,9 @@ static_data<pthread_mutex_gotcha, pthread_mutex_gotcha_t>::operator()(
     std::integral_constant<size_t, N>, const component::gotcha_data& _data) const
 {
     using thread_data_t =
-        omnitrace::thread_data<pthread_mutex_gotcha, std::integral_constant<size_t, N>>;
+        rocprofsys::thread_data<pthread_mutex_gotcha, std::integral_constant<size_t, N>>;
     static thread_local auto& _v =
-        thread_data_t::instance(omnitrace::construct_on_thread{}, _data);
+        thread_data_t::instance(rocprofsys::construct_on_thread{}, _data);
     return *_v;
 }
 }  // namespace policy

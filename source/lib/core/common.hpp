@@ -51,7 +51,7 @@
 #include <vector>
 
 #define ROCPROFSYS_DECLARE_COMPONENT(NAME)                                               \
-    namespace omnitrace                                                                  \
+    namespace rocprofsys                                                                  \
     {                                                                                    \
     namespace component                                                                  \
     {                                                                                    \
@@ -63,7 +63,7 @@
     namespace trait                                                                      \
     {                                                                                    \
     template <>                                                                          \
-    struct is_component<omnitrace::component::NAME> : true_type                          \
+    struct is_component<rocprofsys::component::NAME> : true_type                          \
     {};                                                                                  \
     }                                                                                    \
     }                                                                                    \
@@ -71,12 +71,12 @@
     {                                                                                    \
     namespace component                                                                  \
     {                                                                                    \
-    using ::omnitrace::component::NAME;                                                  \
+    using ::rocprofsys::component::NAME;                                                  \
     }                                                                                    \
     }
 
 #define ROCPROFSYS_COMPONENT_ALIAS(NAME, ...)                                            \
-    namespace omnitrace                                                                  \
+    namespace rocprofsys                                                                  \
     {                                                                                    \
     namespace component                                                                  \
     {                                                                                    \
@@ -87,7 +87,7 @@
     {                                                                                    \
     namespace component                                                                  \
     {                                                                                    \
-    using ::omnitrace::component::NAME;                                                  \
+    using ::rocprofsys::component::NAME;                                                  \
     }                                                                                    \
     }
 
@@ -97,12 +97,12 @@
     namespace trait                                                                      \
     {                                                                                    \
     template <>                                                                          \
-    struct TRAIT<::omnitrace::TYPE> : VALUE                                              \
+    struct TRAIT<::rocprofsys::TYPE> : VALUE                                              \
     {};                                                                                  \
     }                                                                                    \
     }
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace api       = ::tim::api;        // NOLINT
 namespace category  = ::tim::category;   // NOLINT
@@ -126,9 +126,9 @@ struct construct_on_thread
 {
     int64_t index = threading::get_id();
 };
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 // same sort of functionality as python's " ".join([...])
 #if !defined(JOIN)
-#    define JOIN(...) ::omnitrace::common::join(__VA_ARGS__)
+#    define JOIN(...) ::rocprofsys::common::join(__VA_ARGS__)
 #endif

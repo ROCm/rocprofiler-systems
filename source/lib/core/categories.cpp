@@ -31,7 +31,7 @@
 #include <set>
 #include <string>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace categories
 {
@@ -138,4 +138,4 @@ shutdown()
     disable_categories(config::get_enabled_categories());
 }
 }  // namespace categories
-}  // namespace omnitrace
+}  // namespace rocprofsys

@@ -124,7 +124,7 @@ PYBIND11_MODULE(libpyrocprofsys, omni)
                 throw std::runtime_error("Error! rocprofsys is already initialized");
             _is_initialized = true;
             omnitrace_set_instrumented(
-                static_cast<int>(omnitrace::dl::InstrumentMode::PythonProfile));
+                static_cast<int>(rocprofsys::dl::InstrumentMode::PythonProfile));
             omnitrace_set_mpi(_get_use_mpi(), false);
             std::string _cmd      = {};
             std::string _cmd_line = {};
@@ -675,7 +675,7 @@ namespace pycoverage
 py::module
 generate(py::module& _pymod)
 {
-    namespace coverage           = omnitrace::coverage;
+    namespace coverage           = rocprofsys::coverage;
     using coverage_data_vector_t = std::vector<coverage::coverage_data>;
 
     py::module _pycov = _pymod.def_submodule("coverage", "Code coverage");
@@ -812,7 +812,7 @@ generate(py::module& _pymod)
         std::ofstream ofs{};
         if(tim::filepath::open(ofs, _name))
         {
-            tim::operation::file_output_message<omnitrace::coverage::code_coverage>{}(
+            tim::operation::file_output_message<rocprofsys::coverage::code_coverage>{}(
                 _name, std::string{ "coverage" });
             ofs << oss.str() << "\n";
         }

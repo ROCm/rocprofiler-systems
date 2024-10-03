@@ -27,7 +27,7 @@
 #include <cstdint>
 #include <string>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace binary
 {
@@ -72,4 +72,4 @@ scope_filter::satisfies_filter(const ContainerT& _filters, filter_scope _scope,
     return true;
 }
 }  // namespace binary
-}  // namespace omnitrace
+}  // namespace rocprofsys

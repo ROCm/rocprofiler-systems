@@ -35,7 +35,7 @@
 #include <string_view>
 #include <unordered_set>
 
-namespace omnitrace
+namespace rocprofsys
 {
 //
 //      Initialization routines
@@ -424,4 +424,4 @@ get_causal_source_exclude();
 std::vector<std::string>
 get_causal_function_exclude();
 }  // namespace config
-}  // namespace omnitrace
+}  // namespace rocprofsys

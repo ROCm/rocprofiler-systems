@@ -40,7 +40,7 @@
 #include <thread>
 #include <unistd.h>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -270,7 +270,7 @@ mpi_gotcha::audit(const gotcha_data_t& _data, audit::incoming)
     tim::mpi::is_initialized_callback() = []() { return false; };
     tim::mpi::is_finalized()            = true;
 #else
-    if(is_root_process() && omnitrace::get_state() < omnitrace::State::Finalized)
+    if(is_root_process() && rocprofsys::get_state() < rocprofsys::State::Finalized)
         omnitrace_finalize_hidden();
 #endif
 }
@@ -380,6 +380,6 @@ mpi_gotcha::audit(const gotcha_data_t& _data, audit::outgoing, int _retval)
     omnitrace_pop_trace_hidden(_data.tool_id.c_str());
 }
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
-TIMEMORY_INITIALIZE_STORAGE(omnitrace::component::mpi_gotcha)
+TIMEMORY_INITIALIZE_STORAGE(rocprofsys::component::mpi_gotcha)

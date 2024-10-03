@@ -66,7 +66,7 @@ namespace filepath = ::tim::filepath;  // NOLINT
 namespace console  = ::tim::utility::console;
 namespace argparse = ::tim::argparse;
 namespace signals  = ::tim::signals;
-using settings     = ::omnitrace::settings;
+using settings     = ::rocprofsys::settings;
 using namespace ::timemory::join;
 using ::tim::get_env;
 using ::tim::log::stream;
@@ -89,7 +89,7 @@ get_internal_libpath(const std::string& _lib)
     auto _pos = _exe.find_last_of('/');
     auto _dir = std::string{ "./" };
     if(_pos != std::string_view::npos) _dir = _exe.substr(0, _pos);
-    return omnitrace::common::join("/", _dir, "..", "lib", _lib);
+    return rocprofsys::common::join("/", _dir, "..", "lib", _lib);
 }
 
 parser_data_t&
@@ -190,8 +190,8 @@ prepare_environment_for_run(parser_data_t& _data)
 {
     if(_data.launcher.empty())
     {
-        omnitrace::argparse::add_ld_preload(_data);
-        omnitrace::argparse::add_ld_library_path(_data);
+        rocprofsys::argparse::add_ld_preload(_data);
+        rocprofsys::argparse::add_ld_library_path(_data);
     }
 }
 
@@ -270,7 +270,7 @@ parse_args(int argc, char** argv, parser_data_t& _parser_data, bool& _fork_exec)
     using parser_err_t = typename parser_t::result_type;
 
     toggle_suppression(initial_suppression);
-    omnitrace::argparse::init_parser(_parser_data);
+    rocprofsys::argparse::init_parser(_parser_data);
 
     // no need for backtraces
     signals::disable_signal_detection(signals::signal_settings::get_enabled());
@@ -303,8 +303,8 @@ parse_args(int argc, char** argv, parser_data_t& _parser_data, bool& _fork_exec)
     // disable options related to causal profiling
     _parser_data.processed_groups.emplace("causal");
 
-    omnitrace::argparse::add_core_arguments(parser, _parser_data);
-    omnitrace::argparse::add_extended_arguments(parser, _parser_data);
+    rocprofsys::argparse::add_core_arguments(parser, _parser_data);
+    rocprofsys::argparse::add_extended_arguments(parser, _parser_data);
 
     parser.start_group("EXECUTION OPTIONS", "");
     parser.add_argument({ "--fork" }, "Execute via fork + execvpe instead of execvpe")
@@ -352,7 +352,7 @@ parser_data_t&
 parse_command(int argc, char** argv, parser_data_t& _parser_data)
 {
     toggle_suppression(initial_suppression);
-    omnitrace::argparse::init_parser(_parser_data);
+    rocprofsys::argparse::init_parser(_parser_data);
 
     // no need for backtraces
     signals::disable_signal_detection(signals::signal_settings::get_enabled());

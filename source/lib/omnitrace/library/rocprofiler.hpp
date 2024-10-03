@@ -46,7 +46,7 @@
 #include <variant>
 #include <vector>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace rocprofiler
 {
@@ -85,4 +85,4 @@ rocm_metrics()
 #endif
 
 }  // namespace rocprofiler
-}  // namespace omnitrace
+}  // namespace rocprofsys

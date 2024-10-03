@@ -40,7 +40,7 @@
 #include <dlfcn.h>
 #include <map>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace causal
 {
@@ -77,4 +77,4 @@ start_experimenting();
 void
 finish_experimenting();
 }  // namespace causal
-}  // namespace omnitrace
+}  // namespace rocprofsys

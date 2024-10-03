@@ -67,7 +67,7 @@
 #    define ROCPROFSYS_ASSERT(COND) (COND) ? ::tim::log::base() : TIMEMORY_FATAL
 #endif
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace perf
 {
@@ -663,4 +663,4 @@ get_instance(int64_t _tid)
     return _data->at(_tid);
 }
 }  // namespace perf
-}  // namespace omnitrace
+}  // namespace rocprofsys

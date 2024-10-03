@@ -28,7 +28,7 @@
 #include <timemory/utility/backtrace.hpp>
 #include <type_traits>
 
-namespace omnitrace
+namespace rocprofsys
 {
 template <typename Tp>
 class exception : public Tp
@@ -50,4 +50,4 @@ public:
 private:
     char* m_what = nullptr;
 };
-}  // namespace omnitrace
+}  // namespace rocprofsys

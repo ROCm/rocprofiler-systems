@@ -28,7 +28,7 @@
 #include <cstdint>
 #include <string>
 
-namespace omnitrace
+namespace rocprofsys
 {
 // used for specifying the state of omnitrace
 enum class State : unsigned short
@@ -97,26 +97,26 @@ struct scoped_thread_state
     ROCPROFSYS_INLINE scoped_thread_state(ThreadState _v) { push_thread_state(_v); }
     ROCPROFSYS_INLINE ~scoped_thread_state() { pop_thread_state(); }
 };
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 #define ROCPROFSYS_SCOPED_THREAD_STATE(STATE)                                            \
-    ::omnitrace::scoped_thread_state ROCPROFSYS_VARIABLE(_scoped_thread_state_,          \
+    ::rocprofsys::scoped_thread_state ROCPROFSYS_VARIABLE(_scoped_thread_state_,          \
                                                          __LINE__)                       \
     {                                                                                    \
-        ::omnitrace::STATE                                                               \
+        ::rocprofsys::STATE                                                               \
     }
 
 namespace std
 {
 std::string
-to_string(omnitrace::State _v);
+to_string(rocprofsys::State _v);
 
 std::string
-to_string(omnitrace::ThreadState _v);
+to_string(rocprofsys::ThreadState _v);
 
 std::string
-to_string(omnitrace::Mode _v);
+to_string(rocprofsys::Mode _v);
 
 std::string
-to_string(omnitrace::CausalMode _v);
+to_string(rocprofsys::CausalMode _v);
 }  // namespace std

@@ -25,7 +25,7 @@
 #include <set>
 #include <unistd.h>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace mproc
 {
@@ -42,4 +42,4 @@ wait_pid(pid_t _pid, int _opts = 0);
 int
 diagnose_status(pid_t _pid, int _status, int _verbose = 0);
 }  // namespace mproc
-}  // namespace omnitrace
+}  // namespace rocprofsys

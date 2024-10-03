@@ -60,9 +60,9 @@
 #include <thread>
 
 #define ROCPROFSYS_ROCM_SMI_CALL(...)                                                    \
-    ::omnitrace::rocm_smi::check_error(__FILE__, __LINE__, __VA_ARGS__)
+    ::rocprofsys::rocm_smi::check_error(__FILE__, __LINE__, __VA_ARGS__)
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace rocm_smi
 {
@@ -473,20 +473,20 @@ device_count()
     return gpu::rsmi_device_count();
 }
 }  // namespace rocm_smi
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(
-    TIMEMORY_ESC(data_tracker<double, omnitrace::component::backtrace_gpu_busy>), true,
+    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_busy>), true,
     double)
 
 ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(
-    TIMEMORY_ESC(data_tracker<double, omnitrace::component::backtrace_gpu_temp>), true,
+    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_temp>), true,
     double)
 
 ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(
-    TIMEMORY_ESC(data_tracker<double, omnitrace::component::backtrace_gpu_power>), true,
+    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_power>), true,
     double)
 
 ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(
-    TIMEMORY_ESC(data_tracker<double, omnitrace::component::backtrace_gpu_memory>), true,
+    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_memory>), true,
     double)

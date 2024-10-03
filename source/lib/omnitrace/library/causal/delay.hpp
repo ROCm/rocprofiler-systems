@@ -34,7 +34,7 @@
 #include <atomic>
 #include <cstdint>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace causal
 {
@@ -58,4 +58,4 @@ struct delay : comp::empty_base
     static uint64_t compute_total_delay(uint64_t);
 };
 }  // namespace causal
-}  // namespace omnitrace
+}  // namespace rocprofsys

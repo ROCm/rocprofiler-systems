@@ -43,7 +43,7 @@
 #include <string_view>
 #include <utility>
 
-namespace omnitrace
+namespace rocprofsys
 {
 inline namespace config
 {
@@ -96,8 +96,8 @@ flush()
     fprintf(stdout, "%s", ::tim::log::color::end());
     fflush(stdout);
     std::cout << ::tim::log::color::end() << std::flush;
-    fprintf(::omnitrace::debug::get_file(), "%s", ::tim::log::color::end());
-    fflush(::omnitrace::debug::get_file());
+    fprintf(::rocprofsys::debug::get_file(), "%s", ::tim::log::color::end());
+    fflush(::rocprofsys::debug::get_file());
     std::cerr << ::tim::log::color::end() << std::flush;
 }
 //
@@ -152,7 +152,7 @@ extern template std::string as_hex<int64_t>(int64_t, size_t);
 extern template std::string as_hex<uint64_t>(uint64_t, size_t);
 extern template std::string
 as_hex<void*>(void*, size_t);
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 #if !defined(ROCPROFSYS_DEBUG_BUFFER_LEN)
 #    define ROCPROFSYS_DEBUG_BUFFER_LEN 1024
@@ -172,17 +172,17 @@ as_hex<void*>(void*, size_t);
 #endif
 
 #if !defined(ROCPROFSYS_DEBUG_THREAD_IDENTIFIER)
-#    define ROCPROFSYS_DEBUG_THREAD_IDENTIFIER ::omnitrace::debug::get_tid()
+#    define ROCPROFSYS_DEBUG_THREAD_IDENTIFIER ::rocprofsys::debug::get_tid()
 #endif
 
 #if !defined(ROCPROFSYS_SOURCE_LOCATION)
 #    define ROCPROFSYS_SOURCE_LOCATION                                                   \
-        ::omnitrace::debug::source_location { __PRETTY_FUNCTION__, __FILE__, __LINE__ }
+        ::rocprofsys::debug::source_location { __PRETTY_FUNCTION__, __FILE__, __LINE__ }
 #endif
 
 #if !defined(ROCPROFSYS_RECORD_SOURCE_LOCATION)
 #    define ROCPROFSYS_RECORD_SOURCE_LOCATION                                            \
-        ::omnitrace::debug::set_source_location(ROCPROFSYS_SOURCE_LOCATION)
+        ::rocprofsys::debug::set_source_location(ROCPROFSYS_SOURCE_LOCATION)
 #endif
 
 #if defined(__clang__) || (__GNUC__ < 9)
@@ -196,14 +196,14 @@ as_hex<void*>(void*, size_t);
             .c_str()
 #else
 #    define ROCPROFSYS_FUNCTION                                                          \
-        ::omnitrace::debug::get_chars(                                                   \
+        ::rocprofsys::debug::get_chars(                                                   \
             std::string_view{ __FUNCTION__ },                                            \
             std::make_index_sequence<std::min(                                           \
                 std::string_view{ __FUNCTION__ }.find("_hidden"),                        \
                 std::string_view{ __FUNCTION__ }.length())>{})                           \
             .data()
 #    define ROCPROFSYS_PRETTY_FUNCTION                                                   \
-        ::omnitrace::debug::get_chars(                                                   \
+        ::rocprofsys::debug::get_chars(                                                   \
             std::string_view{ __PRETTY_FUNCTION__ },                                     \
             std::make_index_sequence<std::min(                                           \
                 std::string_view{ __PRETTY_FUNCTION__ }.find("_hidden"),                 \
@@ -214,37 +214,37 @@ as_hex<void*>(void*, size_t);
 //--------------------------------------------------------------------------------------//
 
 #define ROCPROFSYS_FPRINTF_STDERR_COLOR(COLOR)                                           \
-    fprintf(::omnitrace::debug::get_file(), "%s", ::tim::log::color::COLOR())
+    fprintf(::rocprofsys::debug::get_file(), "%s", ::tim::log::color::COLOR())
 
 //--------------------------------------------------------------------------------------//
 
 #define ROCPROFSYS_CONDITIONAL_PRINT_COLOR(COLOR, COND, ...)                             \
-    if(ROCPROFSYS_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&             \
-                           ::omnitrace::config::get_debug_pid()))                        \
+    if(ROCPROFSYS_UNLIKELY((COND) && ::rocprofsys::config::get_debug_tid() &&             \
+                           ::rocprofsys::config::get_debug_pid()))                        \
     {                                                                                    \
-        ::omnitrace::debug::flush();                                                     \
-        ::omnitrace::debug::lock _debug_lk{};                                            \
+        ::rocprofsys::debug::flush();                                                     \
+        ::rocprofsys::debug::lock _debug_lk{};                                            \
         ROCPROFSYS_FPRINTF_STDERR_COLOR(COLOR);                                          \
-        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%li]%s",              \
+        fprintf(::rocprofsys::debug::get_file(), "[rocprof-sys][%i][%li]%s",              \
                 ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER, ROCPROFSYS_DEBUG_THREAD_IDENTIFIER, \
-                ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
-        fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
-        ::omnitrace::debug::flush();                                                     \
+                ::rocprofsys::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
+        fprintf(::rocprofsys::debug::get_file(), __VA_ARGS__);                            \
+        ::rocprofsys::debug::flush();                                                     \
     }
 
 #define ROCPROFSYS_CONDITIONAL_PRINT_COLOR_F(COLOR, COND, ...)                           \
-    if(ROCPROFSYS_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&             \
-                           ::omnitrace::config::get_debug_pid()))                        \
+    if(ROCPROFSYS_UNLIKELY((COND) && ::rocprofsys::config::get_debug_tid() &&             \
+                           ::rocprofsys::config::get_debug_pid()))                        \
     {                                                                                    \
-        ::omnitrace::debug::flush();                                                     \
-        ::omnitrace::debug::lock _debug_lk{};                                            \
+        ::rocprofsys::debug::flush();                                                     \
+        ::rocprofsys::debug::lock _debug_lk{};                                            \
         ROCPROFSYS_FPRINTF_STDERR_COLOR(COLOR);                                          \
-        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%li][%s]%s",          \
+        fprintf(::rocprofsys::debug::get_file(), "[rocprof-sys][%i][%li][%s]%s",          \
                 ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER, ROCPROFSYS_DEBUG_THREAD_IDENTIFIER, \
                 ROCPROFSYS_FUNCTION,                                                     \
-                ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
-        fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
-        ::omnitrace::debug::flush();                                                     \
+                ::rocprofsys::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
+        fprintf(::rocprofsys::debug::get_file(), __VA_ARGS__);                            \
+        ::rocprofsys::debug::flush();                                                     \
     }
 
 #define ROCPROFSYS_PRINT_COLOR(COLOR, ...)                                               \
@@ -256,119 +256,119 @@ as_hex<void*>(void*, size_t);
 //--------------------------------------------------------------------------------------//
 
 #define ROCPROFSYS_CONDITIONAL_PRINT(COND, ...)                                          \
-    if(ROCPROFSYS_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&             \
-                           ::omnitrace::config::get_debug_pid()))                        \
+    if(ROCPROFSYS_UNLIKELY((COND) && ::rocprofsys::config::get_debug_tid() &&             \
+                           ::rocprofsys::config::get_debug_pid()))                        \
     {                                                                                    \
-        ::omnitrace::debug::flush();                                                     \
-        ::omnitrace::debug::lock _debug_lk{};                                            \
+        ::rocprofsys::debug::flush();                                                     \
+        ::rocprofsys::debug::lock _debug_lk{};                                            \
         ROCPROFSYS_FPRINTF_STDERR_COLOR(info);                                           \
-        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%li]%s",              \
+        fprintf(::rocprofsys::debug::get_file(), "[rocprof-sys][%i][%li]%s",              \
                 ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER, ROCPROFSYS_DEBUG_THREAD_IDENTIFIER, \
-                ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
-        fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
-        ::omnitrace::debug::flush();                                                     \
+                ::rocprofsys::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
+        fprintf(::rocprofsys::debug::get_file(), __VA_ARGS__);                            \
+        ::rocprofsys::debug::flush();                                                     \
     }
 
 #define ROCPROFSYS_CONDITIONAL_BASIC_PRINT(COND, ...)                                    \
-    if(ROCPROFSYS_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&             \
-                           ::omnitrace::config::get_debug_pid()))                        \
+    if(ROCPROFSYS_UNLIKELY((COND) && ::rocprofsys::config::get_debug_tid() &&             \
+                           ::rocprofsys::config::get_debug_pid()))                        \
     {                                                                                    \
-        ::omnitrace::debug::flush();                                                     \
-        ::omnitrace::debug::lock _debug_lk{};                                            \
+        ::rocprofsys::debug::flush();                                                     \
+        ::rocprofsys::debug::lock _debug_lk{};                                            \
         ROCPROFSYS_FPRINTF_STDERR_COLOR(info);                                           \
-        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i]%s",                   \
+        fprintf(::rocprofsys::debug::get_file(), "[rocprof-sys][%i]%s",                   \
                 ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER,                                     \
-                ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
-        fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
-        ::omnitrace::debug::flush();                                                     \
+                ::rocprofsys::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
+        fprintf(::rocprofsys::debug::get_file(), __VA_ARGS__);                            \
+        ::rocprofsys::debug::flush();                                                     \
     }
 
 #define ROCPROFSYS_CONDITIONAL_PRINT_F(COND, ...)                                        \
-    if(ROCPROFSYS_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&             \
-                           ::omnitrace::config::get_debug_pid()))                        \
+    if(ROCPROFSYS_UNLIKELY((COND) && ::rocprofsys::config::get_debug_tid() &&             \
+                           ::rocprofsys::config::get_debug_pid()))                        \
     {                                                                                    \
-        ::omnitrace::debug::flush();                                                     \
-        ::omnitrace::debug::lock _debug_lk{};                                            \
+        ::rocprofsys::debug::flush();                                                     \
+        ::rocprofsys::debug::lock _debug_lk{};                                            \
         ROCPROFSYS_FPRINTF_STDERR_COLOR(info);                                           \
-        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%li][%s]%s",          \
+        fprintf(::rocprofsys::debug::get_file(), "[rocprof-sys][%i][%li][%s]%s",          \
                 ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER, ROCPROFSYS_DEBUG_THREAD_IDENTIFIER, \
                 ROCPROFSYS_FUNCTION,                                                     \
-                ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
-        fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
-        ::omnitrace::debug::flush();                                                     \
+                ::rocprofsys::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
+        fprintf(::rocprofsys::debug::get_file(), __VA_ARGS__);                            \
+        ::rocprofsys::debug::flush();                                                     \
     }
 
 #define ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(COND, ...)                                  \
-    if(ROCPROFSYS_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&             \
-                           ::omnitrace::config::get_debug_pid()))                        \
+    if(ROCPROFSYS_UNLIKELY((COND) && ::rocprofsys::config::get_debug_tid() &&             \
+                           ::rocprofsys::config::get_debug_pid()))                        \
     {                                                                                    \
-        ::omnitrace::debug::flush();                                                     \
-        ::omnitrace::debug::lock _debug_lk{};                                            \
+        ::rocprofsys::debug::flush();                                                     \
+        ::rocprofsys::debug::lock _debug_lk{};                                            \
         ROCPROFSYS_FPRINTF_STDERR_COLOR(info);                                           \
-        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%s]%s",               \
+        fprintf(::rocprofsys::debug::get_file(), "[rocprof-sys][%i][%s]%s",               \
                 ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER, ROCPROFSYS_FUNCTION,                \
-                ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
-        fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
-        ::omnitrace::debug::flush();                                                     \
+                ::rocprofsys::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
+        fprintf(::rocprofsys::debug::get_file(), __VA_ARGS__);                            \
+        ::rocprofsys::debug::flush();                                                     \
     }
 
 //--------------------------------------------------------------------------------------//
 
 #define ROCPROFSYS_CONDITIONAL_WARN(COND, ...)                                           \
-    if(ROCPROFSYS_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&             \
-                           ::omnitrace::config::get_debug_pid()))                        \
+    if(ROCPROFSYS_UNLIKELY((COND) && ::rocprofsys::config::get_debug_tid() &&             \
+                           ::rocprofsys::config::get_debug_pid()))                        \
     {                                                                                    \
-        ::omnitrace::debug::flush();                                                     \
-        ::omnitrace::debug::lock _debug_lk{};                                            \
+        ::rocprofsys::debug::flush();                                                     \
+        ::rocprofsys::debug::lock _debug_lk{};                                            \
         ROCPROFSYS_FPRINTF_STDERR_COLOR(warning);                                        \
-        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%li]%s",              \
+        fprintf(::rocprofsys::debug::get_file(), "[rocprof-sys][%i][%li]%s",              \
                 ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER, ROCPROFSYS_DEBUG_THREAD_IDENTIFIER, \
-                ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
-        fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
-        ::omnitrace::debug::flush();                                                     \
+                ::rocprofsys::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
+        fprintf(::rocprofsys::debug::get_file(), __VA_ARGS__);                            \
+        ::rocprofsys::debug::flush();                                                     \
     }
 
 #define ROCPROFSYS_CONDITIONAL_BASIC_WARN(COND, ...)                                     \
-    if(ROCPROFSYS_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&             \
-                           ::omnitrace::config::get_debug_pid()))                        \
+    if(ROCPROFSYS_UNLIKELY((COND) && ::rocprofsys::config::get_debug_tid() &&             \
+                           ::rocprofsys::config::get_debug_pid()))                        \
     {                                                                                    \
-        ::omnitrace::debug::flush();                                                     \
-        ::omnitrace::debug::lock _debug_lk{};                                            \
+        ::rocprofsys::debug::flush();                                                     \
+        ::rocprofsys::debug::lock _debug_lk{};                                            \
         ROCPROFSYS_FPRINTF_STDERR_COLOR(warning);                                        \
-        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i]%s",                   \
+        fprintf(::rocprofsys::debug::get_file(), "[rocprof-sys][%i]%s",                   \
                 ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER,                                     \
-                ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
-        fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
-        ::omnitrace::debug::flush();                                                     \
+                ::rocprofsys::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
+        fprintf(::rocprofsys::debug::get_file(), __VA_ARGS__);                            \
+        ::rocprofsys::debug::flush();                                                     \
     }
 
 #define ROCPROFSYS_CONDITIONAL_WARN_F(COND, ...)                                         \
-    if(ROCPROFSYS_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&             \
-                           ::omnitrace::config::get_debug_pid()))                        \
+    if(ROCPROFSYS_UNLIKELY((COND) && ::rocprofsys::config::get_debug_tid() &&             \
+                           ::rocprofsys::config::get_debug_pid()))                        \
     {                                                                                    \
-        ::omnitrace::debug::flush();                                                     \
-        ::omnitrace::debug::lock _debug_lk{};                                            \
+        ::rocprofsys::debug::flush();                                                     \
+        ::rocprofsys::debug::lock _debug_lk{};                                            \
         ROCPROFSYS_FPRINTF_STDERR_COLOR(warning);                                        \
-        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%li][%s]%s",          \
+        fprintf(::rocprofsys::debug::get_file(), "[rocprof-sys][%i][%li][%s]%s",          \
                 ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER, ROCPROFSYS_DEBUG_THREAD_IDENTIFIER, \
                 ROCPROFSYS_FUNCTION,                                                     \
-                ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
-        fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
-        ::omnitrace::debug::flush();                                                     \
+                ::rocprofsys::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
+        fprintf(::rocprofsys::debug::get_file(), __VA_ARGS__);                            \
+        ::rocprofsys::debug::flush();                                                     \
     }
 
 #define ROCPROFSYS_CONDITIONAL_BASIC_WARN_F(COND, ...)                                   \
-    if(ROCPROFSYS_UNLIKELY((COND) && ::omnitrace::config::get_debug_tid() &&             \
-                           ::omnitrace::config::get_debug_pid()))                        \
+    if(ROCPROFSYS_UNLIKELY((COND) && ::rocprofsys::config::get_debug_tid() &&             \
+                           ::rocprofsys::config::get_debug_pid()))                        \
     {                                                                                    \
-        ::omnitrace::debug::flush();                                                     \
-        ::omnitrace::debug::lock _debug_lk{};                                            \
+        ::rocprofsys::debug::flush();                                                     \
+        ::rocprofsys::debug::lock _debug_lk{};                                            \
         ROCPROFSYS_FPRINTF_STDERR_COLOR(warning);                                        \
-        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%s]%s",               \
+        fprintf(::rocprofsys::debug::get_file(), "[rocprof-sys][%i][%s]%s",               \
                 ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER, ROCPROFSYS_FUNCTION,                \
-                ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
-        fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
-        ::omnitrace::debug::flush();                                                     \
+                ::rocprofsys::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
+        fprintf(::rocprofsys::debug::get_file(), __VA_ARGS__);                            \
+        ::rocprofsys::debug::flush();                                                     \
     }
 
 //--------------------------------------------------------------------------------------//
@@ -380,10 +380,10 @@ as_hex<void*>(void*, size_t);
         snprintf(_msg_buffer, ROCPROFSYS_DEBUG_BUFFER_LEN,                               \
                  "[rocprof-sys][%i][%li][%s]%s", ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER,    \
                  ROCPROFSYS_DEBUG_THREAD_IDENTIFIER, ROCPROFSYS_FUNCTION,                \
-                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                \
+                 ::rocprofsys::debug::is_bracket(__VA_ARGS__) ? "" : " ");                \
         auto len = strlen(_msg_buffer);                                                  \
         snprintf(_msg_buffer + len, ROCPROFSYS_DEBUG_BUFFER_LEN - len, __VA_ARGS__);     \
-        throw ::omnitrace::exception<TYPE>(                                              \
+        throw ::rocprofsys::exception<TYPE>(                                              \
             ::tim::log::string(::tim::log::color::fatal(), _msg_buffer));                \
     }
 
@@ -393,20 +393,20 @@ as_hex<void*>(void*, size_t);
         char _msg_buffer[ROCPROFSYS_DEBUG_BUFFER_LEN];                                   \
         snprintf(_msg_buffer, ROCPROFSYS_DEBUG_BUFFER_LEN, "[rocprof-sys][%i][%s]%s",    \
                  ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER, ROCPROFSYS_FUNCTION,               \
-                 ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                \
+                 ::rocprofsys::debug::is_bracket(__VA_ARGS__) ? "" : " ");                \
         auto len = strlen(_msg_buffer);                                                  \
         snprintf(_msg_buffer + len, ROCPROFSYS_DEBUG_BUFFER_LEN - len, __VA_ARGS__);     \
-        throw ::omnitrace::exception<TYPE>(                                              \
+        throw ::rocprofsys::exception<TYPE>(                                              \
             ::tim::log::string(::tim::log::color::fatal(), _msg_buffer));                \
     }
 
 #define ROCPROFSYS_CI_THROW_E(COND, TYPE, ...)                                           \
     ROCPROFSYS_CONDITIONAL_THROW_E(                                                      \
-        ::omnitrace::get_is_continuous_integration() && (COND), TYPE, __VA_ARGS__)
+        ::rocprofsys::get_is_continuous_integration() && (COND), TYPE, __VA_ARGS__)
 
 #define ROCPROFSYS_CI_BASIC_THROW_E(COND, TYPE, ...)                                     \
     ROCPROFSYS_CONDITIONAL_BASIC_THROW_E(                                                \
-        ::omnitrace::get_is_continuous_integration() && (COND), TYPE, __VA_ARGS__)
+        ::rocprofsys::get_is_continuous_integration() && (COND), TYPE, __VA_ARGS__)
 
 //--------------------------------------------------------------------------------------//
 
@@ -427,14 +427,14 @@ as_hex<void*>(void*, size_t);
 #define ROCPROFSYS_CONDITIONAL_FAILURE(COND, METHOD, ...)                                \
     if(ROCPROFSYS_UNLIKELY((COND)))                                                      \
     {                                                                                    \
-        ::omnitrace::debug::flush();                                                     \
+        ::rocprofsys::debug::flush();                                                     \
         ROCPROFSYS_FPRINTF_STDERR_COLOR(fatal);                                          \
-        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%li]%s",              \
+        fprintf(::rocprofsys::debug::get_file(), "[rocprof-sys][%i][%li]%s",              \
                 ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER, ROCPROFSYS_DEBUG_THREAD_IDENTIFIER, \
-                ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
-        fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
-        ::omnitrace::debug::flush();                                                     \
-        ::omnitrace::set_state(::omnitrace::State::Finalized);                           \
+                ::rocprofsys::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
+        fprintf(::rocprofsys::debug::get_file(), __VA_ARGS__);                            \
+        ::rocprofsys::debug::flush();                                                     \
+        ::rocprofsys::set_state(::rocprofsys::State::Finalized);                           \
         timemory_print_demangled_backtrace<64>();                                        \
         METHOD;                                                                          \
     }
@@ -442,14 +442,14 @@ as_hex<void*>(void*, size_t);
 #define ROCPROFSYS_CONDITIONAL_BASIC_FAILURE(COND, METHOD, ...)                          \
     if(ROCPROFSYS_UNLIKELY((COND)))                                                      \
     {                                                                                    \
-        ::omnitrace::debug::flush();                                                     \
+        ::rocprofsys::debug::flush();                                                     \
         ROCPROFSYS_FPRINTF_STDERR_COLOR(fatal);                                          \
-        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i]%s",                   \
+        fprintf(::rocprofsys::debug::get_file(), "[rocprof-sys][%i]%s",                   \
                 ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER,                                     \
-                ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
-        fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
-        ::omnitrace::debug::flush();                                                     \
-        ::omnitrace::set_state(::omnitrace::State::Finalized);                           \
+                ::rocprofsys::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
+        fprintf(::rocprofsys::debug::get_file(), __VA_ARGS__);                            \
+        ::rocprofsys::debug::flush();                                                     \
+        ::rocprofsys::set_state(::rocprofsys::State::Finalized);                           \
         timemory_print_demangled_backtrace<64>();                                        \
         METHOD;                                                                          \
     }
@@ -457,15 +457,15 @@ as_hex<void*>(void*, size_t);
 #define ROCPROFSYS_CONDITIONAL_FAILURE_F(COND, METHOD, ...)                              \
     if(ROCPROFSYS_UNLIKELY((COND)))                                                      \
     {                                                                                    \
-        ::omnitrace::debug::flush();                                                     \
+        ::rocprofsys::debug::flush();                                                     \
         ROCPROFSYS_FPRINTF_STDERR_COLOR(fatal);                                          \
-        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%li][%s]%s",          \
+        fprintf(::rocprofsys::debug::get_file(), "[rocprof-sys][%i][%li][%s]%s",          \
                 ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER, ROCPROFSYS_DEBUG_THREAD_IDENTIFIER, \
                 ROCPROFSYS_FUNCTION,                                                     \
-                ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
-        fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
-        ::omnitrace::debug::flush();                                                     \
-        ::omnitrace::set_state(::omnitrace::State::Finalized);                           \
+                ::rocprofsys::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
+        fprintf(::rocprofsys::debug::get_file(), __VA_ARGS__);                            \
+        ::rocprofsys::debug::flush();                                                     \
+        ::rocprofsys::set_state(::rocprofsys::State::Finalized);                           \
         timemory_print_demangled_backtrace<64>();                                        \
         METHOD;                                                                          \
     }
@@ -473,25 +473,25 @@ as_hex<void*>(void*, size_t);
 #define ROCPROFSYS_CONDITIONAL_BASIC_FAILURE_F(COND, METHOD, ...)                        \
     if(ROCPROFSYS_UNLIKELY((COND)))                                                      \
     {                                                                                    \
-        ::omnitrace::debug::flush();                                                     \
+        ::rocprofsys::debug::flush();                                                     \
         ROCPROFSYS_FPRINTF_STDERR_COLOR(fatal);                                          \
-        fprintf(::omnitrace::debug::get_file(), "[rocprof-sys][%i][%s]%s",               \
+        fprintf(::rocprofsys::debug::get_file(), "[rocprof-sys][%i][%s]%s",               \
                 ROCPROFSYS_DEBUG_PROCESS_IDENTIFIER, ROCPROFSYS_FUNCTION,                \
-                ::omnitrace::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
-        fprintf(::omnitrace::debug::get_file(), __VA_ARGS__);                            \
-        ::omnitrace::debug::flush();                                                     \
-        ::omnitrace::set_state(::omnitrace::State::Finalized);                           \
+                ::rocprofsys::debug::is_bracket(__VA_ARGS__) ? "" : " ");                 \
+        fprintf(::rocprofsys::debug::get_file(), __VA_ARGS__);                            \
+        ::rocprofsys::debug::flush();                                                     \
+        ::rocprofsys::set_state(::rocprofsys::State::Finalized);                           \
         timemory_print_demangled_backtrace<64>();                                        \
         METHOD;                                                                          \
     }
 
 #define ROCPROFSYS_CI_FAILURE(COND, METHOD, ...)                                         \
     ROCPROFSYS_CONDITIONAL_FAILURE(                                                      \
-        ::omnitrace::get_is_continuous_integration() && (COND), METHOD, __VA_ARGS__)
+        ::rocprofsys::get_is_continuous_integration() && (COND), METHOD, __VA_ARGS__)
 
 #define ROCPROFSYS_CI_BASIC_FAILURE(COND, METHOD, ...)                                   \
     ROCPROFSYS_CONDITIONAL_BASIC_FAILURE(                                                \
-        ::omnitrace::get_is_continuous_integration() && (COND), METHOD, __VA_ARGS__)
+        ::rocprofsys::get_is_continuous_integration() && (COND), METHOD, __VA_ARGS__)
 
 //--------------------------------------------------------------------------------------//
 
@@ -547,16 +547,16 @@ as_hex<void*>(void*, size_t);
 //--------------------------------------------------------------------------------------//
 
 #define ROCPROFSYS_DEBUG(...)                                                            \
-    ROCPROFSYS_CONDITIONAL_PRINT(::omnitrace::get_debug(), __VA_ARGS__)
+    ROCPROFSYS_CONDITIONAL_PRINT(::rocprofsys::get_debug(), __VA_ARGS__)
 
 #define ROCPROFSYS_BASIC_DEBUG(...)                                                      \
-    ROCPROFSYS_CONDITIONAL_BASIC_PRINT(::omnitrace::get_debug_env(), __VA_ARGS__)
+    ROCPROFSYS_CONDITIONAL_BASIC_PRINT(::rocprofsys::get_debug_env(), __VA_ARGS__)
 
 #define ROCPROFSYS_DEBUG_F(...)                                                          \
-    ROCPROFSYS_CONDITIONAL_PRINT_F(::omnitrace::get_debug(), __VA_ARGS__)
+    ROCPROFSYS_CONDITIONAL_PRINT_F(::rocprofsys::get_debug(), __VA_ARGS__)
 
 #define ROCPROFSYS_BASIC_DEBUG_F(...)                                                    \
-    ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(::omnitrace::get_debug_env(), __VA_ARGS__)
+    ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(::rocprofsys::get_debug_env(), __VA_ARGS__)
 
 //--------------------------------------------------------------------------------------//
 //
@@ -566,20 +566,20 @@ as_hex<void*>(void*, size_t);
 
 #define ROCPROFSYS_VERBOSE(LEVEL, ...)                                                   \
     ROCPROFSYS_CONDITIONAL_PRINT(                                                        \
-        ::omnitrace::get_debug() || (::omnitrace::get_verbose() >= LEVEL), __VA_ARGS__)
+        ::rocprofsys::get_debug() || (::rocprofsys::get_verbose() >= LEVEL), __VA_ARGS__)
 
 #define ROCPROFSYS_BASIC_VERBOSE(LEVEL, ...)                                             \
-    ROCPROFSYS_CONDITIONAL_BASIC_PRINT(::omnitrace::get_debug_env() ||                   \
-                                           (::omnitrace::get_verbose_env() >= LEVEL),    \
+    ROCPROFSYS_CONDITIONAL_BASIC_PRINT(::rocprofsys::get_debug_env() ||                   \
+                                           (::rocprofsys::get_verbose_env() >= LEVEL),    \
                                        __VA_ARGS__)
 
 #define ROCPROFSYS_VERBOSE_F(LEVEL, ...)                                                 \
     ROCPROFSYS_CONDITIONAL_PRINT_F(                                                      \
-        ::omnitrace::get_debug() || (::omnitrace::get_verbose() >= LEVEL), __VA_ARGS__)
+        ::rocprofsys::get_debug() || (::rocprofsys::get_verbose() >= LEVEL), __VA_ARGS__)
 
 #define ROCPROFSYS_BASIC_VERBOSE_F(LEVEL, ...)                                           \
-    ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(::omnitrace::get_debug_env() ||                 \
-                                             (::omnitrace::get_verbose_env() >= LEVEL),  \
+    ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(::rocprofsys::get_debug_env() ||                 \
+                                             (::rocprofsys::get_verbose_env() >= LEVEL),  \
                                          __VA_ARGS__)
 
 //--------------------------------------------------------------------------------------//
@@ -590,20 +590,20 @@ as_hex<void*>(void*, size_t);
 
 #define ROCPROFSYS_WARNING(LEVEL, ...)                                                   \
     ROCPROFSYS_CONDITIONAL_WARN(                                                         \
-        ::omnitrace::get_debug() || (::omnitrace::get_verbose() >= LEVEL), __VA_ARGS__)
+        ::rocprofsys::get_debug() || (::rocprofsys::get_verbose() >= LEVEL), __VA_ARGS__)
 
 #define ROCPROFSYS_BASIC_WARNING(LEVEL, ...)                                             \
-    ROCPROFSYS_CONDITIONAL_BASIC_WARN(::omnitrace::get_debug_env() ||                    \
-                                          (::omnitrace::get_verbose_env() >= LEVEL),     \
+    ROCPROFSYS_CONDITIONAL_BASIC_WARN(::rocprofsys::get_debug_env() ||                    \
+                                          (::rocprofsys::get_verbose_env() >= LEVEL),     \
                                       __VA_ARGS__)
 
 #define ROCPROFSYS_WARNING_F(LEVEL, ...)                                                 \
     ROCPROFSYS_CONDITIONAL_WARN_F(                                                       \
-        ::omnitrace::get_debug() || (::omnitrace::get_verbose() >= LEVEL), __VA_ARGS__)
+        ::rocprofsys::get_debug() || (::rocprofsys::get_verbose() >= LEVEL), __VA_ARGS__)
 
 #define ROCPROFSYS_BASIC_WARNING_F(LEVEL, ...)                                           \
-    ROCPROFSYS_CONDITIONAL_BASIC_WARN_F(::omnitrace::get_debug_env() ||                  \
-                                            (::omnitrace::get_verbose_env() >= LEVEL),   \
+    ROCPROFSYS_CONDITIONAL_BASIC_WARN_F(::rocprofsys::get_debug_env() ||                  \
+                                            (::rocprofsys::get_verbose_env() >= LEVEL),   \
                                         __VA_ARGS__)
 
 #define ROCPROFSYS_WARNING_IF(COND, ...) ROCPROFSYS_CONDITIONAL_WARN((COND), __VA_ARGS__)
@@ -613,14 +613,14 @@ as_hex<void*>(void*, size_t);
 
 #define ROCPROFSYS_WARNING_OR_CI_THROW(LEVEL, ...)                                       \
     {                                                                                    \
-        if(ROCPROFSYS_UNLIKELY(::omnitrace::get_is_continuous_integration()))            \
+        if(ROCPROFSYS_UNLIKELY(::rocprofsys::get_is_continuous_integration()))            \
         {                                                                                \
             ROCPROFSYS_CI_THROW(true, __VA_ARGS__);                                      \
         }                                                                                \
         else                                                                             \
         {                                                                                \
-            ROCPROFSYS_CONDITIONAL_WARN(::omnitrace::get_debug() ||                      \
-                                            (::omnitrace::get_verbose() >= LEVEL),       \
+            ROCPROFSYS_CONDITIONAL_WARN(::rocprofsys::get_debug() ||                      \
+                                            (::rocprofsys::get_verbose() >= LEVEL),       \
                                         __VA_ARGS__)                                     \
         }                                                                                \
     }
@@ -629,7 +629,7 @@ as_hex<void*>(void*, size_t);
 #define ROCPROFSYS_PREFER(COND)                                                          \
     ((ROCPROFSYS_LIKELY(COND))                                                           \
          ? ::tim::log::base()                                                            \
-         : ((::omnitrace::get_is_continuous_integration()) ? TIMEMORY_FATAL              \
+         : ((::rocprofsys::get_is_continuous_integration()) ? TIMEMORY_FATAL              \
                                                            : TIMEMORY_WARNING))
 
 //--------------------------------------------------------------------------------------//

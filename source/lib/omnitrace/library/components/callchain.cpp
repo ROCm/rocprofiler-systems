@@ -74,7 +74,7 @@
 #include <pthread.h>
 #include <signal.h>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -214,6 +214,6 @@ callchain::sample(int signo)
     _perf_event->start();
 }
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
-TIMEMORY_INITIALIZE_STORAGE(omnitrace::component::callchain)
+TIMEMORY_INITIALIZE_STORAGE(rocprofsys::component::callchain)

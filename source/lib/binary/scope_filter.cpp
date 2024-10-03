@@ -25,7 +25,7 @@
 
 #include <regex>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace binary
 {
@@ -43,4 +43,4 @@ scope_filter::operator()(std::string_view _value) const
     throw exception<std::runtime_error>{ "invalid scope filter mode" };
 }
 }  // namespace binary
-}  // namespace omnitrace
+}  // namespace rocprofsys

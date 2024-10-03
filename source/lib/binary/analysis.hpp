@@ -44,7 +44,7 @@
 #include <tuple>
 #include <variant>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace binary
 {
@@ -62,4 +62,4 @@ template <bool ExcludeInternal>
 std::optional<tim::unwind::processed_entry>
 lookup_ipaddr_entry(uintptr_t, unw_context_t* = nullptr, tim::unwind::cache* = nullptr);
 }  // namespace binary
-}  // namespace omnitrace
+}  // namespace rocprofsys

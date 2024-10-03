@@ -26,7 +26,7 @@
 
 #include "core/defines.hpp"
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace rcclp
 {
@@ -54,4 +54,4 @@ shutdown()
 {}
 #endif
 }  // namespace rcclp
-}  // namespace omnitrace
+}  // namespace rocprofsys

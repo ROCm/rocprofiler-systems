@@ -25,7 +25,7 @@
 
 #include <timemory/components/timing/backends.hpp>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -49,6 +49,6 @@ backtrace_timestamp::sample(int)
     m_real = tim::get_clock_real_now<uint64_t, std::nano>();
 }
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
-TIMEMORY_INITIALIZE_STORAGE(omnitrace::component::backtrace_timestamp)
+TIMEMORY_INITIALIZE_STORAGE(rocprofsys::component::backtrace_timestamp)

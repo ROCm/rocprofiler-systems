@@ -44,7 +44,7 @@
 #include <set>
 #include <vector>
 
-namespace omnitrace
+namespace rocprofsys
 {
 template <typename... Tp>
 using type_list = ::tim::type_list<Tp...>;
@@ -162,7 +162,7 @@ bool backtrace_metrics::operator()(Tp) const
     return (*this)(type_list<Tp>{});
 }
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 #if !defined(ROCPROFSYS_EXTERN_COMPONENTS) ||                                            \
     (defined(ROCPROFSYS_EXTERN_COMPONENTS) && ROCPROFSYS_EXTERN_COMPONENTS > 0)
@@ -170,15 +170,15 @@ bool backtrace_metrics::operator()(Tp) const
 #    include <timemory/operations.hpp>
 
 ROCPROFSYS_DECLARE_EXTERN_COMPONENT(
-    TIMEMORY_ESC(data_tracker<double, omnitrace::component::backtrace_wall_clock>), true,
+    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_wall_clock>), true,
     double)
 
 ROCPROFSYS_DECLARE_EXTERN_COMPONENT(
-    TIMEMORY_ESC(data_tracker<double, omnitrace::component::backtrace_cpu_clock>), true,
+    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_cpu_clock>), true,
     double)
 
 ROCPROFSYS_DECLARE_EXTERN_COMPONENT(
-    TIMEMORY_ESC(data_tracker<double, omnitrace::component::backtrace_fraction>), true,
+    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_fraction>), true,
     double)
 
 #endif

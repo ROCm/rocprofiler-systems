@@ -25,7 +25,7 @@
 
 #include <timemory/units.hpp>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace perf
 {
@@ -241,4 +241,4 @@ config_overflow_sampling(struct perf_event_attr& _pe, std::string_view _event,
     }
 }
 }  // namespace perf
-}  // namespace omnitrace
+}  // namespace rocprofsys

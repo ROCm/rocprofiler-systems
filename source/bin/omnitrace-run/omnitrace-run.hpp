@@ -32,7 +32,7 @@
 #include <string_view>
 #include <vector>
 
-using parser_data_t = omnitrace::argparse::parser_data;
+using parser_data_t = rocprofsys::argparse::parser_data;
 
 void
 print_command(const parser_data_t&, std::string_view);

@@ -61,7 +61,7 @@ namespace filepath = ::tim::filepath;
 namespace console  = ::tim::utility::console;
 namespace argparse = ::tim::argparse;
 using namespace ::timemory::join;
-using ::omnitrace::utility::parse_numeric_range;
+using ::rocprofsys::utility::parse_numeric_range;
 using ::tim::get_env;
 using ::tim::log::monochrome;
 using ::tim::log::stream;
@@ -151,13 +151,13 @@ remove_child_pid(pid_t _v)
 int
 wait_pid(pid_t _pid, int _opts)
 {
-    return ::omnitrace::mproc::wait_pid(_pid, _opts);
+    return ::rocprofsys::mproc::wait_pid(_pid, _opts);
 }
 
 int
 diagnose_status(pid_t _pid, int _status)
 {
-    return ::omnitrace::mproc::diagnose_status(_pid, _status, get_verbose());
+    return ::rocprofsys::mproc::diagnose_status(_pid, _status, get_verbose());
 }
 
 std::string
@@ -256,7 +256,7 @@ get_internal_libpath(const std::string& _lib)
     auto _pos = _exe.find_last_of('/');
     auto _dir = std::string{ "./" };
     if(_pos != std::string_view::npos) _dir = _exe.substr(0, _pos);
-    return omnitrace::common::join("/", _dir, "..", "lib", _lib);
+    return rocprofsys::common::join("/", _dir, "..", "lib", _lib);
 }
 
 void
@@ -343,13 +343,13 @@ update_env(std::vector<char*>& _environ, std::string_view _env_var, Tp&& _env_va
             else
             {
                 free(itr);
-                itr = strdup(omnitrace::common::join('=', _env_var, _env_val).c_str());
+                itr = strdup(rocprofsys::common::join('=', _env_var, _env_val).c_str());
             }
             return;
         }
     }
     _environ.emplace_back(
-        strdup(omnitrace::common::join('=', _env_var, _env_val).c_str()));
+        strdup(rocprofsys::common::join('=', _env_var, _env_val).c_str()));
 }
 
 template <typename Tp>
@@ -365,7 +365,7 @@ add_default_env(std::vector<char*>& _environ, std::string_view _env_var, Tp&& _e
 
     updated_envs.emplace(_env_var);
     _environ.emplace_back(
-        strdup(omnitrace::common::join('=', _env_var, _env_val).c_str()));
+        strdup(rocprofsys::common::join('=', _env_var, _env_val).c_str()));
 }
 
 void

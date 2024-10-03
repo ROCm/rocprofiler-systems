@@ -43,7 +43,7 @@
 #include <string_view>
 #include <type_traits>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -115,7 +115,7 @@ rocm_event::as_string() const
     _ss << std::fixed;
     for(size_t i = 0; i < feature_names.size(); ++i)
     {
-        auto _name = omnitrace::rocprofiler::get_data_labels().at(device_id).at(
+        auto _name = rocprofsys::rocprofiler::get_data_labels().at(device_id).at(
             feature_names.at(i));
         _ss << ", " << _name << " = ";
         auto _as_string = [&_ss](auto&& itr) { _ss << std::setw(4) << itr; };
@@ -146,7 +146,7 @@ rocprofiler::stop()
 bool
 rocprofiler::is_setup()
 {
-    return omnitrace::rocprofiler::is_setup();
+    return rocprofsys::rocprofiler::is_setup();
 }
 
 void
@@ -174,8 +174,8 @@ rocprofiler::setup()
 void
 rocprofiler::shutdown()
 {
-    omnitrace::rocprofiler::post_process();
-    omnitrace::rocprofiler::rocm_cleanup();
+    rocprofsys::rocprofiler::post_process();
+    rocprofsys::rocprofiler::rocm_cleanup();
     ROCPROFSYS_VERBOSE_F(1, "rocprofiler is shutdown\n");
 }
 
@@ -186,7 +186,7 @@ rocprofiler::protect_flush_activity()
                                        []() { ++rocprofiler_activity_count(); });
 }
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(rocprofiler, false, void)
 ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(rocprofiler_data, true,

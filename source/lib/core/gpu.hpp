@@ -22,7 +22,7 @@
 
 #pragma once
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace gpu
 {
@@ -38,4 +38,4 @@ rsmi_device_count();
 void
 add_hip_device_metadata();
 }  // namespace gpu
-}  // namespace omnitrace
+}  // namespace rocprofsys

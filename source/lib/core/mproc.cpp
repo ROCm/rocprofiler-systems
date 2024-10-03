@@ -32,7 +32,7 @@
 #include <thread>
 #include <unistd.h>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace mproc
 {
@@ -191,4 +191,4 @@ diagnose_status(pid_t _pid, int _status, int _verbose)
     return _ec;
 }
 }  // namespace mproc
-}  // namespace omnitrace
+}  // namespace rocprofsys

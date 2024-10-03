@@ -49,7 +49,7 @@
 #include <execinfo.h>
 #include <type_traits>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace causal
 {
@@ -143,8 +143,8 @@ overflow::sample(int _sig)
 void
 backtrace::sample(int _sig)
 {
-    constexpr size_t  depth        = ::omnitrace::causal::unwind_depth;
-    constexpr int64_t ignore_depth = ::omnitrace::causal::unwind_offset;
+    constexpr size_t  depth        = ::rocprofsys::causal::unwind_depth;
+    constexpr int64_t ignore_depth = ::rocprofsys::causal::unwind_offset;
     constexpr size_t  select_init  = std::numeric_limits<size_t>::max();
     constexpr size_t  select_ival  = 5;  // interval at which realtime signal contributes
 
@@ -236,10 +236,10 @@ backtrace::get_period(uint64_t _units)
 }
 }  // namespace component
 }  // namespace causal
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 #define INSTANTIATE_BT_CAUSAL_PERIOD(TYPE)                                               \
-    template TYPE omnitrace::causal::component::backtrace::get_period<TYPE>(uint64_t);
+    template TYPE rocprofsys::causal::component::backtrace::get_period<TYPE>(uint64_t);
 
 INSTANTIATE_BT_CAUSAL_PERIOD(float)
 INSTANTIATE_BT_CAUSAL_PERIOD(double)

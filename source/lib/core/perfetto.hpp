@@ -43,7 +43,7 @@ PERFETTO_DEFINE_CATEGORIES(ROCPROFSYS_PERFETTO_CATEGORIES);
 #include <utility>
 #include <vector>
 
-namespace omnitrace
+namespace rocprofsys
 {
 std::unique_ptr<::perfetto::TracingSession>& get_perfetto_session(
     pid_t = process::get_id());
@@ -154,4 +154,4 @@ perfetto_counter_track<Tp>::emplace(size_t _idx, const std::string& _v,
     }
     return _index;
 }
-}  // namespace omnitrace
+}  // namespace rocprofsys

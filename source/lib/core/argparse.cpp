@@ -32,7 +32,7 @@
 #include <timemory/utility/filepath.hpp>
 #include <timemory/utility/join.hpp>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace argparse
 {
@@ -137,13 +137,13 @@ update_env(parser_data& _data, std::string_view _env_var, Tp&& _env_val,
             else
             {
                 free(itr);
-                itr = strdup(omnitrace::common::join('=', _env_var, _env_val).c_str());
+                itr = strdup(rocprofsys::common::join('=', _env_var, _env_val).c_str());
             }
             return;
         }
     }
     _data.current.emplace_back(
-        strdup(omnitrace::common::join('=', _env_var, _env_val).c_str()));
+        strdup(rocprofsys::common::join('=', _env_var, _env_val).c_str()));
 }
 
 void
@@ -171,7 +171,7 @@ get_internal_libpath(const std::string& _lib)
     auto _pos = _exe.find_last_of('/');
     auto _dir = filepath::get_cwd();
     if(_pos != std::string_view::npos) _dir = _exe.substr(0, _pos);
-    return filepath::realpath(omnitrace::common::join("/", _dir, "..", "lib", _lib),
+    return filepath::realpath(rocprofsys::common::join("/", _dir, "..", "lib", _lib),
                               nullptr, false);
 }
 }  // namespace
@@ -1328,7 +1328,7 @@ add_group_arguments(parser_t& _parser, const std::string& _group_name, parser_da
     };
 
     auto _settings = std::vector<std::shared_ptr<tim::vsettings>>{};
-    for(auto& itr : *omnitrace::settings::instance())
+    for(auto& itr : *rocprofsys::settings::instance())
     {
         if(itr.second->get_categories().count("rocprofsys") == 0) continue;
         if(itr.second->get_categories().count("deprecated") > 0) continue;
@@ -1390,7 +1390,7 @@ add_extended_arguments(parser_t& _parser, parser_data& _data)
 {
     auto _category_count_map = std::unordered_map<std::string, uint32_t>{};
     auto _settings           = std::vector<std::shared_ptr<tim::vsettings>>{};
-    for(auto& itr : *omnitrace::settings::instance())
+    for(auto& itr : *rocprofsys::settings::instance())
     {
         if(itr.second->get_categories().count("rocprofsys") == 0) continue;
         if(itr.second->get_categories().count("deprecated") > 0) continue;
@@ -1467,4 +1467,4 @@ add_extended_arguments(parser_t& _parser, parser_data& _data)
     return _data;
 }
 }  // namespace argparse
-}  // namespace omnitrace
+}  // namespace rocprofsys

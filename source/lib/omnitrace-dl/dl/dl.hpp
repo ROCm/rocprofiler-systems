@@ -193,7 +193,7 @@ extern "C"
 #endif
 }
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace dl
 {
@@ -207,6 +207,6 @@ enum class InstrumentMode : int
     Last,
 };
 }
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 #endif  // ROCPROFSYS_DL_HPP_ 1

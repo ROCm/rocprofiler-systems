@@ -47,7 +47,7 @@
 ROCPROFSYS_COMPONENT_ALIAS(
     rccl_toolset_t,
     ::tim::component_bundle<category::rocm_rccl,
-                            omnitrace::component::category_region<category::rocm_rccl>,
+                            rocprofsys::component::category_region<category::rocm_rccl>,
                             comm_data>)
 ROCPROFSYS_COMPONENT_ALIAS(rcclp_gotcha_t,
                            ::tim::component::gotcha<ROCPROFSYS_NUM_RCCLP_WRAPPERS,
@@ -57,7 +57,7 @@ ROCPROFSYS_COMPONENT_ALIAS(rcclp_gotcha_t,
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::rcclp_gotcha_t, false_type)
 #endif
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -103,4 +103,4 @@ private:
     static std::atomic<int64_t>& get_tool_count();
 };
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys

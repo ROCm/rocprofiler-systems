@@ -37,7 +37,7 @@
 #include <typeinfo>
 #include <variant>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace
 {
@@ -125,4 +125,4 @@ template class exception<std::underflow_error>;
 // template class exception<std::bad_weak_ptr>;
 // template class exception<std::bad_any_cast>;
 // template class exception<std::bad_variant_access>;
-}  // namespace omnitrace
+}  // namespace rocprofsys

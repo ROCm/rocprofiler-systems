@@ -43,9 +43,9 @@ namespace tim
 namespace operation
 {
 template <>
-struct stop<omnitrace::component::pthread_create_gotcha_t>
+struct stop<rocprofsys::component::pthread_create_gotcha_t>
 {
-    using type = omnitrace::component::pthread_create_gotcha_t;
+    using type = rocprofsys::component::pthread_create_gotcha_t;
 
     ROCPROFSYS_DEFAULT_OBJECT(stop)
 
@@ -60,7 +60,7 @@ struct stop<omnitrace::component::pthread_create_gotcha_t>
 }  // namespace operation
 }  // namespace tim
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace
 {
@@ -85,8 +85,8 @@ pthread_gotcha::configure()
 {
     if(!is_configured)
     {
-        ::omnitrace::component::pthread_create_gotcha::configure();
-        ::omnitrace::component::pthread_mutex_gotcha::configure();
+        ::rocprofsys::component::pthread_create_gotcha::configure();
+        ::rocprofsys::component::pthread_mutex_gotcha::configure();
         is_configured = true;
     }
 }
@@ -96,8 +96,8 @@ pthread_gotcha::shutdown()
 {
     if(is_configured)
     {
-        ::omnitrace::component::pthread_mutex_gotcha::shutdown();
-        ::omnitrace::component::pthread_create_gotcha::shutdown();
+        ::rocprofsys::component::pthread_mutex_gotcha::shutdown();
+        ::rocprofsys::component::pthread_create_gotcha::shutdown();
         is_configured = false;
     }
 }
@@ -118,6 +118,6 @@ pthread_gotcha::stop()
 std::set<pthread_gotcha::native_handle_t>
 pthread_gotcha::get_native_handles()
 {
-    return ::omnitrace::component::pthread_create_gotcha::get_native_handles();
+    return ::rocprofsys::component::pthread_create_gotcha::get_native_handles();
 }
-}  // namespace omnitrace
+}  // namespace rocprofsys

@@ -43,7 +43,7 @@
         }                                                                                \
     }
 
-namespace omnitrace
+namespace rocprofsys
 {
 using roctracer_hip_bundle_t =
     tim::component_bundle<category::rocm_hip, comp::roctracer_data, comp::wall_clock>;
@@ -86,4 +86,4 @@ roctracer_setup_routines();
 
 roctracer_functions_t&
 roctracer_shutdown_routines();
-}  // namespace omnitrace
+}  // namespace rocprofsys

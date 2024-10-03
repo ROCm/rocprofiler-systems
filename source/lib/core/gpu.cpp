@@ -64,7 +64,7 @@
 #    endif
 #endif
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace gpu
 {
@@ -74,7 +74,7 @@ namespace scope = ::tim::scope;
 
 #if ROCPROFSYS_USE_ROCM_SMI > 0
 #    define ROCPROFSYS_ROCM_SMI_CALL(ERROR_CODE)                                         \
-        ::omnitrace::gpu::check_rsmi_error(ERROR_CODE, __FILE__, __LINE__)
+        ::rocprofsys::gpu::check_rsmi_error(ERROR_CODE, __FILE__, __LINE__)
 
 void
 check_rsmi_error(rsmi_status_t _code, const char* _file, int _line)
@@ -498,4 +498,4 @@ add_hip_device_metadata()
     });
 }
 }  // namespace gpu
-}  // namespace omnitrace
+}  // namespace rocprofsys

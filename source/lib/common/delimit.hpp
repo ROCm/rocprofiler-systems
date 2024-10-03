@@ -26,7 +26,7 @@
 #include <string>
 #include <vector>
 
-namespace omnitrace
+namespace rocprofsys
 {
 inline namespace common
 {
@@ -120,4 +120,4 @@ delimit(const std::string& line, const char* delimiters)
 }
 }  // namespace
 }  // namespace common
-}  // namespace omnitrace
+}  // namespace rocprofsys

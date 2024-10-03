@@ -60,7 +60,7 @@
 #pragma weak sigtimedwait
 #pragma weak sigsuspend
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace causal
 {
@@ -153,7 +153,7 @@ blocking_gotcha::operator()(gotcha_index<Idx>, Ret (*_func)(Args...),
     auto _ret = (*_func)(_args...);
     causal::sampling::unblock_backtrace_samples();
 
-    if(get_thread_state() < ::omnitrace::ThreadState::Internal)
+    if(get_thread_state() < ::rocprofsys::ThreadState::Internal)
     {
         if constexpr(Idx >= always_post_block_min_idx && Idx <= always_post_block_max_idx)
         {
@@ -177,7 +177,7 @@ int
 blocking_gotcha::operator()(gotcha_index<sigwait_idx>, int (*)(const sigset_t*, int*),
                             const sigset_t* _set_v, int* _sig) const noexcept
 {
-    auto _active = get_thread_state() < ::omnitrace::ThreadState::Internal;
+    auto _active = get_thread_state() < ::rocprofsys::ThreadState::Internal;
 
     sigset_t _set = *_set_v;
     causal_gotcha::remove_signals(&_set);
@@ -209,7 +209,7 @@ blocking_gotcha::operator()(gotcha_index<sigwaitinfo_idx>,
                             int (*_func)(const sigset_t*, siginfo_t*),
                             const sigset_t* _set_v, siginfo_t* _info_v) const noexcept
 {
-    auto _active = get_thread_state() < ::omnitrace::ThreadState::Internal;
+    auto _active = get_thread_state() < ::rocprofsys::ThreadState::Internal;
 
     sigset_t _set = *_set_v;
     causal_gotcha::remove_signals(&_set);
@@ -237,7 +237,7 @@ blocking_gotcha::operator()(gotcha_index<sigtimedwait_idx>,
                             const sigset_t* _set_v, siginfo_t* _info_v,
                             const struct timespec* _wait_v) const noexcept
 {
-    auto _active = get_thread_state() < ::omnitrace::ThreadState::Internal;
+    auto _active = get_thread_state() < ::rocprofsys::ThreadState::Internal;
 
     sigset_t _set = *_set_v;
     causal_gotcha::remove_signals(&_set);
@@ -273,6 +273,6 @@ blocking_gotcha::operator()(gotcha_index<sigsuspend_idx>, int (*)(const sigset_t
 }
 }  // namespace component
 }  // namespace causal
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
-TIMEMORY_INVOKE_PREINIT(omnitrace::causal::component::blocking_gotcha)
+TIMEMORY_INVOKE_PREINIT(rocprofsys::causal::component::blocking_gotcha)

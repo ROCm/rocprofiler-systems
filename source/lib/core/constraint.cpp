@@ -36,7 +36,7 @@
 #include <thread>
 #include <type_traits>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace constraint
 {
@@ -349,4 +349,4 @@ get_trace_stages()
     return _v;
 }
 }  // namespace constraint
-}  // namespace omnitrace
+}  // namespace rocprofsys

@@ -34,7 +34,7 @@
 #include <string>
 #include <utility>
 
-namespace omnitrace
+namespace rocprofsys
 {
 //  InternalTID:  zero-based, process-local thread-ID from atomic increment
 //                from user-created threads and omnitrace-created threads.
@@ -131,12 +131,12 @@ struct thread_info
 private:
     thread_info() = default;
 };
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 namespace std
 {
 inline std::string
-to_string(const omnitrace::thread_info& _info)
+to_string(const rocprofsys::thread_info& _info)
 {
     return _info.as_string();
 }

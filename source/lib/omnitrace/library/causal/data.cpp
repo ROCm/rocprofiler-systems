@@ -67,7 +67,7 @@
 #include <utility>
 #include <vector>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace causal
 {
@@ -725,7 +725,7 @@ save_line_info(const settings::compose_filename_config& _cfg, int _verbose)
         }
         else
         {
-            throw ::omnitrace::exception<std::runtime_error>("Error opening " + ofname);
+            throw ::rocprofsys::exception<std::runtime_error>("Error opening " + ofname);
         }
     };
 
@@ -1093,4 +1093,4 @@ finish_experimenting()
     experiment::save_experiments();
 }
 }  // namespace causal
-}  // namespace omnitrace
+}  // namespace rocprofsys

@@ -30,7 +30,7 @@
 #include <timemory/hash/types.hpp>
 #include <timemory/process/threading.hpp>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace tracing
 {
@@ -209,4 +209,4 @@ thread_init()
     (void) _sample_setup;
 }
 }  // namespace tracing
-}  // namespace omnitrace
+}  // namespace rocprofsys

@@ -43,7 +43,7 @@
 #include <timemory/utility/signals.hpp>
 #include <timemory/variadic.hpp>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace audit     = ::tim::audit;      // NOLINT
 namespace comp      = ::tim::component;  // NOLINT
@@ -56,4 +56,4 @@ using settings = ::tim::settings;  // NOLINT
 
 using ::tim::get_env;  // NOLINT
 using ::tim::set_env;  // NOLINT
-}  // namespace omnitrace
+}  // namespace rocprofsys

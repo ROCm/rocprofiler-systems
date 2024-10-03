@@ -35,7 +35,7 @@
 #include <cstddef>
 #include <cstdlib>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -122,4 +122,4 @@ exit_gotcha::get_exit_info()
     return _exit_info;
 }
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys

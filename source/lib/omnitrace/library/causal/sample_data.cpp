@@ -27,7 +27,7 @@
 #include <map>
 #include <set>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace causal
 {
@@ -81,4 +81,4 @@ add_samples(uint32_t _index, const std::map<uintptr_t, uint64_t>& _v)
         add_sample(_index, itr.first, itr.second);
 }
 }  // namespace causal
-}  // namespace omnitrace
+}  // namespace rocprofsys

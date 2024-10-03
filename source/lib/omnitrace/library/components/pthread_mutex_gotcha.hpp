@@ -33,7 +33,7 @@
 #include <cstddef>
 #include <string>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -75,7 +75,7 @@ private:
 using pthread_mutex_gotcha_t = comp::gotcha<pthread_mutex_gotcha::gotcha_capacity,
                                             std::tuple<>, pthread_mutex_gotcha>;
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(fast_gotcha, component::pthread_mutex_gotcha_t,
                                  true_type)
@@ -86,8 +86,8 @@ namespace tim
 {
 namespace policy
 {
-using pthread_mutex_gotcha   = ::omnitrace::component::pthread_mutex_gotcha;
-using pthread_mutex_gotcha_t = ::omnitrace::component::pthread_mutex_gotcha_t;
+using pthread_mutex_gotcha   = ::rocprofsys::component::pthread_mutex_gotcha;
+using pthread_mutex_gotcha_t = ::rocprofsys::component::pthread_mutex_gotcha_t;
 
 template <>
 struct static_data<pthread_mutex_gotcha, pthread_mutex_gotcha_t> : std::true_type

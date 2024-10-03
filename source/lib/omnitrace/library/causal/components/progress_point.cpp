@@ -32,7 +32,7 @@
 #include <timemory/mpl/type_traits.hpp>
 #include <timemory/units.hpp>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace causal
 {
@@ -201,13 +201,13 @@ progress_point::print(std::ostream& os) const
 }
 }  // namespace component
 }  // namespace causal
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 namespace tim
 {
 namespace operation
 {
-namespace causal = omnitrace::causal;
+namespace causal = rocprofsys::causal;
 
 void
 push_node<causal::component::progress_point>::operator()(type&        _obj, scope::config,

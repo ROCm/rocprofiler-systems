@@ -43,7 +43,7 @@
 #include <cstdint>
 #include <unordered_map>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace causal
 {
@@ -145,4 +145,4 @@ struct experiment
     progress_points_t fini_progress   = {};   /// progress points at end
 };
 }  // namespace causal
-}  // namespace omnitrace
+}  // namespace rocprofsys

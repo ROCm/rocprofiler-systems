@@ -28,7 +28,7 @@
 #include <atomic>
 #include <string>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace
 {
@@ -118,57 +118,57 @@ pop_thread_state()
     }
     return get_thread_state();
 }
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 namespace std
 {
 std::string
-to_string(omnitrace::State _v)
+to_string(rocprofsys::State _v)
 {
     switch(_v)
     {
-        case omnitrace::State::PreInit: return "PreInit";
-        case omnitrace::State::Init: return "Init";
-        case omnitrace::State::Active: return "Active";
-        case omnitrace::State::Disabled: return "Disabled";
-        case omnitrace::State::Finalized: return "Finalized";
+        case rocprofsys::State::PreInit: return "PreInit";
+        case rocprofsys::State::Init: return "Init";
+        case rocprofsys::State::Active: return "Active";
+        case rocprofsys::State::Disabled: return "Disabled";
+        case rocprofsys::State::Finalized: return "Finalized";
     }
     return {};
 }
 
 std::string
-to_string(omnitrace::ThreadState _v)
+to_string(rocprofsys::ThreadState _v)
 {
     switch(_v)
     {
-        case omnitrace::ThreadState::Enabled: return "Enabled";
-        case omnitrace::ThreadState::Internal: return "Internal";
-        case omnitrace::ThreadState::Completed: return "Completed";
-        case omnitrace::ThreadState::Disabled: return "Disabled";
+        case rocprofsys::ThreadState::Enabled: return "Enabled";
+        case rocprofsys::ThreadState::Internal: return "Internal";
+        case rocprofsys::ThreadState::Completed: return "Completed";
+        case rocprofsys::ThreadState::Disabled: return "Disabled";
     }
     return {};
 }
 
 std::string
-to_string(omnitrace::Mode _v)
+to_string(rocprofsys::Mode _v)
 {
     switch(_v)
     {
-        case omnitrace::Mode::Trace: return "Trace";
-        case omnitrace::Mode::Sampling: return "Sampling";
-        case omnitrace::Mode::Causal: return "Causal";
-        case omnitrace::Mode::Coverage: return "Coverage";
+        case rocprofsys::Mode::Trace: return "Trace";
+        case rocprofsys::Mode::Sampling: return "Sampling";
+        case rocprofsys::Mode::Causal: return "Causal";
+        case rocprofsys::Mode::Coverage: return "Coverage";
     }
     return {};
 }
 
 std::string
-to_string(omnitrace::CausalMode _v)
+to_string(rocprofsys::CausalMode _v)
 {
     switch(_v)
     {
-        case omnitrace::CausalMode::Line: return "Line";
-        case omnitrace::CausalMode::Function: return "Function";
+        case rocprofsys::CausalMode::Line: return "Line";
+        case rocprofsys::CausalMode::Function: return "Function";
     }
     return {};
 }

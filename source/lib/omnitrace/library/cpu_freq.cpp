@@ -46,7 +46,7 @@
 #include <utility>
 #include <vector>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace cpu_freq
 {
@@ -66,9 +66,9 @@ void init_perfetto_counter_tracks(type_list<Types...>)
 }
 }  // namespace
 }  // namespace cpu_freq
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace cpu_freq
 {
@@ -251,4 +251,4 @@ post_process()
     enabled_cpu_freqs.clear();
 }
 }  // namespace cpu_freq
-}  // namespace omnitrace
+}  // namespace rocprofsys

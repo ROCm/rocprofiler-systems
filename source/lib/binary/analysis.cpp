@@ -60,7 +60,7 @@
 #include <set>
 #include <stdexcept>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace binary
 {
@@ -306,4 +306,4 @@ lookup_ipaddr_entry<true>(uintptr_t, unw_context_t*, tim::unwind::cache*);
 template std::optional<tim::unwind::processed_entry>
 lookup_ipaddr_entry<false>(uintptr_t, unw_context_t*, tim::unwind::cache*);
 }  // namespace binary
-}  // namespace omnitrace
+}  // namespace rocprofsys

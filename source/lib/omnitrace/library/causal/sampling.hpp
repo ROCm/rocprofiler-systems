@@ -30,7 +30,7 @@
 #include <set>
 #include <type_traits>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace causal
 {
@@ -71,4 +71,4 @@ void
 post_process();
 }  // namespace sampling
 }  // namespace causal
-}  // namespace omnitrace
+}  // namespace rocprofsys

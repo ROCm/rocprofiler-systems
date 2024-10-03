@@ -25,7 +25,7 @@
 #include "core/concepts.hpp"
 #include "core/defines.hpp"
 
-namespace omnitrace
+namespace rocprofsys
 {
 template <>
 struct thread_deleter<void>
@@ -49,4 +49,4 @@ struct thread_deleter
         (void) ptr;
     }
 };
-}  // namespace omnitrace
+}  // namespace rocprofsys

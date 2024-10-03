@@ -32,7 +32,7 @@
 #include <cstdint>
 #include <cstdlib>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -73,4 +73,4 @@ struct exit_gotcha : tim::component::base<exit_gotcha, void>
 
 using exit_gotcha_t = tim::component::gotcha<component::exit_gotcha::gotcha_capacity,
                                              std::tuple<>, component::exit_gotcha>;
-}  // namespace omnitrace
+}  // namespace rocprofsys

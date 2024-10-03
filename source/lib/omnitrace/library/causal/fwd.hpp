@@ -36,7 +36,7 @@
 #include <map>
 #include <utility>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace unwind = ::tim::unwind;
 
@@ -50,4 +50,4 @@ using hash_value_t                    = tim::hash_value_t;
 
 struct selected_entry;
 }  // namespace causal
-}  // namespace omnitrace
+}  // namespace rocprofsys

@@ -47,7 +47,7 @@
 #define AMD_INTERNAL_BUILD 1
 #include <roctracer_hsa.h>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -390,7 +390,7 @@ roctracer::protect_flush_activity()
                                        []() { ++roctracer_activity_count(); });
 }
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(roctracer, false, void)
 ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(roctracer_data, true, double)

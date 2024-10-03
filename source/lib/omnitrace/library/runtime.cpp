@@ -52,7 +52,7 @@
 #include <string>
 #include <unistd.h>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace
 {
@@ -287,4 +287,4 @@ is_child_process()
 {
     return (root_process_id != process::get_id());
 }
-}  // namespace omnitrace
+}  // namespace rocprofsys

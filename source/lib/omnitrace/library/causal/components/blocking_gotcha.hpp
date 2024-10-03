@@ -34,7 +34,7 @@
 #include <cstddef>
 #include <string>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace causal
 {
@@ -93,7 +93,7 @@ using blocking_gotcha_t =
     comp::gotcha<blocking_gotcha::gotcha_capacity, tim::type_list<>, blocking_gotcha>;
 }  // namespace component
 }  // namespace causal
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(prevent_reentry, causal::component::blocking_gotcha_t,
                                  false_type)

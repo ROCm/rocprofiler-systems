@@ -50,9 +50,9 @@
 #    include <rocprofiler.h>
 #endif
 
-using namespace omnitrace;
+using namespace rocprofsys;
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace rocm
 {
@@ -60,7 +60,7 @@ std::mutex rocm_mutex    = {};
 bool       is_loaded     = false;
 bool       on_load_trace = (get_env<int>("ROCP_ONLOAD_TRACE", 0) > 0);
 }  // namespace rocm
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 #if defined(ROCPROFSYS_USE_ROCPROFILER) && ROCPROFSYS_USE_ROCPROFILER > 0
 std::ostream&
@@ -104,7 +104,7 @@ extern "C"
 
         // stop_top_level_timer_if_necessary();
         // Final resources cleanup
-        omnitrace::rocprofiler::rocm_cleanup();
+        rocprofsys::rocprofiler::rocm_cleanup();
     }
 
     void OnLoadToolProp(rocprofiler_settings_t* settings)
@@ -145,7 +145,7 @@ extern "C"
                                    JOIN("", *settings).c_str());
 
         // Initialize profiling
-        omnitrace::rocprofiler::rocm_initialize();
+        rocprofsys::rocprofiler::rocm_initialize();
         HsaRsrcFactory::Instance().PrintGpuAgents("ROCm");
     }
 #endif
@@ -177,7 +177,7 @@ extern "C"
 #if ROCPROFSYS_HIP_VERSION < 50300
         ROCPROFSYS_VERBOSE_F(1 || rocm::on_load_trace,
                              "Computing the roctracer clock skew...\n");
-        (void) omnitrace::get_clock_skew();
+        (void) rocprofsys::get_clock_skew();
 #endif
 
         if(get_use_process_sampling() && get_use_rocm_smi())

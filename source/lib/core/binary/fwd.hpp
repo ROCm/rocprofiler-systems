@@ -43,7 +43,7 @@
 #include <tuple>
 #include <variant>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace binary
 {
@@ -59,4 +59,4 @@ struct symbol;
 struct dwarf_entry;
 struct binary_info;
 }  // namespace binary
-}  // namespace omnitrace
+}  // namespace rocprofsys

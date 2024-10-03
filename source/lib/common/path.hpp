@@ -78,7 +78,7 @@
         fflush(stderr);                                                                  \
     }
 
-namespace omnitrace
+namespace rocprofsys
 {
 inline namespace common
 {
@@ -413,4 +413,4 @@ get_origin(const std::string& _filename, std::vector<int>&& _open_modes)
 }
 }  // namespace path
 }  // namespace common
-}  // namespace omnitrace
+}  // namespace rocprofsys

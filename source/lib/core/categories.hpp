@@ -49,7 +49,7 @@
     }                                                                                    \
     }
 
-namespace omnitrace
+namespace rocprofsys
 {
 template <size_t>
 struct category_type_id;
@@ -59,10 +59,10 @@ struct category_enum_id;
 
 template <size_t Idx>
 using category_type_id_t = typename category_type_id<Idx>::type;
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 #define ROCPROFSYS_DEFINE_CATEGORY_TRAIT(TYPE, ENUM)                                     \
-    namespace omnitrace                                                                  \
+    namespace rocprofsys                                                                  \
     {                                                                                    \
     template <>                                                                          \
     struct category_type_id<ENUM>                                                        \
@@ -199,7 +199,7 @@ using name = perfetto_category<Tp...>;
 #include <set>
 #include <string>
 
-namespace omnitrace
+namespace rocprofsys
 {
 inline namespace config
 {
@@ -224,4 +224,4 @@ setup();
 void
 shutdown();
 }  // namespace categories
-}  // namespace omnitrace
+}  // namespace rocprofsys

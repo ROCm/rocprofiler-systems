@@ -38,7 +38,7 @@
 #include <stdexcept>
 #include <vector>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace utility
 {
@@ -253,4 +253,4 @@ extern template std::unordered_set<int64_t>
 parse_numeric_range<int64_t, std::unordered_set<int64_t>>(std::string, const std::string&,
                                                           long);
 }  // namespace utility
-}  // namespace omnitrace
+}  // namespace rocprofsys

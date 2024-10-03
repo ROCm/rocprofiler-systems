@@ -27,7 +27,7 @@
 #include <string>
 #include <utility>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace binary
 {
@@ -72,4 +72,4 @@ address_multirange::operator+=(address_range _v)
     return *this;
 }
 }  // namespace binary
-}  // namespace omnitrace
+}  // namespace rocprofsys

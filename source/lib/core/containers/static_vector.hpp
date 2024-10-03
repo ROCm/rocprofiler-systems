@@ -33,7 +33,7 @@
 #include <atomic>
 #include <cstdlib>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace container
 {
@@ -227,4 +227,4 @@ static_vector<Tp, N, AtomicSizeV>::update_size(size_t _n)
         m_size = _n;
 }
 }  // namespace container
-}  // namespace omnitrace
+}  // namespace rocprofsys

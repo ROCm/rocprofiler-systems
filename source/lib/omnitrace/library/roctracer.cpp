@@ -63,7 +63,7 @@
 #endif
 
 TIMEMORY_DEFINE_API(roctracer)
-namespace omnitrace
+namespace rocprofsys
 {
 namespace
 {
@@ -1001,4 +1001,4 @@ roctracer_shutdown_routines()
     static auto _v = roctracer_functions_t{};
     return _v;
 }
-}  // namespace omnitrace
+}  // namespace rocprofsys

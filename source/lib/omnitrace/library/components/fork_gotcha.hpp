@@ -26,7 +26,7 @@
 #include "core/defines.hpp"
 #include "core/timemory.hpp"
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -48,7 +48,7 @@ struct fork_gotcha : comp::base<fork_gotcha, void>
     // this will get called right before fork
     pid_t operator()(const gotcha_data_t&, pid_t (*)()) const;
 
-    // silence SFINAE disabled for omnitrace::fork_gotcha warnings
+    // silence SFINAE disabled for rocprofsys::fork_gotcha warnings
     static inline void start() {}
     static inline void stop() {}
 };
@@ -56,4 +56,4 @@ struct fork_gotcha : comp::base<fork_gotcha, void>
 
 using fork_gotcha_t = comp::gotcha<component::fork_gotcha::gotcha_capacity, std::tuple<>,
                                    component::fork_gotcha>;
-}  // namespace omnitrace
+}  // namespace rocprofsys

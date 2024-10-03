@@ -42,7 +42,7 @@ enum
     HW_BREAKPOINT_X = 4
 };
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace perf
 {
@@ -288,4 +288,4 @@ int        get_hw_cache_config(std::string_view);
 void
 config_overflow_sampling(struct perf_event_attr&, std::string_view, double);
 }  // namespace perf
-}  // namespace omnitrace
+}  // namespace rocprofsys

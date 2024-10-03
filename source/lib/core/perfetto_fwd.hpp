@@ -27,7 +27,7 @@ namespace tim
 class manager;
 }
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace perfetto
 {
@@ -43,4 +43,4 @@ stop();
 void
 post_process(tim::manager*, bool&);
 }  // namespace perfetto
-}  // namespace omnitrace
+}  // namespace rocprofsys

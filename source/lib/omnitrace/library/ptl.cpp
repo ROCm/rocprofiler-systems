@@ -36,7 +36,7 @@
 #include <timemory/backends/threading.hpp>
 #include <timemory/utility/declaration.hpp>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace tasking
 {
@@ -231,4 +231,4 @@ roctracer::get_task_group(int64_t _tid)
     return *_v;
 }
 }  // namespace tasking
-}  // namespace omnitrace
+}  // namespace rocprofsys

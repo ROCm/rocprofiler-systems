@@ -32,7 +32,7 @@
 #include <cstdint>
 #include <cstdlib>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -78,4 +78,4 @@ struct numa_gotcha : tim::component::base<numa_gotcha, void>
 using numa_bundle_t = tim::component_bundle<category::numa, component::numa_gotcha>;
 using numa_gotcha_t = tim::component::gotcha<component::numa_gotcha::gotcha_capacity,
                                              numa_bundle_t, category::numa>;
-}  // namespace omnitrace
+}  // namespace rocprofsys

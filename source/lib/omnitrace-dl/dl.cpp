@@ -87,7 +87,7 @@ operator<<(std::ostream& _os, const SpaceHandle& _handle)
     return _os;
 }
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace dl
 {
@@ -566,25 +566,25 @@ bool _omnitrace_dl_fini = (std::atexit([]() {
                            true);
 }  // namespace
 }  // namespace dl
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 //--------------------------------------------------------------------------------------//
 
 #define ROCPROFSYS_DL_INVOKE(...)                                                        \
-    ::omnitrace::common::invoke(__FUNCTION__, ::omnitrace::dl::_omnitrace_dl_verbose,    \
-                                (::omnitrace::dl::get_thread_status() = false),          \
+    ::rocprofsys::common::invoke(__FUNCTION__, ::rocprofsys::dl::_omnitrace_dl_verbose,    \
+                                (::rocprofsys::dl::get_thread_status() = false),          \
                                 __VA_ARGS__)
 
 #define ROCPROFSYS_DL_IGNORE(...)                                                        \
-    ::omnitrace::common::ignore(__FUNCTION__, ::omnitrace::dl::_omnitrace_dl_verbose,    \
+    ::rocprofsys::common::ignore(__FUNCTION__, ::rocprofsys::dl::_omnitrace_dl_verbose,    \
                                 __VA_ARGS__)
 
 #define ROCPROFSYS_DL_INVOKE_STATUS(STATUS, ...)                                         \
-    ::omnitrace::common::invoke(__FUNCTION__, ::omnitrace::dl::_omnitrace_dl_verbose,    \
+    ::rocprofsys::common::invoke(__FUNCTION__, ::rocprofsys::dl::_omnitrace_dl_verbose,    \
                                 STATUS, __VA_ARGS__)
 
 #define ROCPROFSYS_DL_LOG(LEVEL, ...)                                                    \
-    if(::omnitrace::dl::_omnitrace_dl_verbose >= LEVEL)                                  \
+    if(::rocprofsys::dl::_omnitrace_dl_verbose >= LEVEL)                                  \
     {                                                                                    \
         fflush(stderr);                                                                  \
         ROCPROFSYS_COMMON_LIBRARY_LOG_START                                              \
@@ -595,20 +595,20 @@ bool _omnitrace_dl_fini = (std::atexit([]() {
         fflush(stderr);                                                                  \
     }
 
-using omnitrace::dl::get_indirect;
-namespace dl = omnitrace::dl;
+using rocprofsys::dl::get_indirect;
+namespace dl = rocprofsys::dl;
 
 extern "C"
 {
     void omnitrace_preinit_library(void)
     {
-        if(omnitrace::common::get_env("ROCPROFSYS_MONOCHROME", tim::log::monochrome()))
+        if(rocprofsys::common::get_env("ROCPROFSYS_MONOCHROME", tim::log::monochrome()))
             tim::log::monochrome() = true;
     }
 
     int omnitrace_preload_library(void)
     {
-        return (::omnitrace::dl::get_omnitrace_preload()) ? 1 : 0;
+        return (::rocprofsys::dl::get_omnitrace_preload()) ? 1 : 0;
     }
 
     void omnitrace_init_library(void)
@@ -627,14 +627,14 @@ extern "C"
         {
             ROCPROFSYS_DL_LOG(
                 2, "%s(%s) ignored :: already initialized and finalized\n", __FUNCTION__,
-                ::omnitrace::join(::omnitrace::QuoteStrings{}, ", ", a, b, c).c_str());
+                ::rocprofsys::join(::rocprofsys::QuoteStrings{}, ", ", a, b, c).c_str());
             return;
         }
         else if(dl::get_inited() && dl::get_active())
         {
             ROCPROFSYS_DL_LOG(
                 2, "%s(%s) ignored :: already initialized and active\n", __FUNCTION__,
-                ::omnitrace::join(::omnitrace::QuoteStrings{}, ", ", a, b, c).c_str());
+                ::rocprofsys::join(::rocprofsys::QuoteStrings{}, ", ", a, b, c).c_str());
             return;
         }
 
@@ -1123,7 +1123,7 @@ extern "C"
 #endif
 }
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace dl
 {
@@ -1394,7 +1394,7 @@ bool        _handle_preload = omnitrace_preload();
 main_func_t main_real       = nullptr;
 }  // namespace
 }  // namespace dl
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 extern "C"
 {
@@ -1403,21 +1403,21 @@ extern "C"
 
     void omnitrace_set_main(main_func_t _main_real)
     {
-        ::omnitrace::dl::main_real = _main_real;
+        ::rocprofsys::dl::main_real = _main_real;
     }
 
     int omnitrace_main(int argc, char** argv, char** envp)
     {
         ROCPROFSYS_DL_LOG(0, "%s\n", __FUNCTION__);
-        using ::omnitrace::common::get_env;
-        using ::omnitrace::dl::get_default_mode;
+        using ::rocprofsys::common::get_env;
+        using ::rocprofsys::dl::get_default_mode;
 
         // prevent re-entry
         static int _reentry = 0;
         if(_reentry > 0) return -1;
         _reentry = 1;
 
-        if(!::omnitrace::dl::main_real)
+        if(!::rocprofsys::dl::main_real)
             throw std::runtime_error("[rocprof-sys][dl] Unsuccessful wrapping of main: "
                                      "nullptr to real main function");
 
@@ -1447,7 +1447,7 @@ extern "C"
                        dl::get_instrumented() == dl::InstrumentMode::BinaryRewrite,
                        argv[0]);
 
-        int ret = (*::omnitrace::dl::main_real)(argc, argv, envp);
+        int ret = (*::rocprofsys::dl::main_real)(argc, argv, envp);
 
         omnitrace_pop_trace(basename(argv[0]));
         omnitrace_finalize();

@@ -87,8 +87,8 @@ main(int argc, char** argv)
             }
             else
             {
-                auto _status = omnitrace::mproc::wait_pid(_pid);
-                auto _ec     = omnitrace::mproc::diagnose_status(_pid, _status);
+                auto _status = rocprofsys::mproc::wait_pid(_pid);
+                auto _ec     = rocprofsys::mproc::diagnose_status(_pid, _status);
                 if(_ec != 0 && _parse_data.verbose >= 0)
                 {
                     TIMEMORY_PRINTF_FATAL(

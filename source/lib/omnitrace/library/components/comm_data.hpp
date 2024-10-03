@@ -52,7 +52,7 @@
 ROCPROFSYS_COMPONENT_ALIAS(comm_data_tracker_t,
                            ::tim::component::data_tracker<float, project::omnitrace>)
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -200,7 +200,7 @@ struct comm_data : base<comm_data, void>
 private:
     static auto& add(tracker_t& _t, data_type value)
     {
-        if(omnitrace::get_state() != omnitrace::State::Active)
+        if(rocprofsys::get_state() != rocprofsys::State::Active)
         {
             _t.invoke<operation::set_is_invalid>(true);
             return _t;
@@ -228,7 +228,7 @@ private:
     }
 };
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 #if !defined(ROCPROFSYS_EXTERN_COMPONENTS) ||                                            \
     (defined(ROCPROFSYS_EXTERN_COMPONENTS) && ROCPROFSYS_EXTERN_COMPONENTS > 0)

@@ -81,7 +81,7 @@
         fflush(stderr);                                                                  \
     }
 
-namespace omnitrace
+namespace rocprofsys
 {
 inline namespace common
 {
@@ -283,4 +283,4 @@ setup_environ(int _verbose, const std::string& _search_paths = {},
         itr(_verbose >= 3);
 }
 }  // namespace common
-}  // namespace omnitrace
+}  // namespace rocprofsys

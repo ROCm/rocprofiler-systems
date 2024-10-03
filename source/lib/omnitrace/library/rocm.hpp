@@ -31,7 +31,7 @@
 #include <cstdint>
 #include <mutex>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace rocm
 {
@@ -40,7 +40,7 @@ using lock_t = std::unique_lock<std::mutex>;
 extern std::mutex rocm_mutex;
 extern bool       is_loaded;
 }  // namespace rocm
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 extern "C"
 {

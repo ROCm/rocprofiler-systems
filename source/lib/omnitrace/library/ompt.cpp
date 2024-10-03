@@ -52,7 +52,7 @@ extern "C"
                                               const char*) ROCPROFSYS_PUBLIC_API;
 }
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace ompt
 {
@@ -113,17 +113,17 @@ int
 tool_initialize(ompt_function_lookup_t lookup, int initial_device_num,
                 ompt_data_t* tool_data)
 {
-    if(!omnitrace::settings_are_configured())
+    if(!rocprofsys::settings_are_configured())
     {
         ROCPROFSYS_BASIC_WARNING(
             0,
             "[%s] invoked before omnitrace was initialized. In instrumentation mode, "
             "settings exported to the environment have not been propagated yet...\n",
             __FUNCTION__);
-        omnitrace::configure_settings();
+        rocprofsys::configure_settings();
     }
 
-    use_tool() = omnitrace::config::get_use_ompt();
+    use_tool() = rocprofsys::config::get_use_ompt();
     if(use_tool())
     {
         TIMEMORY_PRINTF(stderr, "OpenMP-tools configuring for initial device %i\n\n",
@@ -141,7 +141,7 @@ tool_finalize(ompt_data_t*)
 }
 }  // namespace
 }  // namespace ompt
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 extern "C" ompt_start_tool_result_t*
 ompt_start_tool(unsigned int omp_version, const char* runtime_version)
@@ -151,14 +151,14 @@ ompt_start_tool(unsigned int omp_version, const char* runtime_version)
     ROCPROFSYS_METADATA("OMP_VERSION", omp_version);
     ROCPROFSYS_METADATA("OMP_RUNTIME_VERSION", runtime_version);
 
-    static auto* data = new ompt_start_tool_result_t{ &omnitrace::ompt::tool_initialize,
-                                                      &omnitrace::ompt::tool_finalize,
+    static auto* data = new ompt_start_tool_result_t{ &rocprofsys::ompt::tool_initialize,
+                                                      &rocprofsys::ompt::tool_finalize,
                                                       { 0 } };
     return data;
 }
 
 #else
-namespace omnitrace
+namespace rocprofsys
 {
 namespace ompt
 {
@@ -170,6 +170,6 @@ void
 shutdown()
 {}
 }  // namespace ompt
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 #endif

@@ -30,7 +30,7 @@
 #include <string_view>
 #include <vector>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace binary
 {
@@ -61,4 +61,4 @@ get_link_map(const char*        _lib               = nullptr,
              const std::string& _exclude_re        = "librocprof-sys-([a-zA-Z]+)\\.so",
              open_modes_vec_t&& _open_modes        = {});
 }  // namespace binary
-}  // namespace omnitrace
+}  // namespace rocprofsys

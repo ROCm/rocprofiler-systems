@@ -28,7 +28,7 @@
 
 #include <cstdint>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -82,4 +82,4 @@ private:
 
 using mpi_gotcha_t =
     comp::gotcha<5, tim::component_tuple<component::mpi_gotcha>, project::omnitrace>;
-}  // namespace omnitrace
+}  // namespace rocprofsys

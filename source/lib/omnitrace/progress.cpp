@@ -30,8 +30,8 @@ extern "C" void
 omnitrace_progress_hidden(const char* _name)
 {
     // mark the progress point
-    omnitrace::component::category_region<omnitrace::category::causal>::mark<
-        omnitrace::quirk::causal>(_name);
+    rocprofsys::component::category_region<rocprofsys::category::causal>::mark<
+        rocprofsys::quirk::causal>(_name);
 }
 
 extern "C" void
@@ -40,6 +40,6 @@ omnitrace_annotated_progress_hidden(const char*             _name,
                                     size_t                  _annotation_count)
 {
     // mark the progress point
-    omnitrace::component::category_region<omnitrace::category::causal>::mark<
-        omnitrace::quirk::causal>(_name, _annotations, _annotation_count);
+    rocprofsys::component::category_region<rocprofsys::category::causal>::mark<
+        rocprofsys::quirk::causal>(_name, _annotations, _annotation_count);
 }

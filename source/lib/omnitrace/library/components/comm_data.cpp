@@ -31,7 +31,7 @@
 #include <timemory/units.hpp>
 #include <timemory/utility/locking.hpp>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -41,10 +41,10 @@ template <typename Tp, typename... Args>
 void
 write_perfetto_counter_track(uint64_t _val)
 {
-    using counter_track = omnitrace::perfetto_counter_track<Tp>;
+    using counter_track = rocprofsys::perfetto_counter_track<Tp>;
 
-    if(omnitrace::get_use_perfetto() &&
-       omnitrace::get_state() == omnitrace::State::Active)
+    if(rocprofsys::get_use_perfetto() &&
+       rocprofsys::get_state() == rocprofsys::State::Active)
     {
         auto _emplace = [](const size_t _idx) {
             if(!counter_track::exists(_idx))
@@ -65,7 +65,7 @@ write_perfetto_counter_track(uint64_t _val)
         uint64_t          _now  = 0;
         {
             std::unique_lock<std::mutex> _lk{ _mutex };
-            _now = omnitrace::tracing::now<uint64_t>();
+            _now = rocprofsys::tracing::now<uint64_t>();
             _val = (value += _val);
         }
 
@@ -116,7 +116,7 @@ comm_data::audit(const gotcha_data& _data, audit::incoming, const void*, int cou
 
     write_perfetto_counter_track<mpi_send>(count * _size);
 
-    if(!omnitrace::get_use_timemory()) return;
+    if(!rocprofsys::get_use_timemory()) return;
     auto      _name = std::string_view{ _data.tool_id };
     tracker_t _a{ _name };
     add(_a, count * _size);
@@ -135,7 +135,7 @@ comm_data::audit(const gotcha_data& _data, audit::incoming, void*, int count,
 
     write_perfetto_counter_track<mpi_recv>(count * _size);
 
-    if(!omnitrace::get_use_timemory()) return;
+    if(!rocprofsys::get_use_timemory()) return;
     auto      _name = std::string_view{ _data.tool_id };
     tracker_t _a{ _name };
     add(_a, count * _size);
@@ -154,7 +154,7 @@ comm_data::audit(const gotcha_data& _data, audit::incoming, const void*, int cou
 
     write_perfetto_counter_track<mpi_send>(count * _size);
 
-    if(!omnitrace::get_use_timemory()) return;
+    if(!rocprofsys::get_use_timemory()) return;
     auto      _name = std::string_view{ _data.tool_id };
     tracker_t _a{ _name };
     add(_a, count * _size);
@@ -173,7 +173,7 @@ comm_data::audit(const gotcha_data& _data, audit::incoming, void*, int count,
 
     write_perfetto_counter_track<mpi_recv>(count * _size);
 
-    if(!omnitrace::get_use_timemory()) return;
+    if(!rocprofsys::get_use_timemory()) return;
     auto      _name = std::string_view{ _data.tool_id };
     tracker_t _a{ _name };
     add(_a, count * _size);
@@ -192,7 +192,7 @@ comm_data::audit(const gotcha_data& _data, audit::incoming, void*, int count,
 
     write_perfetto_counter_track<mpi_send>(count * _size);
 
-    if(!omnitrace::get_use_timemory()) return;
+    if(!rocprofsys::get_use_timemory()) return;
     auto      _name = std::string_view{ _data.tool_id };
     tracker_t _t{ _name };
     add(_t, count * _size);
@@ -210,7 +210,7 @@ comm_data::audit(const gotcha_data& _data, audit::incoming, const void*, void*, 
     write_perfetto_counter_track<mpi_recv>(count * _size);
     write_perfetto_counter_track<mpi_send>(count * _size);
 
-    if(!omnitrace::get_use_timemory()) return;
+    if(!rocprofsys::get_use_timemory()) return;
     add(_data, count * _size);
 }
 
@@ -227,7 +227,7 @@ comm_data::audit(const gotcha_data& _data, audit::incoming, const void*, int sen
     write_perfetto_counter_track<mpi_send>(sendcount * _send_size);
     write_perfetto_counter_track<mpi_recv>(recvcount * _recv_size);
 
-    if(!omnitrace::get_use_timemory()) return;
+    if(!rocprofsys::get_use_timemory()) return;
     auto      _name = std::string_view{ _data.tool_id };
     tracker_t _t{ _name };
     add(_t, sendcount * _send_size + recvcount * _recv_size);
@@ -265,7 +265,7 @@ comm_data::audit(const gotcha_data& _data, audit::incoming, const void*, int sen
     write_perfetto_counter_track<mpi_send>(sendcount * _send_size);
     write_perfetto_counter_track<mpi_recv>(recvcount * _recv_size);
 
-    if(!omnitrace::get_use_timemory()) return;
+    if(!rocprofsys::get_use_timemory()) return;
     auto      _name = std::string_view{ _data.tool_id };
     tracker_t _t{ _name };
     add(_t, sendcount * _send_size + recvcount * _recv_size);
@@ -288,7 +288,7 @@ comm_data::audit(const gotcha_data& _data, audit::incoming, const void*, int sen
     write_perfetto_counter_track<mpi_send>(sendcount * _send_size);
     write_perfetto_counter_track<mpi_recv>(recvcount * _recv_size);
 
-    if(!omnitrace::get_use_timemory()) return;
+    if(!rocprofsys::get_use_timemory()) return;
     auto      _name = std::string_view{ _data.tool_id };
     tracker_t _t{ _name };
     add(_t, sendcount * _send_size + recvcount * _recv_size);
@@ -309,7 +309,7 @@ comm_data::audit(const gotcha_data& _data, audit::incoming, const void*, const v
 
     write_perfetto_counter_track<rccl_recv>(count * _size);
 
-    if(!omnitrace::get_use_timemory()) return;
+    if(!rocprofsys::get_use_timemory()) return;
     auto      _name = std::string_view{ _data.tool_id };
     tracker_t _t{ _name };
     add(_t, count * _size);
@@ -345,7 +345,7 @@ comm_data::audit(const gotcha_data& _data, audit::incoming, const void*, size_t 
 
     write_perfetto_counter_track<rccl_recv>(count * _size);
 
-    if(!omnitrace::get_use_timemory()) return;
+    if(!rocprofsys::get_use_timemory()) return;
     auto        _name  = std::string_view{ _data.tool_id };
     std::string _label = "root";
     if(_name.find("Send") != std::string::npos) _label = "peer";
@@ -365,7 +365,7 @@ comm_data::audit(const gotcha_data& _data, audit::incoming, const void*, const v
 
     write_perfetto_counter_track<rccl_send>(count * _size);
 
-    if(!omnitrace::get_use_timemory()) return;
+    if(!rocprofsys::get_use_timemory()) return;
     auto      _name = std::string_view{ _data.tool_id };
     tracker_t _t{ _name };
     add(_t, count * _size);
@@ -398,7 +398,7 @@ comm_data::audit(const gotcha_data& _data, audit::incoming, const void*, const v
         ROCPROFSYS_CI_THROW(true, "RCCL function not handled: %s", _data.tool_id.c_str());
     }
 
-    if(!omnitrace::get_use_timemory()) return;
+    if(!rocprofsys::get_use_timemory()) return;
     add(_data, count * _size);
 }
 
@@ -412,12 +412,12 @@ comm_data::audit(const gotcha_data& _data, audit::incoming, const void*, const v
 
     write_perfetto_counter_track<rccl_recv>(count * _size);
 
-    if(!omnitrace::get_use_timemory()) return;
+    if(!rocprofsys::get_use_timemory()) return;
     add(_data, count * _size);
 }
 #endif
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(
     TIMEMORY_ESC(data_tracker<float, tim::project::omnitrace>), true, float)

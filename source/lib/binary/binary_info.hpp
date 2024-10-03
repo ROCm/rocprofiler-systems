@@ -36,7 +36,7 @@
 #include <string>
 #include <vector>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace binary
 {
@@ -84,4 +84,4 @@ binary_info::filename() const
     return (bfd) ? std::string{ bfd->name } : std::string{};
 }
 }  // namespace binary
-}  // namespace omnitrace
+}  // namespace rocprofsys

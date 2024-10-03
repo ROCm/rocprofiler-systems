@@ -30,7 +30,7 @@
 #include <cstdint>
 #include <utility>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace binary
 {
@@ -74,4 +74,4 @@ address_multirange::contains(Tp&& _v) const
                        [_v](auto&& itr) { return itr.contains(_v); });
 }
 }  // namespace binary
-}  // namespace omnitrace
+}  // namespace rocprofsys

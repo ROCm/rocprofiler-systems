@@ -45,7 +45,7 @@
 
 namespace kokkosp  = ::tim::kokkosp;
 namespace category = ::tim::category;
-namespace comp     = ::omnitrace::component;
+namespace comp     = ::rocprofsys::component;
 
 using kokkosp_region = comp::local_category_region<category::kokkos>;
 
@@ -75,7 +75,7 @@ inline void
 setup_kernel_logger()
 {
     if((tim::settings::debug() && tim::settings::verbose() >= 3) ||
-       omnitrace::config::get_use_kokkosp_kernel_logger())
+       rocprofsys::config::get_use_kokkosp_kernel_logger())
     {
         kokkosp::logger_t::get_initializer() = [](kokkosp::logger_t& _obj) {
             _obj.initialize<kokkosp::kernel_logger>();
@@ -132,7 +132,7 @@ bool
 violates_name_rules(Arg&& _arg, Args&&... _args)
 {
     // for causal profiling we only consider callbacks which are explicitly named
-    if(omnitrace::config::get_use_causal() &&
+    if(rocprofsys::config::get_use_causal() &&
        (std::string_view{ _arg }.find("Kokkos::") == 0 ||
         std::string_view{ _arg }.find("Space::") != std::string_view::npos))
         return true;
@@ -172,8 +172,8 @@ extern "C"
     void kokkosp_parse_args(int argc, char** argv)
     {
         ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
-        if(!omnitrace::config::settings_are_configured() &&
-           omnitrace::get_state() < omnitrace::State::Active)
+        if(!rocprofsys::config::settings_are_configured() &&
+           rocprofsys::get_state() < rocprofsys::State::Active)
         {
             _standalone_initialized = true;
 
@@ -212,8 +212,8 @@ extern "C"
             "Initializing rocprof-sys kokkos connector (sequence %d, version: %llu)... ",
             loadSeq, (unsigned long long) interfaceVer);
 
-        if(_standalone_initialized || (!omnitrace::config::settings_are_configured() &&
-                                       omnitrace::get_state() < omnitrace::State::Active))
+        if(_standalone_initialized || (!rocprofsys::config::settings_are_configured() &&
+                                       rocprofsys::get_state() < rocprofsys::State::Active))
         {
             auto _kokkos_profile_lib =
                 tim::get_env<std::string>("KOKKOS_PROFILE_LIBRARY");
@@ -225,7 +225,7 @@ extern "C"
                 {
                     auto&& _path = itr.pathname;
                     if(!_path.empty() && _path.at(0) != '[' &&
-                       omnitrace::filepath::exists(_path))
+                       rocprofsys::filepath::exists(_path))
                         _libs.emplace(_path);
                 }
                 for(const auto& itr : _libs)
@@ -261,23 +261,23 @@ extern "C"
         setup_kernel_logger();
 
         tim::trait::runtime_enabled<kokkosp::memory_tracker>::set(
-            omnitrace::config::get_use_timemory());
+            rocprofsys::config::get_use_timemory());
 
-        if(omnitrace::get_verbose() >= 0)
+        if(rocprofsys::get_verbose() >= 0)
         {
             fprintf(stderr, "%sDone\n%s", tim::log::color::info(),
                     tim::log::color::end());
         }
 
-        _name_len_limit = omnitrace::config::get_setting_value<int64_t>(
+        _name_len_limit = rocprofsys::config::get_setting_value<int64_t>(
                               "ROCPROFSYS_KOKKOSP_NAME_LENGTH_MAX")
                               .value_or(_name_len_limit);
         _kp_prefix =
-            omnitrace::config::get_setting_value<std::string>("ROCPROFSYS_KOKKOSP_PREFIX")
+            rocprofsys::config::get_setting_value<std::string>("ROCPROFSYS_KOKKOSP_PREFIX")
                 .value_or(_kp_prefix);
 
         _kp_deep_copy =
-            omnitrace::config::get_setting_value<bool>("ROCPROFSYS_KOKKOSP_DEEP_COPY")
+            rocprofsys::config::get_setting_value<bool>("ROCPROFSYS_KOKKOSP_DEEP_COPY")
                 .value_or(_kp_deep_copy);
     }
 
@@ -295,7 +295,7 @@ extern "C"
         {
             ROCPROFSYS_VERBOSE_F(0, "Finalizing kokkos rocprof-sys connector... ");
             kokkosp::cleanup();
-            if(omnitrace::get_verbose() >= 0) fprintf(stderr, "Done\n");
+            if(rocprofsys::get_verbose() >= 0) fprintf(stderr, "Done\n");
         }
     }
 
@@ -464,7 +464,7 @@ extern "C"
                                const void* const ptr, const uint64_t size)
     {
         if(violates_name_rules(label)) return;
-        if(omnitrace::config::get_use_causal()) return;
+        if(rocprofsys::config::get_use_causal()) return;
 
         ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         kokkosp::logger_t{}.mark(0, __FUNCTION__, space.name, label,
@@ -479,7 +479,7 @@ extern "C"
                                  const void* const ptr, const uint64_t size)
     {
         if(violates_name_rules(label)) return;
-        if(omnitrace::config::get_use_causal()) return;
+        if(rocprofsys::config::get_use_causal()) return;
 
         ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         kokkosp::logger_t{}.mark(0, __FUNCTION__, space.name, label,
@@ -496,7 +496,7 @@ extern "C"
                                  const void* dst_ptr, SpaceHandle src_handle,
                                  const char* src_name, const void* src_ptr, uint64_t size)
     {
-        if(!_kp_deep_copy || omnitrace::config::get_use_causal()) return;
+        if(!_kp_deep_copy || rocprofsys::config::get_use_causal()) return;
         if(violates_name_rules(dst_name, src_name)) return;
 
         ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
@@ -518,7 +518,7 @@ extern "C"
 
     void kokkosp_end_deep_copy()
     {
-        if(!_kp_deep_copy || omnitrace::config::get_use_causal()) return;
+        if(!_kp_deep_copy || rocprofsys::config::get_use_causal()) return;
 
         ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         kokkosp::logger_t{}.mark(-1, __FUNCTION__);
@@ -546,14 +546,14 @@ extern "C"
         if(violates_name_rules(label)) return;
 
         ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
-        if(omnitrace::config::get_use_perfetto())
+        if(rocprofsys::config::get_use_perfetto())
         {
             auto _name = tim::get_hash_identifier_fast(
                 tim::add_hash_id(JOIN(" ", _kp_prefix, label, "[dual_view_sync]")));
             TRACE_EVENT_INSTANT("user", ::perfetto::StaticString{ _name.data() },
                                 "target", (is_device) ? "device" : "host");
         }
-        else if(omnitrace::config::get_use_causal())
+        else if(rocprofsys::config::get_use_causal())
         {
             auto _name = tim::get_hash_identifier_fast(tim::add_hash_id(JOIN(
                 "", label, " [dual_view_sync][", (is_device) ? "device" : "host", "]")));
@@ -566,14 +566,14 @@ extern "C"
         if(violates_name_rules(label)) return;
 
         ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
-        if(omnitrace::config::get_use_perfetto())
+        if(rocprofsys::config::get_use_perfetto())
         {
             auto _name = tim::get_hash_identifier_fast(
                 tim::add_hash_id(JOIN(" ", _kp_prefix, label, "[dual_view_modify]")));
             TRACE_EVENT_INSTANT("user", ::perfetto::StaticString{ _name.data() },
                                 "target", (is_device) ? "device" : "host");
         }
-        else if(omnitrace::config::get_use_causal())
+        else if(rocprofsys::config::get_use_causal())
         {
             auto _name = tim::get_hash_identifier_fast(
                 tim::add_hash_id(JOIN(" ", _kp_prefix, label, "[dual_view_modify][",

@@ -29,7 +29,7 @@
 #include <timemory/backends/threading.hpp>
 #include <timemory/components/timing/backends.hpp>
 
-namespace omnitrace
+namespace rocprofsys
 {
 template struct component_bundle_cache_impl<instrumentation_bundle_t>;
 
@@ -55,4 +55,4 @@ thread_deleter<void>::operator()() const
 }
 
 template struct thread_deleter<void>;
-}  // namespace omnitrace
+}  // namespace rocprofsys

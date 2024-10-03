@@ -58,7 +58,7 @@
 #include <string>
 #include <type_traits>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace causal
 {
@@ -75,7 +75,7 @@ using backtrace_enabled = trait::runtime_enabled<component::backtrace>;
 using overflow_enabled  = trait::runtime_enabled<component::overflow>;
 }  // namespace sampling
 }  // namespace causal
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(prevent_reentry, causal::sampling::causal_sampler_t,
                                  std::true_type)
@@ -86,7 +86,7 @@ ROCPROFSYS_DEFINE_CONCRETE_TRAIT(provide_backtrace, causal::sampling::causal_sam
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(buffer_size, causal::sampling::causal_sampler_t,
                                  TIMEMORY_ESC(std::integral_constant<size_t, 4096>))
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace causal
 {
@@ -551,7 +551,7 @@ block_signals(std::set<int> _signals)
     if(_signals.empty()) _signals = get_signal_types(threading::get_id());
     if(_signals.empty()) return;
 
-    ::omnitrace::sampling::block_signals(_signals);
+    ::rocprofsys::sampling::block_signals(_signals);
 }
 
 void
@@ -560,7 +560,7 @@ unblock_signals(std::set<int> _signals)
     if(_signals.empty()) _signals = get_signal_types(threading::get_id());
     if(_signals.empty()) return;
 
-    ::omnitrace::sampling::unblock_signals(_signals);
+    ::rocprofsys::sampling::unblock_signals(_signals);
 }
 
 void
@@ -644,4 +644,4 @@ post_process_causal(int64_t, const std::vector<causal_bundle_t>& _data)
 }  // namespace
 }  // namespace sampling
 }  // namespace causal
-}  // namespace omnitrace
+}  // namespace rocprofsys

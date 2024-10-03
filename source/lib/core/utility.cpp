@@ -23,7 +23,7 @@
 #include "utility.hpp"
 #include "debug.hpp"
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace utility
 {
@@ -120,4 +120,4 @@ template std::unordered_set<int64_t>
 parse_numeric_range<int64_t, std::unordered_set<int64_t>>(std::string, const std::string&,
                                                           long);
 }  // namespace utility
-}  // namespace omnitrace
+}  // namespace rocprofsys

@@ -34,7 +34,7 @@
 #include <type_traits>
 #include <vector>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace container
 {
@@ -360,7 +360,7 @@ stable_vector<Tp, ChunkSizeV, AlignN>::at(size_type i)
 {
     if(ROCPROFSYS_UNLIKELY(i >= size()))
     {
-        throw ::omnitrace::exception<std::out_of_range>(
+        throw ::rocprofsys::exception<std::out_of_range>(
             "stable_vector::at(" + std::to_string(i) + "). size is " +
             std::to_string(size()));
     }
@@ -387,4 +387,4 @@ resize(stable_vector<Tp, ChunkSizeV, AlignN>& _v, size_t _n, Args&&... args)
     return _v.size();
 }
 }  // namespace container
-}  // namespace omnitrace
+}  // namespace rocprofsys

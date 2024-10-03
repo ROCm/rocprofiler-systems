@@ -32,7 +32,7 @@
 #include <cstdint>
 #include <limits>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace binary
 {
@@ -89,14 +89,14 @@ operator+(uintptr_t _v, binary::address_range _lhs)
 {
     return (_lhs += _v);
 }
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 namespace std
 {
 template <>
-struct hash<::omnitrace::binary::address_range>
+struct hash<::rocprofsys::binary::address_range>
 {
-    using address_range_t = ::omnitrace::binary::address_range;
+    using address_range_t = ::rocprofsys::binary::address_range;
 
     auto operator()(const address_range_t& _v) const { return _v.hash(); }
     auto operator()(address_range_t&& _v) const { return _v.hash(); }

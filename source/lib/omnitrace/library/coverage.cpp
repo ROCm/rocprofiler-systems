@@ -42,7 +42,7 @@
 #define ROCPROFSYS_SERIALIZE(MEMBER_VARIABLE)                                            \
     ar(::tim::cereal::make_nvp(#MEMBER_VARIABLE, MEMBER_VARIABLE))
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace coverage
 {
@@ -61,7 +61,7 @@ using coverage_data_map =
             uomap_t<std::string_view, std::map<size_t, coverage_data_vector::iterator>>>;
 //
 using coverage_thread_data =
-    omnitrace::thread_data<coverage_thread_data_type, code_coverage>;
+    rocprofsys::thread_data<coverage_thread_data_type, code_coverage>;
 //
 auto&
 get_code_coverage()
@@ -294,11 +294,11 @@ post_process()
     if(get_verbose() >= 0) fprintf(stderr, "\n");
 }
 }  // namespace coverage
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 //--------------------------------------------------------------------------------------//
 
-namespace coverage = omnitrace::coverage;
+namespace coverage = rocprofsys::coverage;
 
 extern "C" void
 omnitrace_register_source_hidden(const char* file, const char* func, size_t line,
@@ -333,10 +333,10 @@ extern "C" void
 omnitrace_register_coverage_hidden(const char* file, const char* func, size_t address)
 {
     if(coverage::get_post_processed()) return;
-    if(omnitrace::get_state() < omnitrace::State::Active &&
+    if(rocprofsys::get_state() < rocprofsys::State::Active &&
        !omnitrace_init_tooling_hidden())
         return;
-    else if(omnitrace::get_state() >= omnitrace::State::Finalized)
+    else if(rocprofsys::get_state() >= rocprofsys::State::Finalized)
         return;
 
     ROCPROFSYS_BASIC_VERBOSE_F(3, "[0x%x] %-20s :: %20s\n", (unsigned int) address, func,

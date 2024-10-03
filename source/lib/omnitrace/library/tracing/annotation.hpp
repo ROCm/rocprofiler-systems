@@ -36,7 +36,7 @@
 
 #include <type_traits>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace tracing
 {
@@ -197,7 +197,7 @@ add_perfetto_annotation(perfetto_event_context_t&     ctx,
         }
         else
         {
-            throw ::omnitrace::exception<std::runtime_error>(
+            throw ::rocprofsys::exception<std::runtime_error>(
                 "invalid annotation value type");
         }
     }
@@ -207,7 +207,7 @@ void
 add_perfetto_annotation(perfetto_event_context_t&     ctx,
                         const omnitrace_annotation_t& _annotation);
 }  // namespace tracing
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 #include <timemory/operations/types/annotate.hpp>
 
@@ -215,7 +215,7 @@ namespace tim
 {
 namespace operation
 {
-using perfetto_event_context_t = ::omnitrace::tracing::perfetto_event_context_t;
+using perfetto_event_context_t = ::rocprofsys::tracing::perfetto_event_context_t;
 
 template <typename Tp>
 struct annotate<perfetto_event_context_t, Tp>
@@ -250,7 +250,7 @@ private:
             {
                 auto&& _label = std::get<1>(_obj_data).at(i);
                 auto&& _value = std::get<2>(_obj_data).at(i);
-                ::omnitrace::tracing::add_perfetto_annotation(_ctx, _label, _value);
+                ::rocprofsys::tracing::add_perfetto_annotation(_ctx, _label, _value);
             }
         }
         (void) _ctx;

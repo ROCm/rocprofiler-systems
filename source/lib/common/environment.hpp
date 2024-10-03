@@ -75,7 +75,7 @@
         fflush(stderr);                                                                  \
     }
 
-namespace omnitrace
+namespace rocprofsys
 {
 inline namespace common
 {
@@ -178,4 +178,4 @@ struct ROCPROFSYS_INTERNAL_API env_config
     }
 };
 }  // namespace common
-}  // namespace omnitrace
+}  // namespace rocprofsys

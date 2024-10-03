@@ -41,7 +41,7 @@
 #include <set>
 #include <vector>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -83,4 +83,4 @@ private:
     data_t m_data = {};
 };
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys

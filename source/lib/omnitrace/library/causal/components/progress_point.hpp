@@ -36,7 +36,7 @@
 #include <cstdint>
 #include <unordered_map>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace causal
 {
@@ -110,7 +110,7 @@ private:
 };
 }  // namespace component
 }  // namespace causal
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(uses_storage, causal::component::progress_point,
                                  false_type)
@@ -126,9 +126,9 @@ namespace tim
 namespace operation
 {
 template <>
-struct push_node<omnitrace::causal::component::progress_point>
+struct push_node<rocprofsys::causal::component::progress_point>
 {
-    using type = omnitrace::causal::component::progress_point;
+    using type = rocprofsys::causal::component::progress_point;
 
     ROCPROFSYS_DEFAULT_OBJECT(push_node)
 
@@ -143,9 +143,9 @@ struct push_node<omnitrace::causal::component::progress_point>
 };
 
 template <>
-struct pop_node<omnitrace::causal::component::progress_point>
+struct pop_node<rocprofsys::causal::component::progress_point>
 {
-    using type = omnitrace::causal::component::progress_point;
+    using type = rocprofsys::causal::component::progress_point;
 
     ROCPROFSYS_DEFAULT_OBJECT(pop_node)
 

@@ -39,7 +39,7 @@
 ROCPROFSYS_COMPONENT_ALIAS(roctracer_data,
                            ::tim::component::data_tracker<double, roctracer>)
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -93,13 +93,13 @@ roctracer::is_setup()
 }
 #endif
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 #if !defined(ROCPROFSYS_USE_ROCTRACER)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::roctracer_data, false_type)
 #endif
 
-TIMEMORY_SET_COMPONENT_API(omnitrace::component::roctracer_data, project::timemory,
+TIMEMORY_SET_COMPONENT_API(rocprofsys::component::roctracer_data, project::timemory,
                            category::timing, os::supports_unix)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_timing_category, component::roctracer_data, true_type)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(uses_timing_units, component::roctracer_data, true_type)

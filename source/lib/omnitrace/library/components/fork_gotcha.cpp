@@ -41,7 +41,7 @@
 #include <pthread.h>
 #include <unistd.h>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -84,7 +84,7 @@ prefork_setup()
 
     if(config::get_use_sampling()) sampling::block_samples();
 
-    omnitrace::categories::disable_categories(config::get_enabled_categories());
+    rocprofsys::categories::disable_categories(config::get_enabled_categories());
 
     // prevent re-entry until post-fork routines have been called
     prefork_lock         = true;
@@ -97,7 +97,7 @@ postfork_parent()
 {
     if(postfork_parent_lock) return;
 
-    omnitrace::categories::enable_categories(config::get_enabled_categories());
+    rocprofsys::categories::enable_categories(config::get_enabled_categories());
 
     if(config::get_use_sampling()) sampling::unblock_samples();
 
@@ -118,11 +118,11 @@ postfork_child()
     settings::enabled() = false;
     settings::verbose() = -127;
     settings::debug()   = false;
-    omnitrace::sampling::shutdown();
-    omnitrace::categories::shutdown();
-    set_thread_state(::omnitrace::ThreadState::Disabled);
+    rocprofsys::sampling::shutdown();
+    rocprofsys::categories::shutdown();
+    set_thread_state(::rocprofsys::ThreadState::Disabled);
 
-    omnitrace::get_perfetto_session(process::get_parent_id()).release();
+    rocprofsys::get_perfetto_session(process::get_parent_id()).release();
 
     // register these exit handlers to avoid cleaning up resources
     on_exit(&child_exit, nullptr);
@@ -175,4 +175,4 @@ fork_gotcha::operator()(const gotcha_data_t&, pid_t (*_real_fork)()) const
     return _pid;
 }
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys

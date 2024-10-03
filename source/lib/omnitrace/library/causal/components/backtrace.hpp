@@ -40,7 +40,7 @@
 #include <chrono>
 #include <cstdint>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace causal
 {
@@ -101,4 +101,4 @@ private:
 };
 }  // namespace component
 }  // namespace causal
-}  // namespace omnitrace
+}  // namespace rocprofsys

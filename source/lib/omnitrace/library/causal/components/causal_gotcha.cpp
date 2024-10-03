@@ -33,7 +33,7 @@
 #include <array>
 #include <vector>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace causal
 {
@@ -113,4 +113,4 @@ causal_gotcha::remove_signals(sigset_t* _set)
 }
 }  // namespace component
 }  // namespace causal
-}  // namespace omnitrace
+}  // namespace rocprofsys

@@ -49,7 +49,7 @@
 
 #include <timemory/mpl/concepts.hpp>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace binary
 {
@@ -404,4 +404,4 @@ template std::vector<dwarf_entry>
 symbol::get_debug_line_info<std::vector<dwarf_entry>>(
     const std::vector<scope_filter>& _filters) const;
 }  // namespace binary
-}  // namespace omnitrace
+}  // namespace rocprofsys

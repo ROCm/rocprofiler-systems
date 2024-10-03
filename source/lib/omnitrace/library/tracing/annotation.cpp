@@ -22,7 +22,7 @@
 
 #include "library/tracing/annotation.hpp"
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace tracing
 {
@@ -34,4 +34,4 @@ add_perfetto_annotation(perfetto_event_context_t&     ctx,
         ctx, _annotation, utility::make_index_sequence_range<1, ROCPROFSYS_VALUE_LAST>{});
 }
 }  // namespace tracing
-}  // namespace omnitrace
+}  // namespace rocprofsys

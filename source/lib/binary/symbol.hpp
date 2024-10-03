@@ -32,7 +32,7 @@
 #include <string_view>
 #include <vector>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace binary
 {
@@ -95,4 +95,4 @@ struct symbol : private tim::unwind::bfd_file::symbol
     std::vector<dwarf_entry>    dwarf_info   = {};
 };
 }  // namespace binary
-}  // namespace omnitrace
+}  // namespace rocprofsys

@@ -48,7 +48,7 @@
 #pragma weak pthread_barrier_wait
 #pragma weak kill
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace causal
 {
@@ -102,7 +102,7 @@ std::enable_if_t<(Idx < unblocking_gotcha::indexes::kill_idx), Ret>
 unblocking_gotcha::operator()(gotcha_index<Idx>, Ret (*_func)(Args...),
                               Args... _args) const noexcept
 {
-    auto _active = get_thread_state() < ::omnitrace::ThreadState::Internal;
+    auto _active = get_thread_state() < ::rocprofsys::ThreadState::Internal;
 
     if(_active)
     {
@@ -128,7 +128,7 @@ int
 unblocking_gotcha::operator()(gotcha_index<kill_idx>, int (*_func)(pid_t, int),
                               pid_t _pid, int _sig) const noexcept
 {
-    auto _active = get_thread_state() < ::omnitrace::ThreadState::Internal;
+    auto _active = get_thread_state() < ::rocprofsys::ThreadState::Internal;
 
     if(_active && _pid == process::get_id()) causal::delay::process();
 
@@ -140,6 +140,6 @@ unblocking_gotcha::operator()(gotcha_index<kill_idx>, int (*_func)(pid_t, int),
 }
 }  // namespace component
 }  // namespace causal
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
-TIMEMORY_INVOKE_PREINIT(omnitrace::causal::component::unblocking_gotcha)
+TIMEMORY_INVOKE_PREINIT(rocprofsys::causal::component::unblocking_gotcha)

@@ -49,7 +49,7 @@
 #include <pthread.h>
 #include <utility>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace sampling
 {
@@ -201,7 +201,7 @@ pthread_create_gotcha::wrapper::operator()() const
 
         if(_tid >= 0)
         {
-            auto _active = (get_state() == ::omnitrace::State::Active &&
+            auto _active = (get_state() == ::rocprofsys::State::Active &&
                             bundles != nullptr && bundles_mutex != nullptr);
             if(!_active) return;
             thread_info::set_stop(comp::wall_clock::record());
@@ -218,7 +218,7 @@ pthread_create_gotcha::wrapper::operator()() const
         }
     };
 
-    auto _active = (get_state() == ::omnitrace::State::Active && bundles != nullptr &&
+    auto _active = (get_state() == ::rocprofsys::State::Active && bundles != nullptr &&
                     bundles_mutex != nullptr);
 
     if(m_config.offset)
@@ -292,7 +292,7 @@ pthread_create_gotcha::wrapper::operator()() const
     // execute the original function
     _ret = m_routine(m_arg);
 
-    if(get_state() < ::omnitrace::State::Finalized)
+    if(get_state() < ::rocprofsys::State::Finalized)
     {
         pop_thread_state();
 
@@ -322,7 +322,7 @@ pthread_create_gotcha::wrapper::wrap(void* _arg)
     }
 
     static thread_local auto _remover = scope::destructor{ []() {
-        if(get_state() >= omnitrace::State::Finalized) return;
+        if(get_state() >= rocprofsys::State::Finalized) return;
         // remove the handle even if original function aborts
         auto                 _lk      = locking::atomic_lock{ native_handles_mutex };
         native_handles.erase(pthread_self());
@@ -515,7 +515,7 @@ pthread_create_gotcha::operator()(pthread_t* thread, const pthread_attr_t* attr,
     auto        _enabled      = (_thr_state == ThreadState::Enabled);
     auto        _bundle       = std::optional<bundle_t>{};
     auto        _sample_child = sampling_enabled_on_child_threads();
-    auto        _active       = (_glob_state == ::omnitrace::State::Active && !_disabled);
+    auto        _active       = (_glob_state == ::rocprofsys::State::Active && !_disabled);
     const auto& _info = thread_info::init(!_active || !_sample_child || _disabled);
 
     ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
@@ -618,6 +618,6 @@ pthread_create_gotcha::operator()(pthread_t* thread, const pthread_attr_t* attr,
     return _ret;
 }
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 TIMEMORY_INITIALIZE_STORAGE(component::roctracer_data)

@@ -28,7 +28,7 @@
 #include <chrono>
 #include <cstdint>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace causal
 {
@@ -64,4 +64,4 @@ void add_sample(uint32_t, uintptr_t, uint64_t = 1);
 void
 add_samples(uint32_t, const std::map<uintptr_t, uint64_t>&);
 }  // namespace causal
-}  // namespace omnitrace
+}  // namespace rocprofsys

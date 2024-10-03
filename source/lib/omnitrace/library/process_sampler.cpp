@@ -30,7 +30,7 @@
 #include <memory>
 #include <vector>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace process_sampler
 {
@@ -238,4 +238,4 @@ sampler::set_state(state_t _state)
     get_sampler_state().store(_state);
 }
 }  // namespace process_sampler
-}  // namespace omnitrace
+}  // namespace rocprofsys

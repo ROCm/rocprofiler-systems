@@ -70,7 +70,7 @@
 #include <unistd.h>
 #include <utility>
 
-namespace omnitrace
+namespace rocprofsys
 {
 using settings = tim::settings;
 
@@ -1244,12 +1244,12 @@ omnitrace_trampoline_handler(int _v)
 {
     if(get_verbose_env() >= 1)
     {
-        ::omnitrace::debug::flush();
-        ::omnitrace::debug::lock _debug_lk{};
+        ::rocprofsys::debug::flush();
+        ::rocprofsys::debug::lock _debug_lk{};
         ROCPROFSYS_FPRINTF_STDERR_COLOR(warning);
-        fprintf(::omnitrace::debug::get_file(),
+        fprintf(::rocprofsys::debug::get_file(),
                 "signal %i ignored (ROCPROFSYS_IGNORE_DYNINST_TRAMPOLINE=ON)\n", _v);
-        ::omnitrace::debug::flush();
+        ::rocprofsys::debug::flush();
         timemory_print_demangled_backtrace<64>();
     }
 }
@@ -2772,4 +2772,4 @@ get_causal_function_exclude()
                         "\t\"';");
 }
 }  // namespace config
-}  // namespace omnitrace
+}  // namespace rocprofsys

@@ -166,7 +166,7 @@ get_internal_libpath(const std::string& _lib)
     auto _pos = _exe.find_last_of('/');
     auto _dir = std::string{ "./" };
     if(_pos != std::string_view::npos) _dir = _exe.substr(0, _pos);
-    return omnitrace::common::join("/", _dir, "..", "lib", _lib);
+    return rocprofsys::common::join("/", _dir, "..", "lib", _lib);
 }
 
 void
@@ -260,13 +260,13 @@ update_env(std::vector<char*>& _environ, std::string_view _env_var, Tp&& _env_va
             else
             {
                 free(itr);
-                itr = strdup(omnitrace::common::join('=', _env_var, _env_val).c_str());
+                itr = strdup(rocprofsys::common::join('=', _env_var, _env_val).c_str());
             }
             return;
         }
     }
     _environ.emplace_back(
-        strdup(omnitrace::common::join('=', _env_var, _env_val).c_str()));
+        strdup(rocprofsys::common::join('=', _env_var, _env_val).c_str()));
 }
 
 void

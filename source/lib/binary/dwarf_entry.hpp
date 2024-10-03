@@ -25,7 +25,7 @@
 #include "core/binary/address_range.hpp"
 #include "core/binary/fwd.hpp"
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace binary
 {
@@ -63,4 +63,4 @@ struct dwarf_entry
     void serialize(ArchiveT&, const unsigned int);
 };
 }  // namespace binary
-}  // namespace omnitrace
+}  // namespace rocprofsys

@@ -39,7 +39,7 @@
 #include <string>
 #include <vector>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace constraint
 {
@@ -111,4 +111,4 @@ get_trace_specs();
 stages
 get_trace_stages();
 }  // namespace constraint
-}  // namespace omnitrace
+}  // namespace rocprofsys

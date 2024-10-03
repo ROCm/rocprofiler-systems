@@ -28,7 +28,7 @@
 #include <dwarf.h>
 #include <elfutils/libdw.h>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace binary
 {
@@ -234,4 +234,4 @@ template void
 dwarf_entry::serialize<cereal::PrettyJSONOutputArchive>(cereal::PrettyJSONOutputArchive&,
                                                         const unsigned int);
 }  // namespace binary
-}  // namespace omnitrace
+}  // namespace rocprofsys

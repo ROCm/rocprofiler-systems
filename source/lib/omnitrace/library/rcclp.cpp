@@ -43,7 +43,7 @@ namespace
 uint64_t global_id = std::numeric_limits<uint64_t>::max();
 }
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace rcclp
 {
@@ -84,4 +84,4 @@ shutdown()
         component::deactivate_rcclp(global_id);
 }
 }  // namespace rcclp
-}  // namespace omnitrace
+}  // namespace rocprofsys

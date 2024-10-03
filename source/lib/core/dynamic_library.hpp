@@ -29,7 +29,7 @@
 #include <unistd.h>
 #include <vector>
 
-namespace omnitrace
+namespace rocprofsys
 {
 std::string
 find_library_path(const std::string& _name, const std::vector<std::string>& _env_vars,
@@ -83,4 +83,4 @@ dynamic_library::invoke(std::string_view _name, RetT (*&_func)(Args...), Args...
     }
     return RetT{};
 }
-}  // namespace omnitrace
+}  // namespace rocprofsys

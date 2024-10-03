@@ -35,7 +35,7 @@
 #include <string>
 #include <string_view>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace binary
 {
@@ -178,4 +178,4 @@ link_file::real() const
     return filepath::realpath(name, nullptr, false);
 }
 }  // namespace binary
-}  // namespace omnitrace
+}  // namespace rocprofsys

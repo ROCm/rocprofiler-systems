@@ -41,7 +41,7 @@
 #include <map>
 #include <utility>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace causal
 {
@@ -67,4 +67,4 @@ selected_entry::contains(uintptr_t _v) const
             symbol.ipaddr().contains(_v));
 }
 }  // namespace causal
-}  // namespace omnitrace
+}  // namespace rocprofsys

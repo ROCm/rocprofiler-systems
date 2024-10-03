@@ -60,7 +60,7 @@
 #include <utility>
 #include <vector>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace tracing
 {
@@ -652,4 +652,4 @@ mark_perfetto_track(CategoryT, const char* name, ::perfetto::Track _track, uint6
                         _track, _ts, std::forward<Args>(args)...);
 }
 }  // namespace tracing
-}  // namespace omnitrace
+}  // namespace rocprofsys

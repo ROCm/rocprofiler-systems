@@ -45,7 +45,7 @@
 #include <string_view>
 #include <unordered_set>
 
-namespace omnitrace
+namespace rocprofsys
 {
 // started during preinit phase
 using preinit_bundle_t =
@@ -130,10 +130,10 @@ is_root_process();
 
 bool
 is_child_process();
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 #define ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(VALUE)                               \
-    ::omnitrace::scoped_child_sampling ROCPROFSYS_VARIABLE(_scoped_child_sampling_,      \
+    ::rocprofsys::scoped_child_sampling ROCPROFSYS_VARIABLE(_scoped_child_sampling_,      \
                                                            __LINE__)                     \
     {                                                                                    \
         VALUE                                                                            \

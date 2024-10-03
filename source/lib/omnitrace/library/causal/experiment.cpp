@@ -54,13 +54,13 @@
 #include <thread>
 #include <vector>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace causal
 {
 namespace
 {
-using backtrace_causal = omnitrace::causal::component::backtrace;
+using backtrace_causal = rocprofsys::causal::component::backtrace;
 namespace cereal       = ::tim::cereal;
 
 auto    current_experiment_value  = experiment{};
@@ -711,4 +711,4 @@ experiment::load_experiments(std::string _fname, const filename_config_t& _cfg,
     return _data;
 }
 }  // namespace causal
-}  // namespace omnitrace
+}  // namespace rocprofsys

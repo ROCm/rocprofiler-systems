@@ -30,7 +30,7 @@
 #include <timemory/utility/macros.hpp>
 #include <timemory/utility/type_list.hpp>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -66,4 +66,4 @@ private:
 };
 }  // namespace
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys

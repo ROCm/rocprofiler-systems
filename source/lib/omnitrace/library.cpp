@@ -87,18 +87,18 @@
 #include <string_view>
 #include <utility>
 
-using namespace omnitrace;
+using namespace rocprofsys;
 
 //======================================================================================//
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace timeout
 {
 void
 setup() ROCPROFSYS_INTERNAL_API;
 }
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 namespace
 {
@@ -495,7 +495,7 @@ omnitrace_init_tooling_hidden()
     if(get_use_perfetto())
     {
         ROCPROFSYS_VERBOSE_F(1, "Setting up Perfetto...\n");
-        omnitrace::perfetto::setup();
+        rocprofsys::perfetto::setup();
     }
 
     tasking::setup();
@@ -546,7 +546,7 @@ omnitrace_init_tooling_hidden()
     if(get_use_perfetto())
     {
         ROCPROFSYS_VERBOSE_F(1, "Starting Perfetto...\n");
-        omnitrace::perfetto::start();
+        rocprofsys::perfetto::start();
     }
 
     categories::setup();
@@ -934,7 +934,7 @@ omnitrace_finalize_hidden(void)
     if(get_use_perfetto())
     {
         ROCPROFSYS_VERBOSE_F(0, "Finalizing perfetto...\n");
-        omnitrace::perfetto::post_process(_timemory_manager.get(),
+        rocprofsys::perfetto::post_process(_timemory_manager.get(),
                                           _perfetto_output_error);
     }
 

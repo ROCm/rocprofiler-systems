@@ -45,7 +45,7 @@
 // status,
 //                int flags);
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -204,6 +204,6 @@ numa_gotcha::audit(const gotcha_data& _data, audit::outgoing, void* ret)
                                           ret);
 }
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
-TIMEMORY_STORAGE_INITIALIZER(omnitrace::component::numa_gotcha)
+TIMEMORY_STORAGE_INITIALIZER(rocprofsys::component::numa_gotcha)

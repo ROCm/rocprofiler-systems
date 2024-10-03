@@ -44,7 +44,7 @@
 #include <type_traits>
 #include <vector>
 
-namespace omnitrace
+namespace rocprofsys
 {
 // bundle of components used in instrumentation
 using instrumentation_bundle_t =
@@ -684,4 +684,4 @@ using component_bundle_cache  = thread_data<component_bundle_cache_impl<Tp...>>;
 using instrumentation_bundles = component_bundle_cache<instrumentation_bundle_t>;
 
 extern template struct component_bundle_cache_impl<instrumentation_bundle_t>;
-}  // namespace omnitrace
+}  // namespace rocprofsys

@@ -22,7 +22,7 @@
 
 #pragma once
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace cpu_freq
 {
@@ -41,4 +41,4 @@ shutdown();
 void
 post_process();
 }  // namespace cpu_freq
-}  // namespace omnitrace
+}  // namespace rocprofsys

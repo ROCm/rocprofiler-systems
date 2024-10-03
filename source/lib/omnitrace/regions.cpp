@@ -31,7 +31,7 @@
 #    pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
 #endif
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace impl
 {
@@ -108,20 +108,20 @@ invoke_category_region_stop(omnitrace_category_t _category, const char* name,
 }
 }  // namespace
 }  // namespace impl
-}  // namespace omnitrace
+}  // namespace rocprofsys
 
 //======================================================================================//
 
 extern "C" void
 omnitrace_push_trace_hidden(const char* name)
 {
-    omnitrace::component::category_region<omnitrace::category::host>::start(name);
+    rocprofsys::component::category_region<rocprofsys::category::host>::start(name);
 }
 
 extern "C" void
 omnitrace_pop_trace_hidden(const char* name)
 {
-    omnitrace::component::category_region<omnitrace::category::host>::stop(name);
+    rocprofsys::component::category_region<rocprofsys::category::host>::stop(name);
 }
 
 //======================================================================================//
@@ -133,13 +133,13 @@ omnitrace_pop_trace_hidden(const char* name)
 extern "C" void
 omnitrace_push_region_hidden(const char* name)
 {
-    omnitrace::component::category_region<omnitrace::category::user>::start(name);
+    rocprofsys::component::category_region<rocprofsys::category::user>::start(name);
 }
 
 extern "C" void
 omnitrace_pop_region_hidden(const char* name)
 {
-    omnitrace::component::category_region<omnitrace::category::user>::stop(name);
+    rocprofsys::component::category_region<rocprofsys::category::user>::stop(name);
 }
 
 //======================================================================================//
@@ -153,9 +153,9 @@ omnitrace_push_category_region_hidden(omnitrace_category_t _category, const char
                                       omnitrace_annotation_t* _annotations,
                                       size_t                  _annotation_count)
 {
-    omnitrace::impl::invoke_category_region_start(
+    rocprofsys::impl::invoke_category_region_start(
         _category, name, _annotations, _annotation_count,
-        omnitrace::utility::make_index_sequence_range<1, ROCPROFSYS_CATEGORY_LAST>{});
+        rocprofsys::utility::make_index_sequence_range<1, ROCPROFSYS_CATEGORY_LAST>{});
 }
 
 extern "C" void
@@ -163,9 +163,9 @@ omnitrace_pop_category_region_hidden(omnitrace_category_t _category, const char*
                                      omnitrace_annotation_t* _annotations,
                                      size_t                  _annotation_count)
 {
-    omnitrace::impl::invoke_category_region_stop(
+    rocprofsys::impl::invoke_category_region_stop(
         _category, name, _annotations, _annotation_count,
-        omnitrace::utility::make_index_sequence_range<1, ROCPROFSYS_CATEGORY_LAST>{});
+        rocprofsys::utility::make_index_sequence_range<1, ROCPROFSYS_CATEGORY_LAST>{});
 }
 
 #if defined(__GNUC__) && (__GNUC__ == 7)

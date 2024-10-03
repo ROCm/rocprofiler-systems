@@ -33,7 +33,7 @@
 #include <sstream>
 #include <string>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace debug
 {
@@ -164,4 +164,4 @@ template std::string as_hex<int64_t>(int64_t, size_t);
 template std::string as_hex<uint64_t>(uint64_t, size_t);
 template std::string
 as_hex<void*>(void*, size_t);
-}  // namespace omnitrace
+}  // namespace rocprofsys

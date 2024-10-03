@@ -50,7 +50,7 @@
 #include <unistd.h>
 #include <vector>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace rocprofiler
 {
@@ -808,7 +808,7 @@ post_process_timemory()
             itr.write();
     }
 
-    tim::trait::runtime_enabled<omnitrace::rocprofiler::rocm_data_tracker>::set(false);
+    tim::trait::runtime_enabled<rocprofsys::rocprofiler::rocm_data_tracker>::set(false);
 }
 }  // namespace
 
@@ -831,4 +831,4 @@ post_process()
     }
 }
 }  // namespace rocprofiler
-}  // namespace omnitrace
+}  // namespace rocprofsys

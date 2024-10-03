@@ -40,7 +40,7 @@
 #include <chrono>
 #include <random>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace causal
 {
@@ -113,12 +113,12 @@ delay::process()
         }
         else if(get_global() > get_local())
         {
-            ::omnitrace::causal::sampling::pause();
+            ::rocprofsys::causal::sampling::pause();
             auto _beg = tracing::now();
             std::this_thread::sleep_for(
                 std::chrono::nanoseconds{ get_global() - get_local() });
             get_local() += (tracing::now() - _beg);
-            ::omnitrace::causal::sampling::resume();
+            ::rocprofsys::causal::sampling::resume();
         }
     }
     else
@@ -188,4 +188,4 @@ delay::compute_total_delay(uint64_t _baseline)
     return get_global().load() - _baseline;
 }
 }  // namespace causal
-}  // namespace omnitrace
+}  // namespace rocprofsys

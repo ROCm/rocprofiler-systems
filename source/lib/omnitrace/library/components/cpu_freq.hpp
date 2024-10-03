@@ -29,7 +29,7 @@
 #include <timemory/mpl/concepts.hpp>
 #include <timemory/units.hpp>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace component
 {
@@ -108,4 +108,4 @@ private:
     using tim::component::base_data<value_type, 1>::value;
 };
 }  // namespace component
-}  // namespace omnitrace
+}  // namespace rocprofsys

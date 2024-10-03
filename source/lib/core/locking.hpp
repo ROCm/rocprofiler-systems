@@ -27,11 +27,11 @@
 #include <atomic>
 #include <mutex>
 
-namespace omnitrace
+namespace rocprofsys
 {
 namespace locking
 {
 using atomic_mutex = ::tim::locking::spin_mutex;
 using atomic_lock  = ::tim::locking::spin_lock;
 }  // namespace locking
-}  // namespace omnitrace
+}  // namespace rocprofsys
