@@ -27,23 +27,23 @@
 #include <stdexcept>
 
 extern "C" void
-omnitrace_push_trace(const char* _name)
+rocprofsys_push_trace(const char* _name)
 {
-    omnitrace_push_trace_hidden(_name);
+    rocprofsys_push_trace_hidden(_name);
 }
 
 extern "C" void
-omnitrace_pop_trace(const char* _name)
+rocprofsys_pop_trace(const char* _name)
 {
-    omnitrace_pop_trace_hidden(_name);
+    rocprofsys_pop_trace_hidden(_name);
 }
 
 extern "C" int
-omnitrace_push_region(const char* _name)
+rocprofsys_push_region(const char* _name)
 {
     try
     {
-        omnitrace_push_region_hidden(_name);
+        rocprofsys_push_region_hidden(_name);
     } catch(std::exception& _e)
     {
         ROCPROFSYS_WARNING_F(1, "Exception caught: %s\n", _e.what());
@@ -53,11 +53,11 @@ omnitrace_push_region(const char* _name)
 }
 
 extern "C" int
-omnitrace_pop_region(const char* _name)
+rocprofsys_pop_region(const char* _name)
 {
     try
     {
-        omnitrace_pop_region_hidden(_name);
+        rocprofsys_pop_region_hidden(_name);
     } catch(std::exception& _e)
     {
         ROCPROFSYS_WARNING_F(1, "Exception caught: %s\n", _e.what());
@@ -67,13 +67,13 @@ omnitrace_pop_region(const char* _name)
 }
 
 extern "C" int
-omnitrace_push_category_region(omnitrace_category_t _category, const char* _name,
-                               omnitrace_annotation_t* _annotations,
+rocprofsys_push_category_region(rocprofsys_category_t _category, const char* _name,
+                               rocprofsys_annotation_t* _annotations,
                                size_t                  _annotation_count)
 {
     try
     {
-        omnitrace_push_category_region_hidden(_category, _name, _annotations,
+        rocprofsys_push_category_region_hidden(_category, _name, _annotations,
                                               _annotation_count);
     } catch(std::exception& _e)
     {
@@ -84,13 +84,13 @@ omnitrace_push_category_region(omnitrace_category_t _category, const char* _name
 }
 
 extern "C" int
-omnitrace_pop_category_region(omnitrace_category_t _category, const char* _name,
-                              omnitrace_annotation_t* _annotations,
+rocprofsys_pop_category_region(rocprofsys_category_t _category, const char* _name,
+                              rocprofsys_annotation_t* _annotations,
                               size_t                  _annotation_count)
 {
     try
     {
-        omnitrace_pop_category_region_hidden(_category, _name, _annotations,
+        rocprofsys_pop_category_region_hidden(_category, _name, _annotations,
                                              _annotation_count);
     } catch(std::exception& _e)
     {
@@ -101,69 +101,69 @@ omnitrace_pop_category_region(omnitrace_category_t _category, const char* _name,
 }
 
 extern "C" void
-omnitrace_progress(const char* _name)
+rocprofsys_progress(const char* _name)
 {
-    omnitrace_progress_hidden(_name);
+    rocprofsys_progress_hidden(_name);
 }
 
 extern "C" void
-omnitrace_annotated_progress(const char* _name, omnitrace_annotation_t* _annotations,
+rocprofsys_annotated_progress(const char* _name, rocprofsys_annotation_t* _annotations,
                              size_t _annotation_count)
 {
-    omnitrace_annotated_progress_hidden(_name, _annotations, _annotation_count);
+    rocprofsys_annotated_progress_hidden(_name, _annotations, _annotation_count);
 }
 
 extern "C" void
-omnitrace_init_library(void)
+rocprofsys_init_library(void)
 {
-    omnitrace_init_library_hidden();
+    rocprofsys_init_library_hidden();
 }
 
 extern "C" void
-omnitrace_init_tooling(void)
+rocprofsys_init_tooling(void)
 {
-    omnitrace_init_tooling_hidden();
+    rocprofsys_init_tooling_hidden();
 }
 
 extern "C" void
-omnitrace_init(const char* _mode, bool _rewrite, const char* _arg0)
+rocprofsys_init(const char* _mode, bool _rewrite, const char* _arg0)
 {
-    omnitrace_init_hidden(_mode, _rewrite, _arg0);
+    rocprofsys_init_hidden(_mode, _rewrite, _arg0);
 }
 
 extern "C" void
-omnitrace_finalize(void)
+rocprofsys_finalize(void)
 {
-    omnitrace_finalize_hidden();
+    rocprofsys_finalize_hidden();
 }
 
 extern "C" void
-omnitrace_reset_preload(void)
+rocprofsys_reset_preload(void)
 {
-    omnitrace_reset_preload_hidden();
+    rocprofsys_reset_preload_hidden();
 }
 
 extern "C" void
-omnitrace_set_env(const char* env_name, const char* env_val)
+rocprofsys_set_env(const char* env_name, const char* env_val)
 {
-    omnitrace_set_env_hidden(env_name, env_val);
+    rocprofsys_set_env_hidden(env_name, env_val);
 }
 
 extern "C" void
-omnitrace_set_mpi(bool use, bool attached)
+rocprofsys_set_mpi(bool use, bool attached)
 {
-    omnitrace_set_mpi_hidden(use, attached);
+    rocprofsys_set_mpi_hidden(use, attached);
 }
 
 extern "C" void
-omnitrace_register_source(const char* file, const char* func, size_t line, size_t address,
+rocprofsys_register_source(const char* file, const char* func, size_t line, size_t address,
                           const char* source)
 {
-    omnitrace_register_source_hidden(file, func, line, address, source);
+    rocprofsys_register_source_hidden(file, func, line, address, source);
 }
 
 extern "C" void
-omnitrace_register_coverage(const char* file, const char* func, size_t address)
+rocprofsys_register_coverage(const char* file, const char* func, size_t address)
 {
-    omnitrace_register_coverage_hidden(file, func, address);
+    rocprofsys_register_coverage_hidden(file, func, address);
 }

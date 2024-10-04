@@ -33,14 +33,14 @@
 #include <cstdlib>
 #include <optional>
 
-using annotation_t = omnitrace_annotation_t;
+using annotation_t = rocprofsys_annotation_t;
 
 namespace
 {
-using trace_func_t            = omnitrace_trace_func_t;
-using region_func_t           = omnitrace_region_func_t;
-using annotated_region_func_t = omnitrace_annotated_region_func_t;
-using user_callbacks_t        = omnitrace_user_callbacks_t;
+using trace_func_t            = rocprofsys_trace_func_t;
+using region_func_t           = rocprofsys_region_func_t;
+using annotated_region_func_t = rocprofsys_annotated_region_func_t;
+using user_callbacks_t        = rocprofsys_user_callbacks_t;
 
 user_callbacks_t _callbacks = ROCPROFSYS_USER_CALLBACKS_INIT;
 
@@ -56,58 +56,58 @@ invoke(int (*_func)(Args...), Args... args)
 
 extern "C"
 {
-    int omnitrace_user_start_trace(void) { return invoke(_callbacks.start_trace); }
+    int rocprofsys_user_start_trace(void) { return invoke(_callbacks.start_trace); }
 
-    int omnitrace_user_stop_trace(void) { return invoke(_callbacks.stop_trace); }
+    int rocprofsys_user_stop_trace(void) { return invoke(_callbacks.stop_trace); }
 
-    int omnitrace_user_start_thread_trace(void)
+    int rocprofsys_user_start_thread_trace(void)
     {
         return invoke(_callbacks.start_thread_trace);
     }
 
-    int omnitrace_user_stop_thread_trace(void)
+    int rocprofsys_user_stop_thread_trace(void)
     {
         return invoke(_callbacks.stop_thread_trace);
     }
 
-    int omnitrace_user_push_region(const char* id)
+    int rocprofsys_user_push_region(const char* id)
     {
         return invoke(_callbacks.push_region, id);
     }
 
-    int omnitrace_user_pop_region(const char* id)
+    int rocprofsys_user_pop_region(const char* id)
     {
         return invoke(_callbacks.pop_region, id);
     }
 
-    int omnitrace_user_progress(const char* id)
+    int rocprofsys_user_progress(const char* id)
     {
         return invoke(_callbacks.progress, id);
     }
 
-    int omnitrace_user_push_annotated_region(const char* id, annotation_t* _annotations,
+    int rocprofsys_user_push_annotated_region(const char* id, annotation_t* _annotations,
                                              size_t _annotation_count)
     {
         return invoke(_callbacks.push_annotated_region, id, _annotations,
                       _annotation_count);
     }
 
-    int omnitrace_user_pop_annotated_region(const char* id, annotation_t* _annotations,
+    int rocprofsys_user_pop_annotated_region(const char* id, annotation_t* _annotations,
                                             size_t _annotation_count)
     {
         return invoke(_callbacks.pop_annotated_region, id, _annotations,
                       _annotation_count);
     }
 
-    int omnitrace_user_annotated_progress(const char* id, annotation_t* _annotations,
+    int rocprofsys_user_annotated_progress(const char* id, annotation_t* _annotations,
                                           size_t _annotation_count)
     {
         return invoke(_callbacks.annotated_progress, id, _annotations, _annotation_count);
     }
 
-    int omnitrace_user_configure(omnitrace_user_configure_mode_t mode,
-                                 omnitrace_user_callbacks_t      inp,
-                                 omnitrace_user_callbacks_t*     out)
+    int rocprofsys_user_configure(rocprofsys_user_configure_mode_t mode,
+                                 rocprofsys_user_callbacks_t      inp,
+                                 rocprofsys_user_callbacks_t*     out)
     {
         auto _former = _callbacks;
 
@@ -174,7 +174,7 @@ extern "C"
         return ROCPROFSYS_USER_SUCCESS;
     }
 
-    const char* omnitrace_user_error_string(int error_category)
+    const char* rocprofsys_user_error_string(int error_category)
     {
         switch(error_category)
         {

@@ -162,7 +162,7 @@ constexpr auto SV_END_V =
     std::max({ SV_UNKNOWN, SV_DEFAULT, SV_INTERNAL, SV_HIDDEN, SV_PROTECTED }) + 1;
 
 void
-omnitrace_prefork_callback(thread_t* parent, thread_t* child);
+rocprofsys_prefork_callback(thread_t* parent, thread_t* child);
 
 enum CodeCoverageMode
 {

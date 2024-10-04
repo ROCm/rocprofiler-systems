@@ -31,7 +31,7 @@ extern "C"
 {
 #endif
 
-    /// @typedef omnitrace_category_t
+    /// @typedef rocprofsys_category_t
     /// @brief Identifier for categories
     ///
     typedef enum ROCPROFSYS_CATEGORIES
@@ -86,13 +86,13 @@ extern "C"
         // the value of below enum is used for iterating
         // over the enum in C++ templates. It MUST
         // be the last enumerated id
-    } omnitrace_category_t;
+    } rocprofsys_category_t;
 
     /// @enum ROCPROFSYS_ANNOTATION_TYPE
     /// @brief Identifier for the data type of the annotation.
     /// if the data type is not a pointer, pass the address of
     /// data.
-    /// @typedef ROCPROFSYS_ANNOTATION_TYPE omnitrace_annotation_type_t
+    /// @typedef ROCPROFSYS_ANNOTATION_TYPE rocprofsys_annotation_type_t
     typedef enum ROCPROFSYS_ANNOTATION_TYPE
     {
         // Do not use first enum value
@@ -134,9 +134,9 @@ extern "C"
         // over the enum in C++ templates. It MUST
         // be the last enumerated id
         ROCPROFSYS_VALUE_LAST
-    } omnitrace_annotation_type_t;
+    } rocprofsys_annotation_type_t;
 
-    /// @struct omnitrace_annotation
+    /// @struct rocprofsys_annotation
     /// @brief A struct containing annotation data to be included in the perfetto trace.
     ///
     /// @code{.cpp}
@@ -149,7 +149,7 @@ extern "C"
     /// double
     /// compute(size_t n, double* data, size_t nitr, double tolerance)
     /// {
-    ///     omnitrace_annotation_t _annotations[] = {
+    ///     rocprofsys_annotation_t _annotations[] = {
     ///         { "iteration", ROCPROFSYS_VALUE_SIZE_T, nullptr },
     ///         { "residual", ROCPROFSYS_VALUE_FLOAT64, nullptr },
     ///         { "data", ROCPROFSYS_VALUE_PTR, data },
@@ -161,28 +161,28 @@ extern "C"
     ///     double residual = tolerance;
     ///     for(size_t i = 0; i < nitr; ++i)
     ///     {
-    ///         omnitrace_user_push_annotated_region("compute", &_annotations);
+    ///         rocprofsys_user_push_annotated_region("compute", &_annotations);
     ///
     ///         residual = compute_residual(n, data);
     ///
     ///         _annotations[0].value = &i;
     ///         _annotations[1].value = &residual;
-    ///         omnitrace_user_pop_annotated_region("compute", &_annotations);
+    ///         rocprofsys_user_pop_annotated_region("compute", &_annotations);
     ///     }
     ///
     ///     return residual;
     /// }
     /// @endcode
-    /// @typedef omnitrace_annotation omnitrace_annotation_t
-    typedef struct omnitrace_annotation
+    /// @typedef rocprofsys_annotation rocprofsys_annotation_t
+    typedef struct rocprofsys_annotation
     {
         /// label for annotation
         const char* name;
-        /// omnitrace_annotation_type_t
+        /// rocprofsys_annotation_type_t
         uintptr_t type;
         /// data to annotate
         void* value;
-    } omnitrace_annotation_t;
+    } rocprofsys_annotation_t;
 
 #if defined(__cplusplus)
 }

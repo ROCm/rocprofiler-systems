@@ -173,7 +173,7 @@ auto cfg_fini_callbacks = std::vector<std::function<void()>>{};
 void
 finalize()
 {
-    ROCPROFSYS_DEBUG("[omnitrace_finalize] Disabling signal handling...\n");
+    ROCPROFSYS_DEBUG("[rocprofsys_finalize] Disabling signal handling...\n");
     tim::signals::disable_signal_detection();
     _settings_are_configured() = false;
     for(const auto& itr : cfg_fini_callbacks)
@@ -199,7 +199,7 @@ configure_settings(bool _init)
     {
         timemory_print_demangled_backtrace<64>();
         ROCPROFSYS_THROW("config::configure_settings() called before "
-                         "omnitrace_init_library. state = %s",
+                         "rocprofsys_init_library. state = %s",
                          std::to_string(get_state()).c_str());
     }
 
@@ -238,8 +238,8 @@ configure_settings(bool _init)
     auto _system_backend =
         tim::get_env("ROCPROFSYS_PERFETTO_BACKEND_SYSTEM", false, false);
 
-    auto _omnitrace_debug = _config->get<bool>("ROCPROFSYS_DEBUG");
-    if(_omnitrace_debug) tim::set_env("TIMEMORY_DEBUG_SETTINGS", "1", 0);
+    auto _rocprofsys_debug = _config->get<bool>("ROCPROFSYS_DEBUG");
+    if(_rocprofsys_debug) tim::set_env("TIMEMORY_DEBUG_SETTINGS", "1", 0);
 
     ROCPROFSYS_CONFIG_SETTING(
         std::string, "ROCPROFSYS_MODE",
@@ -552,7 +552,7 @@ configure_settings(bool _init)
         bool, "ROCPROFSYS_SAMPLING_KEEP_INTERNAL",
         "Configure whether the statistical samples should include call-stack entries "
         "from internal routines in rocprof-sys. E.g. when ON, the call-stack will show "
-        "functions like omnitrace_push_trace. If disabled, rocprof-sys will attempt to "
+        "functions like rocprofsys_push_trace. If disabled, rocprof-sys will attempt to "
         "filter out internal routines from the sampling call-stacks",
         true, "sampling", "data", "advanced");
 
@@ -870,7 +870,7 @@ configure_settings(bool _init)
     _config->get_memory_units()          = "MB";
 
     // settings native to timemory but critically and/or extensively used by rocprof-sys
-    auto _add_omnitrace_category = [&_config](auto itr) {
+    auto _add_rocprofsys_category = [&_config](auto itr) {
         if(itr != _config->end())
         {
             auto _categories = itr->second->get_categories();
@@ -880,12 +880,12 @@ configure_settings(bool _init)
         }
     };
 
-    _add_omnitrace_category(_config->find("ROCPROFSYS_CONFIG_FILE"));
-    _add_omnitrace_category(_config->find("ROCPROFSYS_DEBUG"));
-    _add_omnitrace_category(_config->find("ROCPROFSYS_VERBOSE"));
-    _add_omnitrace_category(_config->find("ROCPROFSYS_TIME_OUTPUT"));
-    _add_omnitrace_category(_config->find("ROCPROFSYS_OUTPUT_PREFIX"));
-    _add_omnitrace_category(_config->find("ROCPROFSYS_OUTPUT_PATH"));
+    _add_rocprofsys_category(_config->find("ROCPROFSYS_CONFIG_FILE"));
+    _add_rocprofsys_category(_config->find("ROCPROFSYS_DEBUG"));
+    _add_rocprofsys_category(_config->find("ROCPROFSYS_VERBOSE"));
+    _add_rocprofsys_category(_config->find("ROCPROFSYS_TIME_OUTPUT"));
+    _add_rocprofsys_category(_config->find("ROCPROFSYS_OUTPUT_PREFIX"));
+    _add_rocprofsys_category(_config->find("ROCPROFSYS_OUTPUT_PATH"));
 
     auto _add_advanced_category = [&_config](const std::string& _name) {
         auto itr = _config->find(_name);
@@ -979,7 +979,7 @@ configure_settings(bool _init)
     else
     {
         auto _papi_events = _config->find("ROCPROFSYS_PAPI_EVENTS");
-        _add_omnitrace_category(_papi_events);
+        _add_rocprofsys_category(_papi_events);
         std::vector<std::string> _papi_choices = {};
         for(auto itr : tim::papi::available_events_info())
         {
@@ -1228,7 +1228,7 @@ get_signal_handler()
 }
 
 void
-omnitrace_exit_action(int nsig)
+rocprofsys_exit_action(int nsig)
 {
     tim::signals::block_signals(get_sampling_signals(),
                                 tim::signals::sigmask_scope::process);
@@ -1240,7 +1240,7 @@ omnitrace_exit_action(int nsig)
 }
 
 void
-omnitrace_trampoline_handler(int _v)
+rocprofsys_trampoline_handler(int _v)
 {
     if(get_verbose_env() >= 1)
     {
@@ -1290,7 +1290,7 @@ configure_signal_handler(const std::shared_ptr<settings>& _config)
     {
         tim::signals::disable_signal_detection();
         signal_settings::enable(sys_signal::Interrupt);
-        signal_settings::set_exit_action(omnitrace_exit_action);
+        signal_settings::set_exit_action(rocprofsys_exit_action);
         signal_settings::check_environment();
         auto default_signals = signal_settings::get_default();
         for(const auto& itr : default_signals)
@@ -1306,7 +1306,7 @@ configure_signal_handler(const std::shared_ptr<settings>& _config)
         struct sigaction _action;
         sigemptyset(&_action.sa_mask);
         _action.sa_flags   = {};
-        _action.sa_handler = omnitrace_trampoline_handler;
+        _action.sa_handler = rocprofsys_trampoline_handler;
         sigaction(_dyninst_trampoline_signal, &_action, nullptr);
     }
 }
@@ -1688,22 +1688,22 @@ print_settings(bool _include_env)
     if(dmp::rank() > 0) return;
 
     // generic filter for filtering relevant options
-    auto _is_omnitrace_option = [](const auto& _v, const auto&) {
+    auto _is_rocprofsys_option = [](const auto& _v, const auto&) {
         return (_v.find("ROCPROFSYS_") == 0);
     };
 
     if(_include_env)
     {
         std::cerr << tim::log::info;
-        tim::print_env(std::cerr, [_is_omnitrace_option](const std::string& _v) {
-            auto _is_omni_opt = _is_omnitrace_option(_v, std::set<std::string>{});
+        tim::print_env(std::cerr, [_is_rocprofsys_option](const std::string& _v) {
+            auto _is_omni_opt = _is_rocprofsys_option(_v, std::set<std::string>{});
             if(settings::verbose() >= 2 || settings::debug()) return _is_omni_opt;
             return (_is_omni_opt && _v.find("ROCPROFSYS_SIGNAL_") != 0);
         });
         std::cerr << tim::log::flush;
     }
 
-    print_settings(std::cerr, _is_omnitrace_option);
+    print_settings(std::cerr, _is_rocprofsys_option);
 
     fprintf(stderr, "\n");
 }

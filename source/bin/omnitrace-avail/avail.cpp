@@ -138,7 +138,7 @@ main(int argc, char** argv)
 
     tim::unwind::set_bfd_verbose(3);
     tim::set_env("ROCPROFSYS_INIT_TOOLING", "OFF", 1);
-    omnitrace_init_library();
+    rocprofsys_init_library();
 
     std::set<std::string> _category_options = component_categories{}();
     {

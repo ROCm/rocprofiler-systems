@@ -131,7 +131,7 @@ ensure_initialization(bool _offset, int64_t _glob_n, int64_t _offset_n)
 void
 finalization_handler()
 {
-    if(get_state() == State::Active) omnitrace_finalize();
+    if(get_state() == State::Active) rocprofsys_finalize();
 }
 
 auto
@@ -176,7 +176,7 @@ ensure_finalization(bool _static_init = false)
     {
         tim::get_shared_ptr_pair_callback() =
             new tim::shared_ptr_pair_callback_t{ [](int64_t _n) {
-                if(_n == 0) omnitrace_finalize_hidden();
+                if(_n == 0) rocprofsys_finalize_hidden();
             } };
     }
 
@@ -199,7 +199,7 @@ ensure_finalization(bool _static_init = false)
 
     if(_timemory_manager) _timemory_manager->set_write_metadata(-1);
 
-    return scope::destructor{ []() { omnitrace_finalize_hidden(); } };
+    return scope::destructor{ []() { rocprofsys_finalize_hidden(); } };
 }
 
 template <typename... Tp>
@@ -261,7 +261,7 @@ struct set_env_s  // NOLINT
 }  // namespace
 
 extern "C" void
-omnitrace_set_env_hidden(const char* env_name, const char* env_val)
+rocprofsys_set_env_hidden(const char* env_name, const char* env_val)
 {
     tim::auto_lock_t _lk{ tim::type_mutex<set_env_s>() };
 
@@ -278,7 +278,7 @@ omnitrace_set_env_hidden(const char* env_name, const char* env_val)
     {
         ROCPROFSYS_WARNING_F(
             0,
-            "omnitrace_set_env(\"%s\", \"%s\") called after rocprof-sys was initialized. "
+            "rocprofsys_set_env(\"%s\", \"%s\") called after rocprof-sys was initialized. "
             "state = %s. This environment variable will have no effect\n",
             env_name, env_val, std::to_string(get_state()).c_str());
     }
@@ -296,7 +296,7 @@ bool                  _set_mpi_called   = false;
 std::function<void()> _preinit_callback = []() { get_preinit_bundle()->start(); };
 
 void
-omnitrace_preinit_hidden()
+rocprofsys_preinit_hidden()
 {
     // run once and discard
     _preinit_callback();
@@ -305,7 +305,7 @@ omnitrace_preinit_hidden()
 }  // namespace
 
 extern "C" void
-omnitrace_set_mpi_hidden(bool use, bool attached)
+rocprofsys_set_mpi_hidden(bool use, bool attached)
 {
     static bool _once = false;
     static auto _args = std::make_pair(use, attached);
@@ -336,20 +336,20 @@ omnitrace_set_mpi_hidden(bool use, bool attached)
     {
         ROCPROFSYS_WARNING_F(
             0,
-            "omnitrace_set_mpi(use=%s, attached=%s) called after rocprof-sys was "
+            "rocprofsys_set_mpi(use=%s, attached=%s) called after rocprof-sys was "
             "initialized. state = %s. MPI support may not be properly initialized. Use "
             "ROCPROFSYS_USE_MPIP=ON and ROCPROFSYS_USE_PID=ON to ensure full support\n",
             std::to_string(use).c_str(), std::to_string(attached).c_str(),
             std::to_string(get_state()).c_str());
     }
 
-    omnitrace_preinit_hidden();
+    rocprofsys_preinit_hidden();
 }
 
 //======================================================================================//
 
 extern "C" void
-omnitrace_init_library_hidden()
+rocprofsys_init_library_hidden()
 {
     auto _tid = threading::get_id();
     (void) _tid;
@@ -408,13 +408,13 @@ omnitrace_init_library_hidden()
 //======================================================================================//
 
 extern "C" bool
-omnitrace_init_tooling_hidden()
+rocprofsys_init_tooling_hidden()
 {
     if(get_env("ROCPROFSYS_MONOCHROME", false, false)) tim::log::monochrome() = true;
 
     if(!tim::get_env("ROCPROFSYS_INIT_TOOLING", true))
     {
-        omnitrace_init_library_hidden();
+        rocprofsys_init_library_hidden();
         return false;
     }
 
@@ -431,7 +431,7 @@ omnitrace_init_tooling_hidden()
 
     ROCPROFSYS_CONDITIONAL_THROW(
         get_state() == State::Init,
-        "%s called after omnitrace_init_library() was explicitly called",
+        "%s called after rocprofsys_init_library() was explicitly called",
         ROCPROFSYS_FUNCTION);
 
     ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(get_verbose_env() >= 0,
@@ -443,9 +443,9 @@ omnitrace_init_tooling_hidden()
     if(get_verbose_env() >= 0) print_banner();
 
     ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(_debug_init,
-                                         "Calling omnitrace_init_library()...\n");
+                                         "Calling rocprofsys_init_library()...\n");
 
-    omnitrace_init_library_hidden();
+    rocprofsys_init_library_hidden();
 
     ROCPROFSYS_DEBUG_F("\n");
 
@@ -484,7 +484,7 @@ omnitrace_init_tooling_hidden()
     ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
 
     // ideally these have already been started
-    omnitrace_preinit_hidden();
+    rocprofsys_preinit_hidden();
 
     // start these gotchas once settings have been initialized
     if(get_init_bundle()) get_init_bundle()->start();
@@ -562,7 +562,7 @@ omnitrace_init_tooling_hidden()
 //======================================================================================//
 
 extern "C" void
-omnitrace_init_hidden(const char* _mode, bool _is_binary_rewrite, const char* _argv0_c)
+rocprofsys_init_hidden(const char* _mode, bool _is_binary_rewrite, const char* _argv0_c)
 {
     static int  _total_count = 0;
     static auto _args = std::make_pair(std::string_view{ _mode }, _is_binary_rewrite);
@@ -579,10 +579,10 @@ omnitrace_init_hidden(const char* _mode, bool _is_binary_rewrite, const char* _a
     ROCPROFSYS_CONDITIONAL_THROW(
         _count > 0 &&
             std::tie(_args.first, _args.second) != std::tie(_mode_sv, _is_binary_rewrite),
-        "\nomnitrace_init(...) called multiple times with different arguments for mode "
+        "\nrocprofsys_init(...) called multiple times with different arguments for mode "
         "and/or is_binary_rewrite:"
-        "\n    Invocation #1: omnitrace_init(mode=%-8s, is_binary_rewrite=%-5s, ...)"
-        "\n    Invocation #%i: omnitrace_init(mode=%-8s, is_binary_rewrite=%-5s, ...)",
+        "\n    Invocation #1: rocprofsys_init(mode=%-8s, is_binary_rewrite=%-5s, ...)"
+        "\n    Invocation #%i: rocprofsys_init(mode=%-8s, is_binary_rewrite=%-5s, ...)",
         _args.first.data(), std::to_string(_args.second).c_str(), _count + 1, _mode,
         std::to_string(_is_binary_rewrite).c_str());
 
@@ -597,7 +597,7 @@ omnitrace_init_hidden(const char* _mode, bool _is_binary_rewrite, const char* _a
         {
             ROCPROFSYS_WARNING_F(
                 0,
-                "omnitrace_init(mode=%s, is_binary_rewrite=%s, argv0=%s) "
+                "rocprofsys_init(mode=%s, is_binary_rewrite=%s, argv0=%s) "
                 "called after rocprof-sys was initialized. state = %s. Mode-based "
                 "settings (via -M <MODE> passed to rocprof-sys exe) may not be "
                 "properly configured.\n",
@@ -615,15 +615,15 @@ omnitrace_init_hidden(const char* _mode, bool _is_binary_rewrite, const char* _a
         {
             auto _name = (_argv0_c) ? std::string{ _argv0_c } : config::get_exe_name();
             // if main hasn't been popped yet, pop it
-            ROCPROFSYS_BASIC_VERBOSE(2, "Running omnitrace_pop_trace(%s)...\n",
+            ROCPROFSYS_BASIC_VERBOSE(2, "Running rocprofsys_pop_trace(%s)...\n",
                                      _name.c_str());
-            omnitrace_pop_trace_hidden(_name.c_str());
+            rocprofsys_pop_trace_hidden(_name.c_str());
         }
     });
 
     std::atexit([]() {
         // if active (not already finalized) then we should finalize
-        if(get_state() == State::Active) omnitrace_finalize_hidden();
+        if(get_state() == State::Active) rocprofsys_finalize_hidden();
     });
 
     ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(
@@ -636,14 +636,14 @@ omnitrace_init_hidden(const char* _mode, bool _is_binary_rewrite, const char* _a
 
     if(_set_mpi_called)
     {
-        omnitrace_preinit_hidden();
+        rocprofsys_preinit_hidden();
     }
 }
 
 //======================================================================================//
 
 extern "C" void
-omnitrace_reset_preload_hidden(void)
+rocprofsys_reset_preload_hidden(void)
 {
     tim::set_env("ROCPROFSYS_PRELOAD", "0", 1);
     auto&& _preload_libs = common::get_env("LD_PRELOAD", std::string{});
@@ -665,7 +665,7 @@ omnitrace_reset_preload_hidden(void)
 //======================================================================================//
 
 extern "C" void
-omnitrace_finalize_hidden(void)
+rocprofsys_finalize_hidden(void)
 {
     // disable thread id recycling during finalization
     threading::recycle_ids() = false;
@@ -700,14 +700,14 @@ omnitrace_finalize_hidden(void)
     tim::signals::block_signals(get_sampling_signals(),
                                 tim::signals::sigmask_scope::process);
 
-    omnitrace_reset_preload_hidden();
+    rocprofsys_reset_preload_hidden();
 
     // some functions called during finalization may alter the push/pop count so we need
     // to save them here
     auto _push_count = tracing::push_count().load();
     auto _pop_count  = tracing::pop_count().load();
 
-    // e.g. omnitrace_pop_trace("main");
+    // e.g. rocprofsys_pop_trace("main");
     if(_push_count > _pop_count)
     {
         for(auto& itr : tracing::get_finalization_functions())
@@ -753,8 +753,8 @@ omnitrace_finalize_hidden(void)
         }
     }
 
-    ROCPROFSYS_VERBOSE_F(1, "omnitrace_push_trace :: called %zux\n", _push_count);
-    ROCPROFSYS_VERBOSE_F(1, "omnitrace_pop_trace  :: called %zux\n", _pop_count);
+    ROCPROFSYS_VERBOSE_F(1, "rocprofsys_push_trace :: called %zux\n", _push_count);
+    ROCPROFSYS_VERBOSE_F(1, "rocprofsys_pop_trace  :: called %zux\n", _pop_count);
 
     tim::signals::enable_signal_detection({ tim::signals::sys_signal::Interrupt },
                                           [](int) {});
@@ -976,8 +976,8 @@ omnitrace_finalize_hidden(void)
     ROCPROFSYS_CI_THROW(
         _push_count > _pop_count, "%s",
         TIMEMORY_JOIN(" ",
-                      "omnitrace_push_trace was called more times than "
-                      "omnitrace_pop_trace. The inverse is fine but the current state "
+                      "rocprofsys_push_trace was called more times than "
+                      "rocprofsys_pop_trace. The inverse is fine but the current state "
                       "means not every measurement was ended :: pushed:",
                       _push_count, "vs. popped:", _pop_count)
             .c_str());
@@ -998,7 +998,7 @@ namespace
 {
 // if static objects are destroyed randomly (relatively uncommon behavior)
 // this might call finalization before perfetto ends the tracing session
-// but static variable in omnitrace_init_tooling_hidden is more likely
+// but static variable in rocprofsys_init_tooling_hidden is more likely
 auto _ensure_finalization = ensure_finalization(true);
 auto _manager             = tim::manager::instance();
 auto _settings            = tim::settings::shared_instance();

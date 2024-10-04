@@ -254,9 +254,9 @@ extern "C"
                                                          : _initialize_arguments.at(0);
 
             _standalone_initialized = true;
-            omnitrace_set_mpi_hidden(false, false);
-            omnitrace_init_hidden(_mode.c_str(), false, _arg0.c_str());
-            omnitrace_push_trace_hidden("kokkos_main");
+            rocprofsys_set_mpi_hidden(false, false);
+            rocprofsys_init_hidden(_mode.c_str(), false, _arg0.c_str());
+            rocprofsys_push_trace_hidden("kokkos_main");
         }
 
         setup_kernel_logger();
@@ -287,10 +287,10 @@ extern "C"
         ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
         if(_standalone_initialized)
         {
-            omnitrace_pop_trace_hidden("kokkos_main");
+            rocprofsys_pop_trace_hidden("kokkos_main");
             ROCPROFSYS_VERBOSE_F(
                 0, "Finalizing kokkos rocprof-sys connector (standalone)...\n");
-            omnitrace_finalize_hidden();
+            rocprofsys_finalize_hidden();
         }
         else
         {

@@ -69,54 +69,54 @@
 
 extern "C"
 {
-    void omnitrace_init_library(void) ROCPROFSYS_PUBLIC_API;
-    void omnitrace_init_tooling(void) ROCPROFSYS_PUBLIC_API;
-    void omnitrace_init(const char*, bool, const char*) ROCPROFSYS_PUBLIC_API;
-    void omnitrace_finalize(void) ROCPROFSYS_PUBLIC_API;
-    void omnitrace_set_env(const char* env_name,
+    void rocprofsys_init_library(void) ROCPROFSYS_PUBLIC_API;
+    void rocprofsys_init_tooling(void) ROCPROFSYS_PUBLIC_API;
+    void rocprofsys_init(const char*, bool, const char*) ROCPROFSYS_PUBLIC_API;
+    void rocprofsys_finalize(void) ROCPROFSYS_PUBLIC_API;
+    void rocprofsys_set_env(const char* env_name,
                            const char* env_val) ROCPROFSYS_PUBLIC_API;
-    void omnitrace_set_mpi(bool use, bool attached) ROCPROFSYS_PUBLIC_API;
-    void omnitrace_set_instrumented(int) ROCPROFSYS_PUBLIC_API;
-    void omnitrace_push_trace(const char* name) ROCPROFSYS_PUBLIC_API;
-    void omnitrace_pop_trace(const char* name) ROCPROFSYS_PUBLIC_API;
-    int  omnitrace_push_region(const char*) ROCPROFSYS_PUBLIC_API;
-    int  omnitrace_pop_region(const char*) ROCPROFSYS_PUBLIC_API;
-    int  omnitrace_push_category_region(omnitrace_category_t, const char*,
-                                        omnitrace_annotation_t*,
+    void rocprofsys_set_mpi(bool use, bool attached) ROCPROFSYS_PUBLIC_API;
+    void rocprofsys_set_instrumented(int) ROCPROFSYS_PUBLIC_API;
+    void rocprofsys_push_trace(const char* name) ROCPROFSYS_PUBLIC_API;
+    void rocprofsys_pop_trace(const char* name) ROCPROFSYS_PUBLIC_API;
+    int  rocprofsys_push_region(const char*) ROCPROFSYS_PUBLIC_API;
+    int  rocprofsys_pop_region(const char*) ROCPROFSYS_PUBLIC_API;
+    int  rocprofsys_push_category_region(rocprofsys_category_t, const char*,
+                                        rocprofsys_annotation_t*,
                                         size_t) ROCPROFSYS_PUBLIC_API;
-    int  omnitrace_pop_category_region(omnitrace_category_t, const char*,
-                                       omnitrace_annotation_t*,
+    int  rocprofsys_pop_category_region(rocprofsys_category_t, const char*,
+                                       rocprofsys_annotation_t*,
                                        size_t) ROCPROFSYS_PUBLIC_API;
 
-    void omnitrace_register_source(const char* file, const char* func, size_t line,
+    void rocprofsys_register_source(const char* file, const char* func, size_t line,
                                    size_t      address,
                                    const char* source) ROCPROFSYS_PUBLIC_API;
-    void omnitrace_register_coverage(const char* file, const char* func,
+    void rocprofsys_register_coverage(const char* file, const char* func,
                                      size_t address) ROCPROFSYS_PUBLIC_API;
-    void omnitrace_progress(const char*) ROCPROFSYS_PUBLIC_API;
-    void omnitrace_annotated_progress(const char*, omnitrace_annotation_t*,
+    void rocprofsys_progress(const char*) ROCPROFSYS_PUBLIC_API;
+    void rocprofsys_annotated_progress(const char*, rocprofsys_annotation_t*,
                                       size_t) ROCPROFSYS_PUBLIC_API;
 
 #if defined(ROCPROFSYS_DL_SOURCE) && (ROCPROFSYS_DL_SOURCE > 0)
-    void omnitrace_preinit_library(void) ROCPROFSYS_HIDDEN_API;
-    int  omnitrace_preload_library(void) ROCPROFSYS_HIDDEN_API;
+    void rocprofsys_preinit_library(void) ROCPROFSYS_HIDDEN_API;
+    int  rocprofsys_preload_library(void) ROCPROFSYS_HIDDEN_API;
 
-    int omnitrace_user_start_trace_dl(void) ROCPROFSYS_HIDDEN_API;
-    int omnitrace_user_stop_trace_dl(void) ROCPROFSYS_HIDDEN_API;
+    int rocprofsys_user_start_trace_dl(void) ROCPROFSYS_HIDDEN_API;
+    int rocprofsys_user_stop_trace_dl(void) ROCPROFSYS_HIDDEN_API;
 
-    int omnitrace_user_start_thread_trace_dl(void) ROCPROFSYS_HIDDEN_API;
-    int omnitrace_user_stop_thread_trace_dl(void) ROCPROFSYS_HIDDEN_API;
+    int rocprofsys_user_start_thread_trace_dl(void) ROCPROFSYS_HIDDEN_API;
+    int rocprofsys_user_stop_thread_trace_dl(void) ROCPROFSYS_HIDDEN_API;
 
-    int omnitrace_user_push_region_dl(const char*) ROCPROFSYS_HIDDEN_API;
-    int omnitrace_user_pop_region_dl(const char*) ROCPROFSYS_HIDDEN_API;
+    int rocprofsys_user_push_region_dl(const char*) ROCPROFSYS_HIDDEN_API;
+    int rocprofsys_user_pop_region_dl(const char*) ROCPROFSYS_HIDDEN_API;
 
-    int omnitrace_user_push_annotated_region_dl(const char*, omnitrace_annotation_t*,
+    int rocprofsys_user_push_annotated_region_dl(const char*, rocprofsys_annotation_t*,
                                                 size_t) ROCPROFSYS_HIDDEN_API;
-    int omnitrace_user_pop_annotated_region_dl(const char*, omnitrace_annotation_t*,
+    int rocprofsys_user_pop_annotated_region_dl(const char*, rocprofsys_annotation_t*,
                                                size_t) ROCPROFSYS_HIDDEN_API;
 
-    int omnitrace_user_progress_dl(const char* name) ROCPROFSYS_HIDDEN_API;
-    int omnitrace_user_annotated_progress_dl(const char*, omnitrace_annotation_t*,
+    int rocprofsys_user_progress_dl(const char* name) ROCPROFSYS_HIDDEN_API;
+    int rocprofsys_user_annotated_progress_dl(const char*, rocprofsys_annotation_t*,
                                              size_t) ROCPROFSYS_HIDDEN_API;
     // KokkosP
     struct ROCPROFSYS_HIDDEN_API SpaceHandle

@@ -523,7 +523,7 @@ is_text_file(const std::string& filename)
 //  Get the realpath to this exe
 //
 std::string&
-omnitrace_get_exe_realpath()
+rocprofsys_get_exe_realpath()
 {
     static std::string _v = []() {
         auto _cmd_line = tim::read_command_line(tim::process::get_id());
@@ -545,7 +545,7 @@ omnitrace_get_exe_realpath()
 //  Error callback routine.
 //
 std::vector<std::string>
-omnitrace_get_link_map(const char* _lib, const std::string& _exclude_linked_by,
+rocprofsys_get_link_map(const char* _lib, const std::string& _exclude_linked_by,
                        const std::string& _exclude_re, std::vector<int>&& _open_modes)
 {
     if(_open_modes.empty()) _open_modes = { (RTLD_LAZY | RTLD_NOLOAD) };
@@ -573,7 +573,7 @@ omnitrace_get_link_map(const char* _lib, const std::string& _exclude_linked_by,
                 {
                     // only insert exe name if dlopened the exe and
                     // empty name is first entry
-                    _chain.emplace_back(omnitrace_get_exe_realpath());
+                    _chain.emplace_back(rocprofsys_get_exe_realpath());
                 }
                 else if(!std::string_view{ _next->l_name }.empty())
                 {
@@ -615,7 +615,7 @@ omnitrace_get_link_map(const char* _lib, const std::string& _exclude_linked_by,
 //  Get the path of a loaded dynamic binary
 //
 std::optional<std::string>
-omnitrace_get_loaded_path(const char* _name, std::vector<int>&& _open_modes)
+rocprofsys_get_loaded_path(const char* _name, std::vector<int>&& _open_modes)
 {
     if(_open_modes.empty()) _open_modes = { (RTLD_LAZY | RTLD_NOLOAD) };
 
@@ -647,7 +647,7 @@ omnitrace_get_loaded_path(const char* _name, std::vector<int>&& _open_modes)
 //  Get the path of a loaded dynamic binary
 //
 std::optional<std::string>
-omnitrace_get_origin(const char* _name, std::vector<int>&& _open_modes)
+rocprofsys_get_origin(const char* _name, std::vector<int>&& _open_modes)
 {
     if(_open_modes.empty()) _open_modes = { (RTLD_LAZY | RTLD_NOLOAD) };
 

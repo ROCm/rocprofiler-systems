@@ -103,10 +103,10 @@ get_cpu_cid()
 unique_ptr_t<std::vector<uint64_t>>&
 get_cpu_cid_stack(int64_t _tid, int64_t _parent)
 {
-    struct omnitrace_cpu_cid_stack
+    struct rocprofsys_cpu_cid_stack
     {};
-    using init_data_t   = thread_data<bool, omnitrace_cpu_cid_stack>;
-    using thread_data_t = thread_data<std::vector<uint64_t>, omnitrace_cpu_cid_stack>;
+    using init_data_t   = thread_data<bool, rocprofsys_cpu_cid_stack>;
+    using thread_data_t = thread_data<std::vector<uint64_t>, rocprofsys_cpu_cid_stack>;
 
     auto& _v_tid = thread_data_t::instance(construct_on_thread{ _tid });
     auto& _b_tid = init_data_t::instance(construct_on_thread{ _tid }, false);
@@ -128,9 +128,9 @@ get_cpu_cid_stack(int64_t _tid, int64_t _parent)
 unique_ptr_t<cpu_cid_parent_map_t>&
 get_cpu_cid_parents(int64_t _tid)
 {
-    struct omnitrace_cpu_cid_stack
+    struct rocprofsys_cpu_cid_stack
     {};
-    using thread_data_t = thread_data<cpu_cid_parent_map_t, omnitrace_cpu_cid_stack>;
+    using thread_data_t = thread_data<cpu_cid_parent_map_t, rocprofsys_cpu_cid_stack>;
     return thread_data_t::instance(construct_on_thread{ _tid }, cpu_cid_parent_map_t{});
 }
 

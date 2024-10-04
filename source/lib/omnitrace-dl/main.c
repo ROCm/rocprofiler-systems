@@ -45,7 +45,7 @@ typedef int (*start_main_t)(int (*)(int, char**, char**), int, char**,
 // local function declarations
 //
 int
-omnitrace_libc_start_main(int (*)(int, char**, char**), int, char**,
+rocprofsys_libc_start_main(int (*)(int, char**, char**), int, char**,
                           int (*)(int, char**, char**), void (*)(void), void (*)(void),
                           void*) ROCPROFSYS_INTERNAL_API;
 
@@ -57,37 +57,37 @@ __libc_start_main(int (*)(int, char**, char**), int, char**, int (*)(int, char**
 // external function declarations
 //
 extern int
-omnitrace_preload_library(void);
+rocprofsys_preload_library(void);
 
 extern void
-omnitrace_finalize(void);
+rocprofsys_finalize(void);
 
 extern void
-omnitrace_push_trace(const char* name);
+rocprofsys_push_trace(const char* name);
 
 extern void
-omnitrace_pop_trace(const char* name);
+rocprofsys_pop_trace(const char* name);
 
 extern void
-omnitrace_init_tooling(void);
+rocprofsys_init_tooling(void);
 
 extern void
-omnitrace_init(const char*, bool, const char*);
+rocprofsys_init(const char*, bool, const char*);
 
 extern char*
 basename(const char*);
 
-extern void omnitrace_set_main(main_func_t) ROCPROFSYS_INTERNAL_API;
+extern void rocprofsys_set_main(main_func_t) ROCPROFSYS_INTERNAL_API;
 
 extern int
-omnitrace_main(int argc, char** argv, char** envp) ROCPROFSYS_INTERNAL_API;
+rocprofsys_main(int argc, char** argv, char** envp) ROCPROFSYS_INTERNAL_API;
 
 int
-omnitrace_libc_start_main(int (*_main)(int, char**, char**), int _argc, char** _argv,
+rocprofsys_libc_start_main(int (*_main)(int, char**, char**), int _argc, char** _argv,
                           int (*_init)(int, char**, char**), void (*_fini)(void),
                           void (*_rtld_fini)(void), void* _stack_end)
 {
-    int _preload = omnitrace_preload_library();
+    int _preload = rocprofsys_preload_library();
 
     // prevent re-entry
     static int _reentry = 0;
@@ -98,7 +98,7 @@ omnitrace_libc_start_main(int (*_main)(int, char**, char**), int _argc, char** _
     void* _this_func = __builtin_return_address(0);
 
     // Save the real main function address
-    omnitrace_set_main(_main);
+    rocprofsys_set_main(_main);
 
     // Find the real __libc_start_main()
     start_main_t user_main = dlsym(RTLD_NEXT, "__libc_start_main");
@@ -116,7 +116,7 @@ omnitrace_libc_start_main(int (*_main)(int, char**, char**), int _argc, char** _
         else
         {
             // call rocprof-sys main function wrapper
-            return user_main(omnitrace_main, _argc, _argv, _init, _fini, _rtld_fini,
+            return user_main(rocprofsys_main, _argc, _argv, _init, _fini, _rtld_fini,
                              _stack_end);
         }
     }
@@ -132,6 +132,6 @@ __libc_start_main(int (*_main)(int, char**, char**), int _argc, char** _argv,
                   int (*_init)(int, char**, char**), void (*_fini)(void),
                   void (*_rtld_fini)(void), void* _stack_end)
 {
-    return omnitrace_libc_start_main(_main, _argc, _argv, _init, _fini, _rtld_fini,
+    return rocprofsys_libc_start_main(_main, _argc, _argv, _init, _fini, _rtld_fini,
                                      _stack_end);
 }

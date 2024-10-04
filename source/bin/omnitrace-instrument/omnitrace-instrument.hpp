@@ -83,12 +83,12 @@ get_snippets(Args&&... args)
 //
 //======================================================================================//
 //
-struct omnitrace_call_expr
+struct rocprofsys_call_expr
 {
     using snippet_pointer_t = std::shared_ptr<snippet_t>;
 
     template <typename... Args>
-    omnitrace_call_expr(Args&&... args)
+    rocprofsys_call_expr(Args&&... args)
     : m_params(get_snippets(std::forward<Args>(args)...))
     {}
 
@@ -112,15 +112,15 @@ private:
 //
 //======================================================================================//
 //
-struct omnitrace_snippet_vec
+struct rocprofsys_snippet_vec
 {
-    using entry_type = std::vector<omnitrace_call_expr>;
+    using entry_type = std::vector<rocprofsys_call_expr>;
     using value_type = std::vector<call_expr_pointer_t>;
 
     template <typename... Args>
     void generate(procedure_t* func, Args&&... args)
     {
-        auto _expr = omnitrace_call_expr(std::forward<Args>(args)...);
+        auto _expr = rocprofsys_call_expr(std::forward<Args>(args)...);
         auto _call = _expr.get(func);
         if(_call)
         {
@@ -144,7 +144,7 @@ private:
 //======================================================================================//
 //
 static inline bool
-omnitrace_get_is_executable(std::string_view _cmd, bool _default_v)
+rocprofsys_get_is_executable(std::string_view _cmd, bool _default_v)
 {
     bool _is_executable = _default_v;
 
@@ -172,7 +172,7 @@ omnitrace_get_is_executable(std::string_view _cmd, bool _default_v)
 //======================================================================================//
 //
 static inline address_space_t*
-omnitrace_get_address_space(patch_pointer_t& _bpatch, int _cmdc, char** _cmdv,
+rocprofsys_get_address_space(patch_pointer_t& _bpatch, int _cmdc, char** _cmdv,
                             const std::vector<std::string>& _cmdenv, bool _rewrite,
                             int _pid = -1, const std::string& _name = {})
 {
@@ -283,7 +283,7 @@ omnitrace_get_address_space(patch_pointer_t& _bpatch, int _cmdc, char** _cmdv,
 //======================================================================================//
 //
 TIMEMORY_NOINLINE inline void
-omnitrace_thread_exit(thread_t* thread, BPatch_exitType exit_type)
+rocprofsys_thread_exit(thread_t* thread, BPatch_exitType exit_type)
 {
     if(!thread) return;
 
@@ -328,7 +328,7 @@ omnitrace_thread_exit(thread_t* thread, BPatch_exitType exit_type)
 //======================================================================================//
 //
 TIMEMORY_NOINLINE inline void
-omnitrace_fork_callback(thread_t* parent, thread_t* child)
+rocprofsys_fork_callback(thread_t* parent, thread_t* child)
 {
     ROCPROFSYS_ADD_LOG_ENTRY("Executing the fork callback");
 
@@ -360,14 +360,14 @@ omnitrace_fork_callback(thread_t* parent, thread_t* child)
 // path resolution helpers
 //
 std::string&
-omnitrace_get_exe_realpath();
+rocprofsys_get_exe_realpath();
 //
 std::optional<std::string>
-omnitrace_get_origin(const char*        _name,
+rocprofsys_get_origin(const char*        _name,
                      std::vector<int>&& _open_modes = { (RTLD_LAZY | RTLD_NOLOAD) });
 //
 std::vector<std::string>
-omnitrace_get_link_map(const char* _lib, const std::string& _exclude_linked_by = {},
+rocprofsys_get_link_map(const char* _lib, const std::string& _exclude_linked_by = {},
                        const std::string& _exclude_re = {},
                        std::vector<int>&& _open_modes = { (RTLD_LAZY | RTLD_NOLOAD) });
 //

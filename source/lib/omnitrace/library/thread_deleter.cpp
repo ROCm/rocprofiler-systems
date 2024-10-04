@@ -46,7 +46,7 @@ thread_deleter<void>::operator()() const
 
         component::pthread_create_gotcha::shutdown(_tid);
         set_thread_state(ThreadState::Completed);
-        if(get_state() < State::Finalized && _tid == 0) omnitrace_finalize_hidden();
+        if(get_state() < State::Finalized && _tid == 0) rocprofsys_finalize_hidden();
     }
     else
     {

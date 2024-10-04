@@ -39,8 +39,8 @@ namespace
 {
 template <size_t Idx, size_t... Tail>
 void
-invoke_category_region_start(omnitrace_category_t _category, const char* name,
-                             omnitrace_annotation_t* _annotations,
+invoke_category_region_start(rocprofsys_category_t _category, const char* name,
+                             rocprofsys_annotation_t* _annotations,
                              size_t _annotation_count, std::index_sequence<Idx, Tail...>)
 {
     static_assert(Idx > ROCPROFSYS_CATEGORY_NONE && Idx < ROCPROFSYS_CATEGORY_LAST,
@@ -74,8 +74,8 @@ invoke_category_region_start(omnitrace_category_t _category, const char* name,
 
 template <size_t Idx, size_t... Tail>
 void
-invoke_category_region_stop(omnitrace_category_t _category, const char* name,
-                            omnitrace_annotation_t* _annotations,
+invoke_category_region_stop(rocprofsys_category_t _category, const char* name,
+                            rocprofsys_annotation_t* _annotations,
                             size_t _annotation_count, std::index_sequence<Idx, Tail...>)
 {
     static_assert(Idx > ROCPROFSYS_CATEGORY_NONE && Idx < ROCPROFSYS_CATEGORY_LAST,
@@ -113,13 +113,13 @@ invoke_category_region_stop(omnitrace_category_t _category, const char* name,
 //======================================================================================//
 
 extern "C" void
-omnitrace_push_trace_hidden(const char* name)
+rocprofsys_push_trace_hidden(const char* name)
 {
     rocprofsys::component::category_region<rocprofsys::category::host>::start(name);
 }
 
 extern "C" void
-omnitrace_pop_trace_hidden(const char* name)
+rocprofsys_pop_trace_hidden(const char* name)
 {
     rocprofsys::component::category_region<rocprofsys::category::host>::stop(name);
 }
@@ -131,13 +131,13 @@ omnitrace_pop_trace_hidden(const char* name)
 //======================================================================================//
 
 extern "C" void
-omnitrace_push_region_hidden(const char* name)
+rocprofsys_push_region_hidden(const char* name)
 {
     rocprofsys::component::category_region<rocprofsys::category::user>::start(name);
 }
 
 extern "C" void
-omnitrace_pop_region_hidden(const char* name)
+rocprofsys_pop_region_hidden(const char* name)
 {
     rocprofsys::component::category_region<rocprofsys::category::user>::stop(name);
 }
@@ -149,8 +149,8 @@ omnitrace_pop_region_hidden(const char* name)
 //======================================================================================//
 
 extern "C" void
-omnitrace_push_category_region_hidden(omnitrace_category_t _category, const char* name,
-                                      omnitrace_annotation_t* _annotations,
+rocprofsys_push_category_region_hidden(rocprofsys_category_t _category, const char* name,
+                                      rocprofsys_annotation_t* _annotations,
                                       size_t                  _annotation_count)
 {
     rocprofsys::impl::invoke_category_region_start(
@@ -159,8 +159,8 @@ omnitrace_push_category_region_hidden(omnitrace_category_t _category, const char
 }
 
 extern "C" void
-omnitrace_pop_category_region_hidden(omnitrace_category_t _category, const char* name,
-                                     omnitrace_annotation_t* _annotations,
+rocprofsys_pop_category_region_hidden(rocprofsys_category_t _category, const char* name,
+                                     rocprofsys_annotation_t* _annotations,
                                      size_t                  _annotation_count)
 {
     rocprofsys::impl::invoke_category_region_stop(

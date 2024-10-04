@@ -170,7 +170,7 @@ extern "C"
         ROCPROFSYS_BASIC_VERBOSE_F(1 || rocm::on_load_trace, "Loading ROCm tooling...\n");
 
         if(!config::settings_are_configured() && get_state() < State::Active)
-            omnitrace_init_tooling_hidden();
+            rocprofsys_init_tooling_hidden();
 
         ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
@@ -247,7 +247,7 @@ extern "C"
     void OnUnload()
     {
         ROCPROFSYS_BASIC_VERBOSE_F(2 || rocm::on_load_trace, "Unloading...\n");
-        omnitrace_finalize_hidden();
+        rocprofsys_finalize_hidden();
         ROCPROFSYS_BASIC_VERBOSE_F(2 || rocm::on_load_trace, "Unloading... Done\n");
     }
 }

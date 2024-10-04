@@ -27,7 +27,7 @@
 #include "library/tracing.hpp"
 
 extern "C" void
-omnitrace_progress_hidden(const char* _name)
+rocprofsys_progress_hidden(const char* _name)
 {
     // mark the progress point
     rocprofsys::component::category_region<rocprofsys::category::causal>::mark<
@@ -35,8 +35,8 @@ omnitrace_progress_hidden(const char* _name)
 }
 
 extern "C" void
-omnitrace_annotated_progress_hidden(const char*             _name,
-                                    omnitrace_annotation_t* _annotations,
+rocprofsys_annotated_progress_hidden(const char*             _name,
+                                    rocprofsys_annotation_t* _annotations,
                                     size_t                  _annotation_count)
 {
     // mark the progress point

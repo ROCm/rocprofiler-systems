@@ -301,7 +301,7 @@ post_process()
 namespace coverage = rocprofsys::coverage;
 
 extern "C" void
-omnitrace_register_source_hidden(const char* file, const char* func, size_t line,
+rocprofsys_register_source_hidden(const char* file, const char* func, size_t line,
                                  size_t address, const char* source)
 {
     if(coverage::get_post_processed()) return;
@@ -330,11 +330,11 @@ omnitrace_register_source_hidden(const char* file, const char* func, size_t line
 //--------------------------------------------------------------------------------------//
 
 extern "C" void
-omnitrace_register_coverage_hidden(const char* file, const char* func, size_t address)
+rocprofsys_register_coverage_hidden(const char* file, const char* func, size_t address)
 {
     if(coverage::get_post_processed()) return;
     if(rocprofsys::get_state() < rocprofsys::State::Active &&
-       !omnitrace_init_tooling_hidden())
+       !rocprofsys_init_tooling_hidden())
         return;
     else if(rocprofsys::get_state() >= rocprofsys::State::Finalized)
         return;

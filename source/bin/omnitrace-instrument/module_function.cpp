@@ -874,8 +874,8 @@ module_function::operator()(address_space_t* _addr_space, procedure_t* _entr_tra
     if(!function || !module) return _count;
 
     auto _name       = signature.get();
-    auto _trace_entr = omnitrace_call_expr(_name.c_str());
-    auto _trace_exit = omnitrace_call_expr(_name.c_str());
+    auto _trace_entr = rocprofsys_call_expr(_name.c_str());
+    auto _trace_exit = rocprofsys_call_expr(_name.c_str());
     auto _entr       = _trace_entr.get(_entr_trace);
     auto _exit       = _trace_exit.get(_exit_trace);
 
@@ -925,8 +925,8 @@ module_function::operator()(address_space_t* _addr_space, procedure_t* _entr_tra
                            "loop-exit-point-trap-instrumentation", _lname))
             continue;
 
-        auto _ltrace_entr = omnitrace_call_expr(_lname.c_str());
-        auto _ltrace_exit = omnitrace_call_expr(_lname.c_str());
+        auto _ltrace_entr = rocprofsys_call_expr(_lname.c_str());
+        auto _ltrace_exit = rocprofsys_call_expr(_lname.c_str());
         auto _lentr       = _ltrace_entr.get(_entr_trace);
         auto _lexit       = _ltrace_exit.get(_exit_trace);
 
@@ -954,7 +954,7 @@ module_function::register_source(address_space_t* _addr_space, procedure_t* _ent
         {
             auto _name = signature.get_coverage(false);
             auto _trace_entr =
-                omnitrace_call_expr(signature.m_file, signature.m_name,
+                rocprofsys_call_expr(signature.m_file, signature.m_name,
                                     signature.m_row.first, start_address, _name);
             auto _entr = _trace_entr.get(_entr_trace);
 
@@ -973,7 +973,7 @@ module_function::register_source(address_space_t* _addr_space, procedure_t* _ent
                 auto& _signature  = itr.second.signature;
                 auto  _name       = _signature.get_coverage(true);
                 auto  _trace_entr =
-                    omnitrace_call_expr(_signature.m_file, _signature.m_name,
+                    rocprofsys_call_expr(_signature.m_file, _signature.m_name,
                                         _signature.m_row.first, _start_addr, _name);
                 auto _entr = _trace_entr.get(_entr_trace);
 
@@ -999,7 +999,7 @@ module_function::register_coverage(address_space_t* _addr_space,
         case CODECOV_FUNCTION:
         {
             auto _trace_entr =
-                omnitrace_call_expr(signature.m_file, signature.m_name, start_address);
+                rocprofsys_call_expr(signature.m_file, signature.m_name, start_address);
             auto _entr = _trace_entr.get(_entr_trace);
 
             if(insert_instr(_addr_space, function, _entr, BPatch_entry))
@@ -1016,7 +1016,7 @@ module_function::register_coverage(address_space_t* _addr_space,
             {
                 auto  _start_addr = itr.second.start_address;
                 auto& _signature  = itr.second.signature;
-                auto  _trace_entr = omnitrace_call_expr(_signature.m_file,
+                auto  _trace_entr = rocprofsys_call_expr(_signature.m_file,
                                                        _signature.m_name, _start_addr);
                 auto  _entr       = _trace_entr.get(_entr_trace);
 

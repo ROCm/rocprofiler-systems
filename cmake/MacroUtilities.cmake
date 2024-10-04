@@ -143,16 +143,16 @@ function(ROCPROFSYS_STRIP_TARGET)
                 TARGET ${_TARGET}
                 POST_BUILD
                 COMMAND
-                    ${CMAKE_STRIP} -w --keep-symbol="omnitrace_init"
-                    --keep-symbol="omnitrace_finalize"
-                    --keep-symbol="omnitrace_push_trace"
-                    --keep-symbol="omnitrace_pop_trace"
-                    --keep-symbol="omnitrace_push_region"
-                    --keep-symbol="omnitrace_pop_region" --keep-symbol="omnitrace_set_env"
-                    --keep-symbol="omnitrace_set_mpi"
-                    --keep-symbol="omnitrace_reset_preload"
-                    --keep-symbol="omnitrace_set_instrumented"
-                    --keep-symbol="omnitrace_user_*" --keep-symbol="ompt_start_tool"
+                    ${CMAKE_STRIP} -w --keep-symbol="rocprofsys_init"
+                    --keep-symbol="rocprofsys_finalize"
+                    --keep-symbol="rocprofsys_push_trace"
+                    --keep-symbol="rocprofsys_pop_trace"
+                    --keep-symbol="rocprofsys_push_region"
+                    --keep-symbol="rocprofsys_pop_region" --keep-symbol="rocprofsys_set_env"
+                    --keep-symbol="rocprofsys_set_mpi"
+                    --keep-symbol="rocprofsys_reset_preload"
+                    --keep-symbol="rocprofsys_set_instrumented"
+                    --keep-symbol="rocprofsys_user_*" --keep-symbol="ompt_start_tool"
                     --keep-symbol="kokkosp_*" --keep-symbol="OnLoad"
                     --keep-symbol="OnUnload" --keep-symbol="OnLoadToolProp"
                     --keep-symbol="OnUnloadTool" --keep-symbol="__libc_start_main"
@@ -164,7 +164,7 @@ function(ROCPROFSYS_STRIP_TARGET)
 endfunction()
 
 # ------------------------------------------------------------------------------#
-# function add_omnitrace_test_target()
+# function add_rocprofsys_test_target()
 #
 # Creates a target which runs ctest but depends on all the tests being built.
 #

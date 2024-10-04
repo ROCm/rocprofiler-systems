@@ -328,7 +328,7 @@ main(int argc, char** argv)
     auto _omni_exe_path = get_realpath(get_absolute_exe_filepath(argv[0]));
     if(!exists(_omni_exe_path))
         _omni_exe_path =
-            get_realpath(get_absolute_exe_filepath(omnitrace_get_exe_realpath()));
+            get_realpath(get_absolute_exe_filepath(rocprofsys_get_exe_realpath()));
     bin_search_paths.emplace_back(filepath::dirname(_omni_exe_path));
 
     auto _omni_lib_path =
@@ -343,7 +343,7 @@ main(int argc, char** argv)
     ROCPROFSYS_ADD_LOG_ENTRY(argv[0], "::", "rocprofsys bin path: ", _omni_exe_path);
     ROCPROFSYS_ADD_LOG_ENTRY(argv[0], "::", "rocprofsys lib path: ", _omni_lib_path);
 
-    for(const auto& itr : omnitrace_get_link_map(nullptr))
+    for(const auto& itr : rocprofsys_get_link_map(nullptr))
     {
         if(itr.find("rocprofsys") != std::string::npos ||
            itr.find("rocprof-sys") != std::string::npos ||
@@ -1066,12 +1066,12 @@ main(int argc, char** argv)
 
     if(parser.exists("config"))
     {
-        struct omnitrace_env_config_s
+        struct rocprofsys_env_config_s
         {};
         auto _configs = parser.get<strvec_t>("config");
         for(auto&& itr : _configs)
         {
-            auto _settings = tim::settings::push<omnitrace_env_config_s>();
+            auto _settings = tim::settings::push<rocprofsys_env_config_s>();
             for(auto&& iitr : *_settings)
             {
                 if(iitr.second->get_updated()) iitr.second->set_user_updated();
@@ -1094,7 +1094,7 @@ main(int argc, char** argv)
                 verbprintf(1, "Exporting unknown config value :: %s\n",
                            env_config_variables.back().c_str());
             }
-            tim::settings::pop<omnitrace_env_config_s>();
+            tim::settings::pop<rocprofsys_env_config_s>();
         }
     }
 
@@ -1148,12 +1148,12 @@ main(int argc, char** argv)
                        !parser.exists("min-instructions") &&
                            !parser.exists("min-address-range-loop"));
 
-    auto _omnitrace_exe_path = tim::dirname(::get_realpath("/proc/self/exe"));
-    verbprintf(4, "omnitrace exe path: %s\n", _omnitrace_exe_path.c_str());
+    auto _rocprofsys_exe_path = tim::dirname(::get_realpath("/proc/self/exe"));
+    verbprintf(4, "omnitrace exe path: %s\n", _rocprofsys_exe_path.c_str());
 
     if(_cmdv && _cmdv[0] && strlen(_cmdv[0]) > 0)
     {
-        auto _is_executable    = omnitrace_get_is_executable(_cmdv[0], binary_rewrite);
+        auto _is_executable    = rocprofsys_get_is_executable(_cmdv[0], binary_rewrite);
         std::string _cmdv_base = ::basename(_cmdv[0]);
         auto        _has_lib_suffix = _cmdv_base.length() > 3 &&
                                (_cmdv_base.find(".so.") != std::string::npos ||
@@ -1413,7 +1413,7 @@ main(int argc, char** argv)
     env_vars.emplace_back(TIMEMORY_JOIN('=', "ROCPROFSYS_USE_CODE_COVERAGE",
                                         (coverage_mode != CODECOV_NONE) ? "ON" : "OFF"));
 
-    addr_space = omnitrace_get_address_space(bpatch, _cmdc, _cmdv, env_vars,
+    addr_space = rocprofsys_get_address_space(bpatch, _cmdc, _cmdv, env_vars,
                                              binary_rewrite, _pid, mutname);
 
     // addr_space->allowTraps(instr_traps);
@@ -1670,10 +1670,10 @@ main(int argc, char** argv)
     //----------------------------------------------------------------------------------//
 
     auto* main_func       = find_function(app_image, main_fname.c_str());
-    auto* user_start_func = find_function(app_image, "omnitrace_user_start_trace",
-                                          { "omnitrace_user_start_thread_trace" });
-    auto* user_stop_func  = find_function(app_image, "omnitrace_user_stop_trace",
-                                         { "omnitrace_user_stop_thread_trace" });
+    auto* user_start_func = find_function(app_image, "rocprofsys_user_start_trace",
+                                          { "rocprofsys_user_start_thread_trace" });
+    auto* user_stop_func  = find_function(app_image, "rocprofsys_user_stop_trace",
+                                         { "rocprofsys_user_stop_thread_trace" });
 #if ROCPROFSYS_USE_MPI > 0 || ROCPROFSYS_USE_MPI_HEADERS > 0
     // if any of the below MPI functions are found, enable MPI support
     for(const auto* itr : { "MPI_Init", "MPI_Init_thread", "MPI_Finalize",
@@ -1707,15 +1707,15 @@ main(int argc, char** argv)
 
     verbprintf(0, "Finding instrumentation functions...\n");
 
-    auto* init_func      = find_function(app_image, "omnitrace_init");
-    auto* fini_func      = find_function(app_image, "omnitrace_finalize");
-    auto* env_func       = find_function(app_image, "omnitrace_set_env");
-    auto* mpi_func       = find_function(app_image, "omnitrace_set_mpi");
-    auto* entr_trace     = find_function(app_image, "omnitrace_push_trace");
-    auto* exit_trace     = find_function(app_image, "omnitrace_pop_trace");
-    auto* reg_src_func   = find_function(app_image, "omnitrace_register_source");
-    auto* reg_cov_func   = find_function(app_image, "omnitrace_register_coverage");
-    auto* set_instr_func = find_function(app_image, "omnitrace_set_instrumented");
+    auto* init_func      = find_function(app_image, "rocprofsys_init");
+    auto* fini_func      = find_function(app_image, "rocprofsys_finalize");
+    auto* env_func       = find_function(app_image, "rocprofsys_set_env");
+    auto* mpi_func       = find_function(app_image, "rocprofsys_set_mpi");
+    auto* entr_trace     = find_function(app_image, "rocprofsys_push_trace");
+    auto* exit_trace     = find_function(app_image, "rocprofsys_pop_trace");
+    auto* reg_src_func   = find_function(app_image, "rocprofsys_register_source");
+    auto* reg_cov_func   = find_function(app_image, "rocprofsys_register_coverage");
+    auto* set_instr_func = find_function(app_image, "rocprofsys_set_instrumented");
 
     if(!main_func && main_fname == "main") main_func = find_function(app_image, "_main");
 
@@ -1816,8 +1816,8 @@ main(int argc, char** argv)
         }
 
         // check standard function signature if no user-specified matches
-        if(add_instr_library(_name, TIMEMORY_JOIN("", "omnitrace_register_" + _name),
-                             TIMEMORY_JOIN("", "omnitrace_deregister_" + _name)))
+        if(add_instr_library(_name, TIMEMORY_JOIN("", "rocprofsys_register_" + _name),
+                             TIMEMORY_JOIN("", "rocprofsys_deregister_" + _name)))
             continue;
 
     found_instr_functions:
@@ -1832,14 +1832,14 @@ main(int argc, char** argv)
 
     using pair_t = std::pair<procedure_t*, string_t>;
 
-    for(const auto& itr : { pair_t{ entr_trace, "omnitrace_push_trace" },
-                            pair_t{ exit_trace, "omnitrace_pop_trace" },
-                            pair_t{ init_func, "omnitrace_init" },
-                            pair_t{ fini_func, "omnitrace_finalize" },
-                            pair_t{ env_func, "omnitrace_set_env" },
-                            pair_t{ set_instr_func, "omnitrace_set_instrumented" },
-                            pair_t{ reg_src_func, "omnitrace_register_source" },
-                            pair_t{ reg_cov_func, "omnitrace_register_coverage" } })
+    for(const auto& itr : { pair_t{ entr_trace, "rocprofsys_push_trace" },
+                            pair_t{ exit_trace, "rocprofsys_pop_trace" },
+                            pair_t{ init_func, "rocprofsys_init" },
+                            pair_t{ fini_func, "rocprofsys_finalize" },
+                            pair_t{ env_func, "rocprofsys_set_env" },
+                            pair_t{ set_instr_func, "rocprofsys_set_instrumented" },
+                            pair_t{ reg_src_func, "rocprofsys_register_source" },
+                            pair_t{ reg_cov_func, "rocprofsys_register_coverage" } })
     {
         if(!itr.first)
         {
@@ -1893,12 +1893,12 @@ main(int argc, char** argv)
     auto _init_arg0 = main_fname;
     if(main_func) main_sign.get();
 
-    auto main_call_args = omnitrace_call_expr(main_sign.get());
-    auto init_call_args = omnitrace_call_expr(instr_mode, binary_rewrite, "");
-    auto fini_call_args = omnitrace_call_expr();
-    auto umpi_call_args = omnitrace_call_expr(use_mpi, is_attached);
-    auto none_call_args = omnitrace_call_expr();
-    auto set_instr_args = omnitrace_call_expr(instr_mode_v_int);
+    auto main_call_args = rocprofsys_call_expr(main_sign.get());
+    auto init_call_args = rocprofsys_call_expr(instr_mode, binary_rewrite, "");
+    auto fini_call_args = rocprofsys_call_expr();
+    auto umpi_call_args = rocprofsys_call_expr(use_mpi, is_attached);
+    auto none_call_args = rocprofsys_call_expr();
+    auto set_instr_args = rocprofsys_call_expr(instr_mode_v_int);
 
     verbprintf(2, "Done\n");
     verbprintf(2, "Getting call snippets... ");
@@ -1951,7 +1951,7 @@ main(int argc, char** argv)
         auto _var = itr.substr(0, _pos);
         auto _val = itr.substr(_pos + 1);
         tim::set_env(_var, _val);
-        auto _expr = omnitrace_call_expr(_var, _val);
+        auto _expr = rocprofsys_call_expr(_var, _val);
         env_variables.emplace_back(_expr.get(env_func));
     }
 
@@ -2426,7 +2426,7 @@ main(int argc, char** argv)
             for(auto& itr : cmdv_envp)
                 ::free(itr);
 
-            if(perr != 0) perror("Error in omnitrace_fork");
+            if(perr != 0) perror("Error in rocprofsys_fork");
 
             for(const auto& itr : linked_libs)
                 verbprintf(0, "\t%s\n", itr.c_str());

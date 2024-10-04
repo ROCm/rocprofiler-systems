@@ -139,9 +139,9 @@ category_region<CategoryT>::start(std::string_view name, Args&&... args)
     ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
     // the expectation here is that if the state is not active then the call
-    // to omnitrace_init_tooling_hidden will activate all the appropriate
+    // to rocprofsys_init_tooling_hidden will activate all the appropriate
     // tooling one time and as it exits set it to active and return true.
-    if(get_state() != State::Active && !omnitrace_init_tooling_hidden()) return;
+    if(get_state() != State::Active && !rocprofsys_init_tooling_hidden()) return;
 
     if(get_thread_status() == ThreadState::Disabled) return;
 
@@ -156,7 +156,7 @@ category_region<CategoryT>::start(std::string_view name, Args&&... args)
 
     ROCPROFSYS_CONDITIONAL_PRINT(
         tracing::debug_push,
-        "[%s][PID=%i][state=%s][thread_state=%s] omnitrace_push_region(%s)\n",
+        "[%s][PID=%i][state=%s][thread_state=%s] rocprofsys_push_region(%s)\n",
         category_name, process::get_id(), std::to_string(get_state()).c_str(),
         std::to_string(get_thread_state()).c_str(), name.data());
 
@@ -216,7 +216,7 @@ category_region<CategoryT>::stop(std::string_view name, Args&&... args)
 
     ROCPROFSYS_CONDITIONAL_PRINT(
         tracing::debug_pop,
-        "[%s][PID=%i][state=%s][thread_state=%s] omnitrace_pop_region(%s)\n",
+        "[%s][PID=%i][state=%s][thread_state=%s] rocprofsys_pop_region(%s)\n",
         category_name, process::get_id(), std::to_string(get_state()).c_str(),
         std::to_string(get_thread_state()).c_str(), name.data());
 
@@ -261,7 +261,7 @@ category_region<CategoryT>::stop(std::string_view name, Args&&... args)
     {
         static auto _debug = get_debug_env();
         ROCPROFSYS_CONDITIONAL_BASIC_PRINT(
-            _debug, "[%s] omnitrace_pop_region(%s) ignored :: state = %s\n",
+            _debug, "[%s] rocprofsys_pop_region(%s) ignored :: state = %s\n",
             category_name, name.data(), std::to_string(get_state()).c_str());
     }
 }
@@ -280,9 +280,9 @@ category_region<CategoryT>::mark(std::string_view name, Args&&...)
     if(tracing::category_mark_disabled<CategoryT>()) return;
 
     // the expectation here is that if the state is not active then the call
-    // to omnitrace_init_tooling_hidden will activate all the appropriate
+    // to rocprofsys_init_tooling_hidden will activate all the appropriate
     // tooling one time and as it exits set it to active and return true.
-    if(get_state() != State::Active && !omnitrace_init_tooling_hidden()) return;
+    if(get_state() != State::Active && !rocprofsys_init_tooling_hidden()) return;
 
     // unconditionally return if thread is disabled or finalized
     if(get_thread_state() >= ThreadState::Completed) return;
@@ -293,7 +293,7 @@ category_region<CategoryT>::mark(std::string_view name, Args&&...)
     {
         ROCPROFSYS_CONDITIONAL_PRINT(
             tracing::debug_mark,
-            "[%s][PID=%i][state=%s][thread_state=%s] omnitrace_progress(%s)\n",
+            "[%s][PID=%i][state=%s][thread_state=%s] rocprofsys_progress(%s)\n",
             category_name, process::get_id(), std::to_string(get_state()).c_str(),
             std::to_string(get_thread_state()).c_str(), name.data());
 

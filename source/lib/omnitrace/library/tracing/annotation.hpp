@@ -75,7 +75,7 @@ add_perfetto_annotation(
     perfetto_event_context_t& ctx, Np&& _name, Tp&& _val, int64_t _idx = -1,
     std::enable_if_t<
         !std::is_same<std::remove_pointer_t<concepts::unqualified_type_t<Np>>,
-                      omnitrace_annotation_t>::value,
+                      rocprofsys_annotation_t>::value,
         int> = 0)
 {
     using named_type = std::remove_reference_t<std::remove_cv_t<std::decay_t<Np>>>;
@@ -146,7 +146,7 @@ add_perfetto_annotation(
 template <size_t Idx, size_t... Tail>
 void
 add_perfetto_annotation(perfetto_event_context_t&     ctx,
-                        const omnitrace_annotation_t& _annotation,
+                        const rocprofsys_annotation_t& _annotation,
                         std::index_sequence<Idx, Tail...>)
 {
     static_assert(Idx > ROCPROFSYS_VALUE_NONE && Idx < ROCPROFSYS_VALUE_LAST,
@@ -205,7 +205,7 @@ add_perfetto_annotation(perfetto_event_context_t&     ctx,
 
 void
 add_perfetto_annotation(perfetto_event_context_t&     ctx,
-                        const omnitrace_annotation_t& _annotation);
+                        const rocprofsys_annotation_t& _annotation);
 }  // namespace tracing
 }  // namespace rocprofsys
 

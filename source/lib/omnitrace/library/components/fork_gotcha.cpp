@@ -70,11 +70,11 @@ prefork_setup()
     ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
 
     if(get_state() < State::Active && !config::settings_are_configured())
-        omnitrace_init_library_hidden();
+        rocprofsys_init_library_hidden();
 
     tim::set_env("ROCPROFSYS_PRELOAD", "0", 1);
     tim::set_env("ROCPROFSYS_ROOT_PROCESS", process::get_id(), 0);
-    omnitrace_reset_preload_hidden();
+    rocprofsys_reset_preload_hidden();
     ROCPROFSYS_BASIC_VERBOSE(0, "fork() called on PID %i (rank: %i), TID %li\n",
                              process::get_id(), dmp::rank(), threading::get_id());
     ROCPROFSYS_BASIC_DEBUG(

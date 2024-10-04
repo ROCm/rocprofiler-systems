@@ -104,13 +104,13 @@ using tim::type_mutex;
 
 #if defined(TIMEMORY_USE_MPI)
 int
-omnitrace_mpi_copy(MPI_Comm, int, void*, void*, void*, int*)
+rocprofsys_mpi_copy(MPI_Comm, int, void*, void*, void*, int*)
 {
     return MPI_SUCCESS;
 }
 
 int
-omnitrace_mpi_fini(MPI_Comm, int, void*, void*)
+rocprofsys_mpi_fini(MPI_Comm, int, void*, void*)
 {
     ROCPROFSYS_DEBUG("MPI Comm attribute finalize\n");
     auto _blocked = get_sampling_signals();
@@ -118,14 +118,14 @@ omnitrace_mpi_fini(MPI_Comm, int, void*, void*)
         tim::signals::block_signals(_blocked, tim::signals::sigmask_scope::process);
     if(mpip_index != std::numeric_limits<uint64_t>::max())
         comp::deactivate_mpip<mpip_bundle_t, project::omnitrace>(mpip_index);
-    if(is_root_process()) omnitrace_finalize_hidden();
+    if(is_root_process()) rocprofsys_finalize_hidden();
     return MPI_SUCCESS;
 }
 #endif
 
-// this ensures omnitrace_finalize is called before MPI_Finalize
+// this ensures rocprofsys_finalize is called before MPI_Finalize
 void
-omnitrace_mpi_set_attr()
+rocprofsys_mpi_set_attr()
 {
 #if defined(TIMEMORY_USE_MPI)
     auto _blocked = get_sampling_signals();
@@ -133,7 +133,7 @@ omnitrace_mpi_set_attr()
         tim::signals::block_signals(_blocked, tim::signals::sigmask_scope::process);
 
     int _comm_key = -1;
-    if(PMPI_Comm_create_keyval(&omnitrace_mpi_copy, &omnitrace_mpi_fini, &_comm_key,
+    if(PMPI_Comm_create_keyval(&rocprofsys_mpi_copy, &rocprofsys_mpi_fini, &_comm_key,
                                nullptr) == MPI_SUCCESS)
         PMPI_Comm_set_attr(MPI_COMM_SELF, _comm_key, nullptr);
 
@@ -235,7 +235,7 @@ mpi_gotcha::audit(const gotcha_data_t& _data, audit::incoming, int*, char***)
 {
     ROCPROFSYS_BASIC_DEBUG_F("%s(int*, char***)\n", _data.tool_id.c_str());
 
-    omnitrace_push_trace_hidden(_data.tool_id.c_str());
+    rocprofsys_push_trace_hidden(_data.tool_id.c_str());
 #if !defined(TIMEMORY_USE_MPI) && defined(TIMEMORY_USE_MPI_HEADERS)
     tim::mpi::is_initialized_callback() = []() { return true; };
     tim::mpi::is_finalized()            = false;
@@ -247,7 +247,7 @@ mpi_gotcha::audit(const gotcha_data_t& _data, audit::incoming, int*, char***, in
 {
     ROCPROFSYS_BASIC_DEBUG_F("%s(int*, char***, int, int*)\n", _data.tool_id.c_str());
 
-    omnitrace_push_trace_hidden(_data.tool_id.c_str());
+    rocprofsys_push_trace_hidden(_data.tool_id.c_str());
 #if !defined(TIMEMORY_USE_MPI) && defined(TIMEMORY_USE_MPI_HEADERS)
     tim::mpi::is_initialized_callback() = []() { return true; };
     tim::mpi::is_finalized()            = false;
@@ -271,7 +271,7 @@ mpi_gotcha::audit(const gotcha_data_t& _data, audit::incoming)
     tim::mpi::is_finalized()            = true;
 #else
     if(is_root_process() && rocprofsys::get_state() < rocprofsys::State::Finalized)
-        omnitrace_finalize_hidden();
+        rocprofsys_finalize_hidden();
 #endif
 }
 
@@ -280,7 +280,7 @@ mpi_gotcha::audit(const gotcha_data_t& _data, audit::incoming, comm_t _comm, int
 {
     ROCPROFSYS_BASIC_DEBUG_F("%s()\n", _data.tool_id.c_str());
 
-    omnitrace_push_trace_hidden(_data.tool_id.c_str());
+    rocprofsys_push_trace_hidden(_data.tool_id.c_str());
     if(_data.tool_id == "MPI_Comm_rank")
     {
         m_comm_val = (uintptr_t) _comm;  // NOLINT
@@ -307,7 +307,7 @@ mpi_gotcha::audit(const gotcha_data_t& _data, audit::outgoing, int _retval)
 
     if(_retval == tim::mpi::success_v && _data.tool_id.find("MPI_Init") == 0)
     {
-        omnitrace_mpi_set_attr();
+        rocprofsys_mpi_set_attr();
         // rocprof-sys will set this environement variable to true in binary rewrite mode
         // when it detects MPI. Hides this env variable from the user to avoid this
         // being activated unwaringly during runtime instrumentation because that
@@ -377,7 +377,7 @@ mpi_gotcha::audit(const gotcha_data_t& _data, audit::outgoing, int _retval)
             }
         }
     }
-    omnitrace_pop_trace_hidden(_data.tool_id.c_str());
+    rocprofsys_pop_trace_hidden(_data.tool_id.c_str());
 }
 }  // namespace component
 }  // namespace rocprofsys

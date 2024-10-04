@@ -55,7 +55,7 @@ using preinit_bundle_t =
 using init_bundle_t = tim::lightweight_tuple<causal::component::causal_gotcha,
                                              pthread_gotcha, component::numa_gotcha>;
 
-// bundle of components around omnitrace_init and omnitrace_finalize
+// bundle of components around rocprofsys_init and rocprofsys_finalize
 using main_bundle_t =
     tim::lightweight_tuple<comp::wall_clock, comp::peak_rss, comp::page_rss,
                            comp::cpu_clock, comp::cpu_util>;

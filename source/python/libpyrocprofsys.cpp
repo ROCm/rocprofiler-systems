@@ -112,8 +112,8 @@ PYBIND11_MODULE(libpyrocprofsys, omni)
             if(_is_initialized)
                 throw std::runtime_error("Error! rocprofsys is already initialized");
             _is_initialized = true;
-            omnitrace_set_mpi(_get_use_mpi(), false);
-            omnitrace_init("trace", false, _v.c_str());
+            rocprofsys_set_mpi(_get_use_mpi(), false);
+            rocprofsys_init("trace", false, _v.c_str());
         },
         "Initialize rocprofsys");
 
@@ -123,9 +123,9 @@ PYBIND11_MODULE(libpyrocprofsys, omni)
             if(_is_initialized)
                 throw std::runtime_error("Error! rocprofsys is already initialized");
             _is_initialized = true;
-            omnitrace_set_instrumented(
+            rocprofsys_set_instrumented(
                 static_cast<int>(rocprofsys::dl::InstrumentMode::PythonProfile));
-            omnitrace_set_mpi(_get_use_mpi(), false);
+            rocprofsys_set_mpi(_get_use_mpi(), false);
             std::string _cmd      = {};
             std::string _cmd_line = {};
             for(auto&& itr : _v)
@@ -138,7 +138,7 @@ PYBIND11_MODULE(libpyrocprofsys, omni)
                 _cmd_line = _cmd_line.substr(_cmd_line.find_first_not_of(' '));
                 tim::set_env("ROCPROFSYS_COMMAND_LINE", _cmd_line, 0);
             }
-            omnitrace_init("trace", false, _cmd.c_str());
+            rocprofsys_init("trace", false, _cmd.c_str());
         },
         "Initialize rocprofsys");
 
@@ -148,7 +148,7 @@ PYBIND11_MODULE(libpyrocprofsys, omni)
             if(_is_finalized)
                 throw std::runtime_error("Error! rocprofsys is already finalized");
             _is_finalized = true;
-            omnitrace_finalize();
+            rocprofsys_finalize();
         },
         "Finalize rocprofsys");
 
@@ -185,7 +185,7 @@ using profiler_vec_t       = std::vector<profiler_t>;
 using profiler_label_map_t = std::unordered_map<std::string, profiler_vec_t>;
 using profiler_index_map_t = std::unordered_map<uint32_t, profiler_label_map_t>;
 using strset_t             = std::unordered_set<std::string>;
-using note_t               = omnitrace_annotation_t;
+using note_t               = rocprofsys_annotation_t;
 using annotations_t        = std::array<note_t, 6>;
 //
 namespace
@@ -311,7 +311,7 @@ profiler_function(py::object pframe, const char* swhat, py::object arg)
 
     if(pframe.is_none() || pframe.ptr() == nullptr) return;
 
-    static auto _omnitrace_path = _config.base_module_path;
+    static auto _rocprofsys_path = _config.base_module_path;
 
     auto* frame = reinterpret_cast<PyFrameObject*>(pframe.ptr());
 
@@ -454,7 +454,7 @@ profiler_function(py::object pframe, const char* swhat, py::object arg)
                             : _full;
 
     if(!_config.include_internal &&
-       strncmp(_full.c_str(), _omnitrace_path.c_str(), _omnitrace_path.length()) == 0)
+       strncmp(_full.c_str(), _rocprofsys_path.c_str(), _rocprofsys_path.length()) == 0)
     {
         if(_config.verbose > 2)
             TIMEMORY_PRINT_HERE("Skipping internal function: %s", _func.c_str());
@@ -514,12 +514,12 @@ profiler_function(py::object pframe, const char* swhat, py::object arg)
         }
 
         _config.records.emplace_back([&_label_ref, _annotate]() {
-            omnitrace_pop_category_region(ROCPROFSYS_CATEGORY_PYTHON, _label_ref.c_str(),
+            rocprofsys_pop_category_region(ROCPROFSYS_CATEGORY_PYTHON, _label_ref.c_str(),
                                           (_annotate) ? _config.annotations.data()
                                                       : nullptr,
                                           _config.annotations.size());
         });
-        omnitrace_push_category_region(ROCPROFSYS_CATEGORY_PYTHON, _label_ref.c_str(),
+        rocprofsys_push_category_region(ROCPROFSYS_CATEGORY_PYTHON, _label_ref.c_str(),
                                        (_annotate) ? _config.annotations.data() : nullptr,
                                        _config.annotations.size());
     };
@@ -930,20 +930,20 @@ generate(py::module& _pymod)
 {
     py::module _pyuser = _pymod.def_submodule("user", "User instrumentation");
 
-    _pyuser.def("start_trace", &omnitrace_user_start_trace,
+    _pyuser.def("start_trace", &rocprofsys_user_start_trace,
                 "Enable tracing on this thread and all subsequently created threads");
-    _pyuser.def("stop_trace", &omnitrace_user_stop_trace,
+    _pyuser.def("stop_trace", &rocprofsys_user_stop_trace,
                 "Disable tracing on this thread and all subsequently created threads");
     _pyuser.def(
-        "start_thread_trace", &omnitrace_user_start_thread_trace,
+        "start_thread_trace", &rocprofsys_user_start_thread_trace,
         "Enable tracing on this thread. Does not apply to subsequently created threads");
     _pyuser.def(
-        "stop_thread_trace", &omnitrace_user_stop_thread_trace,
+        "stop_thread_trace", &rocprofsys_user_stop_thread_trace,
         "Enable tracing on this thread. Does not apply to subsequently created threads");
-    _pyuser.def("push_region", &omnitrace_user_push_region,
+    _pyuser.def("push_region", &rocprofsys_user_push_region,
                 "Start a user-defined region");
-    _pyuser.def("pop_region", &omnitrace_user_pop_region, "Start a user-defined region");
-    _pyuser.def("error_string", &omnitrace_user_error_string,
+    _pyuser.def("pop_region", &rocprofsys_user_pop_region, "Start a user-defined region");
+    _pyuser.def("error_string", &rocprofsys_user_error_string,
                 "Return a descriptor for the provided error code");
 
     return _pyuser;

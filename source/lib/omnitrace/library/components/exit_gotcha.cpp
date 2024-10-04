@@ -75,7 +75,7 @@ invoke_exit_gotcha(const exit_gotcha::gotcha_data& _data, FuncT _func, Args... _
                                      JOIN(", ", _args...).c_str());
         }
 
-        omnitrace_finalize();
+        rocprofsys_finalize();
     }
 
     if(config::settings_are_configured())

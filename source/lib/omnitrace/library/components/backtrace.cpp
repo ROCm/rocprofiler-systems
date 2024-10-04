@@ -119,13 +119,11 @@ backtrace::filter_and_patch(const std::vector<entry_type>& _data)
         bool       _keep_internal = get_sampling_keep_internal();
         const auto _npos          = std::string::npos;
         if(_keep_internal) return 1;
-        if(_lbl.find("omnitrace_main") != _npos) return 0;
         if(_lbl.find("rocprofsys_main") != _npos) return 0;
         if(_lbl.find("rocprofsys::") != _npos) return 0;
         if(_lbl.find("tim::openmp::") != _npos) return -1;
         if(_lbl.find("tim::") != _npos) return 0;
         if(_lbl.find("DYNINST_") != _npos) return 0;
-        if(_lbl.find("omnitrace_") != _npos) return -1;
         if(_lbl.find("rocprofsys_") != _npos) return -1;
         if(_lbl.find("rocprofiler_") != _npos) return -1;
         if(_lbl.find("roctracer_") != _npos) return -1;
