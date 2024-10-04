@@ -320,7 +320,7 @@ mpi_gotcha::audit(const gotcha_data_t& _data, audit::outgoing, int _retval)
             // use env vars ROCPROFSYS_MPIP_PERMIT_LIST and ROCPROFSYS_MPIP_REJECT_LIST
             // to control the gotcha bindings at runtime
             comp::configure_mpip<mpip_bundle_t, project::rocprofsys>(permit_bindings,
-                                                                    reject_bindings);
+                                                                     reject_bindings);
             mpip_index = comp::activate_mpip<mpip_bundle_t, project::rocprofsys>();
         }
 

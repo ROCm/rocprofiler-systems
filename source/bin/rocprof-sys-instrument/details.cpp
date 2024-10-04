@@ -546,7 +546,7 @@ rocprofsys_get_exe_realpath()
 //
 std::vector<std::string>
 rocprofsys_get_link_map(const char* _lib, const std::string& _exclude_linked_by,
-                       const std::string& _exclude_re, std::vector<int>&& _open_modes)
+                        const std::string& _exclude_re, std::vector<int>&& _open_modes)
 {
     if(_open_modes.empty()) _open_modes = { (RTLD_LAZY | RTLD_NOLOAD) };
 

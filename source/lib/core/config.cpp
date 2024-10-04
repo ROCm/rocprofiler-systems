@@ -486,7 +486,8 @@ configure_settings(bool _init)
         std::string, "ROCPROFSYS_SAMPLING_TIDS",
         "Limit call-stack sampling to specific thread IDs, starting at zero for the main "
         "thread. Be aware that some libraries, such as ROCm may create additional "
-        "threads which increment the TID count. However, no threads started by rocprof-sys "
+        "threads which increment the TID count. However, no threads started by "
+        "rocprof-sys "
         "will increment the TID count. Values should be separated by commas and can be "
         "explicit or ranges, e.g. 0,1,5-8. An empty value implies all TIDs.",
         std::string{}, "sampling", "advanced");

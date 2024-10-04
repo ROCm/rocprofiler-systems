@@ -145,7 +145,7 @@ add_perfetto_annotation(
 
 template <size_t Idx, size_t... Tail>
 void
-add_perfetto_annotation(perfetto_event_context_t&     ctx,
+add_perfetto_annotation(perfetto_event_context_t&      ctx,
                         const rocprofsys_annotation_t& _annotation,
                         std::index_sequence<Idx, Tail...>)
 {
@@ -204,7 +204,7 @@ add_perfetto_annotation(perfetto_event_context_t&     ctx,
 }
 
 void
-add_perfetto_annotation(perfetto_event_context_t&     ctx,
+add_perfetto_annotation(perfetto_event_context_t&      ctx,
                         const rocprofsys_annotation_t& _annotation);
 }  // namespace tracing
 }  // namespace rocprofsys

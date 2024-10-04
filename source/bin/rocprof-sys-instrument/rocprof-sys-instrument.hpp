@@ -173,8 +173,8 @@ rocprofsys_get_is_executable(std::string_view _cmd, bool _default_v)
 //
 static inline address_space_t*
 rocprofsys_get_address_space(patch_pointer_t& _bpatch, int _cmdc, char** _cmdv,
-                            const std::vector<std::string>& _cmdenv, bool _rewrite,
-                            int _pid = -1, const std::string& _name = {})
+                             const std::vector<std::string>& _cmdenv, bool _rewrite,
+                             int _pid = -1, const std::string& _name = {})
 {
     address_space_t* mutatee = nullptr;
 
@@ -182,10 +182,10 @@ rocprofsys_get_address_space(patch_pointer_t& _bpatch, int _cmdc, char** _cmdv,
     {
         if(is_text_file(_name))
         {
-            errprintf(
-                -127,
-                "'%s' is a text file. rocprof-sys only supports instrumenting binary files",
-                _name.c_str());
+            errprintf(-127,
+                      "'%s' is a text file. rocprof-sys only supports instrumenting "
+                      "binary files",
+                      _name.c_str());
         }
 
         verbprintf(1, "Opening '%s' for binary rewrite... ", _name.c_str());
@@ -364,12 +364,12 @@ rocprofsys_get_exe_realpath();
 //
 std::optional<std::string>
 rocprofsys_get_origin(const char*        _name,
-                     std::vector<int>&& _open_modes = { (RTLD_LAZY | RTLD_NOLOAD) });
+                      std::vector<int>&& _open_modes = { (RTLD_LAZY | RTLD_NOLOAD) });
 //
 std::vector<std::string>
 rocprofsys_get_link_map(const char* _lib, const std::string& _exclude_linked_by = {},
-                       const std::string& _exclude_re = {},
-                       std::vector<int>&& _open_modes = { (RTLD_LAZY | RTLD_NOLOAD) });
+                        const std::string& _exclude_re = {},
+                        std::vector<int>&& _open_modes = { (RTLD_LAZY | RTLD_NOLOAD) });
 //
 //======================================================================================//
 // insert_instr -- insert instrumentation into a function

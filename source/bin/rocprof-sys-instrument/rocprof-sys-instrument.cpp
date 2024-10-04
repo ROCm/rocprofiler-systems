@@ -1006,8 +1006,10 @@ main(int argc, char** argv)
     parser
         .add_argument(
             { "--parse-all-modules" },
-            "By default, rocprof-sys simply requests Dyninst to provide all the procedures "
-            "in the application image. If this option is enabled, rocprof-sys will iterate "
+            "By default, rocprof-sys simply requests Dyninst to provide all the "
+            "procedures "
+            "in the application image. If this option is enabled, rocprof-sys will "
+            "iterate "
             "over all the modules and extract the functions. Theoretically, it should be "
             "the same but the data is slightly different, possibly due to weak binding "
             "scopes. In general, enabling option will probably have no visible effect")
@@ -1414,7 +1416,7 @@ main(int argc, char** argv)
                                         (coverage_mode != CODECOV_NONE) ? "ON" : "OFF"));
 
     addr_space = rocprofsys_get_address_space(bpatch, _cmdc, _cmdv, env_vars,
-                                             binary_rewrite, _pid, mutname);
+                                              binary_rewrite, _pid, mutname);
 
     // addr_space->allowTraps(instr_traps);
 

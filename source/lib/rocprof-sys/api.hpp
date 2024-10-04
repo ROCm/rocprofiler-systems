@@ -68,30 +68,30 @@ extern "C"
     /// starts an instrumentation region in a user-defined category and (optionally)
     /// adds annotations to the perfetto trace.
     int rocprofsys_push_category_region(rocprofsys_category_t, const char*,
-                                       rocprofsys_annotation_t*,
-                                       size_t) ROCPROFSYS_PUBLIC_API;
+                                        rocprofsys_annotation_t*,
+                                        size_t) ROCPROFSYS_PUBLIC_API;
 
     /// stops an instrumentation region in a user-defined category and (optionally)
     /// adds annotations to the perfetto trace.
     int rocprofsys_pop_category_region(rocprofsys_category_t, const char*,
-                                      rocprofsys_annotation_t*,
-                                      size_t) ROCPROFSYS_PUBLIC_API;
+                                       rocprofsys_annotation_t*,
+                                       size_t) ROCPROFSYS_PUBLIC_API;
 
     /// stores source code information
     void rocprofsys_register_source(const char* file, const char* func, size_t line,
-                                   size_t      address,
-                                   const char* source) ROCPROFSYS_PUBLIC_API;
+                                    size_t      address,
+                                    const char* source) ROCPROFSYS_PUBLIC_API;
 
     /// increments coverage values
     void rocprofsys_register_coverage(const char* file, const char* func,
-                                     size_t address) ROCPROFSYS_PUBLIC_API;
+                                      size_t address) ROCPROFSYS_PUBLIC_API;
 
     /// mark causal progress
     void rocprofsys_progress(const char*) ROCPROFSYS_PUBLIC_API;
 
     /// mark causal progress with annotations
     void rocprofsys_annotated_progress(const char*, rocprofsys_annotation_t*,
-                                      size_t) ROCPROFSYS_PUBLIC_API;
+                                       size_t) ROCPROFSYS_PUBLIC_API;
 
     // these are the real implementations for internal calling convention
     void rocprofsys_init_library_hidden(void) ROCPROFSYS_HIDDEN_API;
@@ -106,16 +106,16 @@ extern "C"
     void rocprofsys_push_region_hidden(const char*) ROCPROFSYS_HIDDEN_API;
     void rocprofsys_pop_region_hidden(const char*) ROCPROFSYS_HIDDEN_API;
     void rocprofsys_push_category_region_hidden(rocprofsys_category_t, const char*,
+                                                rocprofsys_annotation_t*,
+                                                size_t) ROCPROFSYS_HIDDEN_API;
+    void rocprofsys_pop_category_region_hidden(rocprofsys_category_t, const char*,
                                                rocprofsys_annotation_t*,
                                                size_t) ROCPROFSYS_HIDDEN_API;
-    void rocprofsys_pop_category_region_hidden(rocprofsys_category_t, const char*,
-                                              rocprofsys_annotation_t*,
-                                              size_t) ROCPROFSYS_HIDDEN_API;
     void rocprofsys_register_source_hidden(const char*, const char*, size_t, size_t,
-                                          const char*) ROCPROFSYS_HIDDEN_API;
+                                           const char*) ROCPROFSYS_HIDDEN_API;
     void rocprofsys_register_coverage_hidden(const char*, const char*,
-                                            size_t) ROCPROFSYS_HIDDEN_API;
+                                             size_t) ROCPROFSYS_HIDDEN_API;
     void rocprofsys_progress_hidden(const char*) ROCPROFSYS_HIDDEN_API;
     void rocprofsys_annotated_progress_hidden(const char*, rocprofsys_annotation_t*,
-                                             size_t) ROCPROFSYS_HIDDEN_API;
+                                              size_t) ROCPROFSYS_HIDDEN_API;
 }

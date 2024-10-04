@@ -86,28 +86,28 @@ extern "C"
     }
 
     int rocprofsys_user_push_annotated_region(const char* id, annotation_t* _annotations,
-                                             size_t _annotation_count)
+                                              size_t _annotation_count)
     {
         return invoke(_callbacks.push_annotated_region, id, _annotations,
                       _annotation_count);
     }
 
     int rocprofsys_user_pop_annotated_region(const char* id, annotation_t* _annotations,
-                                            size_t _annotation_count)
+                                             size_t _annotation_count)
     {
         return invoke(_callbacks.pop_annotated_region, id, _annotations,
                       _annotation_count);
     }
 
     int rocprofsys_user_annotated_progress(const char* id, annotation_t* _annotations,
-                                          size_t _annotation_count)
+                                           size_t _annotation_count)
     {
         return invoke(_callbacks.annotated_progress, id, _annotations, _annotation_count);
     }
 
     int rocprofsys_user_configure(rocprofsys_user_configure_mode_t mode,
-                                 rocprofsys_user_callbacks_t      inp,
-                                 rocprofsys_user_callbacks_t*     out)
+                                  rocprofsys_user_callbacks_t      inp,
+                                  rocprofsys_user_callbacks_t*     out)
     {
         auto _former = _callbacks;
 

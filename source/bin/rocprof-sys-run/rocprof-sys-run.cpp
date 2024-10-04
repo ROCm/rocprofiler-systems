@@ -98,8 +98,9 @@ main(int argc, char** argv)
                 else if(_parse_data.verbose >= 2)
                 {
                     TIMEMORY_PRINTF_FATAL(
-                        stderr, "rocprof-sys run in process %i completed. exit code: %i\n",
-                        _pid, _ec);
+                        stderr,
+                        "rocprof-sys run in process %i completed. exit code: %i\n", _pid,
+                        _ec);
                 }
                 return _ec;
             }

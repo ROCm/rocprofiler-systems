@@ -137,9 +137,9 @@ TIMEMORY_SET_COMPONENT_API(rocprofsys::component::roctracer, project::rocprofsys
 TIMEMORY_SET_COMPONENT_API(rocprofsys::component::rocprofiler, project::rocprofsys,
                            tpls::rocm, device::gpu, os::supports_linux,
                            category::external, category::hardware_counter)
-TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_wall_clock, project::rocprofsys,
-                           category::timing, os::supports_unix, category::sampling,
-                           category::interrupt_sampling)
+TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_wall_clock,
+                           project::rocprofsys, category::timing, os::supports_unix,
+                           category::sampling, category::interrupt_sampling)
 TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_cpu_clock, project::rocprofsys,
                            category::timing, os::supports_unix, category::sampling,
                            category::interrupt_sampling)
@@ -149,9 +149,10 @@ TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_percent, project::roc
 TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_gpu_busy, project::rocprofsys,
                            tpls::rocm, device::gpu, os::supports_linux,
                            category::sampling, category::process_sampling)
-TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_gpu_memory, project::rocprofsys,
-                           tpls::rocm, device::gpu, os::supports_linux, category::memory,
-                           category::sampling, category::process_sampling)
+TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_gpu_memory,
+                           project::rocprofsys, tpls::rocm, device::gpu,
+                           os::supports_linux, category::memory, category::sampling,
+                           category::process_sampling)
 TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_gpu_power, project::rocprofsys,
                            tpls::rocm, device::gpu, os::supports_linux, category::power,
                            category::sampling, category::process_sampling)

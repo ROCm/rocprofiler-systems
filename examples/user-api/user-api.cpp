@@ -35,7 +35,7 @@ main(int argc, char** argv)
 {
     custom_callbacks.push_region = &custom_push_region;
     rocprofsys_user_configure(ROCPROFSYS_USER_UNION_CONFIG, custom_callbacks,
-                             &original_callbacks);
+                              &original_callbacks);
 
     rocprofsys_user_push_region(argv[0]);
     rocprofsys_user_push_region("initialization");

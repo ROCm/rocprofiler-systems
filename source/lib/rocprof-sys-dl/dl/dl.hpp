@@ -74,7 +74,7 @@ extern "C"
     void rocprofsys_init(const char*, bool, const char*) ROCPROFSYS_PUBLIC_API;
     void rocprofsys_finalize(void) ROCPROFSYS_PUBLIC_API;
     void rocprofsys_set_env(const char* env_name,
-                           const char* env_val) ROCPROFSYS_PUBLIC_API;
+                            const char* env_val) ROCPROFSYS_PUBLIC_API;
     void rocprofsys_set_mpi(bool use, bool attached) ROCPROFSYS_PUBLIC_API;
     void rocprofsys_set_instrumented(int) ROCPROFSYS_PUBLIC_API;
     void rocprofsys_push_trace(const char* name) ROCPROFSYS_PUBLIC_API;
@@ -82,20 +82,20 @@ extern "C"
     int  rocprofsys_push_region(const char*) ROCPROFSYS_PUBLIC_API;
     int  rocprofsys_pop_region(const char*) ROCPROFSYS_PUBLIC_API;
     int  rocprofsys_push_category_region(rocprofsys_category_t, const char*,
+                                         rocprofsys_annotation_t*,
+                                         size_t) ROCPROFSYS_PUBLIC_API;
+    int  rocprofsys_pop_category_region(rocprofsys_category_t, const char*,
                                         rocprofsys_annotation_t*,
                                         size_t) ROCPROFSYS_PUBLIC_API;
-    int  rocprofsys_pop_category_region(rocprofsys_category_t, const char*,
-                                       rocprofsys_annotation_t*,
-                                       size_t) ROCPROFSYS_PUBLIC_API;
 
     void rocprofsys_register_source(const char* file, const char* func, size_t line,
-                                   size_t      address,
-                                   const char* source) ROCPROFSYS_PUBLIC_API;
+                                    size_t      address,
+                                    const char* source) ROCPROFSYS_PUBLIC_API;
     void rocprofsys_register_coverage(const char* file, const char* func,
-                                     size_t address) ROCPROFSYS_PUBLIC_API;
+                                      size_t address) ROCPROFSYS_PUBLIC_API;
     void rocprofsys_progress(const char*) ROCPROFSYS_PUBLIC_API;
     void rocprofsys_annotated_progress(const char*, rocprofsys_annotation_t*,
-                                      size_t) ROCPROFSYS_PUBLIC_API;
+                                       size_t) ROCPROFSYS_PUBLIC_API;
 
 #if defined(ROCPROFSYS_DL_SOURCE) && (ROCPROFSYS_DL_SOURCE > 0)
     void rocprofsys_preinit_library(void) ROCPROFSYS_HIDDEN_API;
@@ -111,13 +111,13 @@ extern "C"
     int rocprofsys_user_pop_region_dl(const char*) ROCPROFSYS_HIDDEN_API;
 
     int rocprofsys_user_push_annotated_region_dl(const char*, rocprofsys_annotation_t*,
-                                                size_t) ROCPROFSYS_HIDDEN_API;
+                                                 size_t) ROCPROFSYS_HIDDEN_API;
     int rocprofsys_user_pop_annotated_region_dl(const char*, rocprofsys_annotation_t*,
-                                               size_t) ROCPROFSYS_HIDDEN_API;
+                                                size_t) ROCPROFSYS_HIDDEN_API;
 
     int rocprofsys_user_progress_dl(const char* name) ROCPROFSYS_HIDDEN_API;
     int rocprofsys_user_annotated_progress_dl(const char*, rocprofsys_annotation_t*,
-                                             size_t) ROCPROFSYS_HIDDEN_API;
+                                              size_t) ROCPROFSYS_HIDDEN_API;
     // KokkosP
     struct ROCPROFSYS_HIDDEN_API SpaceHandle
     {

@@ -94,11 +94,12 @@ main(int argc, char** argv)
     auto _env_failure = [_emit_warning, argv](std::string_view _env_var) {
         // emit warning
         _emit_warning();
-        std::cerr << "[" << argv[0] << "] Detected " << _env_var
-                  << " environment variable. Exiting to prevent consuming CI resources. "
-                     "Use \"rocprof-sys-instrument\" executable instead of \"rocprof-sys\" "
-                     "to prevent this error."
-                  << std::endl;
+        std::cerr
+            << "[" << argv[0] << "] Detected " << _env_var
+            << " environment variable. Exiting to prevent consuming CI resources. "
+               "Use \"rocprof-sys-instrument\" executable instead of \"rocprof-sys\" "
+               "to prevent this error."
+            << std::endl;
         std::exit(EXIT_FAILURE);
     };
     auto _wait_for_input = [&_completed, &_acknowledged, _emit_warning]() {

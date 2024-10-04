@@ -309,8 +309,8 @@ get_timemory(CategoryT, std::string_view name)
     auto& _data = tracing::get_instrumentation_bundles();
     if(ROCPROFSYS_UNLIKELY(_data == nullptr || _data->empty()))
     {
-        ROCPROFSYS_DEBUG("[%s] skipped %s :: empty bundle stack\n", "rocprofsys_pop_trace",
-                         name.data());
+        ROCPROFSYS_DEBUG("[%s] skipped %s :: empty bundle stack\n",
+                         "rocprofsys_pop_trace", name.data());
         return return_type{ nullptr, -1 };
     }
 

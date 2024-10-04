@@ -35,9 +35,9 @@ rocprofsys_progress_hidden(const char* _name)
 }
 
 extern "C" void
-rocprofsys_annotated_progress_hidden(const char*             _name,
-                                    rocprofsys_annotation_t* _annotations,
-                                    size_t                  _annotation_count)
+rocprofsys_annotated_progress_hidden(const char*              _name,
+                                     rocprofsys_annotation_t* _annotations,
+                                     size_t                   _annotation_count)
 {
     // mark the progress point
     rocprofsys::component::category_region<rocprofsys::category::causal>::mark<

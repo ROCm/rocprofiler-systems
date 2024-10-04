@@ -46,8 +46,8 @@ typedef int (*start_main_t)(int (*)(int, char**, char**), int, char**,
 //
 int
 rocprofsys_libc_start_main(int (*)(int, char**, char**), int, char**,
-                          int (*)(int, char**, char**), void (*)(void), void (*)(void),
-                          void*) ROCPROFSYS_INTERNAL_API;
+                           int (*)(int, char**, char**), void (*)(void), void (*)(void),
+                           void*) ROCPROFSYS_INTERNAL_API;
 
 int
 __libc_start_main(int (*)(int, char**, char**), int, char**, int (*)(int, char**, char**),
@@ -84,8 +84,8 @@ rocprofsys_main(int argc, char** argv, char** envp) ROCPROFSYS_INTERNAL_API;
 
 int
 rocprofsys_libc_start_main(int (*_main)(int, char**, char**), int _argc, char** _argv,
-                          int (*_init)(int, char**, char**), void (*_fini)(void),
-                          void (*_rtld_fini)(void), void* _stack_end)
+                           int (*_init)(int, char**, char**), void (*_fini)(void),
+                           void (*_rtld_fini)(void), void* _stack_end)
 {
     int _preload = rocprofsys_preload_library();
 
@@ -133,5 +133,5 @@ __libc_start_main(int (*_main)(int, char**, char**), int _argc, char** _argv,
                   void (*_rtld_fini)(void), void* _stack_end)
 {
     return rocprofsys_libc_start_main(_main, _argc, _argv, _init, _fini, _rtld_fini,
-                                     _stack_end);
+                                      _stack_end);
 }

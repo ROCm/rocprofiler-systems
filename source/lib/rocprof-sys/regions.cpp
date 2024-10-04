@@ -150,8 +150,8 @@ rocprofsys_pop_region_hidden(const char* name)
 
 extern "C" void
 rocprofsys_push_category_region_hidden(rocprofsys_category_t _category, const char* name,
-                                      rocprofsys_annotation_t* _annotations,
-                                      size_t                  _annotation_count)
+                                       rocprofsys_annotation_t* _annotations,
+                                       size_t                   _annotation_count)
 {
     rocprofsys::impl::invoke_category_region_start(
         _category, name, _annotations, _annotation_count,
@@ -160,8 +160,8 @@ rocprofsys_push_category_region_hidden(rocprofsys_category_t _category, const ch
 
 extern "C" void
 rocprofsys_pop_category_region_hidden(rocprofsys_category_t _category, const char* name,
-                                     rocprofsys_annotation_t* _annotations,
-                                     size_t                  _annotation_count)
+                                      rocprofsys_annotation_t* _annotations,
+                                      size_t                   _annotation_count)
 {
     rocprofsys::impl::invoke_category_region_stop(
         _category, name, _annotations, _annotation_count,

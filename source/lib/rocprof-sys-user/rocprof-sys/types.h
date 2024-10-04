@@ -35,7 +35,7 @@ extern "C"
     typedef int (*rocprofsys_trace_func_t)(void);
     typedef int (*rocprofsys_region_func_t)(const char*);
     typedef int (*rocprofsys_annotated_region_func_t)(const char*, rocprofsys_annotation*,
-                                                     size_t);
+                                                      size_t);
 
     /// @struct rocprofsys_user_callbacks
     /// @brief Struct containing the callbacks for the user API

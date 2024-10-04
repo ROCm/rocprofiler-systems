@@ -955,7 +955,7 @@ module_function::register_source(address_space_t* _addr_space, procedure_t* _ent
             auto _name = signature.get_coverage(false);
             auto _trace_entr =
                 rocprofsys_call_expr(signature.m_file, signature.m_name,
-                                    signature.m_row.first, start_address, _name);
+                                     signature.m_row.first, start_address, _name);
             auto _entr = _trace_entr.get(_entr_trace);
 
             if(insert_instr(_addr_space, _entr_points, _entr, BPatch_entry))
@@ -974,7 +974,7 @@ module_function::register_source(address_space_t* _addr_space, procedure_t* _ent
                 auto  _name       = _signature.get_coverage(true);
                 auto  _trace_entr =
                     rocprofsys_call_expr(_signature.m_file, _signature.m_name,
-                                        _signature.m_row.first, _start_addr, _name);
+                                         _signature.m_row.first, _start_addr, _name);
                 auto _entr = _trace_entr.get(_entr_trace);
 
                 if(insert_instr(_addr_space, _entr_points, _entr, BPatch_entry))
@@ -1017,7 +1017,7 @@ module_function::register_coverage(address_space_t* _addr_space,
                 auto  _start_addr = itr.second.start_address;
                 auto& _signature  = itr.second.signature;
                 auto  _trace_entr = rocprofsys_call_expr(_signature.m_file,
-                                                       _signature.m_name, _start_addr);
+                                                        _signature.m_name, _start_addr);
                 auto  _entr       = _trace_entr.get(_entr_trace);
 
                 if(insert_instr(_addr_space, _entr, BPatch_entry, itr.first))

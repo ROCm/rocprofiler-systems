@@ -68,13 +68,13 @@ rocprofsys_pop_region(const char* _name)
 
 extern "C" int
 rocprofsys_push_category_region(rocprofsys_category_t _category, const char* _name,
-                               rocprofsys_annotation_t* _annotations,
-                               size_t                  _annotation_count)
+                                rocprofsys_annotation_t* _annotations,
+                                size_t                   _annotation_count)
 {
     try
     {
         rocprofsys_push_category_region_hidden(_category, _name, _annotations,
-                                              _annotation_count);
+                                               _annotation_count);
     } catch(std::exception& _e)
     {
         ROCPROFSYS_WARNING_F(1, "Exception caught: %s\n", _e.what());
@@ -85,13 +85,13 @@ rocprofsys_push_category_region(rocprofsys_category_t _category, const char* _na
 
 extern "C" int
 rocprofsys_pop_category_region(rocprofsys_category_t _category, const char* _name,
-                              rocprofsys_annotation_t* _annotations,
-                              size_t                  _annotation_count)
+                               rocprofsys_annotation_t* _annotations,
+                               size_t                   _annotation_count)
 {
     try
     {
         rocprofsys_pop_category_region_hidden(_category, _name, _annotations,
-                                             _annotation_count);
+                                              _annotation_count);
     } catch(std::exception& _e)
     {
         ROCPROFSYS_WARNING_F(1, "Exception caught: %s\n", _e.what());
@@ -108,7 +108,7 @@ rocprofsys_progress(const char* _name)
 
 extern "C" void
 rocprofsys_annotated_progress(const char* _name, rocprofsys_annotation_t* _annotations,
-                             size_t _annotation_count)
+                              size_t _annotation_count)
 {
     rocprofsys_annotated_progress_hidden(_name, _annotations, _annotation_count);
 }
@@ -156,8 +156,8 @@ rocprofsys_set_mpi(bool use, bool attached)
 }
 
 extern "C" void
-rocprofsys_register_source(const char* file, const char* func, size_t line, size_t address,
-                          const char* source)
+rocprofsys_register_source(const char* file, const char* func, size_t line,
+                           size_t address, const char* source)
 {
     rocprofsys_register_source_hidden(file, func, line, address, source);
 }

@@ -90,8 +90,9 @@ extern "C"
     /// @param num_annotations Number of annotations
     /// @return rocprofsys_user_error_t value
     /// @brief Start a user defined region and adds the annotations to the perfetto trace.
-    extern int rocprofsys_user_push_annotated_region(const char*, rocprofsys_annotation_t*,
-                                                    size_t) ROCPROFSYS_PUBLIC_API;
+    extern int rocprofsys_user_push_annotated_region(const char*,
+                                                     rocprofsys_annotation_t*,
+                                                     size_t) ROCPROFSYS_PUBLIC_API;
 
     /// @fn int rocprofsys_user_pop_annotated_region(const char* id,
     ///                                             rocprofsys_annotation_t* annotations,
@@ -102,14 +103,14 @@ extern "C"
     /// @return rocprofsys_user_error_t value
     /// @brief Stop a user defined region and adds the annotations to the perfetto trace.
     extern int rocprofsys_user_pop_annotated_region(const char*, rocprofsys_annotation_t*,
-                                                   size_t) ROCPROFSYS_PUBLIC_API;
+                                                    size_t) ROCPROFSYS_PUBLIC_API;
 
     /// mark causal progress
     extern int rocprofsys_user_progress(const char*) ROCPROFSYS_PUBLIC_API;
 
     /// mark causal progress with annotations
     extern int rocprofsys_user_annotated_progress(const char*, rocprofsys_annotation_t*,
-                                                 size_t) ROCPROFSYS_PUBLIC_API;
+                                                  size_t) ROCPROFSYS_PUBLIC_API;
 
     /// @fn int rocprofsys_user_configure(rocprofsys_user_configure_mode_t mode,
     ///                                  rocprofsys_user_callbacks_t inp,

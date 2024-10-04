@@ -278,7 +278,8 @@ rocprofsys_set_env_hidden(const char* env_name, const char* env_val)
     {
         ROCPROFSYS_WARNING_F(
             0,
-            "rocprofsys_set_env(\"%s\", \"%s\") called after rocprof-sys was initialized. "
+            "rocprofsys_set_env(\"%s\", \"%s\") called after rocprof-sys was "
+            "initialized. "
             "state = %s. This environment variable will have no effect\n",
             env_name, env_val, std::to_string(get_state()).c_str());
     }

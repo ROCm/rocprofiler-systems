@@ -302,7 +302,7 @@ namespace coverage = rocprofsys::coverage;
 
 extern "C" void
 rocprofsys_register_source_hidden(const char* file, const char* func, size_t line,
-                                 size_t address, const char* source)
+                                  size_t address, const char* source)
 {
     if(coverage::get_post_processed()) return;
 
