@@ -26,7 +26,7 @@
 #define ROCPROFSYS_CAUSAL_H_
 
 /**
- * @defgroup ROCPROFSYS_CASUAL_GROUP OmniTrace Causal Profiling Defines
+ * @defgroup ROCPROFSYS_CASUAL_GROUP ROCm Systems Profiler Causal Profiling Defines
  *
  * @{
  */

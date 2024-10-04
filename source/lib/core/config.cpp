@@ -347,7 +347,7 @@ configure_settings(bool _init)
 
     ROCPROFSYS_CONFIG_CL_SETTING(
         bool, "ROCPROFSYS_KOKKOSP_KERNEL_LOGGER", "Enables kernel logging", false,
-        "--omnitrace-kokkos-kernel-logger", "kokkos", "debugging", "advanced");
+        "--rocprofsys-kokkos-kernel-logger", "kokkos", "debugging", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(
         int64_t, "ROCPROFSYS_KOKKOSP_NAME_LENGTH_MAX",
@@ -405,7 +405,7 @@ configure_settings(bool _init)
         "governed by the elapsed realtime, \"cputime\" == the delay/duration is governed "
         "by the elapsed CPU-time within the process, etc. Note: when using CPU-based "
         "timing, it is recommened to scale the value by the number of threads and be "
-        "aware that omnitrace may contribute to advancing the process CPU-time",
+        "aware that rocprof-sys may contribute to advancing the process CPU-time",
         "CLOCK_REALTIME", "trace", "profile", "perfetto", "timemory")
         ->set_choices(_clock_choices);
 
@@ -486,7 +486,7 @@ configure_settings(bool _init)
         std::string, "ROCPROFSYS_SAMPLING_TIDS",
         "Limit call-stack sampling to specific thread IDs, starting at zero for the main "
         "thread. Be aware that some libraries, such as ROCm may create additional "
-        "threads which increment the TID count. However, no threads started by omnitrace "
+        "threads which increment the TID count. However, no threads started by rocprof-sys "
         "will increment the TID count. Values should be separated by commas and can be "
         "explicit or ranges, e.g. 0,1,5-8. An empty value implies all TIDs.",
         std::string{}, "sampling", "advanced");
@@ -749,7 +749,7 @@ configure_settings(bool _init)
     ROCPROFSYS_CONFIG_SETTING(
         std::string, "ROCPROFSYS_CAUSAL_BACKEND",
         "Backend for call-stack sampling. See "
-        "https://rocm.docs.amd.com/projects/omnitrace/en/latest/how-to/"
+        "https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/how-to/"
         "performing-causal-profiling.html#backends for more "
         "info. If set to \"auto\", rocprof-sys will attempt to use the perf backend and "
         "fallback on the timer backend if unavailable",

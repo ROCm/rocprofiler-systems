@@ -29,7 +29,7 @@
 #include "core/perfetto.hpp"
 #include "core/state.hpp"
 #include "core/utility.hpp"
-#include "rocprof-sys/categories.h"  // in omnitrace-user
+#include "rocprof-sys/categories.h"  // in rocprof-sys-user
 
 #include <timemory/mpl/concepts.hpp>
 #include <timemory/operations/types/get.hpp>

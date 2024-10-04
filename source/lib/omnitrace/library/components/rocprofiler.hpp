@@ -127,7 +127,7 @@ struct rocprofiler
     void stop();
 
     // this function protects rocprofiler_flush_activty from being called
-    // when omnitrace exits during a callback
+    // when rocprof-sys exits during a callback
     [[nodiscard]] static scope::transient_destructor protect_flush_activity();
 };
 

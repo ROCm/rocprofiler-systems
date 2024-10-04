@@ -37,7 +37,7 @@
 namespace rocprofsys
 {
 //  InternalTID:  zero-based, process-local thread-ID from atomic increment
-//                from user-created threads and omnitrace-created threads.
+//                from user-created threads and rocprof-sys-created threads.
 //                This value may vary based on threads created by different
 //                backends, e.g., roctracer will create threads
 //
@@ -46,11 +46,11 @@ namespace rocprofsys
 //
 //  SequentTID:   zero-based, process-local thread-ID based on the sequence of
 //                user-created threads which are created in-between the
-//                initialization and finalization of omnitrace.
-//                In theory, omnitrace will never increment this value
-//                because of a thread explicitly by omnitrace or
+//                initialization and finalization of rocprof-sys.
+//                In theory, rocprof-sys will never increment this value
+//                because of a thread explicitly by rocprof-sys or
 //                by other of the dependent libraries. Most commonly
-//                used for indexing into omnitrace's thread-local data.
+//                used for indexing into rocprof-sys's thread-local data.
 //
 //  NativeHandle: value of static_cast<int64_t>(pthread_self())
 //

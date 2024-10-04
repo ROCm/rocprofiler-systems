@@ -855,7 +855,7 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
                 "active "
                 "threads would equate to ~1 second of realtime. If this proves to be "
                 "difficult to handle in practice, please file a feature request for "
-                "omnitrace to auto-scale based on the number of threads.")
+                "rocprof-sys to auto-scale based on the number of threads.")
             .count(1)
             .dtype("clock-id")
             .action([&](parser_t& p) {
@@ -1422,7 +1422,7 @@ add_extended_arguments(parser_t& _parser, parser_data& _data)
         {
             if(std::regex_search(
                    citr, std::regex{
-                             "omnitrace|timemory|^(native|custom|advanced|analysis)$" }))
+                             "rocprofsys|omnitrace|timemory|^(native|custom|advanced|analysis)$" }))
                 continue;
             _category_count_map[citr] += 1;
         }

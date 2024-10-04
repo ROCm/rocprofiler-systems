@@ -236,7 +236,7 @@ get_environ(int _verbose, std::string _search_paths = {},
         }
         else
         {
-            _msg << "Error! ROCP_METRICS not set in environment and OmniTrace could not "
+            _msg << "Error! ROCP_METRICS not set in environment and rocprof-sys could not "
                     "find a suitable path. Please set ROCP_METRICS=/path/to/metrics.xml "
                     "in the environment. This file is typically located in the same "
                     "folder as the librocprofiler64.so library.\nAdditional note: "

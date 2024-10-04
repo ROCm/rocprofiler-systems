@@ -152,7 +152,7 @@ get_binary_info(const std::vector<std::string>&  _files,
     };
 
     // filter function used by procfs::get_contiguous_maps
-    // ensures that we do not process omnitrace/gotcha/libunwind libraries
+    // ensures that we do not process rocprof-sys/gotcha/libunwind libraries
     // and do not process the libraries outside of the binary scope
     auto _filter = [&_satisfies_binary_filter](const procfs::maps& _v) {
         if(_v.pathname.empty()) return false;

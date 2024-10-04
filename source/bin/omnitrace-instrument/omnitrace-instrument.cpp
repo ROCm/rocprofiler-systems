@@ -599,9 +599,9 @@ main(int argc, char** argv)
     parser
         .add_argument({ "-o", "--output" },
                       "Enable generation of a new executable (binary-rewrite). If a "
-                      "filename is not provided, omnitrace will use the basename and "
+                      "filename is not provided, rocprof-sys will use the basename and "
                       "output to the cwd, unless the target binary is in the cwd. In the "
-                      "latter case, omnitrace will either use ${PWD}/<basename>.inst "
+                      "latter case, rocprof-sys will either use ${PWD}/<basename>.inst "
                       "(non-libraries) or ${PWD}/instrumented/<basename> (libraries)")
         .min_count(0)
         .max_count(1)
@@ -757,11 +757,11 @@ main(int argc, char** argv)
                         "that match the provided regular-expressions");
     parser.add_argument({ "--internal-function-include" },
                         "Regex(es) for including functions which are (likely) utilized "
-                        "by omnitrace itself. Use this option with care.");
+                        "by rocprof-sys itself. Use this option with care.");
     parser.add_argument(
         { "--internal-module-include" },
         "Regex(es) for including modules/libraries which are (likely) utilized "
-        "by omnitrace itself. Use this option with care.");
+        "by rocprof-sys itself. Use this option with care.");
     parser.add_argument(
         { "--instruction-exclude" },
         "Regex(es) for excluding functions containing certain instructions");
@@ -784,8 +784,8 @@ main(int argc, char** argv)
 
     parser
         .add_argument({ "--internal-library-append" },
-                      "Append to the list of libraries which omnitrace treats as being "
-                      "used internally, e.g. OmniTrace will find all the symbols in "
+                      "Append to the list of libraries which rocprof-sys treats as being "
+                      "used internally, e.g. rocprof-sys will find all the symbols in "
                       "this library and prevent them from being instrumented.")
         .action([](parser_t& p) {
             for(const auto& itr : p.get<strvec_t>("internal-library-append"))
@@ -795,7 +795,7 @@ main(int argc, char** argv)
     parser
         .add_argument({ "--internal-library-remove" },
                       "Remove the specified libraries from being treated as being "
-                      "used internally, e.g. OmniTrace will permit all the symbols in "
+                      "used internally, e.g. rocprof-sys will permit all the symbols in "
                       "these libraries to be eligible for instrumentation.")
         .choices(_internal_libs)
         .action([](parser_t& p) {
@@ -891,7 +891,7 @@ main(int argc, char** argv)
                         "default to using timemory instead of perfetto");
     parser
         .add_argument({ "--mpi" },
-                      "Enable MPI support (requires omnitrace built w/ full or partial "
+                      "Enable MPI support (requires rocprof-sys built w/ full or partial "
                       "MPI support). NOTE: this will automatically be activated if "
                       "MPI_Init, MPI_Init_thread, MPI_Finalize, MPI_Comm_rank, or "
                       "MPI_Comm_size are found in the symbol table of target")
@@ -899,7 +899,7 @@ main(int argc, char** argv)
         .action([](parser_t& p) {
             use_mpi = p.get<bool>("mpi");
 #if ROCPROFSYS_USE_MPI == 0 && ROCPROFSYS_USE_MPI_HEADERS == 0
-            errprintf(0, "omnitrace was not built with full or partial MPI support\n");
+            errprintf(0, "rocprof-sys was not built with full or partial MPI support\n");
             use_mpi = false;
 #endif
         });
@@ -1006,8 +1006,8 @@ main(int argc, char** argv)
     parser
         .add_argument(
             { "--parse-all-modules" },
-            "By default, omnitrace simply requests Dyninst to provide all the procedures "
-            "in the application image. If this option is enabled, omnitrace will iterate "
+            "By default, rocprof-sys simply requests Dyninst to provide all the procedures "
+            "in the application image. If this option is enabled, rocprof-sys will iterate "
             "over all the modules and extract the functions. Theoretically, it should be "
             "the same but the data is slightly different, possibly due to weak binding "
             "scopes. In general, enabling option will probably have no visible effect")
@@ -1149,7 +1149,7 @@ main(int argc, char** argv)
                            !parser.exists("min-address-range-loop"));
 
     auto _rocprofsys_exe_path = tim::dirname(::get_realpath("/proc/self/exe"));
-    verbprintf(4, "omnitrace exe path: %s\n", _rocprofsys_exe_path.c_str());
+    verbprintf(4, "rocprof-sys exe path: %s\n", _rocprofsys_exe_path.c_str());
 
     if(_cmdv && _cmdv[0] && strlen(_cmdv[0]) > 0)
     {
@@ -1961,7 +1961,7 @@ main(int argc, char** argv)
     //
     //----------------------------------------------------------------------------------//
 
-    // call into omnitrace-dl to notify that instrumentation is occurring
+    // call into rocprof-sys-dl to notify that instrumentation is occurring
     if(binary_rewrite)
     {
         init_names.emplace(init_names.begin(), set_instr_call.get());
@@ -2452,7 +2452,7 @@ main(int argc, char** argv)
         auto _compute_exit_code = [app_thread, &code]() {
             if(app_thread->terminationStatus() == ExitedNormally)
             {
-                if(app_thread->isTerminated()) verbprintf(0, "End of omnitrace\n");
+                if(app_thread->isTerminated()) verbprintf(0, "End of rocprof-sys\n");
             }
             else if(app_thread->terminationStatus() == ExitedViaSignal)
             {
@@ -2525,7 +2525,7 @@ main(int argc, char** argv)
         free(_cmdv[i]);
     delete[] _cmdv;
 
-    verbprintf(0, "End of omnitrace\n");
+    verbprintf(0, "End of rocprof-sys\n");
     verbprintf((code != 0) ? 0 : 1, "Exit code: %i\n", code);
 
     if(log_ofs)

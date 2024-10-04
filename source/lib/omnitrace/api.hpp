@@ -23,7 +23,7 @@
 #pragma once
 
 #include "core/defines.hpp"
-#include "rocprof-sys/categories.h"  // in omnitrace-user
+#include "rocprof-sys/categories.h"  // in rocprof-sys-user
 
 #include <timemory/compat/macros.h>
 

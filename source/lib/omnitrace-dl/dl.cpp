@@ -217,7 +217,7 @@ auto        _rocprofsys_dl_dlopen_flags = RTLD_LAZY | RTLD_LOCAL;
 const char* _rocprofsys_dl_dlopen_descr = "RTLD_LAZY | RTLD_LOCAL";
 #endif
 
-/// This class contains function pointers for omnitrace's instrumentation functions
+/// This class contains function pointers for rocprof-sys's instrumentation functions
 struct ROCPROFSYS_INTERNAL_API indirect
 {
     ROCPROFSYS_INLINE indirect(const std::string& _omnilib, const std::string& _userlib,
@@ -1373,7 +1373,7 @@ verify_instrumented_preloaded()
     E.g.:
 
         $ rocprof-sys-instrument -o ./sleep.inst --env ROCPROFSYS_SAMPLING_DELAY=5.0 -- sleep
-        $ echo "ROCPROFSYS_SAMPLING_FREQ = 500" > omnitrace.cfg
+        $ echo "ROCPROFSYS_SAMPLING_FREQ = 500" > rocprof-sys.cfg
         $ export ROCPROFSYS_CONFIG_FILE=rocprof-sys.cfg
         $ rocprof-sys-run --sampling-freq=100 --sampling-delay=1.0 -- ./sleep.inst 10
 

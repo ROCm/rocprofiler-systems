@@ -109,7 +109,7 @@ extern std::stringstream lerr;
 // explicit setting names to exclude
 extern std::set<std::string> settings_exclude;
 
-// exclude some timemory settings which are not relevant to omnitrace
+// exclude some timemory settings which are not relevant to rocprof-sys
 //  exact matches, e.g. ROCPROFSYS_BANNER
 extern std::string settings_rexclude_exact;
 

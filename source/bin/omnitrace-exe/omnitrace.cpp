@@ -66,7 +66,7 @@ main(int argc, char** argv)
                                                                                                                                    gggggg
 
 
-    ROCm Systems Profiler has renamed the "omnitrace" executable to "rocprof-sys-instrument".
+    ROCm Systems Profiler has renamed the "rocprof-sys" executable to "rocprof-sys-instrument".
 
     This executable only exists to provide this deprecation warning and maintain backwards compatibility for a few releases.
     This executable will soon invoke "rocprof-sys-instrument" with the arguments you just provided after we've given you
@@ -96,7 +96,7 @@ main(int argc, char** argv)
         _emit_warning();
         std::cerr << "[" << argv[0] << "] Detected " << _env_var
                   << " environment variable. Exiting to prevent consuming CI resources. "
-                     "Use \"rocprof-sys-instrument\" executable instead of \"omnitrace\" "
+                     "Use \"rocprof-sys-instrument\" executable instead of \"rocprof-sys\" "
                      "to prevent this error."
                   << std::endl;
         std::exit(EXIT_FAILURE);

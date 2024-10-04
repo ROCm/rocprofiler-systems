@@ -91,14 +91,14 @@ init_index_data(int64_t _tid, bool _offset = false)
         {
             ROCPROFSYS_BASIC_VERBOSE_F(_verb,
                                        "Thread %li on PID %i (rank: %i) assigned "
-                                       "omnitrace TID %li (internal: %li)\n",
+                                       "rocprof-sys TID %li (internal: %li)\n",
                                        itr->system_value, process::get_id(), dmp::rank(),
                                        itr->sequent_value, itr->internal_value);
         }
         else
         {
             ROCPROFSYS_VERBOSE_F(_verb,
-                                 "Thread %li on PID %i (rank: %i) assigned omnitrace TID "
+                                 "Thread %li on PID %i (rank: %i) assigned rocprof-sys TID "
                                  "%li (internal: %li)\n",
                                  itr->system_value, process::get_id(), dmp::rank(),
                                  itr->sequent_value, itr->internal_value);
@@ -285,12 +285,12 @@ thread_info::get(int64_t _tid, ThreadIdType _type)
     }
     else if(_type == ThreadIdType::PthreadID)
     {
-        ROCPROFSYS_THROW("omnitrace does not support thread_info::get(int64_t, "
+        ROCPROFSYS_THROW("rocprof-sys does not support thread_info::get(int64_t, "
                          "ThreadIdType) with ThreadIdType::PthreadID\n");
     }
     else if(_type == ThreadIdType::StlThreadID)
     {
-        ROCPROFSYS_THROW("omnitrace does not support thread_info::get(int64_t, "
+        ROCPROFSYS_THROW("rocprof-sys does not support thread_info::get(int64_t, "
                          "ThreadIdType) with ThreadIdType::StlThreadID\n");
     }
 

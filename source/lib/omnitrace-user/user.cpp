@@ -184,7 +184,7 @@ extern "C"
             case ROCPROFSYS_USER_ERROR_INVALID_CATEGORY:
                 return "Invalid user binding category";
             case ROCPROFSYS_USER_ERROR_INTERNAL:
-                return "An unknown error occurred within omnitrace library";
+                return "An unknown error occurred within rocprof-sys library";
             default: break;
         }
         return "No error";

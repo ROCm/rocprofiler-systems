@@ -184,7 +184,7 @@ rocprofsys_get_address_space(patch_pointer_t& _bpatch, int _cmdc, char** _cmdv,
         {
             errprintf(
                 -127,
-                "'%s' is a text file. OmniTrace only supports instrumenting binary files",
+                "'%s' is a text file. rocprof-sys only supports instrumenting binary files",
                 _name.c_str());
         }
 
@@ -251,7 +251,7 @@ rocprofsys_get_address_space(patch_pointer_t& _bpatch, int _cmdc, char** _cmdv,
             if(is_text_file(_cmdv[0]))
             {
                 errprintf(-1,
-                          "'%s' is a text file. OmniTrace only supports instrumenting "
+                          "'%s' is a text file. rocprof-sys only supports instrumenting "
                           "binary files",
                           _cmdv[0]);
             }

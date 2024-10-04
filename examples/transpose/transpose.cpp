@@ -221,7 +221,7 @@ main(int argc, char** argv)
 #else
     (void) size;
 #endif
-    // this is a temporary workaround in omnitrace when HIP + MPI is enabled
+    // this is a temporary workaround in rocprof-sys when HIP + MPI is enabled
     int ndevice = 0;
     int devid   = rank;
     HIP_API_CALL(hipGetDeviceCount(&ndevice));

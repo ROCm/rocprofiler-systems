@@ -40,7 +40,7 @@ static constexpr size_t max_supported_threads = ROCPROFSYS_MAX_THREADS;
 template <typename Tp>
 struct thread_deleter;
 
-// unique ptr type for omnitrace
+// unique ptr type for rocprof-sys
 template <typename Tp>
 using unique_ptr_t = std::unique_ptr<Tp, thread_deleter<Tp>>;
 

@@ -24,7 +24,7 @@
 
 #include "common/join.hpp"
 #include "defines.hpp"
-#include "rocprof-sys/categories.h"  // in omnitrace-user
+#include "rocprof-sys/categories.h"  // in rocprof-sys-user
 
 #if defined(TIMEMORY_PERFETTO_CATEGORIES)
 #    error "TIMEMORY_PERFETTO_CATEGORIES is already defined. Please include \"" __FILE__ "\" before including any timemory files"

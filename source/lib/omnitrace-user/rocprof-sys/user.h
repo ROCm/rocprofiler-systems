@@ -121,8 +121,8 @@ extern "C"
     /// @param[out] out Pointer to @ref rocprofsys_user_callbacks which,
     ///             when non-NULL, will be assigned the former callbacks.
     /// @return rocprofsys_user_error_t value
-    /// @brief Configure the function pointers invoked by the omnitrace user API.
-    /// The initial callbacks are set via the omnitrace-dl library when it is loaded but
+    /// @brief Configure the function pointers invoked by the rocprof-sys user API.
+    /// The initial callbacks are set via the rocprof-sys-dl library when it is loaded but
     /// the user can user this feature to turn on/off the user API or customize how the
     /// the user callbacks occur. For example, the user could maintain one set of
     /// callbacks which discard any annotation data or redirect all unannotated user
@@ -141,7 +141,7 @@ extern "C"
     /// category, e.g. rocprofsys_user_stop_trace or rocprofsys_user_pop_region
     /// @return rocprofsys_user_error_t value
     /// @brief Get the current function pointers for a given category. The initial values
-    /// are assigned by omnitrace-dl at start up.
+    /// are assigned by rocprof-sys-dl at start up.
     extern int rocprofsys_user_get_callbacks(rocprofsys_user_callbacks_t*)
         ROCPROFSYS_PUBLIC_API;
 

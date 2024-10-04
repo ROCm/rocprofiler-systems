@@ -30,7 +30,7 @@
 
 namespace rocprofsys
 {
-// used for specifying the state of omnitrace
+// used for specifying the state of rocprof-sys
 enum class State : unsigned short
 {
     PreInit = 0,
@@ -40,7 +40,7 @@ enum class State : unsigned short
     Disabled,
 };
 
-// used for specifying the state of omnitrace
+// used for specifying the state of rocprof-sys
 enum class ThreadState : unsigned short
 {
     Enabled = 0,
