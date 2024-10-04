@@ -312,8 +312,8 @@ installation docs for perfetto can be found [here](https://perfetto.dev/docs/con
 If you are building rocprof-sys from source, you can configure CMake with `ROCPROFSYS_INSTALL_PERFETTO_TOOLS=ON`
 and the `perfetto` and `traced` applications will be installed as part of the build process. However,
 it should be noted that to prevent this option from accidentally overwriting an existing perfetto install,
-all the perfetto executables installed by omnitrace are prefixed with `rocprof-sys-perfetto-`, except for the `perfetto`
-executable, which is just renamed `rocprof-sys-perfetto`.
+all the perfetto executables installed by ROCm Systems Profiler are prefixed with `rocprof-sys-perfetto-`, except
+for the `perfetto` executable, which is just renamed `rocprof-sys-perfetto`.
 
 Enable `traced` and `perfetto` in the background:
 
