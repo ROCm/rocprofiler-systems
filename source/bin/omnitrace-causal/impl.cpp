@@ -277,7 +277,7 @@ print_updated_environment(std::vector<char*> _env, std::string_view _prefix)
     {
         if(itr == nullptr) continue;
 
-        auto _is_omni = (std::string_view{ itr }.find("OMNITRACE") == 0);
+        auto _is_omni = (std::string_view{ itr }.find("ROCPROFSYS") == 0);
         auto _updated = false;
         for(const auto& vitr : updated_envs)
         {

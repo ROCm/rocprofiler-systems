@@ -218,7 +218,7 @@ print_updated_environment(parser_data_t& _data, std::string_view _prefix)
     {
         if(itr == nullptr) continue;
 
-        auto _is_omni = (std::string_view{ itr }.find("OMNITRACE") == 0);
+        auto _is_omni = (std::string_view{ itr }.find("ROCPROFSYS") == 0);
         auto _updated = false;
         for(const auto& vitr : _updated_envs)
         {

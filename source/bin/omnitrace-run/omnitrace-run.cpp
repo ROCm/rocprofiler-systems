@@ -71,8 +71,8 @@ main(int argc, char** argv)
     auto& _envp = _parse_data.current;
     if(!_argv.empty())
     {
-        print_updated_environment(_parse_data, "OMNITRACE: ");
-        print_command(_parse_data, "OMNITRACE: ");
+        print_updated_environment(_parse_data, "ROCPROFSYS: ");
+        print_command(_parse_data, "ROCPROFSYS: ");
         _argv.emplace_back(nullptr);
         _envp.emplace_back(nullptr);
 
