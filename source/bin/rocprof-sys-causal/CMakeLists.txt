@@ -6,8 +6,8 @@
 
 add_executable(
     rocprofsys-causal
-    ${CMAKE_CURRENT_LIST_DIR}/omnitrace-causal.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/omnitrace-causal.hpp ${CMAKE_CURRENT_LIST_DIR}/impl.cpp)
+    ${CMAKE_CURRENT_LIST_DIR}/rocprof-sys-causal.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/rocprof-sys-causal.hpp ${CMAKE_CURRENT_LIST_DIR}/impl.cpp)
 
 target_compile_definitions(rocprofsys-causal PRIVATE TIMEMORY_CMAKE=1)
 target_include_directories(rocprofsys-causal PRIVATE ${CMAKE_CURRENT_LIST_DIR})

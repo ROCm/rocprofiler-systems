@@ -41,7 +41,7 @@ set_target_properties(
 rocprofsys_strip_target(rocprofsys-user-library)
 
 foreach(_HEADER ${_user_headers})
-    string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/omnitrace/"
+    string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/rocprof-sys/"
                    "${CMAKE_CURRENT_SOURCE_DIR}/${PACKAGE_NAME}/" _DEST ${_HEADER})
     string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/"
                    "${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR}/" _DEST "${_DEST}")

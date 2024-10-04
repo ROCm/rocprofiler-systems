@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "omnitrace-instrument.hpp"
+#include "rocprof-sys-instrument.hpp"
 #include "common/defines.h"
 #include "common/join.hpp"
 #include "dl/dl.hpp"

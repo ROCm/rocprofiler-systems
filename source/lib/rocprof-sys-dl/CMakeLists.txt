@@ -22,8 +22,8 @@ target_sources(
 target_include_directories(
     rocprofsys-dl-library
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../omnitrace-user>
-           $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../omnitrace>
+           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../rocprof-sys-user>
+           $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../rocprof-sys>
            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 target_link_libraries(
     rocprofsys-dl-library

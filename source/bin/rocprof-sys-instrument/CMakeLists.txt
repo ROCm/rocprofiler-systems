@@ -21,8 +21,8 @@ target_sources(
             ${CMAKE_CURRENT_LIST_DIR}/log.hpp
             ${CMAKE_CURRENT_LIST_DIR}/module_function.cpp
             ${CMAKE_CURRENT_LIST_DIR}/module_function.hpp
-            ${CMAKE_CURRENT_LIST_DIR}/omnitrace-instrument.cpp
-            ${CMAKE_CURRENT_LIST_DIR}/omnitrace-instrument.hpp)
+            ${CMAKE_CURRENT_LIST_DIR}/rocprof-sys-instrument.cpp
+            ${CMAKE_CURRENT_LIST_DIR}/rocprof-sys-instrument.hpp)
 
 target_link_libraries(
     rocprofsys-instrument

@@ -4,7 +4,7 @@
 #
 # ------------------------------------------------------------------------------#
 
-add_executable(rocprofsys-sample ${CMAKE_CURRENT_LIST_DIR}/omnitrace-sample.cpp
+add_executable(rocprofsys-sample ${CMAKE_CURRENT_LIST_DIR}/rocprof-sys-sample.cpp
                                  ${CMAKE_CURRENT_LIST_DIR}/impl.cpp)
 
 target_compile_definitions(rocprofsys-sample PRIVATE TIMEMORY_CMAKE=1)

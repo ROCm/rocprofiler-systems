@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "omnitrace-causal.hpp"
+#include "rocprof-sys-causal.hpp"
 
 #include "common/defines.h"
 #include "common/delimit.hpp"
@@ -941,7 +941,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env,
     return _outv;
 }
 
-// explicit instantiation for usage in omnitrace-causal.cpp
+// explicit instantiation for usage in rocprof-sys-causal.cpp
 template void
 update_env(std::vector<char*>&, std::string_view, const std::string& _env_val,
            bool _append, std::string_view);

@@ -6,8 +6,8 @@
 
 add_executable(
     rocprofsys-run
-    ${CMAKE_CURRENT_LIST_DIR}/omnitrace-run.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/omnitrace-run.hpp ${CMAKE_CURRENT_LIST_DIR}/impl.cpp)
+    ${CMAKE_CURRENT_LIST_DIR}/rocprof-sys-run.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/rocprof-sys-run.hpp ${CMAKE_CURRENT_LIST_DIR}/impl.cpp)
 
 target_compile_definitions(rocprofsys-run PRIVATE TIMEMORY_CMAKE=1)
 target_include_directories(rocprofsys-run PRIVATE ${CMAKE_CURRENT_LIST_DIR})

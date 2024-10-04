@@ -5,7 +5,7 @@
 #
 # ------------------------------------------------------------------------------#
 
-add_executable(rocprofsys-exe ${CMAKE_CURRENT_LIST_DIR}/omnitrace.cpp)
+add_executable(rocprofsys-exe ${CMAKE_CURRENT_LIST_DIR}/rocprof-sys.cpp)
 
 target_link_libraries(rocprofsys-exe PRIVATE rocprofsys::rocprofsys-threading)
 

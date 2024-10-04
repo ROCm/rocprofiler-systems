@@ -54,9 +54,9 @@ target_include_directories(
     INTERFACE $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/source/lib>
               $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/source/lib/core>
               $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source/lib>
-              $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source/lib/omnitrace>
-              $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source/lib/omnitrace-dl>
-              $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source/lib/omnitrace-user>)
+              $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source/lib/rocprof-sys>
+              $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source/lib/rocprof-sys-dl>
+              $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source/lib/rocprof-sys-user>)
 
 # include threading because of rooflines
 target_link_libraries(rocprofsys-headers INTERFACE rocprofsys::rocprofsys-threading)

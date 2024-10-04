@@ -6,7 +6,7 @@ include(FindPackageHandleStandardArgs)
 # ----------------------------------------------------------------------------------------#
 
 set(RCCL-Headers_INCLUDE_DIR_INTERNAL
-    "${PROJECT_SOURCE_DIR}/source/lib/omnitrace/library/tpls/rccl"
+    "${PROJECT_SOURCE_DIR}/source/lib/rocprof-sys/library/tpls/rccl"
     CACHE PATH "Path to internal rccl.h")
 
 # ----------------------------------------------------------------------------------------#

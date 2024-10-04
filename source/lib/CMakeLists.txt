@@ -33,7 +33,7 @@ add_library(rocprofsys::rocprofsys-interface-library ALIAS rocprofsys-interface-
 
 target_include_directories(
     rocprofsys-interface-library INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
-                                           ${CMAKE_CURRENT_SOURCE_DIR}/omnitrace)
+                                           ${CMAKE_CURRENT_SOURCE_DIR}/rocprof-sys)
 
 target_link_libraries(
     rocprofsys-interface-library
@@ -76,7 +76,7 @@ add_subdirectory(binary)
 #
 # ------------------------------------------------------------------------------#
 
-add_subdirectory(omnitrace)
-add_subdirectory(omnitrace-dl)
-add_subdirectory(omnitrace-rt)
-add_subdirectory(omnitrace-user)
+add_subdirectory(rocprof-sys)
+add_subdirectory(rocprof-sys-dl)
+add_subdirectory(rocprof-sys-rt)
+add_subdirectory(rocprof-sys-user)

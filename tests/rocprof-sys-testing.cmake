@@ -195,7 +195,7 @@ endif()
 
 execute_process(
     COMMAND ${CMAKE_CXX_COMPILER} -O2 -g -std=c++17
-            ${CMAKE_CURRENT_LIST_DIR}/omnitrace-capchk.cpp -o rocprof-sys-capchk
+            ${CMAKE_CURRENT_LIST_DIR}/rocprof-sys-capchk.cpp -o rocprof-sys-capchk
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/bin
     RESULT_VARIABLE _capchk_compile
     OUTPUT_QUIET ERROR_QUIET)

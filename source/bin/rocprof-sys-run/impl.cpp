@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "omnitrace-run.hpp"
+#include "rocprof-sys-run.hpp"
 
 #include "common/defines.h"
 #include "common/delimit.hpp"

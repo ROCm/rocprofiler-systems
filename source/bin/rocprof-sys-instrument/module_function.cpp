@@ -25,7 +25,7 @@
 #include "fwd.hpp"
 #include "internal_libs.hpp"
 #include "log.hpp"
-#include "omnitrace-instrument.hpp"
+#include "rocprof-sys-instrument.hpp"
 
 #include <timemory/utility/join.hpp>
 
@@ -451,7 +451,7 @@ module_function::is_internal_constrained() const
         return _report("Excluding", "module", "rocprofsys", 3);
     else if(std::regex_match(module_name,
                              std::regex{ ".*/source/lib/"
-                                         "(core|common|binary|omnitrace|omnitrace-dl|"
+                                         "(core|common|binary|omnitrace|rocprof-sys-dl|"
                                          "omnitrace-user|rocprofsys|rocprofsys-dl|"
                                          "rocprofsys-user)/.*/.*\\.(h|c|cpp|hpp)$" }))
         return _report("Excluding", "module", "rocprofsys", 3);

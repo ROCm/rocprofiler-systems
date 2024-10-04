@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "omnitrace-causal.hpp"
+#include "rocprof-sys-causal.hpp"
 
 #include <timemory/log/macros.hpp>
 

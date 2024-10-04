@@ -73,5 +73,5 @@ set(ndebug_sources
     ${CMAKE_CURRENT_LIST_DIR}/ompt.cpp)
 
 set_source_files_properties(
-    ${ndebug_sources} DIRECTORY ${PROJECT_SOURCE_DIR}/source/lib/omnitrace
+    ${ndebug_sources} DIRECTORY ${PROJECT_SOURCE_DIR}/source/lib/rocprof-sys
     PROPERTIES COMPILE_DEFINITIONS NDEBUG COMPILE_OPTIONS "-g0;-O3")
