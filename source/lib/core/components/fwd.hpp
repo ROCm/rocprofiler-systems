@@ -45,7 +45,7 @@ ROCPROFSYS_DECLARE_COMPONENT(rcclp_handle)
 ROCPROFSYS_DECLARE_COMPONENT(comm_data)
 
 ROCPROFSYS_COMPONENT_ALIAS(comm_data_tracker_t,
-                           ::tim::component::data_tracker<float, project::omnitrace>)
+                           ::tim::component::data_tracker<float, project::rocprofsys>)
 
 namespace rocprofsys
 {
@@ -131,31 +131,31 @@ ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::sampling_gpu_power, fa
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::sampling_gpu_memory, false_type)
 #endif
 
-TIMEMORY_SET_COMPONENT_API(rocprofsys::component::roctracer, project::omnitrace,
+TIMEMORY_SET_COMPONENT_API(rocprofsys::component::roctracer, project::rocprofsys,
                            tpls::rocm, device::gpu, os::supports_linux,
                            category::external)
-TIMEMORY_SET_COMPONENT_API(rocprofsys::component::rocprofiler, project::omnitrace,
+TIMEMORY_SET_COMPONENT_API(rocprofsys::component::rocprofiler, project::rocprofsys,
                            tpls::rocm, device::gpu, os::supports_linux,
                            category::external, category::hardware_counter)
-TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_wall_clock, project::omnitrace,
+TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_wall_clock, project::rocprofsys,
                            category::timing, os::supports_unix, category::sampling,
                            category::interrupt_sampling)
-TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_cpu_clock, project::omnitrace,
+TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_cpu_clock, project::rocprofsys,
                            category::timing, os::supports_unix, category::sampling,
                            category::interrupt_sampling)
-TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_percent, project::omnitrace,
+TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_percent, project::rocprofsys,
                            category::timing, os::supports_unix, category::sampling,
                            category::interrupt_sampling)
-TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_gpu_busy, project::omnitrace,
+TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_gpu_busy, project::rocprofsys,
                            tpls::rocm, device::gpu, os::supports_linux,
                            category::sampling, category::process_sampling)
-TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_gpu_memory, project::omnitrace,
+TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_gpu_memory, project::rocprofsys,
                            tpls::rocm, device::gpu, os::supports_linux, category::memory,
                            category::sampling, category::process_sampling)
-TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_gpu_power, project::omnitrace,
+TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_gpu_power, project::rocprofsys,
                            tpls::rocm, device::gpu, os::supports_linux, category::power,
                            category::sampling, category::process_sampling)
-TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_gpu_temp, project::omnitrace,
+TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_gpu_temp, project::rocprofsys,
                            tpls::rocm, device::gpu, os::supports_linux,
                            category::temperature, category::sampling,
                            category::process_sampling)

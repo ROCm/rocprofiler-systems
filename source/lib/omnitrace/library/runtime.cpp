@@ -179,7 +179,7 @@ get_cpu_cid_stack_lock(int64_t _tid)
 {
     struct cpu_cid_stack_s
     {};
-    return tim::type_mutex<cpu_cid_stack_s, project::omnitrace, max_supported_threads>(
+    return tim::type_mutex<cpu_cid_stack_s, project::rocprofsys, max_supported_threads>(
         _tid);
 }
 

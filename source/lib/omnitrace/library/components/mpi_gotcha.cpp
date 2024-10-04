@@ -117,7 +117,7 @@ rocprofsys_mpi_fini(MPI_Comm, int, void*, void*)
     if(!_blocked.empty())
         tim::signals::block_signals(_blocked, tim::signals::sigmask_scope::process);
     if(mpip_index != std::numeric_limits<uint64_t>::max())
-        comp::deactivate_mpip<mpip_bundle_t, project::omnitrace>(mpip_index);
+        comp::deactivate_mpip<mpip_bundle_t, project::rocprofsys>(mpip_index);
     if(is_root_process()) rocprofsys_finalize_hidden();
     return MPI_SUCCESS;
 }
@@ -264,7 +264,7 @@ mpi_gotcha::audit(const gotcha_data_t& _data, audit::incoming)
         tim::signals::block_signals(_blocked, tim::signals::sigmask_scope::process);
 
     if(mpip_index != std::numeric_limits<uint64_t>::max())
-        comp::deactivate_mpip<mpip_bundle_t, project::omnitrace>(mpip_index);
+        comp::deactivate_mpip<mpip_bundle_t, project::rocprofsys>(mpip_index);
 
 #if !defined(TIMEMORY_USE_MPI) && defined(TIMEMORY_USE_MPI_HEADERS)
     tim::mpi::is_initialized_callback() = []() { return false; };
@@ -319,9 +319,9 @@ mpi_gotcha::audit(const gotcha_data_t& _data, audit::outgoing, int _retval)
 
             // use env vars ROCPROFSYS_MPIP_PERMIT_LIST and ROCPROFSYS_MPIP_REJECT_LIST
             // to control the gotcha bindings at runtime
-            comp::configure_mpip<mpip_bundle_t, project::omnitrace>(permit_bindings,
+            comp::configure_mpip<mpip_bundle_t, project::rocprofsys>(permit_bindings,
                                                                     reject_bindings);
-            mpip_index = comp::activate_mpip<mpip_bundle_t, project::omnitrace>();
+            mpip_index = comp::activate_mpip<mpip_bundle_t, project::rocprofsys>();
         }
 
         auto_lock_t _lk{ type_mutex<mpi_gotcha>() };

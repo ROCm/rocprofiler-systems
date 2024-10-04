@@ -81,5 +81,5 @@ private:
 }  // namespace component
 
 using mpi_gotcha_t =
-    comp::gotcha<5, tim::component_tuple<component::mpi_gotcha>, project::omnitrace>;
+    comp::gotcha<5, tim::component_tuple<component::mpi_gotcha>, project::rocprofsys>;
 }  // namespace rocprofsys

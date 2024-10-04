@@ -86,8 +86,8 @@ using category_type_id_t = typename category_type_id<Idx>::type;
     ROCPROFSYS_DEFINE_CATEGORY_TRAIT(::tim::NS::VALUE, ENUM)
 
 // clang-format off
-// these are defined by omnitrace
-ROCPROFSYS_DEFINE_CATEGORY(project, omnitrace, ROCPROFSYS_CATEGORY_NONE, "rocprofsys", "ROCm Systems Profiler project")
+// these are defined by rocprofsys
+ROCPROFSYS_DEFINE_CATEGORY(project, rocprofsys, ROCPROFSYS_CATEGORY_NONE, "rocprofsys", "ROCm Systems Profiler project")
 ROCPROFSYS_DEFINE_CATEGORY(category, host, ROCPROFSYS_CATEGORY_HOST, "host", "Host-side function tracing")
 ROCPROFSYS_DEFINE_CATEGORY(category, user, ROCPROFSYS_CATEGORY_USER, "user", "User-defined regions")
 ROCPROFSYS_DEFINE_CATEGORY(category, python, ROCPROFSYS_CATEGORY_PYTHON, "python", "Python regions")

@@ -527,7 +527,7 @@ rocprofsys_init_tooling_hidden()
         }
         else
         {
-            tim::trait::runtime_enabled<project::omnitrace>::set(false);
+            tim::trait::runtime_enabled<project::rocprofsys>::set(false);
         }
     }
 

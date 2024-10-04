@@ -50,7 +50,7 @@
 #include <utility>
 
 ROCPROFSYS_COMPONENT_ALIAS(comm_data_tracker_t,
-                           ::tim::component::data_tracker<float, project::omnitrace>)
+                           ::tim::component::data_tracker<float, project::rocprofsys>)
 
 namespace rocprofsys
 {
@@ -238,7 +238,7 @@ private:
 #    include <timemory/operations.hpp>
 
 ROCPROFSYS_DECLARE_EXTERN_COMPONENT(
-    TIMEMORY_ESC(data_tracker<float, tim::project::omnitrace>), true, float)
+    TIMEMORY_ESC(data_tracker<float, tim::project::rocprofsys>), true, float)
 
 ROCPROFSYS_DECLARE_EXTERN_COMPONENT(comm_data, false, void)
 #endif

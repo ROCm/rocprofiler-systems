@@ -127,7 +127,7 @@ close_file()
         fclose(_file);
         // Write the trace into a file.
         if(get_verbose() >= 0)
-            operation::file_output_message<tim::project::omnitrace>{}(
+            operation::file_output_message<tim::project::rocprofsys>{}(
                 get_file_name(), std::string{ "debug" });
     }
 }

@@ -44,7 +44,7 @@ namespace
 auto&
 get_info_data()
 {
-    using thread_data_t = thread_data<std::optional<thread_info>, project::omnitrace>;
+    using thread_data_t = thread_data<std::optional<thread_info>, project::rocprofsys>;
     static auto& _v     = thread_data_t::instance(construct_on_init{});
     return _v;
 }
@@ -53,7 +53,7 @@ auto&
 get_index_data()
 {
     using thread_data_t =
-        thread_data<std::optional<thread_index_data>, project::omnitrace>;
+        thread_data<std::optional<thread_index_data>, project::rocprofsys>;
     static auto& _v = thread_data_t::instance(construct_on_init{});
     return _v;
 }

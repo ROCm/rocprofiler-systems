@@ -420,6 +420,6 @@ comm_data::audit(const gotcha_data& _data, audit::incoming, const void*, const v
 }  // namespace rocprofsys
 
 ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(
-    TIMEMORY_ESC(data_tracker<float, tim::project::omnitrace>), true, float)
+    TIMEMORY_ESC(data_tracker<float, tim::project::rocprofsys>), true, float)
 
 ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(comm_data, false, void)

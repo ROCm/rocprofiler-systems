@@ -234,7 +234,7 @@ post_process(tim::manager* _timemory_manager, bool& _perfetto_output_error)
     auto _filename = config::get_perfetto_output_filename();
     if(!trace_data.empty())
     {
-        operation::file_output_message<tim::project::omnitrace> _fom{};
+        operation::file_output_message<tim::project::rocprofsys> _fom{};
         // Write the trace into a file.
         if(config::get_verbose() >= 0)
             _fom(_filename, std::string{ "perfetto" },

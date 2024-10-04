@@ -48,7 +48,7 @@ namespace rocprofsys
 {
 // bundle of components used in instrumentation
 using instrumentation_bundle_t =
-    tim::component_bundle<project::omnitrace, comp::wall_clock*,
+    tim::component_bundle<project::rocprofsys, comp::wall_clock*,
                           comp::user_global_bundle*>;
 
 // allocator for instrumentation_bundle_t
@@ -583,7 +583,7 @@ template <typename... Tp>
 struct component_bundle_cache_impl
 {
     using this_type      = component_bundle_cache_impl<Tp...>;
-    using bundle_type    = tim::component_bundle<project::omnitrace, Tp...>;
+    using bundle_type    = tim::component_bundle<project::rocprofsys, Tp...>;
     using allocator_type = tim::data::ring_buffer_allocator<bundle_type>;
     using array_type     = std::vector<bundle_type*>;
 
@@ -671,7 +671,7 @@ private:
 };
 
 template <typename... Tp>
-struct component_bundle_cache_impl<tim::component_bundle<project::omnitrace, Tp...>>
+struct component_bundle_cache_impl<tim::component_bundle<project::rocprofsys, Tp...>>
 : component_bundle_cache_impl<Tp...>
 {
     using base_type = component_bundle_cache_impl<Tp...>;
