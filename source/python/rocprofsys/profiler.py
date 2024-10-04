@@ -68,7 +68,7 @@ def _default_functor():
 
 
 class Profiler:
-    """Provides decorators and context-manager for the omnitrace profilers"""
+    """Provides decorators and context-manager for the rocprof-sys profilers"""
 
     global _default_functor
 
@@ -236,7 +236,7 @@ profile = Profiler
 
 
 class FakeProfiler:
-    """Provides decorators and context-manager for disabling the omnitrace profiler"""
+    """Provides decorators and context-manager for disabling the profiling"""
 
     @staticmethod
     def condition(functor):

@@ -143,7 +143,7 @@ def main():
             settings[key] = value
 
     my_parser = argparse.ArgumentParser(
-        description="AMD's OmniTrace Causal Profiling GUI",
+        description="AMD's ROCm Systems Profiler Causal Profiling GUI",
         prog="tool",
         allow_abbrev=False,
         formatter_class=lambda prog: argparse.RawTextHelpFormatter(

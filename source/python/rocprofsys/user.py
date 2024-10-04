@@ -58,7 +58,7 @@ __all__ = [
 
 
 class Region:
-    """Provides decorators and context-manager for the omnitrace user-defined regions"""
+    """Provides decorators and context-manager for the rocprof-sys user-defined regions"""
 
     # static variable
     _counter = 0

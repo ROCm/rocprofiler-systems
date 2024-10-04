@@ -1,4 +1,4 @@
-# Omnitrace Causal Viewer
+# ROCm Systems Profiler Causal Viewer
 
 ## Installation
 

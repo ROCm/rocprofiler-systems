@@ -130,7 +130,7 @@ def parse_args(args=None):
         default=None,
         type=str,
         metavar="FILE",
-        help="Omnitrace configuration file",
+        help="ROCm Systems Profiler configuration file",
     )
     parser.add_argument(
         "-s",
