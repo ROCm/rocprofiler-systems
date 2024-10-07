@@ -6,7 +6,7 @@
 ROCm Systems Profiler documentation
 ***********************
 
-ROCm Systems Profiler is designed for the high-level profiling and comprehensive tracing
+ROCm Systems Profiler, formerly known as "Omnitrace", is designed for the high-level profiling and comprehensive tracing
 of applications running on the CPU or the CPU and GPU. It supports dynamic binary
 instrumentation, call-stack sampling, and various other features for determining
 which function and line number are currently executing. To learn more, see :doc:`what-is-rocprof-sys`
