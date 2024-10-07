@@ -18,7 +18,7 @@ Release links
 
 To review and install either the current ROCm Systems Profiler release or earlier releases, use these links:
 
-* Latest ROCm Profiler Systems Release: `<https://github.com/ROCm/rocprofiler-systems/releases/latest>`_
+* Latest ROCm Systems Profiler Release: `<https://github.com/ROCm/rocprofiler-systems/releases/latest>`_
 * All ROCm Systems Profiler Releases: `<https://github.com/ROCm/rocprofiler-systems/releases>`_
 
 Operating system support
