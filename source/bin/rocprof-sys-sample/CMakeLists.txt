@@ -5,7 +5,7 @@
 # ------------------------------------------------------------------------------#
 
 add_executable(rocprof-sys-sample ${CMAKE_CURRENT_LIST_DIR}/rocprof-sys-sample.cpp
-                                 ${CMAKE_CURRENT_LIST_DIR}/impl.cpp)
+                                  ${CMAKE_CURRENT_LIST_DIR}/impl.cpp)
 
 target_compile_definitions(rocprof-sys-sample PRIVATE TIMEMORY_CMAKE=1)
 target_include_directories(rocprof-sys-sample PRIVATE ${CMAKE_CURRENT_LIST_DIR})

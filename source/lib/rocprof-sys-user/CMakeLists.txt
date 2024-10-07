@@ -24,7 +24,7 @@ set(_user_sources ${CMAKE_CURRENT_SOURCE_DIR}/user.cpp)
 target_sources(rocprof-sys-user-library PRIVATE ${_user_sources} ${_user_headers})
 target_include_directories(
     rocprof-sys-user-library PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-                                   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+                                    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 target_link_libraries(
     rocprof-sys-user-library
     PRIVATE $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-compile-definitions>)

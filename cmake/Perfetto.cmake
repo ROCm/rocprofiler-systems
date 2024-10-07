@@ -196,7 +196,7 @@ add_library(rocprof-sys-perfetto-library STATIC)
 add_library(rocprof-sys::rocprof-sys-perfetto-library ALIAS rocprof-sys-perfetto-library)
 target_sources(
     rocprof-sys-perfetto-library PRIVATE ${ROCPROFSYS_PERFETTO_SOURCE_DIR}/sdk/perfetto.cc
-                                        ${ROCPROFSYS_PERFETTO_SOURCE_DIR}/sdk/perfetto.h)
+                                         ${ROCPROFSYS_PERFETTO_SOURCE_DIR}/sdk/perfetto.h)
 target_link_libraries(
     rocprof-sys-perfetto-library
     PRIVATE rocprof-sys::rocprof-sys-threading rocprof-sys::rocprof-sys-static-libgcc
@@ -230,9 +230,9 @@ mark_as_advanced(PERFETTO_LIBRARY)
 # ---------------------------------------------------------------------------------------#
 
 rocprof_sys_target_compile_definitions(rocprof-sys-perfetto
-                                      INTERFACE ROCPROFSYS_USE_PERFETTO)
+                                       INTERFACE ROCPROFSYS_USE_PERFETTO)
 target_include_directories(rocprof-sys-perfetto SYSTEM
                            INTERFACE $<BUILD_INTERFACE:${PERFETTO_INCLUDE_DIR}>)
 target_link_libraries(
     rocprof-sys-perfetto INTERFACE $<BUILD_INTERFACE:${PERFETTO_LIBRARY}>
-                                  $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-threading>)
+                                   $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-threading>)

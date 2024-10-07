@@ -117,30 +117,30 @@ include(GNUInstallDirs) # install directories
 include(MacroUtilities) # various functions and macros
 
 if(CI_BUILD)
-    rocprof_sys_add_option(ROCPROFSYS_BUILD_CI "Enable internal asserts, etc." ON ADVANCED
-                          NO_FEATURE)
-    rocprof_sys_add_option(ROCPROFSYS_BUILD_TESTING "Enable building the testing suite" ON
-                          ADVANCED)
+    rocprof_sys_add_option(ROCPROFSYS_BUILD_CI "Enable internal asserts, etc." ON
+                           ADVANCED NO_FEATURE)
+    rocprof_sys_add_option(ROCPROFSYS_BUILD_TESTING "Enable building the testing suite"
+                           ON ADVANCED)
     rocprof_sys_add_option(ROCPROFSYS_BUILD_DEBUG
-                          "Enable building with extensive debug symbols" OFF ADVANCED)
+                           "Enable building with extensive debug symbols" OFF ADVANCED)
     rocprof_sys_add_option(
         ROCPROFSYS_BUILD_HIDDEN_VISIBILITY
         "Build with hidden visibility (disable for Debug builds)" OFF ADVANCED)
     rocprof_sys_add_option(ROCPROFSYS_STRIP_LIBRARIES "Strip the libraries" OFF ADVANCED)
 else()
     rocprof_sys_add_option(ROCPROFSYS_BUILD_CI "Enable internal asserts, etc." OFF
-                          ADVANCED NO_FEATURE)
+                           ADVANCED NO_FEATURE)
     rocprof_sys_add_option(ROCPROFSYS_BUILD_EXAMPLES "Enable building the examples" OFF
-                          ADVANCED)
+                           ADVANCED)
     rocprof_sys_add_option(ROCPROFSYS_BUILD_TESTING "Enable building the testing suite"
-                          OFF ADVANCED)
+                           OFF ADVANCED)
     rocprof_sys_add_option(ROCPROFSYS_BUILD_DEBUG
-                          "Enable building with extensive debug symbols" OFF ADVANCED)
+                           "Enable building with extensive debug symbols" OFF ADVANCED)
     rocprof_sys_add_option(
         ROCPROFSYS_BUILD_HIDDEN_VISIBILITY
         "Build with hidden visibility (disable for Debug builds)" ON ADVANCED)
     rocprof_sys_add_option(ROCPROFSYS_STRIP_LIBRARIES "Strip the libraries"
-                          ${_STRIP_LIBRARIES_DEFAULT} ADVANCED)
+                           ${_STRIP_LIBRARIES_DEFAULT} ADVANCED)
 endif()
 
 include(Compilers) # compiler identification
@@ -160,7 +160,7 @@ rocprof_sys_add_feature(CMAKE_CXX_STANDARD "CXX language standard")
 rocprof_sys_add_option(CMAKE_CXX_STANDARD_REQUIRED "Require C++ language standard" ON)
 rocprof_sys_add_option(CMAKE_CXX_EXTENSIONS "Compiler specific language extensions" OFF)
 rocprof_sys_add_option(CMAKE_INSTALL_RPATH_USE_LINK_PATH
-                      "Enable rpath to linked libraries" ON)
+                       "Enable rpath to linked libraries" ON)
 set(CMAKE_INSTALL_MESSAGE
     "LAZY"
     CACHE STRING "Installation message")
@@ -168,27 +168,27 @@ mark_as_advanced(CMAKE_INSTALL_MESSAGE)
 
 rocprof_sys_add_option(ROCPROFSYS_USE_CLANG_TIDY "Enable clang-tidy" OFF)
 rocprof_sys_add_option(ROCPROFSYS_USE_BFD
-                      "Enable BFD support (map call-stack samples to LOC)" ON)
+                       "Enable BFD support (map call-stack samples to LOC)" ON)
 rocprof_sys_add_option(ROCPROFSYS_USE_MPI "Enable MPI support" OFF)
 rocprof_sys_add_option(ROCPROFSYS_USE_HIP "Enable HIP support" ON)
 rocprof_sys_add_option(ROCPROFSYS_USE_PAPI "Enable HW counter support via PAPI" ON)
 rocprof_sys_add_option(ROCPROFSYS_USE_ROCTRACER "Enable roctracer support"
-                      ${ROCPROFSYS_USE_HIP})
+                       ${ROCPROFSYS_USE_HIP})
 rocprof_sys_add_option(ROCPROFSYS_USE_ROCPROFILER "Enable rocprofiler support"
-                      ${ROCPROFSYS_USE_HIP})
+                       ${ROCPROFSYS_USE_HIP})
 rocprof_sys_add_option(
     ROCPROFSYS_USE_ROCM_SMI "Enable rocm-smi support for power/temp/etc. sampling"
     ${ROCPROFSYS_USE_HIP})
 rocprof_sys_add_option(ROCPROFSYS_USE_RCCL "Enable RCCL support" ${ROCPROFSYS_USE_HIP})
 rocprof_sys_add_option(ROCPROFSYS_USE_MPI_HEADERS
-                      "Enable wrapping MPI functions w/o enabling MPI dependency" ON)
+                       "Enable wrapping MPI functions w/o enabling MPI dependency" ON)
 rocprof_sys_add_option(ROCPROFSYS_USE_OMPT "Enable OpenMP tools support" ON)
 rocprof_sys_add_option(ROCPROFSYS_USE_PYTHON "Enable Python support" OFF)
 rocprof_sys_add_option(ROCPROFSYS_BUILD_DYNINST "Build dyninst from submodule" OFF)
 rocprof_sys_add_option(ROCPROFSYS_BUILD_LIBUNWIND "Build libunwind from submodule" ON)
 rocprof_sys_add_option(ROCPROFSYS_BUILD_CODECOV "Build for code coverage" OFF)
 rocprof_sys_add_option(ROCPROFSYS_INSTALL_PERFETTO_TOOLS
-                      "Install perfetto tools (i.e. traced, perfetto, etc.)" OFF)
+                       "Install perfetto tools (i.e. traced, perfetto, etc.)" OFF)
 
 if(ROCPROFSYS_USE_PAPI)
     rocprof_sys_add_option(ROCPROFSYS_BUILD_PAPI "Build PAPI from submodule" ON)
@@ -196,7 +196,7 @@ endif()
 
 if(ROCPROFSYS_USE_PYTHON)
     rocprof_sys_add_option(ROCPROFSYS_BUILD_PYTHON
-                          "Build python bindings with internal pybind11" ON)
+                           "Build python bindings with internal pybind11" ON)
 elseif("$ENV{ROCPROFSYS_CI}")
     # quiet warnings in dashboard
     if(ROCPROFSYS_PYTHON_ENVS OR ROCPROFSYS_PYTHON_PREFIX)
@@ -330,7 +330,7 @@ if(ROCPROFSYS_BUILD_CODECOV)
     rocprof_sys_save_variables(CODECOV_FLAGS VARIABLES CMAKE_C_FLAGS CMAKE_CXX_FLAGS)
     foreach(_BUILD_TYPE DEBUG MINSIZEREL RELWITHDEBINFO RELEASE)
         rocprof_sys_save_variables(CODECOV_FLAGS VARIABLES CMAKE_C_FLAGS_${_BUILD_TYPE}
-                                                          CMAKE_CXX_FLAGS_${_BUILD_TYPE})
+                                                           CMAKE_CXX_FLAGS_${_BUILD_TYPE})
     endforeach()
 
     foreach(_BUILD_TYPE DEBUG MINSIZEREL RELWITHDEBINFO RELEASE)

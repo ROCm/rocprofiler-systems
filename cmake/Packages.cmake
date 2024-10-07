@@ -8,18 +8,19 @@ include_guard(DIRECTORY)
 # ########################################################################################
 
 rocprof_sys_add_interface_library(
-    rocprof-sys-headers "Provides minimal set of include flags to compile with rocprof-sys")
+    rocprof-sys-headers
+    "Provides minimal set of include flags to compile with rocprof-sys")
 rocprof_sys_add_interface_library(rocprof-sys-threading "Enables multithreading support")
 rocprof_sys_add_interface_library(
     rocprof-sys-dyninst
     "Provides flags and libraries for Dyninst (dynamic instrumentation)")
 rocprof_sys_add_interface_library(rocprof-sys-hip "Provides flags and libraries for HIP")
 rocprof_sys_add_interface_library(rocprof-sys-roctracer
-                                 "Provides flags and libraries for roctracer")
+                                  "Provides flags and libraries for roctracer")
 rocprof_sys_add_interface_library(rocprof-sys-rocprofiler
-                                 "Provides flags and libraries for rocprofiler")
+                                  "Provides flags and libraries for rocprofiler")
 rocprof_sys_add_interface_library(rocprof-sys-rocm-smi
-                                 "Provides flags and libraries for rocm-smi")
+                                  "Provides flags and libraries for rocm-smi")
 rocprof_sys_add_interface_library(
     rocprof-sys-rccl "Provides flags for ROCm Communication Collectives Library (RCCL)")
 rocprof_sys_add_interface_library(rocprof-sys-mpi "Provides MPI or MPI headers")
@@ -124,8 +125,8 @@ if(ROCPROFSYS_USE_HIP
 
     if(NOT ROCmVersion_FOUND)
         find_package(
-            hip ${rocprof_sys_FIND_QUIETLY} REQUIRED HINTS ${ROCPROFSYS_DEFAULT_ROCM_PATH}
-            PATHS ${ROCPROFSYS_DEFAULT_ROCM_PATH})
+            hip ${rocprof_sys_FIND_QUIETLY} REQUIRED HINTS
+            ${ROCPROFSYS_DEFAULT_ROCM_PATH} PATHS ${ROCPROFSYS_DEFAULT_ROCM_PATH})
         if(SPACK_BUILD)
             find_package(ROCmVersion HINTS ${ROCM_PATH} PATHS ${ROCM_PATH})
         else()
@@ -192,9 +193,9 @@ endif()
 if(ROCPROFSYS_USE_ROCTRACER)
     find_package(roctracer ${rocprof_sys_FIND_QUIETLY} REQUIRED)
     rocprof_sys_target_compile_definitions(rocprof-sys-roctracer
-                                          INTERFACE ROCPROFSYS_USE_ROCTRACER)
+                                           INTERFACE ROCPROFSYS_USE_ROCTRACER)
     target_link_libraries(rocprof-sys-roctracer INTERFACE roctracer::roctracer
-                                                         rocprof-sys::rocprof-sys-hip)
+                                                          rocprof-sys::rocprof-sys-hip)
 endif()
 
 # ----------------------------------------------------------------------------------------#
@@ -205,7 +206,7 @@ endif()
 if(ROCPROFSYS_USE_ROCPROFILER)
     find_package(rocprofiler ${rocprof_sys_FIND_QUIETLY} REQUIRED)
     rocprof_sys_target_compile_definitions(rocprof-sys-rocprofiler
-                                          INTERFACE ROCPROFSYS_USE_ROCPROFILER)
+                                           INTERFACE ROCPROFSYS_USE_ROCPROFILER)
     target_link_libraries(rocprof-sys-rocprofiler INTERFACE rocprofiler::rocprofiler)
 endif()
 
@@ -218,7 +219,7 @@ endif()
 if(ROCPROFSYS_USE_ROCM_SMI)
     find_package(rocm-smi ${rocprof_sys_FIND_QUIETLY} REQUIRED)
     rocprof_sys_target_compile_definitions(rocprof-sys-rocm-smi
-                                          INTERFACE ROCPROFSYS_USE_ROCM_SMI)
+                                           INTERFACE ROCPROFSYS_USE_ROCM_SMI)
     target_link_libraries(rocprof-sys-rocm-smi INTERFACE rocm-smi::rocm-smi)
 endif()
 
@@ -247,7 +248,7 @@ if(ROCPROFSYS_USE_MPI)
     find_package(MPI ${rocprof_sys_FIND_QUIETLY} REQUIRED)
     target_link_libraries(rocprof-sys-mpi INTERFACE MPI::MPI_C MPI::MPI_CXX)
     rocprof_sys_target_compile_definitions(rocprof-sys-mpi INTERFACE TIMEMORY_USE_MPI=1
-                                                                   ROCPROFSYS_USE_MPI)
+                                                                     ROCPROFSYS_USE_MPI)
 elseif(ROCPROFSYS_USE_MPI_HEADERS)
     find_package(MPI-Headers ${rocprof_sys_FIND_QUIETLY} REQUIRED)
     rocprof_sys_target_compile_definitions(
@@ -417,7 +418,7 @@ else()
         endif()
 
         target_link_libraries(rocprof-sys-dyninst INTERFACE ${DYNINST_LIBRARIES}
-                                                           ${Boost_LIBRARIES})
+                                                            ${Boost_LIBRARIES})
         foreach(
             _TARG
             dyninst
@@ -441,9 +442,9 @@ else()
         endforeach()
         target_include_directories(
             rocprof-sys-dyninst SYSTEM INTERFACE ${TBB_INCLUDE_DIR} ${Boost_INCLUDE_DIRS}
-                                                ${DYNINST_HEADER_DIR})
+                                                 ${DYNINST_HEADER_DIR})
         rocprof_sys_target_compile_definitions(rocprof-sys-dyninst
-                                              INTERFACE ROCPROFSYS_USE_DYNINST)
+                                               INTERFACE ROCPROFSYS_USE_DYNINST)
     endif()
 endif()
 
@@ -764,8 +765,9 @@ endif()
 target_sources(rocprof-sys-ptl
                INTERFACE $<BUILD_INTERFACE:$<TARGET_OBJECTS:PTL::ptl-object>>)
 target_include_directories(
-    rocprof-sys-ptl INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/external/PTL/source>
-                             $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/external/PTL/source>)
+    rocprof-sys-ptl
+    INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/external/PTL/source>
+              $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/external/PTL/source>)
 
 # ----------------------------------------------------------------------------------------#
 #

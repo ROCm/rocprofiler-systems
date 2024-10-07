@@ -249,7 +249,7 @@ if(ROCPROFSYS_USE_HIP AND (NOT DEFINED ROCPROFSYS_CI_GPU OR ROCPROFSYS_CI_GPU))
     endif()
     if(NOT _VALID_GPU)
         rocprof_sys_message(AUTHOR_WARNING
-                           "rocm-smi did not successfully run. Disabling GPU tests...")
+                            "rocm-smi did not successfully run. Disabling GPU tests...")
     endif()
 endif()
 
@@ -389,7 +389,7 @@ function(ROCPROF_SYS_ADD_TEST)
 
     if(TEST_GPU AND NOT _VALID_GPU)
         rocprof_sys_message(STATUS
-                           "${TEST_NAME} requires a GPU and no valid GPUs were found")
+                            "${TEST_NAME} requires a GPU and no valid GPUs were found")
         return()
     endif()
 
@@ -481,8 +481,8 @@ function(ROCPROF_SYS_ADD_TEST)
             add_test(
                 NAME ${TEST_NAME}-sampling
                 COMMAND
-                    ${COMMAND_PREFIX} $<TARGET_FILE:rocprof-sys-sample> ${TEST_SAMPLE_ARGS}
-                    -- $<TARGET_FILE:${TEST_TARGET}> ${TEST_RUN_ARGS}
+                    ${COMMAND_PREFIX} $<TARGET_FILE:rocprof-sys-sample>
+                    ${TEST_SAMPLE_ARGS} -- $<TARGET_FILE:${TEST_TARGET}> ${TEST_RUN_ARGS}
                 WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
         endif()
 
@@ -579,7 +579,7 @@ function(ROCPROF_SYS_ADD_TEST)
             list(APPEND _environ "ROCPROFSYS_CI_TIMEOUT=${_timeout}")
 
             rocprof_sys_check_pass_fail_regex("${TEST_NAME}-${_TEST}" "${_PASS_REGEX}"
-                                             "${_FAIL_REGEX}")
+                                              "${_FAIL_REGEX}")
             if(TEST ${TEST_NAME}-${_TEST})
                 rocprof_sys_write_test_config(${TEST_NAME}-${_TEST}.cfg _environ)
                 set_tests_properties(
@@ -735,7 +735,8 @@ function(ROCPROF_SYS_ADD_CAUSAL_TEST)
 
             list(APPEND _environ "ROCPROFSYS_CI_TIMEOUT=${_timeout}")
             rocprof_sys_write_test_config(${_NAME}.cfg _environ)
-            rocprof_sys_check_pass_fail_regex("${_NAME}" "${_PASS_REGEX}" "${_FAIL_REGEX}")
+            rocprof_sys_check_pass_fail_regex("${_NAME}" "${_PASS_REGEX}"
+                                              "${_FAIL_REGEX}")
             set_tests_properties(
                 ${_NAME}
                 PROPERTIES ENVIRONMENT
@@ -875,7 +876,7 @@ if(NOT ROCPROFSYS_USE_PYTHON)
 
         if(NOT ROCPROFSYS_VALIDATION_PYTHON_PERFETTO EQUAL 0)
             rocprof_sys_message(AUTHOR_WARNING
-                               "Python3 found but perfetto support is disabled")
+                                "Python3 found but perfetto support is disabled")
         endif()
     endif()
 else()
@@ -912,8 +913,8 @@ else()
 endif()
 
 if(NOT ROCPROFSYS_VALIDATION_PYTHON)
-    rocprof_sys_message(AUTHOR_WARNING
-                       "Python3 interpreter not found. Validation tests will be disabled")
+    rocprof_sys_message(
+        AUTHOR_WARNING "Python3 interpreter not found. Validation tests will be disabled")
 endif()
 
 # -------------------------------------------------------------------------------------- #

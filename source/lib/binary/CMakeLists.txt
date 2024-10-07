@@ -23,6 +23,7 @@ target_sources(rocprof-sys-binary-library PRIVATE ${binary_sources} ${binary_hea
 
 target_link_libraries(
     rocprof-sys-binary-library PRIVATE rocprof-sys::rocprof-sys-interface-library
-                                      rocprof-sys::rocprof-sys-core)
+                                       rocprof-sys::rocprof-sys-core)
 
-set_target_properties(rocprof-sys-binary-library PROPERTIES OUTPUT_NAME rocprof-sys-binary)
+set_target_properties(rocprof-sys-binary-library PROPERTIES OUTPUT_NAME
+                                                            rocprof-sys-binary)

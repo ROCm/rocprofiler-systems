@@ -9,4 +9,4 @@ set(containers_headers
     ${CMAKE_CURRENT_LIST_DIR}/static_vector.hpp)
 
 target_sources(rocprof-sys-core-library PRIVATE ${containers_sources}
-                                               ${containers_headers})
+                                                ${containers_headers})

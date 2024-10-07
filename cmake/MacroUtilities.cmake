@@ -149,7 +149,8 @@ function(ROCPROF_SYS_STRIP_TARGET)
                     --keep-symbol="rocprof_sys_pop_trace"
                     --keep-symbol="rocprof_sys_push_region"
                     --keep-symbol="rocprof_sys_pop_region"
-                    --keep-symbol="rocprof_sys_set_env" --keep-symbol="rocprof_sys_set_mpi"
+                    --keep-symbol="rocprof_sys_set_env"
+                    --keep-symbol="rocprof_sys_set_mpi"
                     --keep-symbol="rocprof_sys_reset_preload"
                     --keep-symbol="rocprof_sys_set_instrumented"
                     --keep-symbol="rocprof_sys_user_*" --keep-symbol="ompt_start_tool"
@@ -879,7 +880,8 @@ function(ROCPROF_SYS_INSTALL_TPL _TPL_TARGET _NEW_NAME _BUILD_TREE_DIR _COMPONEN
     endforeach()
 
     # build tree symbolic links
-    rocprof_sys_buildtree_tpl("${_TPL_TARGET}" "${_NEW_NAME}" "${_BUILD_TREE_DIR}" ${ARGN})
+    rocprof_sys_buildtree_tpl("${_TPL_TARGET}" "${_NEW_NAME}" "${_BUILD_TREE_DIR}"
+                              ${ARGN})
 
     install(
         FILES $<TARGET_FILE:${_TPL_TARGET}>

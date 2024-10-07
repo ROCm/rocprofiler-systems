@@ -27,7 +27,8 @@ target_include_directories(
            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 target_link_libraries(
     rocprof-sys-dl-library
-    PUBLIC $<BUILD_INTERFACE:${dl_LIBRARY}> $<BUILD_INTERFACE:rocprof-sys::common-library>
+    PUBLIC $<BUILD_INTERFACE:${dl_LIBRARY}>
+           $<BUILD_INTERFACE:rocprof-sys::common-library>
            $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-compile-definitions>
            $<BUILD_INTERFACE:Threads::Threads>)
 

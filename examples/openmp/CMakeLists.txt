@@ -29,7 +29,8 @@ else()
        AND USE_CLANG_OMP)
         target_compile_options(openmp-common PUBLIC -W -Wall -fopenmp=libomp)
         target_link_libraries(openmp-common PUBLIC ${LIBOMP_LIBRARY})
-        rocprof_sys_custom_compilation(COMPILER ${CLANGXX_EXECUTABLE} TARGET openmp-common)
+        rocprof_sys_custom_compilation(COMPILER ${CLANGXX_EXECUTABLE} TARGET
+                                       openmp-common)
         rocprof_sys_custom_compilation(COMPILER ${CLANGXX_EXECUTABLE} TARGET openmp-cg)
         rocprof_sys_custom_compilation(COMPILER ${CLANGXX_EXECUTABLE} TARGET openmp-lu)
         set(ROCPROFSYS_OPENMP_USING_LIBOMP_LIBRARY

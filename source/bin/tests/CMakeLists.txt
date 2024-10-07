@@ -307,8 +307,9 @@ rocprof_sys_add_bin_test(
     FAIL_REGEX "ROCPROFSYS_TRACE|ROCPROFSYS_ABORT_FAIL_REGEX")
 
 string(
-    REPLACE "+" "\\\+" _AVAIL_CFG_PATH
-            "${PROJECT_BINARY_DIR}/rocprof-sys-tests-output/rocprof-sys-avail/rocprof-sys-")
+    REPLACE
+        "+" "\\\+" _AVAIL_CFG_PATH
+        "${PROJECT_BINARY_DIR}/rocprof-sys-tests-output/rocprof-sys-avail/rocprof-sys-")
 # use of TWD == Test Working Directory (added by function)
 rocprof_sys_add_bin_test(
     NAME rocprof-sys-avail-write-config

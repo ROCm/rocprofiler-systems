@@ -14,4 +14,4 @@ set(component_headers
     ${CMAKE_CURRENT_LIST_DIR}/unblocking_gotcha.hpp)
 
 target_sources(rocprof-sys-object-library PRIVATE ${component_sources}
-                                                 ${component_headers})
+                                                  ${component_headers})

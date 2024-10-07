@@ -44,7 +44,7 @@ add_library(rocprof-sys-core-library STATIC)
 add_library(rocprof-sys::rocprof-sys-core ALIAS rocprof-sys-core-library)
 
 target_sources(rocprof-sys-core-library PRIVATE ${core_sources} ${core_headers}
-                                               ${CMAKE_CURRENT_BINARY_DIR}/defines.hpp)
+                                                ${CMAKE_CURRENT_BINARY_DIR}/defines.hpp)
 add_subdirectory(binary)
 add_subdirectory(components)
 add_subdirectory(containers)

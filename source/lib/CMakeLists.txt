@@ -29,11 +29,12 @@ endif()
 # ------------------------------------------------------------------------------#
 
 add_library(rocprof-sys-interface-library INTERFACE)
-add_library(rocprof-sys::rocprof-sys-interface-library ALIAS rocprof-sys-interface-library)
+add_library(rocprof-sys::rocprof-sys-interface-library ALIAS
+            rocprof-sys-interface-library)
 
 target_include_directories(
     rocprof-sys-interface-library INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
-                                           ${CMAKE_CURRENT_SOURCE_DIR}/rocprof-sys)
+                                            ${CMAKE_CURRENT_SOURCE_DIR}/rocprof-sys)
 
 target_link_libraries(
     rocprof-sys-interface-library

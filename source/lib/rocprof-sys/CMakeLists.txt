@@ -24,7 +24,8 @@ target_link_libraries(rocprof-sys-object-library
 #
 # ------------------------------------------------------------------------------#
 
-add_library(rocprof-sys-static-library STATIC $<TARGET_OBJECTS:rocprof-sys-object-library>)
+add_library(rocprof-sys-static-library STATIC
+            $<TARGET_OBJECTS:rocprof-sys-object-library>)
 add_library(rocprof-sys::librocprof-sys-static ALIAS rocprof-sys-static-library)
 
 target_link_libraries(
@@ -40,7 +41,8 @@ set_target_properties(rocprof-sys-static-library PROPERTIES OUTPUT_NAME rocprof-
 #
 # ------------------------------------------------------------------------------#
 
-add_library(rocprof-sys-shared-library SHARED $<TARGET_OBJECTS:rocprof-sys-object-library>)
+add_library(rocprof-sys-shared-library SHARED
+            $<TARGET_OBJECTS:rocprof-sys-object-library>)
 add_library(rocprof-sys::librocprof-sys-shared ALIAS rocprof-sys-shared-library)
 add_library(rocprof-sys::rocprof-sys-library ALIAS rocprof-sys-shared-library)
 

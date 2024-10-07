@@ -88,7 +88,7 @@ target_link_libraries(
               rocprof-sys::rocprof-sys-python-compile-options)
 
 rocprof_sys_target_compile_definitions(libpyrocprof-sys-interface
-                                      INTERFACE ROCPROFSYS_PYBIND11_SOURCE)
+                                       INTERFACE ROCPROFSYS_PYBIND11_SOURCE)
 
 add_custom_target(libpyrocprofsys)
 

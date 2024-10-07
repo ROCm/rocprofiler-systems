@@ -46,7 +46,7 @@ if(NOT EXISTS "${ROCPROFSYS_PAPI_INSTALL_DIR}")
 endif()
 
 rocprof_sys_add_option(ROCPROFSYS_PAPI_AUTO_COMPONENTS "Automatically enable components"
-                      OFF)
+                       OFF)
 
 # -------------- PACKAGES -----------------------------------------------------
 
@@ -262,7 +262,7 @@ set(PAPI_pfm_STATIC_LIBRARY
 target_include_directories(rocprof-sys-papi SYSTEM
                            INTERFACE $<BUILD_INTERFACE:${PAPI_INCLUDE_DIR}>)
 target_link_libraries(rocprof-sys-papi INTERFACE $<BUILD_INTERFACE:${PAPI_LIBRARY}>
-                                                $<BUILD_INTERFACE:${PAPI_pfm_LIBRARY}>)
+                                                 $<BUILD_INTERFACE:${PAPI_pfm_LIBRARY}>)
 rocprof_sys_target_compile_definitions(
     rocprof-sys-papi INTERFACE ROCPROFSYS_USE_PAPI $<BUILD_INTERFACE:TIMEMORY_USE_PAPI=1>)
 
