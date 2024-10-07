@@ -30,9 +30,9 @@ ROCm Systems Profiler API, such as ``rocprofsys_user_push_region`` and
 
 .. code-block:: shell
 
-   #include <omnitrace/categories.h>
-   #include <omnitrace/types.h>
-   #include <omnitrace/user.h>
+   #include <rocprof-sys/categories.h>
+   #include <rocprof-sys/types.h>
+   #include <rocprof-sys/user.h>
 
    #include <atomic>
    #include <cassert>

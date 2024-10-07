@@ -114,10 +114,10 @@ WARN_LOGFILE           = doc/warnings.log
 # Configuration options related to the input files
 #---------------------------------------------------------------------------
 INPUT                  = ../../README.md \
-                         ../../source/lib/omnitrace-user/omnitrace/types.h \
-                         ../../source/lib/omnitrace-user/omnitrace/categories.h \
-                         ../../source/lib/omnitrace-user/omnitrace/user.h \
-                         ../../source/lib/omnitrace-user/omnitrace/causal.h
+                         ../../source/lib/rocprof-sys-user/rocprof-sys/types.h \
+                         ../../source/lib/rocprof-sys-user/rocprof-sys/categories.h \
+                         ../../source/lib/rocprof-sys-user/rocprof-sys/user.h \
+                         ../../source/lib/rocprof-sys-user/rocprof-sys/causal.h
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.h \
                          *.hh \
@@ -311,7 +311,7 @@ ENABLE_PREPROCESSING   = YES
 MACRO_EXPANSION        = YES
 EXPAND_ONLY_PREDEF     = NO
 SEARCH_INCLUDES        = YES
-INCLUDE_PATH           = ../../source/lib/omnitrace-user
+INCLUDE_PATH           = ../../source/lib/rocprof-sys-user
 INCLUDE_FILE_PATTERNS  = *.h \
                          *.hpp
 PREDEFINED             = ROCPROFSYS_PUBLIC_API= \
