@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # MIT License
 #
-# Copyright (c) 2023 Advanced Micro Devices, Inc. All Rights Reserved.
+# Copyright (c) 2023-2024 Advanced Micro Devices, Inc. All Rights Reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
 from __future__ import absolute_import
 
 __author__ = "AMD Research"
-__copyright__ = "Copyright 2023, Advanced Micro Devices, Inc."
+__copyright__ = "Copyright 2023-2024, Advanced Micro Devices, Inc."
 __license__ = "MIT"
 __maintainer__ = "AMD Research"
 __status__ = "Development"
