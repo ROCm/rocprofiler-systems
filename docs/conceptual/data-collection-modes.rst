@@ -1,6 +1,6 @@
 .. meta::
    :description: ROCm Systems Profiler data collection modes documentation
-   :keywords: rocprof-sys, rocprofiler-systems, Omnitrace, ROCm, profiler, tracking, visualization, tool, Instinct, accelerator, AMD
+   :keywords: rocprof-sys, rocprofiler-systems, Omnitrace, ROCm, profiler, data collection, tracking, visualization, tool, Instinct, accelerator, AMD
 
 **********************
 Data collection modes
