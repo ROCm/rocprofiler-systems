@@ -34,7 +34,7 @@ if(NOT _SYSTEM_NAME)
 endif()
 
 # Add packaging directives
-set(CPACK_PACKAGE_NAME "rocprofiler-systems")
+set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
 set(CPACK_PACKAGE_VENDOR "Advanced Micro Devices, Inc.")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY
     "Runtime instrumentation and binary rewriting for Perfetto via Dyninst")
