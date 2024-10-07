@@ -1,6 +1,6 @@
 .. meta::
-   :description: ROCm Systems Profiler documentation and reference
-   :keywords: rocprof-sys, rocprofiler-systems, Omnitrace, ROCm, profiler, tracking, visualization, tool, Instinct, accelerator, AMD
+   :description: ROCm Systems Profiler quick start documentation and reference
+   :keywords: rocprof-sys, rocprofiler-systems, Omnitrace, ROCm, profiler, quick start, getting started, quick install, tracking, visualization, tool, Instinct, accelerator, AMD
 
 *************************************
 ROCm Systems Profiler quick start
