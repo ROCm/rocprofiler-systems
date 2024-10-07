@@ -85,7 +85,7 @@ This can happen in three different ways:
 * Users can leverage the :doc:`runtime instrumentation capabilities <./instrumenting-rewriting-binary-application>`
   to insert progress points
 * Users can leverage :doc:`User APIs <../how-to/using-rocprof-sys-api>`,
-  such as ``OMNITRACE_CAUSAL_PROGRESS``
+  such as ``ROCPROFSYS_CAUSAL_PROGRESS``
 
 .. note::
 
@@ -100,26 +100,26 @@ Key concepts
 +------------------+-------------------------------------+----------------------------------+--------------------------------------------+
 | Concept          | Setting                             | Options                          | Description                                |
 +==================+=====================================+==================================+============================================+
-| Backend          | ``OMNITRACE_CAUSAL_BACKEND``        | ``perf``, ``timer``              | Backend for recording samples required     |
+| Backend          | ``ROCPROFSYS_CAUSAL_BACKEND``        | ``perf``, ``timer``              | Backend for recording samples required     |
 |                  |                                     |                                  | to calculate the virtual speed-up          |
 +------------------+-------------------------------------+----------------------------------+--------------------------------------------+
-| Mode             | ``OMNITRACE_CAUSAL_MODE``           | ``function``, ``line``           | Select an entire function or individual    |
+| Mode             | ``ROCPROFSYS_CAUSAL_MODE``           | ``function``, ``line``           | Select an entire function or individual    |
 |                  |                                     |                                  | line of code for causal experiments        |
 +------------------+-------------------------------------+----------------------------------+--------------------------------------------+
-| End-to-end       | ``OMNITRACE_CAUSAL_END_TO_END``     | Boolean                          | Perform a single experiment during the     |
+| End-to-end       | ``ROCPROFSYS_CAUSAL_END_TO_END``     | Boolean                          | Perform a single experiment during the     |
 |                  |                                     |                                  | entire run (does not require               |
 |                  |                                     |                                  | progress points)                           |
 +------------------+-------------------------------------+----------------------------------+--------------------------------------------+
-| Fixed speed-up   | ``OMNITRACE_CAUSAL_FIXED_SPEEDUP``  | one or more values from [0, 100] | Virtual speed-up or pool of virtual        |
+| Fixed speed-up   | ``ROCPROFSYS_CAUSAL_FIXED_SPEEDUP``  | one or more values from [0, 100] | Virtual speed-up or pool of virtual        |
 |                  |                                     |                                  | speed-ups to randomly select               |
 +------------------+-------------------------------------+----------------------------------+--------------------------------------------+
-| Binary scope     | ``OMNITRACE_CAUSAL_BINARY_SCOPE``   | regular expression(s)            | Dynamic binaries containing code for       |
+| Binary scope     | ``ROCPROFSYS_CAUSAL_BINARY_SCOPE``   | regular expression(s)            | Dynamic binaries containing code for       |
 |                  |                                     |                                  | experiments                                |
 +------------------+-------------------------------------+----------------------------------+--------------------------------------------+
-| Source scope     | ``OMNITRACE_CAUSAL_SOURCE_SCOPE``   | regular expression(s)            | ``<file>`` and/or ``<file>:<line>``        |
+| Source scope     | ``ROCPROFSYS_CAUSAL_SOURCE_SCOPE``   | regular expression(s)            | ``<file>`` and/or ``<file>:<line>``        |
 |                  |                                     |                                  | containing code to include in experiments  |
 +------------------+-------------------------------------+----------------------------------+--------------------------------------------+
-| Function scope   | ``OMNITRACE_CAUSAL_FUNCTION_SCOPE`` | regular expression(s)            | Restricts experiments to matching          |
+| Function scope   | ``ROCPROFSYS_CAUSAL_FUNCTION_SCOPE`` | regular expression(s)            | Restricts experiments to matching          |
 |                  |                                     |                                  | functions (function mode) or lines of      |
 |                  |                                     |                                  | code within matching functions (line mode) |
 +------------------+-------------------------------------+----------------------------------+--------------------------------------------+
@@ -146,9 +146,9 @@ There are three key differences between the two backends:
 
 In general, the ``perf`` backend is preferred over the ``timer`` backend when sufficient
 security priviledges permit its usage.
-If ``OMNITRACE_CAUSAL_BACKEND`` is set to ``auto``, ROCm Systems Profiler falls back
+If ``ROCPROFSYS_CAUSAL_BACKEND`` is set to ``auto``, ROCm Systems Profiler falls back
 to using the ``timer`` backend only if
-the ``perf`` backend fails. If ``OMNITRACE_CAUSAL_BACKEND`` is
+the ``perf`` backend fails. If ``ROCPROFSYS_CAUSAL_BACKEND`` is
 set to ``perf`` and using this backend fails, ROCm Systems Profiler aborts.
 
 Instruction pointer skid
@@ -284,7 +284,7 @@ The ``rocprof-sys-causal`` executable is designed to simplify this procedure:
                                     will be placed in ${PWD}/rocprof-sys-causal-config folder
       --no-defaults                  Do not activate default features which are recommended for causal profiling. For example: PID-tagging of output files
                                     and timestamped subdirectories are disabled by default. Kokkos tools support is added by default
-                                    (OMNITRACE_USE_KOKKOSP=ON) because, for Kokkos applications, the Kokkos-Tools callbacks are used for progress points.
+                                    (ROCPROFSYS_USE_KOKKOSP=ON) because, for Kokkos applications, the Kokkos-Tools callbacks are used for progress points.
                                     Activation of OpenMP tools support is similar
 
       [CAUSAL PROFILING OPTIONS (General)]
@@ -580,7 +580,7 @@ Visualizing the causal output
 -------------------------------------------------------------------------
 
 ROCm Systems Profiler generates ``causal/experiments.json`` and ``causal/experiments.coz`` in
-``${OMNITRACE_OUTPUT_PATH}/${OMNITRACE_OUTPUT_PREFIX}``. Visit
+``${ROCPROFSYS_OUTPUT_PATH}/${ROCPROFSYS_OUTPUT_PREFIX}``. Visit
 `plasma-umass.org/coz <https://plasma-umass.org/coz/>`_ to open the ``*.coz`` file.
 
 ROCm Systems Profiler versus Coz

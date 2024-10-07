@@ -162,8 +162,8 @@ while Dyninst requires TBB), and the CMake option to build the package alongside
    :header: "Third-Party Library", "Minimum Version", "Required By", "CMake Option"
    :widths: 15, 10, 12, 40
 
-   "Dyninst", "12.0", "ROCm Systems Profiler", "``OMNITRACE_BUILD_DYNINST`` (default: OFF)"
-   "Libunwind", "", "ROCm Systems Profiler", "``OMNITRACE_BUILD_LIBUNWIND`` (default: ON)"
+   "Dyninst", "12.0", "ROCm Systems Profiler", "``ROCPROFSYS_BUILD_DYNINST`` (default: OFF)"
+   "Libunwind", "", "ROCm Systems Profiler", "``ROCPROFSYS_BUILD_LIBUNWIND`` (default: ON)"
    "TBB", "2018.6", "Dyninst", "``DYNINST_BUILD_TBB`` (default: OFF)"
    "ElfUtils", "0.178", "Dyninst", "``DYNINST_BUILD_ELFUTILS`` (default: OFF)"
    "LibIberty",  "", "Dyninst", "``DYNINST_BUILD_LIBIBERTY`` (default: OFF)"
@@ -183,8 +183,8 @@ Optional third-party packages
 * `PAPI <https://icl.utk.edu/papi/>`_
 * MPI
 
-  * ``OMNITRACE_USE_MPI`` enables full MPI support
-  * ``OMNITRACE_USE_MPI_HEADERS`` enables wrapping of the dynamically-linked MPI C function calls.
+  * ``ROCPROFSYS_USE_MPI`` enables full MPI support
+  * ``ROCPROFSYS_USE_MPI_HEADERS`` enables wrapping of the dynamically-linked MPI C function calls.
     (By default, if ROCm Systems Profiler cannot find an OpenMPI MPI distribution, it uses a local copy
     of the OpenMPI ``mpi.h``.)
 
@@ -195,9 +195,9 @@ Optional third-party packages
    :header: "Third-Party Library", "CMake Enable Option", "CMake Build Option"
    :widths: 15, 45, 40
 
-   "PAPI", "``OMNITRACE_USE_PAPI`` (default: ON)", "``OMNITRACE_BUILD_PAPI`` (default: ON)"
-   "MPI", "``OMNITRACE_USE_MPI`` (default: OFF)", ""
-   "MPI (header-only)", "``OMNITRACE_USE_MPI_HEADERS`` (default: ON)", ""
+   "PAPI", "``ROCPROFSYS_USE_PAPI`` (default: ON)", "``ROCPROFSYS_BUILD_PAPI`` (default: ON)"
+   "MPI", "``ROCPROFSYS_USE_MPI`` (default: OFF)", ""
+   "MPI (header-only)", "``ROCPROFSYS_USE_MPI_HEADERS`` (default: ON)", ""
 
 Installing Dyninst
 -----------------------------------
@@ -207,7 +207,7 @@ The easiest way to install Dyninst is alongside ROCm Systems Profiler, but it ca
 Building Dyninst alongside ROCm Systems Profiler
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-To install Dyninst alongside ROCm Systems Profiler, configure ROCm Systems Profiler with ``OMNITRACE_BUILD_DYNINST=ON``.
+To install Dyninst alongside ROCm Systems Profiler, configure ROCm Systems Profiler with ``ROCPROFSYS_BUILD_DYNINST=ON``.
 Depending on the version of Ubuntu, the ``apt`` package manager might have current enough
 versions of the Dyninst Boost, TBB, and LibIberty dependencies
 (use ``apt-get install libtbb-dev libiberty-dev libboost-dev``).
@@ -217,7 +217,7 @@ its dependencies via ``DYNINST_BUILD_<DEP>=ON``, as follows:
 .. code-block:: shell
 
    git clone https://github.com/ROCm/rocprofiler-systems.git rocprof-sys-source
-   cmake -B rocprof-sys-build -DOMNITRACE_BUILD_DYNINST=ON -DDYNINST_BUILD_{TBB,ELFUTILS,BOOST,LIBIBERTY}=ON rocprof-sys-source
+   cmake -B rocprof-sys-build -DROCPROFSYS_BUILD_DYNINST=ON -DDYNINST_BUILD_{TBB,ELFUTILS,BOOST,LIBIBERTY}=ON rocprof-sys-source
 
 where ``-DDYNINST_BUILD_{TBB,BOOST,ELFUTILS,LIBIBERTY}=ON`` is expanded by
 the shell to ``-DDYNINST_BUILD_TBB=ON -DDYNINST_BUILD_BOOST=ON ...``
@@ -240,15 +240,15 @@ Installing Dyninst via Spack
 Installing ROCm Systems Profiler
 -----------------------------------
 
-ROCm Systems Profiler has CMake configuration options for MPI support (``OMNITRACE_USE_MPI`` or
-``OMNITRACE_USE_MPI_HEADERS``), HIP kernel tracing (``OMNITRACE_USE_ROCTRACER``),
-ROCm device sampling (``OMNITRACE_USE_ROCM_SMI``), OpenMP-Tools (``OMNITRACE_USE_OMPT``),
-hardware counters via PAPI (``OMNITRACE_USE_PAPI``), among other features.
+ROCm Systems Profiler has CMake configuration options for MPI support (``ROCPROFSYS_USE_MPI`` or
+``ROCPROFSYS_USE_MPI_HEADERS``), HIP kernel tracing (``ROCPROFSYS_USE_ROCTRACER``),
+ROCm device sampling (``ROCPROFSYS_USE_ROCM_SMI``), OpenMP-Tools (``ROCPROFSYS_USE_OMPT``),
+hardware counters via PAPI (``ROCPROFSYS_USE_PAPI``), among other features.
 Various additional features can be enabled via the
 ``TIMEMORY_USE_*`` `CMake options <https://timemory.readthedocs.io/en/develop/installation.html#cmake-options>`_.
-Any ``OMNITRACE_USE_<VAL>`` option which has a corresponding ``TIMEMORY_USE_<VAL>``
+Any ``ROCPROFSYS_USE_<VAL>`` option which has a corresponding ``TIMEMORY_USE_<VAL>``
 option means that the Timemory support for this feature has been integrated
-into Perfetto support for ROCm Systems Profiler, for example, ``OMNITRACE_USE_PAPI=<VAL>`` also configures
+into Perfetto support for ROCm Systems Profiler, for example, ``ROCPROFSYS_USE_PAPI=<VAL>`` also configures
 ``TIMEMORY_USE_PAPI=<VAL>``. This means the data that Timemory is able to collect via this package
 is passed along to Perfetto and is displayed when the ``.proto`` file is visualized
 in `the Perfetto UI <https://ui.perfetto.dev>`_.
@@ -264,15 +264,15 @@ in `the Perfetto UI <https://ui.perfetto.dev>`_.
    cmake                                       \
        -B rocprof-sys-build                      \
        -D CMAKE_INSTALL_PREFIX=/opt/rocprof-sys  \
-       -D OMNITRACE_USE_HIP=ON                 \
-       -D OMNITRACE_USE_ROCM_SMI=ON            \
-       -D OMNITRACE_USE_ROCTRACER=ON           \
-       -D OMNITRACE_USE_PYTHON=ON              \
-       -D OMNITRACE_USE_OMPT=ON                \
-       -D OMNITRACE_USE_MPI_HEADERS=ON         \
-       -D OMNITRACE_BUILD_PAPI=ON              \
-       -D OMNITRACE_BUILD_LIBUNWIND=ON         \
-       -D OMNITRACE_BUILD_DYNINST=ON           \
+       -D ROCPROFSYS_USE_HIP=ON                 \
+       -D ROCPROFSYS_USE_ROCM_SMI=ON            \
+       -D ROCPROFSYS_USE_ROCTRACER=ON           \
+       -D ROCPROFSYS_USE_PYTHON=ON              \
+       -D ROCPROFSYS_USE_OMPT=ON                \
+       -D ROCPROFSYS_USE_MPI_HEADERS=ON         \
+       -D ROCPROFSYS_BUILD_PAPI=ON              \
+       -D ROCPROFSYS_BUILD_LIBUNWIND=ON         \
+       -D ROCPROFSYS_BUILD_DYNINST=ON           \
        -D DYNINST_BUILD_TBB=ON                 \
        -D DYNINST_BUILD_BOOST=ON               \
        -D DYNINST_BUILD_ELFUTILS=ON            \
@@ -287,12 +287,12 @@ in `the Perfetto UI <https://ui.perfetto.dev>`_.
 MPI support within ROCm Systems Profiler
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-ROCm Systems Profiler can have full (``OMNITRACE_USE_MPI=ON``) or partial (``OMNITRACE_USE_MPI_HEADERS=ON``) MPI support.
+ROCm Systems Profiler can have full (``ROCPROFSYS_USE_MPI=ON``) or partial (``ROCPROFSYS_USE_MPI_HEADERS=ON``) MPI support.
 The only difference between these two modes is whether or not the results collected
 via Timemory and/or Perfetto can be aggregated into a single
 output file during finalization. When full MPI support is enabled, combining the
 Timemory results always occurs, whereas combining the Perfetto
-results is configurable via the ``OMNITRACE_PERFETTO_COMBINE_TRACES`` setting.
+results is configurable via the ``ROCPROFSYS_PERFETTO_COMBINE_TRACES`` setting.
 
 The primary benefits of partial or full MPI support are the automatic wrapping
 of MPI functions and the ability

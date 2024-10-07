@@ -290,7 +290,7 @@ view the help menu.
       -d, --default-components       Default components to instrument (only useful when timemory is enabled in rocprof-sys
                                     library)
       --env                          Environment variables to add to the runtime in form VARIABLE=VALUE. E.g. use \'--env
-                                    OMNITRACE_PROFILE=ON\' to default to using timemory instead of perfetto
+                                    ROCPROFSYS_PROFILE=ON\' to default to using timemory instead of perfetto
       --mpi                          Enable MPI support (requires rocprof-sys built w/ full or partial MPI support). NOTE: this
                                     will automatically be activated if MPI_Init, MPI_Init_thread, MPI_Finalize,
                                     MPI_Comm_rank, or MPI_Comm_size are found in the symbol table of target
@@ -857,7 +857,7 @@ Tracing capabilities which do not rely on instrumentation, such as the HIP API a
 (which is collected by roctracer), are still available.
 
 The ROCm Systems Profiler sampling capabilities are always available, even in trace mode, but are deactivated by default.
-To activate sampling in trace mode, set ``OMNITRACE_USE_SAMPLING=ON`` in the environment
+To activate sampling in trace mode, set ``ROCPROFSYS_USE_SAMPLING=ON`` in the environment
 or in an ROCm Systems Profiler configuration file.
 
 Embedding a default configuration
@@ -873,15 +873,15 @@ the configuration settings are not be preserved for subsequent sessions:
 .. code-block:: shell
 
    rocprof-sys-instrument -o ./foo.inst -- ./foo
-   export OMNITRACE_USE_SAMPLING=ON
-   export OMNITRACE_SAMPLING_FREQ=5
+   export ROCPROFSYS_USE_SAMPLING=ON
+   export ROCPROFSYS_SAMPLING_FREQ=5
    rocprof-sys-run -- ./foo.inst
 
 Whereas the following command preserves those environment variables:
 
 .. code-block:: shell
 
-   rocprof-sys-instrument -o ./foo.samp --env OMNITRACE_USE_SAMPLING=ON OMNITRACE_SAMPLING_FREQ=5 -- ./foo
+   rocprof-sys-instrument -o ./foo.samp --env ROCPROFSYS_USE_SAMPLING=ON ROCPROFSYS_SAMPLING_FREQ=5 -- ./foo
 
 They can now be used in future sessions.
 
@@ -895,7 +895,7 @@ Even though the environment variables are preserved, subsequent sessions can sti
 .. code-block:: shell
 
    # will sample 100x per second
-   export OMNITRACE_SAMPLING_FREQ=100
+   export ROCPROFSYS_SAMPLING_FREQ=100
    rocprof-sys-run -- ./foo.samp
 
 .. _rpath-troubleshooting:

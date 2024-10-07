@@ -326,12 +326,12 @@ Thread-data class
 --------------------------------------
 
 Currently, most thread data is effectively stored in a static
-``std::array<std::unique_ptr<T>, OMNITRACE_MAX_THREADS>`` instance.
-``OMNITRACE_MAX_THREADS`` is a value defined a compile-time and set to ``2048``
+``std::array<std::unique_ptr<T>, ROCPROFSYS_MAX_THREADS>`` instance.
+``ROCPROFSYS_MAX_THREADS`` is a value defined a compile-time and set to ``2048``
 for release builds. During finalization,
 ROCm Systems Profiler iterates through the thread-data and transforms that data
 into something that can be passed along to Perfetto and/or Timemory.
-The downside of the current model is that if the user exceeds ``OMNITRACE_MAX_THREADS``,
+The downside of the current model is that if the user exceeds ``ROCPROFSYS_MAX_THREADS``,
 a segmentation fault occurs. To fix this issue,
 a new model is being adopted which has all the benefits of this model
 but permits dynamic expansion.
@@ -344,14 +344,14 @@ Currently, all sampling is done per-thread
 via POSIX timers. ROCm Systems Profiler supports both a real-time timer and a CPU-time timer.
 Both have adjustable frequencies, delays, and durations.
 By default, only CPU-time sampling is enabled. Initial settings are inherited from
-the settings starting with ``OMNITRACE_SAMPLING_``.
+the settings starting with ``ROCPROFSYS_SAMPLING_``.
 
 For each type of timer, timer-specific settings can be used to
 override the common and inherited timer settings.
-These settings begin with ``OMNITRACE_SAMPLING_CPUTIME`` for the CPU-time sampler
-and ``OMNITRACE_SAMPLING_REALTIME`` for
-the real-time sampler. For example, ``OMNITRACE_SAMPLING_FREQ=500`` initially sets the
-sampling frequency to 500 interrupts per second. Adding the setting ``OMNITRACE_SAMPLING_REALTIME_FREQ=10``
+These settings begin with ``ROCPROFSYS_SAMPLING_CPUTIME`` for the CPU-time sampler
+and ``ROCPROFSYS_SAMPLING_REALTIME`` for
+the real-time sampler. For example, ``ROCPROFSYS_SAMPLING_FREQ=500`` initially sets the
+sampling frequency to 500 interrupts per second. Adding the setting ``ROCPROFSYS_SAMPLING_REALTIME_FREQ=10``
 lowers the sampling frequency for the real-time sampler
 to 10 interrupts per second of real-time.
 
@@ -374,12 +374,12 @@ per-thread. When this buffer is full,
 the sampler hands the buffer off to its allocator thread and maps a new buffer with ``mmap``
 before taking the next sample. The allocator thread takes this data
 and either dynamically stores it in memory or writes it to a file depending on the
-value of ``OMNITRACE_USE_TEMPORARY_FILES``.
+value of ``ROCPROFSYS_USE_TEMPORARY_FILES``.
 This schema avoids all allocations in the signal handler, lets the data grow
 dynamically, avoids potentially slow I/O within the signal handler, and also enables
 the capability of avoiding I/O altogether.
 The maximum number of samplers handled by each allocator is governed by the
-``OMNITRACE_SAMPLING_ALLOCATOR_SIZE`` setting (the default is eight). Whenever an allocator
+``ROCPROFSYS_SAMPLING_ALLOCATOR_SIZE`` setting (the default is eight). Whenever an allocator
 has reached its limit,
 a new internal thread is created to handle the new samplers.
 
@@ -401,7 +401,7 @@ syntax follows the format ``clock_identifier:delay:capture_duration:cycles``, so
 * Ten seconds where no data is collected, then one second where it is
 * Stop
 
-As another example, ``OMNITRACE_TRACE_PERIODS = realtime:10:1:5 process_cputime:10:2:20`` translates
+As another example, ``ROCPROFSYS_TRACE_PERIODS = realtime:10:1:5 process_cputime:10:2:20`` translates
 to this sequence:
 
 * Five cycles of: no data collection for ten seconds of real-time followed by one second of data collection
