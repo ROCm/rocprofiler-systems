@@ -1,12 +1,12 @@
 .. meta::
-   :description: ROCm Profiler Systems documentation and reference
+   :description: ROCm Systems Profiler documentation and reference
    :keywords: rocprof-sys, rocprofiler-systems, ROCm, profiler, tracking, visualization, tool, Instinct, accelerator, AMD
 
 ****************************************************
-Understanding the ROCm Profiler Systems output
+Understanding the Systems Profiler output
 ****************************************************
 
-The general output form of `ROCm Profiler Systems <https://github.com/ROCm/rocprofiler-systems>`_ is
+The general output form of `ROCm Systems Profiler <https://github.com/ROCm/rocprofiler-systems>`_ is
 ``<OUTPUT_PATH>[/<TIMESTAMP>]/[<PREFIX>]<DATA_NAME>[-<OUTPUT_SUFFIX>].<EXT>``.
 
 For example, starting with the following base configuration:

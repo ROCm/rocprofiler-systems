@@ -3,7 +3,7 @@
    :keywords: rocprof-sys, rocprofiler-systems, ROCm, profiler, tracking, visualization, tool, Instinct, accelerator, AMD
 
 ****************************************************
-Using the ROCm Profiler Systems API
+Using the ROCm Systems Profiler API
 ****************************************************
 
 The following example shows how a program can use the ROCm Systems Profiler API

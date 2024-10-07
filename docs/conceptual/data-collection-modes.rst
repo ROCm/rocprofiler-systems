@@ -1,5 +1,5 @@
 .. meta::
-   :description: ROCm Profiler Systems documentation and reference
+   :description: ROCm Systems Profiler data collection modes documentation
    :keywords: rocprof-sys, rocprofiler-systems, ROCm, profiler, tracking, visualization, tool, Instinct, accelerator, AMD
 
 **********************
@@ -11,7 +11,7 @@ ROCm Systems Profiler supports several modes of recording trace and profiling da
 .. note::
 
    For an explanation of the terms used in this topic, see
-   the :doc:`ROCm Profiler Systems glossary <../reference/rocprof-sys-glossary>`.
+   the :doc:`ROCm Systems Profiler glossary <../reference/rocprof-sys-glossary>`.
 
 +-----------------------------+---------------------------------------------------------+
 | Mode                        | Description                                             |
