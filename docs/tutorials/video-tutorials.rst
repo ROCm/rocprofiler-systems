@@ -1,6 +1,6 @@
 .. meta::
-   :description: ROCm Systems Profiler documentation and reference
-   :keywords: rocprof-sys, rocprofiler-systems, Omnitrace, ROCm, profiler, tracking, visualization, tool, Instinct, accelerator, AMD
+   :description: ROCm Systems Profiler video documentation and reference
+   :keywords: rocprof-sys, rocprofiler-systems, Omnitrace, ROCm, profiler, video, tutorial, demonstration, tracking, visualization, tool, Instinct, accelerator, AMD
 
 ****************************************************
 Video tutorials
