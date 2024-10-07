@@ -27,8 +27,8 @@ the :doc:`ROCm Systems Profiler glossary <../reference/rocprof-sys-glossary>`.
 * Use the user API to create custom regions and enable/disable ROCm Systems Profiler for specific processes, threads, and regions
 * Dynamic symbol interception, callback APIs, and the user API are always available with binary instrumentation and sampling
 
-  * Dynamic symbol interception and callback APIs are (generally) controlled through ``OMNITRACE_USE_<API>``
-    options, for example, ``OMNITRACE_USE_KOKKOSP`` and ``OMNITRACE_USE_OMPT`` enable Kokkos-Tools and OpenMP-Tools
+  * Dynamic symbol interception and callback APIs are (generally) controlled through ``ROCPROFSYS_USE_<API>``
+    options, for example, ``ROCPROFSYS_USE_KOKKOSP`` and ``ROCPROFSYS_USE_OMPT`` enable Kokkos-Tools and OpenMP-Tools
     callbacks, respectively
 
 * When generically seeking regions for performance improvement:

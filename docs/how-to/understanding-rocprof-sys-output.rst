@@ -13,11 +13,11 @@ For example, starting with the following base configuration:
 
 .. code-block:: shell
 
-   export OMNITRACE_OUTPUT_PATH=rocprof-sys-example-output
-   export OMNITRACE_TIME_OUTPUT=ON
-   export OMNITRACE_USE_PID=OFF
-   export OMNITRACE_PROFILE=ON
-   export OMNITRACE_TRACE=ON
+   export ROCPROFSYS_OUTPUT_PATH=rocprof-sys-example-output
+   export ROCPROFSYS_TIME_OUTPUT=ON
+   export ROCPROFSYS_USE_PID=OFF
+   export ROCPROFSYS_PROFILE=ON
+   export ROCPROFSYS_TRACE=ON
 
 .. code-block:: shell
 
@@ -28,12 +28,12 @@ For example, starting with the following base configuration:
    [rocprof-sys] Outputting 'rocprof-sys-example-output/wall-clock.txt'...
    [rocprof-sys] Outputting 'rocprof-sys-example-output/wall-clock.json'...
 
-If the ``OMNITRACE_USE_PID`` option is enabled, then running a non-MPI executable
+If the ``ROCPROFSYS_USE_PID`` option is enabled, then running a non-MPI executable
 with a PID of ``63453`` results in the following output:
 
 .. code-block:: shell
 
-   $ export OMNITRACE_USE_PID=ON
+   $ export ROCPROFSYS_USE_PID=ON
    $ rocprof-sys-instrument -- ./foo
    ...
    [rocprof-sys] Outputting 'rocprof-sys-example-output/perfetto-trace-63453.proto'...
@@ -41,12 +41,12 @@ with a PID of ``63453`` results in the following output:
    [rocprof-sys] Outputting 'rocprof-sys-example-output/wall-clock-63453.txt'...
    [rocprof-sys] Outputting 'rocprof-sys-example-output/wall-clock-63453.json'...
 
-If ``OMNITRACE_TIME_OUTPUT`` is enabled, then a job that started on January 31, 2022 at 12:30 PM
+If ``ROCPROFSYS_TIME_OUTPUT`` is enabled, then a job that started on January 31, 2022 at 12:30 PM
 generates the following:
 
 .. code-block:: shell
 
-   $ export OMNITRACE_TIME_OUTPUT=ON
+   $ export ROCPROFSYS_TIME_OUTPUT=ON
    $ rocprof-sys-instrument -- ./foo
    ...
    [rocprof-sys] Outputting 'rocprof-sys-example-output/2022-01-31_12.30_PM/perfetto-trace-63453.proto'...
@@ -208,7 +208,7 @@ Metadata JSON Sample
                   }
                ],
                "settings": {
-                  "OMNITRACE_JSON_OUTPUT": {
+                  "ROCPROFSYS_JSON_OUTPUT": {
                      "count": -1,
                      "environ_updated": false,
                      "name": "json_output",
@@ -220,7 +220,7 @@ Metadata JSON Sample
                      "cmdline": [
                            "--rocprof-sys-json-output"
                      ],
-                     "environ": "OMNITRACE_JSON_OUTPUT",
+                     "environ": "ROCPROFSYS_JSON_OUTPUT",
                      "config_updated": false,
                      "categories": [
                            "io",
@@ -251,12 +251,12 @@ Core configuration settings
    :header: "Setting", "Value", "Description"
    :widths: 30, 30, 100
 
-   "``OMNITRACE_OUTPUT_PATH``", "Any valid path", "Path to folder where output files should be placed"
-   "``OMNITRACE_OUTPUT_PREFIX``", "String", "Useful for multiple runs with different arguments. See the next section on output prefix keys."
-   "``OMNITRACE_OUTPUT_FILE``", "Any valid filepath", "Specific location for the Perfetto output file"
-   "``OMNITRACE_TIME_OUTPUT``", "Boolean", "Place all output in a timestamped folder, timestamp format controlled via ``OMNITRACE_TIME_FORMAT``"
-   "``OMNITRACE_TIME_FORMAT``", "String", "See ``strftime`` man pages for valid identifiers"
-   "``OMNITRACE_USE_PID``", "Boolean", "Append either the PID or the MPI rank to all output files (before the extension)"
+   "``ROCPROFSYS_OUTPUT_PATH``", "Any valid path", "Path to folder where output files should be placed"
+   "``ROCPROFSYS_OUTPUT_PREFIX``", "String", "Useful for multiple runs with different arguments. See the next section on output prefix keys."
+   "``ROCPROFSYS_OUTPUT_FILE``", "Any valid filepath", "Specific location for the Perfetto output file"
+   "``ROCPROFSYS_TIME_OUTPUT``", "Boolean", "Place all output in a timestamped folder, timestamp format controlled via ``ROCPROFSYS_TIME_FORMAT``"
+   "``ROCPROFSYS_TIME_FORMAT``", "String", "See ``strftime`` man pages for valid identifiers"
+   "``ROCPROFSYS_USE_PID``", "Boolean", "Append either the PID or the MPI rank to all output files (before the extension)"
 
 Output prefix keys
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -271,8 +271,8 @@ overwriting the output from the last time a file was compiled.
 
 When doing scaling studies and specifying options via the command line,
 the recommended process is to
-use a common ``OMNITRACE_OUTPUT_PATH``, disable ``OMNITRACE_TIME_OUTPUT``,
-set ``OMNITRACE_OUTPUT_PREFIX="%argt%-"``, and let ROCm Systems Profiler cleanly organize the output.
+use a common ``ROCPROFSYS_OUTPUT_PATH``, disable ``ROCPROFSYS_TIME_OUTPUT``,
+set ``ROCPROFSYS_OUTPUT_PREFIX="%argt%-"``, and let ROCm Systems Profiler cleanly organize the output.
 
 .. csv-table::
    :header: "String", "Encoding"
@@ -297,9 +297,9 @@ set ``OMNITRACE_OUTPUT_PREFIX="%argt%-"``, and let ROCm Systems Profiler cleanly
    "``%rank%``", "Value of ``SLURM_PROCID`` environment variable if exists, else ``MPI_Comm_rank`` (or ``0`` non-mpi)"
    "``%size%``", "``MPI_Comm_size`` or ``1`` if non-mpi"
    "``%nid%``", "``%rank%`` if possible, otherwise ``%pid%``"
-   "``%launch_time%``", "Launch date and time (uses ``OMNITRACE_TIME_FORMAT``)"
+   "``%launch_time%``", "Launch date and time (uses ``ROCPROFSYS_TIME_FORMAT``)"
    "``%env{NAME}%``", "Value of environment variable ``NAME`` (i.e. ``getenv(NAME)``)"
-   "``%cfg{NAME}%``", "Value of configuration variable ``NAME`` (e.g. ``%cfg{OMNITRACE_SAMPLING_FREQ}%`` would resolve to sampling frequency)"
+   "``%cfg{NAME}%``", "Value of configuration variable ``NAME`` (e.g. ``%cfg{ROCPROFSYS_SAMPLING_FREQ}%`` would resolve to sampling frequency)"
    "``$env{NAME}``", "Alternative syntax to ``%env{NAME}%``"
    "``$cfg{NAME}``", "Alternative syntax to ``%cfg{NAME}%``"
    "``%m``", "Shorthand for ``%argt_hash%``"
@@ -318,8 +318,8 @@ set ``OMNITRACE_OUTPUT_PREFIX="%argt%-"``, and let ROCm Systems Profiler cleanly
 Perfetto output
 ========================================
 
-Use the ``OMNITRACE_OUTPUT_FILE`` to specify a specific location. If this is an
-absolute path, then all ``OMNITRACE_OUTPUT_PATH`` and similar
+Use the ``ROCPROFSYS_OUTPUT_FILE`` to specify a specific location. If this is an
+absolute path, then all ``ROCPROFSYS_OUTPUT_PATH`` and similar
 settings are ignored. Visit `ui.perfetto.dev <https://ui.perfetto.dev>`_ and open
 this file.
 
@@ -355,16 +355,16 @@ Use ``rocprof-sys-avail --components --filename`` to view the base filename for 
    | sampling_wall_clock             |     true      | sampling_wall_clock    |
    |---------------------------------|---------------|------------------------|
 
-The ``OMNITRACE_COLLAPSE_THREADS`` and ``OMNITRACE_COLLAPSE_PROCESSES`` settings are
+The ``ROCPROFSYS_COLLAPSE_THREADS`` and ``ROCPROFSYS_COLLAPSE_PROCESSES`` settings are
 only valid when full `MPI support is enabled <../install/install.html#mpi-support-within-rocprof-sys>`_.
 When they are set, Timemory combines the per-thread and per-rank data (respectively) of
 identical call stacks.
 
-The ``OMNITRACE_FLAT_PROFILE`` setting removes all call stack hierarchy.
-Using ``OMNITRACE_FLAT_PROFILE=ON`` in combination
-with ``OMNITRACE_COLLAPSE_THREADS=ON`` is a useful configuration for identifying
+The ``ROCPROFSYS_FLAT_PROFILE`` setting removes all call stack hierarchy.
+Using ``ROCPROFSYS_FLAT_PROFILE=ON`` in combination
+with ``ROCPROFSYS_COLLAPSE_THREADS=ON`` is a useful configuration for identifying
 min/max measurements regardless of the calling context.
-The ``OMNITRACE_TIMELINE_PROFILE`` setting (with ``OMNITRACE_FLAT_PROFILE=OFF``) effectively
+The ``ROCPROFSYS_TIMELINE_PROFILE`` setting (with ``ROCPROFSYS_FLAT_PROFILE=OFF``) effectively
 generates similar data to that found
 in Perfetto. Enabling timeline and flat profiling effectively generates
 similar data to ``strace``. However, while Timemory generally
@@ -376,11 +376,11 @@ Timemory text output
 
 Timemory text output files are meant for human consumption (while JSON formats are for analysis),
 so some fields such as the ``LABEL`` might be truncated for readability.
-The truncation settings be changed through the ``OMNITRACE_MAX_WIDTH`` setting.
+The truncation settings be changed through the ``ROCPROFSYS_MAX_WIDTH`` setting.
 
 .. note::
 
-   The generation of text output is configurable via ``OMNITRACE_TEXT_OUTPUT``.
+   The generation of text output is configurable via ``ROCPROFSYS_TEXT_OUTPUT``.
 
 .. _text-output-example-label:
 
@@ -389,7 +389,7 @@ Timemory text output example
 
 In the following example, the ``NN`` field in ``|NN>>>`` is the thread ID. If MPI support is enabled,
 this becomes ``|MM|NN>>>`` where ``MM`` is the rank.
-If ``OMNITRACE_COLLAPSE_THREADS=ON`` and ``OMNITRACE_COLLAPSE_PROCESSES=ON`` are configured,
+If ``ROCPROFSYS_COLLAPSE_THREADS=ON`` and ``ROCPROFSYS_COLLAPSE_PROCESSES=ON`` are configured,
 neither the ``MM`` nor the ``NN`` are present unless the
 component explicitly sets type traits. Type traits specify that the data is only
 relevant per-thread or per-process, such as the ``thread_cpu_clock`` clock component.
@@ -592,8 +592,8 @@ write a simple Python script for post-processing using this format than with the
 
 .. note::
 
-   The generation of flat JSON output is configurable via ``OMNITRACE_JSON_OUTPUT``.
-   The generation of hierarchical JSON data is configurable via ``OMNITRACE_TREE_OUTPUT``
+   The generation of flat JSON output is configurable via ``ROCPROFSYS_JSON_OUTPUT``.
+   The generation of hierarchical JSON data is configurable via ``ROCPROFSYS_TREE_OUTPUT``
 
 Timemory JSON output sample
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

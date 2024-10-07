@@ -23,7 +23,7 @@ ROCm Systems Profiler API, such as ``rocprofsys_user_push_region`` and
    ``rocprofsys_user_stop_*`` function, instrumentation
    is disabled at start up, which means ``rocprofsys_user_stop_trace()`` is not
    required at the beginning of ``main``. This behavior
-   can be manually controlled by using the ``OMNITRACE_INIT_ENABLED`` environment variable.
+   can be manually controlled by using the ``ROCPROFSYS_INIT_ENABLED`` environment variable.
    User-defined regions are always
    recorded, regardless of whether ``rocprofsys_user_start_*`` or
    ``rocprofsys_user_stop_*`` has been called.
@@ -57,15 +57,15 @@ ROCm Systems Profiler API, such as ``rocprofsys_user_push_region`` and
 
    namespace
    {
-   rocprofsys_user_callbacks_t custom_callbacks   = OMNITRACE_USER_CALLBACKS_INIT;
-   rocprofsys_user_callbacks_t original_callbacks = OMNITRACE_USER_CALLBACKS_INIT;
+   rocprofsys_user_callbacks_t custom_callbacks   = ROCPROFSYS_USER_CALLBACKS_INIT;
+   rocprofsys_user_callbacks_t original_callbacks = ROCPROFSYS_USER_CALLBACKS_INIT;
    }  // namespace
 
    int
    main(int argc, char** argv)
    {
       custom_callbacks.push_region = &custom_push_region;
-      rocprofsys_user_configure(OMNITRACE_USER_UNION_CONFIG, custom_callbacks,
+      rocprofsys_user_configure(ROCPROFSYS_USER_UNION_CONFIG, custom_callbacks,
                               &original_callbacks);
 
       rocprofsys_user_push_region(argv[0]);
@@ -133,7 +133,7 @@ ROCm Systems Profiler API, such as ``rocprofsys_user_push_region`` and
    custom_push_region(const char* name)
    {
       if(!original_callbacks.push_region || !original_callbacks.push_annotated_region)
-         return OMNITRACE_USER_ERROR_NO_BINDING;
+         return ROCPROFSYS_USER_ERROR_NO_BINDING;
 
       printf("Pushing custom region :: %s\n", name);
 
@@ -145,7 +145,7 @@ ROCm Systems Profiler API, such as ``rocprofsys_user_push_region`` and
          if(_err != 0) _msg = strerror_r(_err, _buff, sizeof(_buff));
 
          rocprofsys_annotation_t _annotations[] = {
-               { "errno", OMNITRACE_INT32, &_err }, { "strerror", OMNITRACE_STRING, _msg }
+               { "errno", ROCPROFSYS_INT32, &_err }, { "strerror", ROCPROFSYS_STRING, _msg }
          };
 
          errno = 0;  // reset errno
@@ -159,7 +159,7 @@ ROCm Systems Profiler API, such as ``rocprofsys_user_push_region`` and
 Linking the ROCm Systems Profiler libraries to another program
 =======================================================
 
-To link the ``rocprofsys-user-library`` to another program,
+To link the ``rocprof-sys-user-library`` to another program,
 use the following CMake and ``g++`` directives.
 
 CMake
@@ -167,9 +167,9 @@ CMake
 
 .. code-block:: cmake
 
-   find_package(rocprofsys REQUIRED COMPONENTS user)
+   find_package(rocprof-sys REQUIRED COMPONENTS user)
    add_executable(foo foo.cpp)
-   target_link_libraries(foo PRIVATE rocprofsys::rocprofsys-user-library)
+   target_link_libraries(foo PRIVATE rocprof-sys::rocprof-sys-user-library)
 
 g++ compilation
 -------------------------------------------------------

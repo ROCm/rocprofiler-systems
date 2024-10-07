@@ -32,7 +32,7 @@ For example, all of the following commands are effectively equivalent:
 
 .. note::
 
-   Set ``OMNITRACE_USE_SAMPLING=ON`` to activate call-stack sampling when executing an instrumented binary.
+   Set ``ROCPROFSYS_USE_SAMPLING=ON`` to activate call-stack sampling when executing an instrumented binary.
 
 All ``rocprof-sys-instrument -M sampling`` (subsequently referred to as "instrumented-sampling")
 does is wrap the ``main`` of the executable with initialization
@@ -251,12 +251,12 @@ establishes the precedence of environment variable values over values specified
 in the configuration files. This enables
 you to configure the ROCm Systems Profiler runtime to your preferred default behavior
 in a file such as ``~/.rocprof-sys.cfg`` and then easily override
-those settings in the command line, for example, ``OMNITRACE_ENABLED=OFF rocprof-sys-sample -- foo``.
+those settings in the command line, for example, ``ROCPROFSYS_ENABLED=OFF rocprof-sys-sample -- foo``.
 Similarly, the command-line arguments passed to ``rocprof-sys-sample`` take precedence
 over environment variables.
 
 All of the command-line options above correlate to one or more configuration
-settings, for example, ``--cpu-events`` correlates to the ``OMNITRACE_PAPI_EVENTS`` configuration variable.
+settings, for example, ``--cpu-events`` correlates to the ``ROCPROFSYS_PAPI_EVENTS`` configuration variable.
 ``rocprof-sys-sample`` processes the arguments and outputs a summary of its configuration
 before running the target application.
 
@@ -271,8 +271,8 @@ The following snippets show how ``rocprof-sys-sample`` runs with various environ
       HSA_TOOLS_LIB=/opt/rocprof-sys/lib/librocprof-sys-dl.so.1.7.1
       HSA_TOOLS_REPORT_LOAD_FAILURE=1
       LD_PRELOAD=/opt/rocprof-sys/lib/librocprof-sys-dl.so.1.7.1
-      OMNITRACE_USE_PROCESS_SAMPLING=false
-      OMNITRACE_USE_SAMPLING=true
+      ROCPROFSYS_USE_PROCESS_SAMPLING=false
+      ROCPROFSYS_USE_SAMPLING=true
       OMP_TOOL_LIBRARIES=/opt/rocprof-sys/lib/librocprof-sys-dl.so.1.7.1
       ROCP_TOOL_LIB=/opt/rocprof-sys/lib/librocprof-sys.so.1.7.1
 
@@ -287,22 +287,22 @@ The following snippets show how ``rocprof-sys-sample`` runs with various environ
       HSA_TOOLS_REPORT_LOAD_FAILURE=1
       KOKKOS_PROFILE_LIBRARY=/opt/rocprof-sys/lib/librocprof-sys.so.1.7.1
       LD_PRELOAD=/opt/rocprof-sys/lib/librocprof-sys-dl.so.1.7.1
-      OMNITRACE_CPU_FREQ_ENABLED=true
-      OMNITRACE_TRACE_THREAD_LOCKS=true
-      OMNITRACE_TRACE_THREAD_RW_LOCKS=true
-      OMNITRACE_TRACE_THREAD_SPIN_LOCKS=true
-      OMNITRACE_USE_KOKKOSP=true
-      OMNITRACE_USE_MPIP=true
-      OMNITRACE_USE_OMPT=true
-      OMNITRACE_TRACE=true
-      OMNITRACE_USE_PROCESS_SAMPLING=true
-      OMNITRACE_USE_RCCLP=true
-      OMNITRACE_USE_ROCM_SMI=true
-      OMNITRACE_USE_ROCPROFILER=true
-      OMNITRACE_USE_ROCTRACER=true
-      OMNITRACE_USE_ROCTX=true
-      OMNITRACE_USE_SAMPLING=true
-      OMNITRACE_PROFILE=true
+      ROCPROFSYS_CPU_FREQ_ENABLED=true
+      ROCPROFSYS_TRACE_THREAD_LOCKS=true
+      ROCPROFSYS_TRACE_THREAD_RW_LOCKS=true
+      ROCPROFSYS_TRACE_THREAD_SPIN_LOCKS=true
+      ROCPROFSYS_USE_KOKKOSP=true
+      ROCPROFSYS_USE_MPIP=true
+      ROCPROFSYS_USE_OMPT=true
+      ROCPROFSYS_TRACE=true
+      ROCPROFSYS_USE_PROCESS_SAMPLING=true
+      ROCPROFSYS_USE_RCCLP=true
+      ROCPROFSYS_USE_ROCM_SMI=true
+      ROCPROFSYS_USE_ROCPROFILER=true
+      ROCPROFSYS_USE_ROCTRACER=true
+      ROCPROFSYS_USE_ROCTX=true
+      ROCPROFSYS_USE_SAMPLING=true
+      ROCPROFSYS_PROFILE=true
       OMP_TOOL_LIBRARIES=/opt/rocprof-sys/lib/librocprof-sys-dl.so.1.7.1
       ROCP_TOOL_LIB=/opt/rocprof-sys/lib/librocprof-sys.so.1.7.1
       ...
@@ -317,24 +317,24 @@ The following snippets show how ``rocprof-sys-sample`` runs with various environ
       $ rocprof-sys-sample -PTDH -E all -o rocprof-sys-output %tag% -- ./parallel-overhead-locks 30 4 100
 
       LD_PRELOAD=/opt/rocprof-sys/lib/librocprof-sys-dl.so.1.7.1
-      OMNITRACE_CPU_FREQ_ENABLED=true
-      OMNITRACE_OUTPUT_PATH=rocprof-sys-output
-      OMNITRACE_OUTPUT_PREFIX=%tag%
-      OMNITRACE_TRACE_THREAD_LOCKS=false
-      OMNITRACE_TRACE_THREAD_RW_LOCKS=false
-      OMNITRACE_TRACE_THREAD_SPIN_LOCKS=false
-      OMNITRACE_USE_KOKKOSP=false
-      OMNITRACE_USE_MPIP=false
-      OMNITRACE_USE_OMPT=false
-      OMNITRACE_TRACE=true
-      OMNITRACE_USE_PROCESS_SAMPLING=true
-      OMNITRACE_USE_RCCLP=false
-      OMNITRACE_USE_ROCM_SMI=false
-      OMNITRACE_USE_ROCPROFILER=false
-      OMNITRACE_USE_ROCTRACER=false
-      OMNITRACE_USE_ROCTX=false
-      OMNITRACE_USE_SAMPLING=true
-      OMNITRACE_PROFILE=true
+      ROCPROFSYS_CPU_FREQ_ENABLED=true
+      ROCPROFSYS_OUTPUT_PATH=rocprof-sys-output
+      ROCPROFSYS_OUTPUT_PREFIX=%tag%
+      ROCPROFSYS_TRACE_THREAD_LOCKS=false
+      ROCPROFSYS_TRACE_THREAD_RW_LOCKS=false
+      ROCPROFSYS_TRACE_THREAD_SPIN_LOCKS=false
+      ROCPROFSYS_USE_KOKKOSP=false
+      ROCPROFSYS_USE_MPIP=false
+      ROCPROFSYS_USE_OMPT=false
+      ROCPROFSYS_TRACE=true
+      ROCPROFSYS_USE_PROCESS_SAMPLING=true
+      ROCPROFSYS_USE_RCCLP=false
+      ROCPROFSYS_USE_ROCM_SMI=false
+      ROCPROFSYS_USE_ROCPROFILER=false
+      ROCPROFSYS_USE_ROCTRACER=false
+      ROCPROFSYS_USE_ROCTX=false
+      ROCPROFSYS_USE_SAMPLING=true
+      ROCPROFSYS_PROFILE=true
       ...
 
 An rocprof-sys-sample example
@@ -348,25 +348,25 @@ Here is the full output from the previous
    $ rocprof-sys-sample -PTDH -E all -o rocprof-sys-output %tag% -c -- ./parallel-overhead-locks 30 4 100
 
    LD_PRELOAD=/opt/rocprof-sys/lib/librocprof-sys-dl.so.1.11.3
-   OMNITRACE_CONFIG_FILE=
-   OMNITRACE_CPU_FREQ_ENABLED=true
-   OMNITRACE_OUTPUT_PATH=rocprof-sys-output
-   OMNITRACE_OUTPUT_PREFIX=%tag%
-   OMNITRACE_PROFILE=true
-   OMNITRACE_TRACE=true
-   OMNITRACE_TRACE_THREAD_LOCKS=false
-   OMNITRACE_TRACE_THREAD_RW_LOCKS=false
-   OMNITRACE_TRACE_THREAD_SPIN_LOCKS=false
-   OMNITRACE_USE_KOKKOSP=false
-   OMNITRACE_USE_MPIP=false
-   OMNITRACE_USE_OMPT=false
-   OMNITRACE_USE_PROCESS_SAMPLING=true
-   OMNITRACE_USE_RCCLP=false
-   OMNITRACE_USE_ROCM_SMI=false
-   OMNITRACE_USE_ROCPROFILER=false
-   OMNITRACE_USE_ROCTRACER=false
-   OMNITRACE_USE_ROCTX=false
-   OMNITRACE_USE_SAMPLING=true
+   ROCPROFSYS_CONFIG_FILE=
+   ROCPROFSYS_CPU_FREQ_ENABLED=true
+   ROCPROFSYS_OUTPUT_PATH=rocprof-sys-output
+   ROCPROFSYS_OUTPUT_PREFIX=%tag%
+   ROCPROFSYS_PROFILE=true
+   ROCPROFSYS_TRACE=true
+   ROCPROFSYS_TRACE_THREAD_LOCKS=false
+   ROCPROFSYS_TRACE_THREAD_RW_LOCKS=false
+   ROCPROFSYS_TRACE_THREAD_SPIN_LOCKS=false
+   ROCPROFSYS_USE_KOKKOSP=false
+   ROCPROFSYS_USE_MPIP=false
+   ROCPROFSYS_USE_OMPT=false
+   ROCPROFSYS_USE_PROCESS_SAMPLING=true
+   ROCPROFSYS_USE_RCCLP=false
+   ROCPROFSYS_USE_ROCM_SMI=false
+   ROCPROFSYS_USE_ROCPROFILER=false
+   ROCPROFSYS_USE_ROCTRACER=false
+   ROCPROFSYS_USE_ROCTX=false
+   ROCPROFSYS_USE_SAMPLING=true
    [rocprof-sys][dl][1785877] rocprofsys_main
    [rocprof-sys][1785877][rocprofsys_init_tooling] Instrumentation mode: Sampling
                                                      __

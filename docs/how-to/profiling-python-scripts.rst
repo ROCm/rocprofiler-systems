@@ -8,13 +8,13 @@ Profiling Python scripts
 
 `ROCm Systems Profiler <https://github.com/ROCm/rocprofiler-systems>`_ supports profiling Python code at the
 source level and the script level.
-Python support is enabled via the ``OMNITRACE_USE_PYTHON`` and the
-``OMNITRACE_PYTHON_VERSIONS="<MAJOR>.<MINOR>`` CMake options.
+Python support is enabled via the ``ROCPROFSYS_USE_PYTHON`` and the
+``ROCPROFSYS_PYTHON_VERSIONS="<MAJOR>.<MINOR>`` CMake options.
 Alternatively, to build multiple Python versions, use
-``OMNITRACE_PYTHON_VERSIONS="<MAJOR>.<MINOR>;[<MAJOR>.<MINOR>]"``,
-and ``OMNITRACE_PYTHON_ROOT_DIRS="/path/to/version;[/path/to/version]"`` instead of ``OMNITRACE_PYTHON_VERSION``.
-When building multiple Python versions, the length of the ``OMNITRACE_PYTHON_VERSIONS``
-and ``OMNITRACE_PYTHON_ROOT_DIRS`` lists must
+``ROCPROFSYS_PYTHON_VERSIONS="<MAJOR>.<MINOR>;[<MAJOR>.<MINOR>]"``,
+and ``ROCPROFSYS_PYTHON_ROOT_DIRS="/path/to/version;[/path/to/version]"`` instead of ``ROCPROFSYS_PYTHON_VERSION``.
+When building multiple Python versions, the length of the ``ROCPROFSYS_PYTHON_VERSIONS``
+and ``ROCPROFSYS_PYTHON_ROOT_DIRS`` lists must
 be the same size.
 
 .. note::
@@ -64,7 +64,7 @@ and
 .. note::
 
    ``rocprof-sys-python`` and ``python -m rocprofsys`` use the same command-line syntax
-   as the other ``rocprof-sys`` executables (``rocprof-sys-python <OMNITRACE_ARGS> -- <SCRIPT> <SCRIPT_ARGS>``)
+   as the other ``rocprof-sys`` executables (``rocprof-sys-python <ROCPROFSYS_ARGS> -- <SCRIPT> <SCRIPT_ARGS>``)
    and has similar options.
 
 Command line options
@@ -103,7 +103,7 @@ Use ``rocprof-sys-python --help`` to view the available options:
                            Select only entries from these files
    --trace-c [BOOL]      Enable profiling C functions
 
-   usage: python3 -m rocprofsys <OMNITRACE_ARGS> -- <SCRIPT> <SCRIPT_ARGS>
+   usage: python3 -m rocprofsys <ROCPROFSYS_ARGS> -- <SCRIPT> <SCRIPT_ARGS>
 
 .. note::
 
@@ -145,8 +145,8 @@ Consider the following Python code (``example.py``):
    if __name__ == "__main__":
       run(20)
 
-Running ``rocprof-sys-python ./example.py`` with ``OMNITRACE_PROFILE=ON`` and
-``OMNITRACE_TIMEMORY_COMPONENTS=trip_count`` produces the following:
+Running ``rocprof-sys-python ./example.py`` with ``ROCPROFSYS_PROFILE=ON`` and
+``ROCPROFSYS_TIMEMORY_COMPONENTS=trip_count`` produces the following:
 
 .. code-block:: shell
 
