@@ -1,24 +1,24 @@
 # ------------------------------------------------------------------------------#
 #
 # TODO: [DFG] Remove this file after 'rocprofsys' rebranding is complete
-# rocprofsys-exe target (deprecated 'omnitrace' executable, now 'rocprofsys-instrument')
+# rocprof-sys-exe target (deprecated 'omnitrace' executable, now 'rocprof-sys-instrument')
 #
 # ------------------------------------------------------------------------------#
 
-add_executable(rocprofsys-exe ${CMAKE_CURRENT_LIST_DIR}/rocprof-sys.cpp)
+add_executable(rocprof-sys-exe ${CMAKE_CURRENT_LIST_DIR}/rocprof-sys.cpp)
 
-target_link_libraries(rocprofsys-exe PRIVATE rocprofsys::rocprofsys-threading)
+target_link_libraries(rocprof-sys-exe PRIVATE rocprof-sys::rocprof-sys-threading)
 
 set_target_properties(
-    rocprofsys-exe
+    rocprof-sys-exe
     PROPERTIES OUTPUT_NAME rocprof-sys
                BUILD_RPATH "\$ORIGIN:\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
                INSTALL_RPATH "${ROCPROFSYS_EXE_INSTALL_RPATH}"
                INSTALL_RPATH_USE_LINK_PATH ON)
 
-rocprofsys_strip_target(rocprofsys-exe)
+rocprof_sys_strip_target(rocprof-sys-exe)
 
 install(
-    TARGETS rocprofsys-exe
+    TARGETS rocprof-sys-exe
     DESTINATION ${CMAKE_INSTALL_BINDIR}
     OPTIONAL)

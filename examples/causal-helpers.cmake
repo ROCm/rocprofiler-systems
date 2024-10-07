@@ -3,7 +3,7 @@
 #
 include_guard(DIRECTORY)
 
-if(NOT TARGET rocprofsys::rocprofsys-user-library)
+if(NOT TARGET rocprof-sys::rocprof-sys-user-library)
     find_package(rocprof-sys REQUIRED COMPONENTS user)
 endif()
 
@@ -15,11 +15,11 @@ if(NOT TARGET omni-causal-examples)
     add_custom_target(omni-causal-examples)
 endif()
 
-function(rocprofsys_causal_example_executable _NAME)
+function(rocprof_sys_causal_example_executable _NAME)
     cmake_parse_arguments(
         CAUSAL "" "" "SOURCES;DEFINITIONS;INCLUDE_DIRECTORIES;LINK_LIBRARIES" ${ARGN})
 
-    function(rocprofsys_causal_example_interface _TARGET)
+    function(rocprof_sys_causal_example_interface _TARGET)
         if(NOT TARGET ${_TARGET})
             find_package(Threads REQUIRED)
             add_library(${_TARGET} INTERFACE)
@@ -27,8 +27,8 @@ function(rocprofsys_causal_example_executable _NAME)
         endif()
     endfunction()
 
-    rocprofsys_causal_example_interface(omni-causal-example-lib-debug)
-    rocprofsys_causal_example_interface(omni-causal-example-lib-no-debug)
+    rocprof_sys_causal_example_interface(omni-causal-example-lib-debug)
+    rocprof_sys_causal_example_interface(omni-causal-example-lib-no-debug)
 
     target_compile_options(omni-causal-example-lib-debug
                            INTERFACE -g3 -fno-omit-frame-pointer)
@@ -40,7 +40,7 @@ function(rocprofsys_causal_example_executable _NAME)
     target_include_directories(${_NAME} PRIVATE ${ROCPROFSYS_EXAMPLE_ROOT_DIR}/causal
                                                 ${CAUSAL_INCLUDE_DIRECTORIES})
     target_link_libraries(
-        ${_NAME} PRIVATE ${CAUSAL_LINK_LIBRARIES} rocprofsys::rocprofsys-user-library
+        ${_NAME} PRIVATE ${CAUSAL_LINK_LIBRARIES} rocprof-sys::rocprof-sys-user-library
                          omni-causal-example-lib-debug)
 
     add_executable(${_NAME}-omni ${CAUSAL_SOURCES})
@@ -50,7 +50,7 @@ function(rocprofsys_causal_example_executable _NAME)
                                                      ${CAUSAL_INCLUDE_DIRECTORIES})
     target_link_libraries(
         ${_NAME}-omni
-        PRIVATE ${CAUSAL_LINK_LIBRARIES} rocprofsys::rocprofsys-user-library
+        PRIVATE ${CAUSAL_LINK_LIBRARIES} rocprof-sys::rocprof-sys-user-library
                 omni-causal-example-lib-debug)
 
     add_executable(${_NAME}-ndebug ${CAUSAL_SOURCES})
@@ -61,7 +61,7 @@ function(rocprofsys_causal_example_executable _NAME)
                                 ${CAUSAL_INCLUDE_DIRECTORIES})
     target_link_libraries(
         ${_NAME}-ndebug
-        PRIVATE ${CAUSAL_LINK_LIBRARIES} rocprofsys::rocprofsys-user-library
+        PRIVATE ${CAUSAL_LINK_LIBRARIES} rocprof-sys::rocprof-sys-user-library
                 omni-causal-example-lib-no-debug)
 
     add_executable(${_NAME}-omni-ndebug ${CAUSAL_SOURCES})
@@ -72,14 +72,14 @@ function(rocprofsys_causal_example_executable _NAME)
                                      ${CAUSAL_INCLUDE_DIRECTORIES})
     target_link_libraries(
         ${_NAME}-omni-ndebug
-        PRIVATE ${CAUSAL_LINK_LIBRARIES} rocprofsys::rocprofsys-user-library
+        PRIVATE ${CAUSAL_LINK_LIBRARIES} rocprof-sys::rocprof-sys-user-library
                 omni-causal-example-lib-no-debug)
 
     add_dependencies(omni-causal-examples ${_NAME} ${_NAME}-omni ${_NAME}-ndebug
                      ${_NAME}-omni-ndebug)
 
     if(coz-profiler_FOUND)
-        rocprofsys_causal_example_interface(omni-causal-example-lib-coz)
+        rocprof_sys_causal_example_interface(omni-causal-example-lib-coz)
         target_compile_options(omni-causal-example-lib-coz
                                INTERFACE -g3 -gdwarf-3 -fno-omit-frame-pointer)
 
@@ -99,7 +99,7 @@ function(rocprofsys_causal_example_executable _NAME)
         install(
             TARGETS ${_NAME} ${_NAME}-omni ${_NAME}-coz
             DESTINATION bin
-            COMPONENT rocprofsys-examples
+            COMPONENT rocprof-sys-examples
             OPTIONAL)
     endif()
 endfunction()

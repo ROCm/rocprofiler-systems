@@ -4,7 +4,7 @@ set(ROCPROFSYS_ABORT_FAIL_REGEX
           FORCE)
 
 # adds a ctest for executable
-function(ROCPROFSYS_ADD_BIN_TEST)
+function(ROCPROF_SYS_ADD_BIN_TEST)
     cmake_parse_arguments(
         TEST
         "" # options
@@ -34,7 +34,7 @@ function(ROCPROFSYS_ADD_BIN_TEST)
         "ROCPROFSYS_CI=ON"
         "ROCPROFSYS_CI_TIMEOUT=${TEST_TIMEOUT}"
         "ROCPROFSYS_CONFIG_FILE="
-        "ROCPROFSYS_OUTPUT_PATH=${PROJECT_BINARY_DIR}/rocprofsys-tests-output"
+        "ROCPROFSYS_OUTPUT_PATH=${PROJECT_BINARY_DIR}/rocprof-sys-tests-output"
         "TWD=${TEST_WORKING_DIRECTORY}")
     # copy for inverse
     set(TEST_ENVIRONMENT_INV "${TEST_ENVIRONMENT}")
@@ -46,7 +46,7 @@ function(ROCPROFSYS_ADD_BIN_TEST)
     if(NOT "${TEST_PASS_REGEX}" STREQUAL ""
        AND NOT "${TEST_FAIL_REGEX}" STREQUAL ""
        AND NOT "${TEST_FAIL_REGEX}" MATCHES "\\|ROCPROFSYS_ABORT_FAIL_REGEX")
-        rocprofsys_message(
+        rocprof_sys_message(
             FATAL_ERROR
             "${TEST_NAME} has set pass and fail regexes but fail regex does not include '|ROCPROFSYS_ABORT_FAIL_REGEX'"
             )
@@ -74,7 +74,7 @@ function(ROCPROFSYS_ADD_BIN_TEST)
                        DEPENDS
                        "${TEST_DEPENDS}"
                        LABELS
-                       "rocprofsys-bin;${TEST_LABELS}"
+                       "rocprof-sys-bin;${TEST_LABELS}"
                        PASS_REGULAR_EXPRESSION
                        "${TEST_PASS_REGEX}"
                        FAIL_REGULAR_EXPRESSION
@@ -97,7 +97,7 @@ function(ROCPROFSYS_ADD_BIN_TEST)
                        DEPENDS
                        "${TEST_DEPENDS}"
                        LABELS
-                       "rocprofsys-bin;${TEST_LABELS}"
+                       "rocprof-sys-bin;${TEST_LABELS}"
                        PASS_REGULAR_EXPRESSION
                        "${TEST_PASS_REGEX}"
                        FAIL_REGULAR_EXPRESSION
@@ -110,11 +110,11 @@ function(ROCPROFSYS_ADD_BIN_TEST)
     endif()
 endfunction()
 
-rocprofsys_add_bin_test(
-    NAME rocprofsys-instrument-help
-    TARGET rocprofsys-instrument
+rocprof_sys_add_bin_test(
+    NAME rocprof-sys-instrument-help
+    TARGET rocprof-sys-instrument
     ARGS --help
-    LABELS rocprofsys-instrument
+    LABELS rocprof-sys-instrument
     TIMEOUT 45
     PASS_REGEX
         ".*\\\[rocprof-sys-instrument\\\] Usage:.*\\\[DEBUG OPTIONS\\\].*\\\[MODE OPTIONS\\\].*\\\[LIBRARY OPTIONS\\\].*\\\[SYMBOL SELECTION OPTIONS\\\].*\\\[RUNTIME OPTIONS\\\].*\\\[GRANULARITY OPTIONS\\\].*\\\[DYNINST OPTIONS\\\].*"
@@ -129,9 +129,9 @@ else()
     set(LS_ARGS)
 endif()
 
-rocprofsys_add_bin_test(
-    NAME rocprofsys-instrument-simulate-ls
-    TARGET rocprofsys-instrument
+rocprof_sys_add_bin_test(
+    NAME rocprof-sys-instrument-simulate-ls
+    TARGET rocprof-sys-instrument
     ARGS --simulate
          --print-format
          json
@@ -146,45 +146,45 @@ rocprofsys_add_bin_test(
     LABELS "simulate"
     TIMEOUT 240)
 
-rocprofsys_add_bin_test(
-    NAME rocprofsys-instrument-simulate-ls-check
-    DEPENDS rocprofsys-instrument-simulate-ls
-    COMMAND ls rocprofsys-tests-output/rocprofsys-instrument-simulate-ls/instrumentation
+rocprof_sys_add_bin_test(
+    NAME rocprof-sys-instrument-simulate-ls-check
+    DEPENDS rocprof-sys-instrument-simulate-ls
+    COMMAND ls rocprof-sys-tests-output/rocprof-sys-instrument-simulate-ls/instrumentation
     TIMEOUT 60
     PASS_REGEX
         ".*available.json.*available.txt.*available.xml.*excluded.json.*excluded.txt.*excluded.xml.*instrumented.json.*instrumented.txt.*instrumented.xml.*overlapping.json.*overlapping.txt.*overlapping.xml.*"
     FAIL_REGEX "No such file or directory|not found|ROCPROFSYS_ABORT_FAIL_REGEX")
 
-rocprofsys_add_bin_test(
-    NAME rocprofsys-instrument-simulate-lib
-    TARGET rocprofsys-instrument
-    ARGS --print-available functions -v 2 -- $<TARGET_FILE:rocprofsys-user-library>
+rocprof_sys_add_bin_test(
+    NAME rocprof-sys-instrument-simulate-lib
+    TARGET rocprof-sys-instrument
+    ARGS --print-available functions -v 2 -- $<TARGET_FILE:rocprof-sys-user-library>
     LABELS "simulate"
     TIMEOUT 120
     PASS_REGEX
         "\\\[rocprof-sys\\\]\\\[exe\\\] Runtime instrumentation is not possible!(.*)\n(.*)\\\[rocprof-sys\\\]\\\[exe\\\] Switching to binary rewrite mode and assuming '--simulate --all-functions'"
     )
 
-file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/rocprofsys-tests-output/tmp)
+file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/rocprof-sys-tests-output/tmp)
 
-rocprofsys_add_bin_test(
-    NAME rocprofsys-instrument-simulate-lib-basename
-    TARGET rocprofsys-instrument
+rocprof_sys_add_bin_test(
+    NAME rocprof-sys-instrument-simulate-lib-basename
+    TARGET rocprof-sys-instrument
     ARGS --print-available
          functions
          -v
          2
          -o
-         ${PROJECT_BINARY_DIR}/rocprofsys-tests-output/rocprofsys-instrument-simulate-lib-basename/${CMAKE_SHARED_LIBRARY_PREFIX}$<TARGET_FILE_BASE_NAME:rocprofsys-user-library>${CMAKE_SHARED_LIBRARY_SUFFIX}
+         ${PROJECT_BINARY_DIR}/rocprof-sys-tests-output/rocprof-sys-instrument-simulate-lib-basename/${CMAKE_SHARED_LIBRARY_PREFIX}$<TARGET_FILE_BASE_NAME:rocprof-sys-user-library>${CMAKE_SHARED_LIBRARY_SUFFIX}
          --
-         ${CMAKE_SHARED_LIBRARY_PREFIX}$<TARGET_FILE_BASE_NAME:rocprofsys-user-library>${CMAKE_SHARED_LIBRARY_SUFFIX}
+         ${CMAKE_SHARED_LIBRARY_PREFIX}$<TARGET_FILE_BASE_NAME:rocprof-sys-user-library>${CMAKE_SHARED_LIBRARY_SUFFIX}
     LABELS "simulate"
     TIMEOUT 120
-    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/rocprofsys-tests-output/tmp)
+    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/rocprof-sys-tests-output/tmp)
 
-rocprofsys_add_bin_test(
-    NAME rocprofsys-instrument-write-log
-    TARGET rocprofsys-instrument
+rocprof_sys_add_bin_test(
+    NAME rocprof-sys-instrument-write-log
+    TARGET rocprof-sys-instrument
     ARGS --print-instrumented
          functions
          -v
@@ -198,97 +198,97 @@ rocprofsys_add_bin_test(
     TIMEOUT 120
     PASS_REGEX "Opening .*/instrumentation/user.log")
 
-rocprofsys_add_bin_test(
-    NAME rocprofsys-instrument-write-log-check
-    DEPENDS rocprofsys-instrument-write-log
+rocprof_sys_add_bin_test(
+    NAME rocprof-sys-instrument-write-log-check
+    DEPENDS rocprof-sys-instrument-write-log
     COMMAND
         ls
-        rocprofsys-tests-output/rocprofsys-instrument-write-log/instrumentation/user.log
+        rocprof-sys-tests-output/rocprof-sys-instrument-write-log/instrumentation/user.log
     LABELS "log"
     TIMEOUT 60
     PASS_REGEX "user.log"
     FAIL_REGEX "No such file or directory|not found|ROCPROFSYS_ABORT_FAIL_REGEX")
 
-rocprofsys_add_bin_test(
-    NAME rocprofsys-avail-help
-    TARGET rocprofsys-avail
+rocprof_sys_add_bin_test(
+    NAME rocprof-sys-avail-help
+    TARGET rocprof-sys-avail
     ARGS --help
-    LABELS "rocprofsys-avail"
+    LABELS "rocprof-sys-avail"
     TIMEOUT 45
     PASS_REGEX
         ".*\\\[rocprof-sys-avail\\\] Usage:.*\\\[DEBUG OPTIONS\\\].*\\\[INFO OPTIONS\\\].*\\\[FILTER OPTIONS\\\].*\\\[COLUMN OPTIONS\\\].*\\\[DISPLAY OPTIONS\\\].*\\\[OUTPUT OPTIONS\\\].*"
     )
 
-rocprofsys_add_bin_test(
-    NAME rocprofsys-avail-all
-    TARGET rocprofsys-avail
+rocprof_sys_add_bin_test(
+    NAME rocprof-sys-avail-all
+    TARGET rocprof-sys-avail
     ARGS --all
-    LABELS "rocprofsys-avail"
+    LABELS "rocprof-sys-avail"
     TIMEOUT 45)
 
-rocprofsys_add_bin_test(
-    NAME rocprofsys-avail-all-expand-keys
-    TARGET rocprofsys-avail
+rocprof_sys_add_bin_test(
+    NAME rocprof-sys-avail-all-expand-keys
+    TARGET rocprof-sys-avail
     ARGS --all --expand-keys
-    LABELS "rocprofsys-avail"
+    LABELS "rocprof-sys-avail"
     TIMEOUT 45
     FAIL_REGEX "%[a-zA-Z_]%|ROCPROFSYS_ABORT_FAIL_REGEX")
 
-rocprofsys_add_bin_test(
-    NAME rocprofsys-avail-all-only-available-alphabetical
-    TARGET rocprofsys-avail
+rocprof_sys_add_bin_test(
+    NAME rocprof-sys-avail-all-only-available-alphabetical
+    TARGET rocprof-sys-avail
     ARGS --all --available --alphabetical --debug --output
-         ${CMAKE_CURRENT_BINARY_DIR}/rocprofsys-avail-all-only-available-alphabetical.log
-    LABELS "rocprofsys-avail"
+         ${CMAKE_CURRENT_BINARY_DIR}/rocprof-sys-avail-all-only-available-alphabetical.log
+    LABELS "rocprof-sys-avail"
     TIMEOUT 45
     PROPERTIES
         ATTACHED_FILES
-        ${CMAKE_CURRENT_BINARY_DIR}/rocprofsys-avail-all-only-available-alphabetical.log)
+        ${CMAKE_CURRENT_BINARY_DIR}/rocprof-sys-avail-all-only-available-alphabetical.log)
 
-rocprofsys_add_bin_test(
-    NAME rocprofsys-avail-all-csv
-    TARGET rocprofsys-avail
+rocprof_sys_add_bin_test(
+    NAME rocprof-sys-avail-all-csv
+    TARGET rocprof-sys-avail
     ARGS --all --csv --csv-separator "#"
-    LABELS "rocprofsys-avail"
+    LABELS "rocprof-sys-avail"
     TIMEOUT 45
     PASS_REGEX
         "COMPONENT#AVAILABLE#VALUE_TYPE#STRING_IDS#FILENAME#DESCRIPTION#CATEGORY#.*ENVIRONMENT VARIABLE#VALUE#DATA TYPE#DESCRIPTION#CATEGORIES#.*HARDWARE COUNTER#DEVICE#AVAILABLE#DESCRIPTION#"
     )
 
-rocprofsys_add_bin_test(
-    NAME rocprofsys-avail-filter-wall-clock-available
-    TARGET rocprofsys-avail
+rocprof_sys_add_bin_test(
+    NAME rocprof-sys-avail-filter-wall-clock-available
+    TARGET rocprof-sys-avail
     ARGS -r wall_clock -C --available
-    LABELS "rocprofsys-avail"
+    LABELS "rocprof-sys-avail"
     TIMEOUT 45
     PASS_REGEX
         "\\\|[-]+\\\|\n\\\|[ ]+COMPONENT[ ]+\\\|\n\\\|[-]+\\\|\n\\\| (wall_clock)[ ]+\\\|\n\\\|[-]+\\\|"
     )
 
-rocprofsys_add_bin_test(
-    NAME rocprofsys-avail-category-filter-rocprofsys
-    TARGET rocprofsys-avail
+rocprof_sys_add_bin_test(
+    NAME rocprof-sys-avail-category-filter-rocprof-sys
+    TARGET rocprof-sys-avail
     ARGS --categories settings::rocprofsys --brief
-    LABELS "rocprofsys-avail"
+    LABELS "rocprof-sys-avail"
     TIMEOUT 45
     PASS_REGEX "ROCPROFSYS_(SETTINGS_DESC|OUTPUT_FILE|OUTPUT_PREFIX)"
     FAIL_REGEX
         "ROCPROFSYS_(ADD_SECONDARY|SCIENTIFIC|PRECISION|MEMORY_PRECISION|TIMING_PRECISION)|ROCPROFSYS_ABORT_FAIL_REGEX"
     )
 
-rocprofsys_add_bin_test(
-    NAME rocprofsys-avail-category-filter-timemory
-    TARGET rocprofsys-avail
+rocprof_sys_add_bin_test(
+    NAME rocprof-sys-avail-category-filter-timemory
+    TARGET rocprof-sys-avail
     ARGS --categories settings::timemory --brief --advanced
-    LABELS "rocprofsys-avail"
+    LABELS "rocprof-sys-avail"
     TIMEOUT 45
     PASS_REGEX
         "ROCPROFSYS_(ADD_SECONDARY|SCIENTIFIC|PRECISION|MEMORY_PRECISION|TIMING_PRECISION)"
     FAIL_REGEX "ROCPROFSYS_(SETTINGS_DESC|OUTPUT_FILE)|ROCPROFSYS_ABORT_FAIL_REGEX")
 
-rocprofsys_add_bin_test(
-    NAME rocprofsys-avail-regex-negation
-    TARGET rocprofsys-avail
+rocprof_sys_add_bin_test(
+    NAME rocprof-sys-avail-regex-negation
+    TARGET rocprof-sys-avail
     ARGS -R
          rocprofsys
          ~timemory
@@ -300,7 +300,7 @@ rocprofsys_add_bin_test(
          --csv
          --brief
          --advanced
-    LABELS "rocprofsys-avail"
+    LABELS "rocprof-sys-avail"
     TIMEOUT 45
     PASS_REGEX
         "ENVIRONMENT VARIABLE,[ \n]+ROCPROFSYS_THREAD_POOL_SIZE,[ \n]+ROCPROFSYS_USE_PID,[ \n]+"
@@ -308,13 +308,13 @@ rocprofsys_add_bin_test(
 
 string(
     REPLACE "+" "\\\+" _AVAIL_CFG_PATH
-            "${PROJECT_BINARY_DIR}/rocprofsys-tests-output/rocprofsys-avail/rocprofsys-")
+            "${PROJECT_BINARY_DIR}/rocprof-sys-tests-output/rocprof-sys-avail/rocprof-sys-")
 # use of TWD == Test Working Directory (added by function)
-rocprofsys_add_bin_test(
-    NAME rocprofsys-avail-write-config
-    TARGET rocprofsys-avail
+rocprof_sys_add_bin_test(
+    NAME rocprof-sys-avail-write-config
+    TARGET rocprof-sys-avail
     ARGS -G
-         %env{TWD}%/rocprofsys-tests-output/rocprofsys-avail/rocprofsys-test.cfg
+         %env{TWD}%/rocprof-sys-tests-output/rocprof-sys-avail/rocprof-sys-test.cfg
          -F
          txt
          json
@@ -324,67 +324,67 @@ rocprofsys_add_bin_test(
          -c
          rocprofsys
     TIMEOUT 45
-    LABELS "rocprofsys-avail"
+    LABELS "rocprof-sys-avail"
     PASS_REGEX
         "Outputting JSON configuration file '${_AVAIL_CFG_PATH}test\\\.json'(.*)Outputting XML configuration file '${_AVAIL_CFG_PATH}test\\\.xml'(.*)Outputting text configuration file '${_AVAIL_CFG_PATH}test\\\.cfg'(.*)"
     )
 
-rocprofsys_add_bin_test(
-    NAME rocprofsys-avail-write-config-tweak
-    TARGET rocprofsys-avail
-    ARGS -G %env{TWD}%/rocprofsys-tests-output/rocprofsys-avail/rocprofsys-tweak.cfg -F
+rocprof_sys_add_bin_test(
+    NAME rocprof-sys-avail-write-config-tweak
+    TARGET rocprof-sys-avail
+    ARGS -G %env{TWD}%/rocprof-sys-tests-output/rocprof-sys-avail/rocprof-sys-tweak.cfg -F
          txt json xml --force
     TIMEOUT 45
-    LABELS "rocprofsys-avail"
+    LABELS "rocprof-sys-avail"
     ENVIRONMENT "ROCPROFSYS_TRACE=OFF;ROCPROFSYS_PROFILE=ON"
     PASS_REGEX
         "Outputting JSON configuration file '${_AVAIL_CFG_PATH}tweak\\\.json'(.*)Outputting XML configuration file '${_AVAIL_CFG_PATH}tweak\\\.xml'(.*)Outputting text configuration file '${_AVAIL_CFG_PATH}tweak\\\.cfg'(.*)"
     )
 
-rocprofsys_add_bin_test(
-    NAME rocprofsys-avail-list-keys
-    TARGET rocprofsys-avail
+rocprof_sys_add_bin_test(
+    NAME rocprof-sys-avail-list-keys
+    TARGET rocprof-sys-avail
     ARGS --list-keys --expand-keys
     TIMEOUT 45
-    LABELS "rocprofsys-avail"
+    LABELS "rocprof-sys-avail"
     PASS_REGEX "Output Keys:\n(.*)%argv%(.*)%argv_hash%")
 
-rocprofsys_add_bin_test(
-    NAME rocprofsys-avail-list-keys-markdown
-    TARGET rocprofsys-avail
+rocprof_sys_add_bin_test(
+    NAME rocprof-sys-avail-list-keys-markdown
+    TARGET rocprof-sys-avail
     ARGS --list-keys --expand-keys --markdown
     TIMEOUT 45
-    LABELS "rocprofsys-avail;markdown"
+    LABELS "rocprof-sys-avail;markdown"
     PASS_REGEX "(.*)`%argv%`(.*)`%argv_hash%`")
 
-rocprofsys_add_bin_test(
-    NAME rocprofsys-avail-list-categories
-    TARGET rocprofsys-avail
+rocprof_sys_add_bin_test(
+    NAME rocprof-sys-avail-list-categories
+    TARGET rocprof-sys-avail
     ARGS --list-categories
     TIMEOUT 45
-    LABELS "rocprofsys-avail"
+    LABELS "rocprof-sys-avail"
     PASS_REGEX " component::(.*) hw_counters::(.*) settings::")
 
-rocprofsys_add_bin_test(
-    NAME rocprofsys-avail-core-categories
-    TARGET rocprofsys-avail
+rocprof_sys_add_bin_test(
+    NAME rocprof-sys-avail-core-categories
+    TARGET rocprof-sys-avail
     ARGS -c core
     TIMEOUT 45
-    LABELS "rocprofsys-avail"
+    LABELS "rocprof-sys-avail"
     PASS_REGEX
         "ROCPROFSYS_CONFIG_FILE(.*)ROCPROFSYS_ENABLED(.*)ROCPROFSYS_SUPPRESS_CONFIG(.*)ROCPROFSYS_SUPPRESS_PARSING(.*)ROCPROFSYS_VERBOSE"
     )
 
-rocprofsys_add_bin_test(
-    NAME rocprofsys-run-help
-    TARGET rocprofsys-run
+rocprof_sys_add_bin_test(
+    NAME rocprof-sys-run-help
+    TARGET rocprof-sys-run
     ARGS --help
     TIMEOUT 45
-    LABELS "rocprofsys-run")
+    LABELS "rocprof-sys-run")
 
-file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/rocprofsys-tests-config")
+file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/rocprof-sys-tests-config")
 file(
-    WRITE "${PROJECT_BINARY_DIR}/rocprofsys-tests-config/empty.cfg"
+    WRITE "${PROJECT_BINARY_DIR}/rocprof-sys-tests-config/empty.cfg"
     "
 #
 # empty config file
@@ -396,18 +396,18 @@ set_target_properties(
     sleeper PROPERTIES BUILD_TYPE RelWithDebInfo RUNTIME_OUTPUT_DIRECTORY
                                                  ${PROJECT_BINARY_DIR}/bin/testing)
 
-rocprofsys_add_bin_test(
-    NAME rocprofsys-run-args
-    TARGET rocprofsys-run
+rocprof_sys_add_bin_test(
+    NAME rocprof-sys-run-args
+    TARGET rocprof-sys-run
     ARGS --monochrome
          --debug=false
          -v
          1
          -c
-         %env{TWD}%/rocprofsys-tests-config/empty.cfg
+         %env{TWD}%/rocprof-sys-tests-config/empty.cfg
          -o
-         rocprofsys-tests-output
-         rocprofsys-run-args-output/
+         rocprof-sys-tests-output
+         rocprof-sys-run-args-output/
          -TPHD
          -S
          cputime
@@ -471,7 +471,7 @@ rocprofsys_add_bin_test(
          --kokkosp-name-length-max=1024
          --kokkosp-prefix="[kokkos]"
          --tmpdir
-         ${CMAKE_BINARY_DIR}/rocprofsys-tests-config/tmpdir
+         ${CMAKE_BINARY_DIR}/rocprof-sys-tests-config/tmpdir
          --perfetto-backend
          inprocess
          --use-pid
@@ -490,4 +490,4 @@ rocprofsys_add_bin_test(
          $<TARGET_FILE:sleeper>
          5
     TIMEOUT 45
-    LABELS "rocprofsys-run")
+    LABELS "rocprof-sys-run")

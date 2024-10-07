@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
-project(rocprofsys-rccl-example LANGUAGES CXX)
+project(rocprof-sys-rccl-example LANGUAGES CXX)
 
 if(ROCPROFSYS_DISABLE_EXAMPLES)
     get_filename_component(_DIR ${CMAKE_CURRENT_LIST_DIR} NAME)
@@ -12,13 +12,13 @@ if(ROCPROFSYS_DISABLE_EXAMPLES)
 endif()
 
 function(rccl_message _MSG_TYPE)
-    if("${CMAKE_PROJECT_NAME}" STREQUAL "rocprofsys"
+    if("${CMAKE_PROJECT_NAME}" STREQUAL "rocprof-sys"
        AND "$ENV{ROCPROFSYS_CI}"
        AND "${_MSG_TYPE}" MATCHES "WARNING")
         set(_MSG_TYPE STATUS) # don't generate warnings during CI
     endif()
-    if("${CMAKE_PROJECT_NAME}" STREQUAL "rocprofsys")
-        rocprofsys_message(${_MSG_TYPE} ${ARGN})
+    if("${CMAKE_PROJECT_NAME}" STREQUAL "rocprof-sys")
+        rocprof_sys_message(${_MSG_TYPE} ${ARGN})
     else()
         message(${_MSG_TYPE} ${ARGN})
     endif()
@@ -31,7 +31,7 @@ if(NOT hip_FOUND)
     return()
 endif()
 
-if("${CMAKE_PROJECT_NAME}" STREQUAL "rocprofsys"
+if("${CMAKE_PROJECT_NAME}" STREQUAL "rocprof-sys"
    AND ("$ENV{ROCPROFSYS_CI}"
         OR ROCPROFSYS_CI
         OR ROCPROFSYS_BUILD_CI))

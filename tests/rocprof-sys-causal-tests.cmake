@@ -4,7 +4,7 @@
 #
 # -------------------------------------------------------------------------------------- #
 
-rocprofsys_add_causal_test(
+rocprof_sys_add_causal_test(
     NAME cpu-omni-func
     TARGET causal-cpu-omni
     RUN_ARGS 70 10 432525 1000000000
@@ -13,7 +13,7 @@ rocprofsys_add_causal_test(
         "Starting causal experiment #1(.*)causal/experiments.json(.*)causal/experiments.coz"
     )
 
-rocprofsys_add_causal_test(
+rocprof_sys_add_causal_test(
     SKIP_BASELINE
     NAME cpu-omni-func-ndebug
     TARGET causal-cpu-omni-ndebug
@@ -23,7 +23,7 @@ rocprofsys_add_causal_test(
         "Starting causal experiment #1(.*)causal/experiments.json(.*)causal/experiments.coz"
     )
 
-rocprofsys_add_causal_test(
+rocprof_sys_add_causal_test(
     SKIP_BASELINE
     NAME cpu-omni-line
     TARGET causal-cpu-omni
@@ -33,7 +33,7 @@ rocprofsys_add_causal_test(
         "Starting causal experiment #1(.*)causal/experiments.json(.*)causal/experiments.coz"
     )
 
-rocprofsys_add_causal_test(
+rocprof_sys_add_causal_test(
     NAME both-omni-func
     TARGET causal-both-omni
     RUN_ARGS 70 10 432525 400000000
@@ -47,7 +47,7 @@ rocprofsys_add_causal_test(
         3
         --monochrome
         -g
-        ${CMAKE_BINARY_DIR}/rocprofsys-tests-config/causal-both-omni-func
+        ${CMAKE_BINARY_DIR}/rocprof-sys-tests-config/causal-both-omni-func
         -l
         causal-both-omni
         -v
@@ -59,7 +59,7 @@ rocprofsys_add_causal_test(
         "Starting causal experiment #1(.*)causal/experiments.json(.*)causal/experiments.coz"
     )
 
-rocprofsys_add_causal_test(
+rocprof_sys_add_causal_test(
     NAME lulesh-func
     TARGET lulesh-omni
     RUN_ARGS -i 35 -s 50 -p
@@ -69,7 +69,7 @@ rocprofsys_add_causal_test(
         "Starting causal experiment #1(.*)causal/experiments.json(.*)causal/experiments.coz"
     )
 
-rocprofsys_add_causal_test(
+rocprof_sys_add_causal_test(
     SKIP_BASELINE
     NAME lulesh-func-ndebug
     TARGET lulesh-omni-ndebug
@@ -80,7 +80,7 @@ rocprofsys_add_causal_test(
         "Starting causal experiment #1(.*)causal/experiments.json(.*)causal/experiments.coz"
     )
 
-rocprofsys_add_causal_test(
+rocprof_sys_add_causal_test(
     SKIP_BASELINE
     NAME lulesh-line
     TARGET lulesh-omni
@@ -113,7 +113,7 @@ macro(
 
     # arguments to validate-causal-json.py
     set(${_NAME}_valid
-        "-n 0 -i rocprofsys-tests-output/causal-cpu-omni-${_TEST}-e2e/causal/experiments.json -v ${_EXPER} $<TARGET_FILE_BASE_NAME:causal-cpu-omni> 10 ${_V10} ${_TOL} ${_EXPER} $<TARGET_FILE_BASE_NAME:causal-cpu-omni> 20 ${_V20} ${_TOL} ${_EXPER} $<TARGET_FILE_BASE_NAME:causal-cpu-omni> 30 ${_V30} ${_TOL}"
+        "-n 0 -i rocprof-sys-tests-output/causal-cpu-omni-${_TEST}-e2e/causal/experiments.json -v ${_EXPER} $<TARGET_FILE_BASE_NAME:causal-cpu-omni> 10 ${_V10} ${_TOL} ${_EXPER} $<TARGET_FILE_BASE_NAME:causal-cpu-omni> 20 ${_V20} ${_TOL} ${_EXPER} $<TARGET_FILE_BASE_NAME:causal-cpu-omni> 30 ${_V30} ${_TOL}"
         )
 
     # patch string for command-line
@@ -133,7 +133,7 @@ else()
     set(_causal_e2e_environment "ROCPROFSYS_VERBOSE=0")
 endif()
 
-rocprofsys_add_causal_test(
+rocprof_sys_add_causal_test(
     SKIP_BASELINE
     NAME cpu-omni-slow-func-e2e
     TARGET causal-cpu-omni
@@ -147,7 +147,7 @@ rocprofsys_add_causal_test(
     ENVIRONMENT "${_causal_e2e_environment}"
     PROPERTIES PROCESSORS 2 PROCESSOR_AFFINITY OFF)
 
-rocprofsys_add_causal_test(
+rocprof_sys_add_causal_test(
     SKIP_BASELINE
     NAME cpu-omni-fast-func-e2e
     TARGET causal-cpu-omni
@@ -161,7 +161,7 @@ rocprofsys_add_causal_test(
     ENVIRONMENT "${_causal_e2e_environment}"
     PROPERTIES PROCESSORS 2 PROCESSOR_AFFINITY OFF)
 
-rocprofsys_add_causal_test(
+rocprof_sys_add_causal_test(
     SKIP_BASELINE
     NAME cpu-omni-line-100-e2e
     TARGET causal-cpu-omni
@@ -175,7 +175,7 @@ rocprofsys_add_causal_test(
     ENVIRONMENT "${_causal_e2e_environment}"
     PROPERTIES PROCESSORS 2 PROCESSOR_AFFINITY OFF)
 
-rocprofsys_add_causal_test(
+rocprof_sys_add_causal_test(
     SKIP_BASELINE
     NAME cpu-omni-line-110-e2e
     TARGET causal-cpu-omni

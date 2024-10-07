@@ -6,10 +6,10 @@ include(CMakePackageConfigHelpers)
 set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME config)
 
 install(
-    EXPORT rocprofsys-library-targets
-    FILE ${PACKAGE_NAME}-library-targets.cmake
-    NAMESPACE rocprofsys::
-    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PACKAGE_NAME})
+    EXPORT rocprof-sys-library-targets
+    FILE ${PROJECT_NAME}-library-targets.cmake
+    NAMESPACE rocprof-sys::
+    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PROJECT_NAME})
 
 # ------------------------------------------------------------------------------#
 # install tree
@@ -20,25 +20,25 @@ set(LIB_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR})
 set(PROJECT_BUILD_TARGETS user)
 
 configure_package_config_file(
-    ${PROJECT_SOURCE_DIR}/cmake/Templates/${PACKAGE_NAME}-config.cmake.in
-    ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PACKAGE_NAME}/${PACKAGE_NAME}-config.cmake
-    INSTALL_DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PACKAGE_NAME}
+    ${PROJECT_SOURCE_DIR}/cmake/Templates/${PROJECT_NAME}-config.cmake.in
+    ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PROJECT_NAME}/${PROJECT_NAME}-config.cmake
+    INSTALL_DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PROJECT_NAME}
     INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}
     PATH_VARS PROJECT_INSTALL_DIR INCLUDE_INSTALL_DIR LIB_INSTALL_DIR)
 
 write_basic_package_version_file(
-    ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PACKAGE_NAME}/${PACKAGE_NAME}-version.cmake
+    ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PROJECT_NAME}/${PROJECT_NAME}-version.cmake
     VERSION ${PROJECT_VERSION}
     COMPATIBILITY SameMinorVersion)
 
 install(
     FILES
-        ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PACKAGE_NAME}/${PACKAGE_NAME}-config.cmake
-        ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PACKAGE_NAME}/${PACKAGE_NAME}-version.cmake
-    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PACKAGE_NAME}
+        ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PROJECT_NAME}/${PROJECT_NAME}-config.cmake
+        ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PROJECT_NAME}/${PROJECT_NAME}-version.cmake
+    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PROJECT_NAME}
     OPTIONAL)
 
-export(PACKAGE ${PACKAGE_NAME})
+export(PACKAGE ${PROJECT_NAME})
 
 # ------------------------------------------------------------------------------#
 # install the validate-causal-json python script as a utility
@@ -54,7 +54,7 @@ install(PROGRAMS ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}/rocprof-sys-causa
 # build tree
 #
 set(_BUILDTREE_EXPORT_DIR
-    "${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PACKAGE_NAME}")
+    "${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PROJECT_NAME}")
 
 if(NOT EXISTS "${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}")
     file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}")
@@ -64,15 +64,15 @@ if(NOT EXISTS "${_BUILDTREE_EXPORT_DIR}")
     file(MAKE_DIRECTORY "${_BUILDTREE_EXPORT_DIR}")
 endif()
 
-if(NOT EXISTS "${_BUILDTREE_EXPORT_DIR}/${PACKAGE_NAME}-library-targets.cmake")
-    file(TOUCH "${_BUILDTREE_EXPORT_DIR}/${PACKAGE_NAME}-library-targets.cmake")
+if(NOT EXISTS "${_BUILDTREE_EXPORT_DIR}/${PROJECT_NAME}-library-targets.cmake")
+    file(TOUCH "${_BUILDTREE_EXPORT_DIR}/${PROJECT_NAME}-library-targets.cmake")
 endif()
 
 export(
     EXPORT ${PROJECT_NAME}-library-targets
-    NAMESPACE ${PROJECT_NAME}::
-    FILE "${_BUILDTREE_EXPORT_DIR}/${PACKAGE_NAME}-library-targets.cmake")
+    NAMESPACE rocprof-sys::
+    FILE "${_BUILDTREE_EXPORT_DIR}/${PROJECT_NAME}-library-targets.cmake")
 
-set(${PACKAGE_NAME}_DIR
+set(${PROJECT_NAME}_DIR
     "${_BUILDTREE_EXPORT_DIR}"
-    CACHE PATH "${PACKAGE_NAME}" FORCE)
+    CACHE PATH "${PROJECT_NAME}" FORCE)

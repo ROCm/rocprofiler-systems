@@ -1,18 +1,18 @@
 # ------------------------------------------------------------------------------#
 #
-# rocprofsys common headers
+# rocprof-sys common headers
 #
 # ------------------------------------------------------------------------------#
 
-add_library(rocprofsys-common-library INTERFACE)
-add_library(rocprofsys::common-library ALIAS rocprofsys-common-library)
-add_library(rocprofsys::rocprofsys-common-library ALIAS rocprofsys-common-library)
+add_library(rocprof-sys-common-library INTERFACE)
+add_library(rocprof-sys::common-library ALIAS rocprof-sys-common-library)
+add_library(rocprof-sys::rocprof-sys-common-library ALIAS rocprof-sys-common-library)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/defines.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/defines.h @ONLY)
 
 target_sources(
-    rocprofsys-common-library
+    rocprof-sys-common-library
     INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/defines.h
               ${CMAKE_CURRENT_SOURCE_DIR}/delimit.hpp
               ${CMAKE_CURRENT_SOURCE_DIR}/environment.hpp
@@ -24,11 +24,11 @@ get_filename_component(COMMON_SOURCE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" D
 get_filename_component(COMMON_BINARY_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}" DIRECTORY)
 
 target_include_directories(
-    rocprofsys-common-library
+    rocprof-sys-common-library
     INTERFACE $<BUILD_INTERFACE:${COMMON_SOURCE_INCLUDE_DIR}>
               $<BUILD_INTERFACE:${COMMON_BINARY_INCLUDE_DIR}>
               $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/external/timemory/source>
               $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/external/timemory/source>)
 
-target_compile_definitions(rocprofsys-common-library
+target_compile_definitions(rocprof-sys-common-library
                            INTERFACE $<BUILD_INTERFACE:ROCPROFSYS_INTERNAL_BUILD=1>)

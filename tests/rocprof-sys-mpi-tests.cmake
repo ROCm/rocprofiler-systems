@@ -8,7 +8,7 @@ if(NOT ROCPROFSYS_USE_MPI AND NOT ROCPROFSYS_USE_MPI_HEADERS)
     return()
 endif()
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     SKIP_RUNTIME
     NAME "mpi"
     TARGET mpi-example
@@ -32,7 +32,7 @@ rocprofsys_add_test(
         "(perfetto-trace|trip_count|sampling_percent|sampling_cpu_clock|sampling_wall_clock|wall_clock)-[0-9][0-9]+.(json|txt|proto)|ROCPROFSYS_ABORT_FAIL_REGEX"
     )
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     SKIP_RUNTIME
     NAME "mpi-flat-mpip"
     TARGET mpi-example
@@ -55,7 +55,7 @@ rocprofsys_add_test(
         ">>> mpi-flat-mpip.inst(.*\n.*)>>> MPI_Init_thread(.*\n.*)>>> pthread_create(.*\n.*)>>> MPI_Comm_size(.*\n.*)>>> MPI_Comm_rank(.*\n.*)>>> MPI_Barrier(.*\n.*)>>> MPI_Alltoall"
     )
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     SKIP_RUNTIME
     NAME "mpi-flat"
     TARGET mpi-example
@@ -109,7 +109,7 @@ foreach(_EXAMPLE all2all allgather allreduce bcast reduce scatter-gather send-re
     if("${_mpip_${_EXAMPLE}_environment}" STREQUAL "")
         set(_mpip_${_EXAMPLE}_environment "${_mpip_environment}")
     endif()
-    rocprofsys_add_test(
+    rocprof_sys_add_test(
         SKIP_RUNTIME SKIP_SAMPLING
         NAME "mpi-${_EXAMPLE}"
         TARGET mpi-${_EXAMPLE}

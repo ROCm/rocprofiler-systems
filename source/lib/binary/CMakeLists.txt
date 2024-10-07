@@ -16,13 +16,13 @@ set(binary_headers
     ${CMAKE_CURRENT_LIST_DIR}/scope_filter.hpp
     ${CMAKE_CURRENT_LIST_DIR}/symbol.hpp)
 
-add_library(rocprofsys-binary-library STATIC)
-add_library(rocprofsys::rocprofsys-binary ALIAS rocprofsys-binary-library)
+add_library(rocprof-sys-binary-library STATIC)
+add_library(rocprof-sys::rocprof-sys-binary ALIAS rocprof-sys-binary-library)
 
-target_sources(rocprofsys-binary-library PRIVATE ${binary_sources} ${binary_headers})
+target_sources(rocprof-sys-binary-library PRIVATE ${binary_sources} ${binary_headers})
 
 target_link_libraries(
-    rocprofsys-binary-library PRIVATE rocprofsys::rocprofsys-interface-library
-                                      rocprofsys::rocprofsys-core)
+    rocprof-sys-binary-library PRIVATE rocprof-sys::rocprof-sys-interface-library
+                                      rocprof-sys::rocprof-sys-core)
 
-set_target_properties(rocprofsys-binary-library PROPERTIES OUTPUT_NAME rocprof-sys-binary)
+set_target_properties(rocprof-sys-binary-library PROPERTIES OUTPUT_NAME rocprof-sys-binary)

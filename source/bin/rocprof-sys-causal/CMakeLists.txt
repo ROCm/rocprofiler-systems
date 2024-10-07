@@ -1,29 +1,29 @@
 # ------------------------------------------------------------------------------#
 #
-# rocprofsys-causal target
+# rocprof-sys-causal target
 #
 # ------------------------------------------------------------------------------#
 
 add_executable(
-    rocprofsys-causal
+    rocprof-sys-causal
     ${CMAKE_CURRENT_LIST_DIR}/rocprof-sys-causal.cpp
     ${CMAKE_CURRENT_LIST_DIR}/rocprof-sys-causal.hpp ${CMAKE_CURRENT_LIST_DIR}/impl.cpp)
 
-target_compile_definitions(rocprofsys-causal PRIVATE TIMEMORY_CMAKE=1)
-target_include_directories(rocprofsys-causal PRIVATE ${CMAKE_CURRENT_LIST_DIR})
+target_compile_definitions(rocprof-sys-causal PRIVATE TIMEMORY_CMAKE=1)
+target_include_directories(rocprof-sys-causal PRIVATE ${CMAKE_CURRENT_LIST_DIR})
 target_link_libraries(
-    rocprofsys-causal
-    PRIVATE rocprofsys::rocprofsys-compile-definitions rocprofsys::rocprofsys-headers
-            rocprofsys::rocprofsys-common-library rocprofsys::rocprofsys-core)
+    rocprof-sys-causal
+    PRIVATE rocprof-sys::rocprof-sys-compile-definitions rocprof-sys::rocprof-sys-headers
+            rocprof-sys::rocprof-sys-common-library rocprof-sys::rocprof-sys-core)
 set_target_properties(
-    rocprofsys-causal
+    rocprof-sys-causal
     PROPERTIES BUILD_RPATH "\$ORIGIN:\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
                INSTALL_RPATH "${ROCPROFSYS_EXE_INSTALL_RPATH}"
                OUTPUT_NAME "rocprof-sys-causal")
 
-rocprofsys_strip_target(rocprofsys-causal)
+rocprof_sys_strip_target(rocprof-sys-causal)
 
 install(
-    TARGETS rocprofsys-causal
+    TARGETS rocprof-sys-causal
     DESTINATION ${CMAKE_INSTALL_BINDIR}
     OPTIONAL)

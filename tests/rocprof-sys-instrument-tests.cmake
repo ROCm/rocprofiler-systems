@@ -4,7 +4,7 @@
 #
 # -------------------------------------------------------------------------------------- #
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     SKIP_SAMPLING SKIP_RUNTIME
     NAME rewrite-caller
     TARGET rewrite-caller
@@ -25,7 +25,7 @@ rocprofsys_add_test(
     REWRITE_PASS_REGEX "\\[function\\]\\[Forcing\\] caller-include-regex :: 'outer'"
     REWRITE_RUN_PASS_REGEX ">>> ._outer ([ \\|]+) 17")
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     NAME parallel-overhead
     TARGET parallel-overhead
     REWRITE_ARGS -e -v 2 --min-instructions=8
@@ -42,7 +42,7 @@ rocprofsys_add_test(
     RUN_ARGS 10 ${NUM_THREADS} 1000
     ENVIRONMENT "${_base_environment}")
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     SKIP_BASELINE SKIP_RUNTIME
     NAME parallel-overhead-locks-perfetto
     TARGET parallel-overhead-locks

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 
-project(rocprofsys-rewrite-caller-example LANGUAGES CXX)
+project(rocprof-sys-rewrite-caller-example LANGUAGES CXX)
 
 if(ROCPROFSYS_DISABLE_EXAMPLES)
     get_filename_component(_DIR ${CMAKE_CURRENT_LIST_DIR} NAME)
@@ -20,5 +20,5 @@ if(ROCPROFSYS_INSTALL_EXAMPLES)
     install(
         TARGETS rewrite-caller
         DESTINATION bin
-        COMPONENT rocprofsys-examples)
+        COMPONENT rocprof-sys-examples)
 endif()

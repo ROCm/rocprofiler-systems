@@ -4,7 +4,7 @@
 #
 # -------------------------------------------------------------------------------------- #
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     NAME parallel-overhead-locks
     TARGET parallel-overhead-locks
     LABELS "locks"
@@ -19,7 +19,7 @@ rocprofsys_add_test(
         "wall_clock .*\\|_pthread_create .* 4 .*\\|_pthread_mutex_lock .* 1000 .*\\|_pthread_mutex_unlock .* 1000 .*\\|_pthread_mutex_lock .* 1000 .*\\|_pthread_mutex_unlock .* 1000 .*\\|_pthread_mutex_lock .* 1000 .*\\|_pthread_mutex_unlock .* 1000 .*\\|_pthread_mutex_lock .* 1000 .*\\|_pthread_mutex_unlock .* 1000"
     )
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     SKIP_RUNTIME
     NAME parallel-overhead-locks-timemory
     TARGET parallel-overhead-locks

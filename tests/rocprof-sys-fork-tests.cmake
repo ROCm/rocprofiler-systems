@@ -4,7 +4,7 @@
 #
 # -------------------------------------------------------------------------------------- #
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     NAME fork
     TARGET fork-example
     REWRITE_ARGS -e -v 2 --print-instrumented modules -i 16

@@ -13,7 +13,7 @@ foreach(_VERSION ${ROCPROFSYS_PYTHON_VERSIONS})
 
     list(GET ROCPROFSYS_PYTHON_ROOT_DIRS ${_INDEX} _PYTHON_ROOT_DIR)
 
-    rocprofsys_find_python(
+    rocprof_sys_find_python(
         _PYTHON
         ROOT_DIR "${_PYTHON_ROOT_DIR}"
         COMPONENTS Interpreter)
@@ -21,7 +21,7 @@ foreach(_VERSION ${ROCPROFSYS_PYTHON_VERSIONS})
     # ---------------------------------------------------------------------------------- #
     # python tests
     # ---------------------------------------------------------------------------------- #
-    rocprofsys_add_python_test(
+    rocprof_sys_add_python_test(
         NAME python-external
         PYTHON_EXECUTABLE ${_PYTHON_EXECUTABLE}
         PYTHON_VERSION ${_VERSION}
@@ -30,7 +30,7 @@ foreach(_VERSION ${ROCPROFSYS_PYTHON_VERSIONS})
         RUN_ARGS -v 10 -n 5
         ENVIRONMENT "${_python_environment}")
 
-    rocprofsys_add_python_test(
+    rocprof_sys_add_python_test(
         NAME python-external-exclude-inefficient
         PYTHON_EXECUTABLE ${_PYTHON_EXECUTABLE}
         PYTHON_VERSION ${_VERSION}
@@ -39,7 +39,7 @@ foreach(_VERSION ${ROCPROFSYS_PYTHON_VERSIONS})
         RUN_ARGS -v 10 -n 5
         ENVIRONMENT "${_python_environment}")
 
-    rocprofsys_add_python_test(
+    rocprof_sys_add_python_test(
         NAME python-builtin
         PYTHON_EXECUTABLE ${_PYTHON_EXECUTABLE}
         PYTHON_VERSION ${_VERSION}
@@ -48,7 +48,7 @@ foreach(_VERSION ${ROCPROFSYS_PYTHON_VERSIONS})
         RUN_ARGS -v 10 -n 5
         ENVIRONMENT "${_python_environment}")
 
-    rocprofsys_add_python_test(
+    rocprof_sys_add_python_test(
         NAME python-builtin-noprofile
         PYTHON_EXECUTABLE ${_PYTHON_EXECUTABLE}
         PYTHON_VERSION ${_VERSION}
@@ -57,7 +57,7 @@ foreach(_VERSION ${ROCPROFSYS_PYTHON_VERSIONS})
         RUN_ARGS -v 15 -n 5
         ENVIRONMENT "${_python_environment}")
 
-    rocprofsys_add_python_test(
+    rocprof_sys_add_python_test(
         STANDALONE
         NAME python-source
         PYTHON_EXECUTABLE ${_PYTHON_EXECUTABLE}
@@ -66,7 +66,7 @@ foreach(_VERSION ${ROCPROFSYS_PYTHON_VERSIONS})
         RUN_ARGS -v 5 -n 5 -s 3
         ENVIRONMENT "${_python_environment}")
 
-    rocprofsys_add_python_test(
+    rocprof_sys_add_python_test(
         STANDALONE
         NAME python-code-coverage
         PYTHON_EXECUTABLE ${_PYTHON_EXECUTABLE}
@@ -74,10 +74,10 @@ foreach(_VERSION ${ROCPROFSYS_PYTHON_VERSIONS})
         FILE ${CMAKE_SOURCE_DIR}/examples/code-coverage/code-coverage.py
         RUN_ARGS
             -i
-            ${PROJECT_BINARY_DIR}/rocprofsys-tests-output/code-coverage-basic-blocks-binary-rewrite/coverage.json
-            ${PROJECT_BINARY_DIR}/rocprofsys-tests-output/code-coverage-basic-blocks-hybrid-runtime-instrument/coverage.json
+            ${PROJECT_BINARY_DIR}/rocprof-sys-tests-output/code-coverage-basic-blocks-binary-rewrite/coverage.json
+            ${PROJECT_BINARY_DIR}/rocprof-sys-tests-output/code-coverage-basic-blocks-hybrid-runtime-instrument/coverage.json
             -o
-            ${PROJECT_BINARY_DIR}/rocprofsys-tests-output/code-coverage-basic-blocks-summary/coverage.json
+            ${PROJECT_BINARY_DIR}/rocprof-sys-tests-output/code-coverage-basic-blocks-summary/coverage.json
         DEPENDS code-coverage-basic-blocks-binary-rewrite
                 code-coverage-basic-blocks-binary-rewrite-run
                 code-coverage-basic-blocks-hybrid-runtime-instrument
@@ -101,78 +101,78 @@ foreach(_VERSION ${ROCPROFSYS_PYTHON_VERSIONS})
     endif()
 
     if(ROCPROFSYS_CAT_COMMAND)
-        rocprofsys_add_python_test(
+        rocprof_sys_add_python_test(
             NAME python-external-check
             COMMAND ${ROCPROFSYS_CAT_COMMAND}
             PYTHON_VERSION ${_VERSION}
-            FILE rocprofsys-tests-output/python-external/${_VERSION}/trip_count.txt
+            FILE rocprof-sys-tests-output/python-external/${_VERSION}/trip_count.txt
             PASS_REGEX
                 "(\\\[compile\\\]).*(\\\| \\\|0>>> \\\[run\\\]\\\[external.py\\\]).*(\\\| \\\|0>>> \\\|_\\\[fib\\\]\\\[external.py\\\]).*(\\\| \\\|0>>> \\\|_\\\[inefficient\\\]\\\[external.py\\\])"
             DEPENDS python-external-${_VERSION}
             ENVIRONMENT "${_python_environment}")
 
-        rocprofsys_add_python_test(
+        rocprof_sys_add_python_test(
             NAME python-external-exclude-inefficient-check
             COMMAND ${ROCPROFSYS_CAT_COMMAND}
             PYTHON_VERSION ${_VERSION}
-            FILE rocprofsys-tests-output/python-external-exclude-inefficient/${_VERSION}/trip_count.txt
+            FILE rocprof-sys-tests-output/python-external-exclude-inefficient/${_VERSION}/trip_count.txt
             FAIL_REGEX "(\\\|_inefficient).*(\\\|_sum)|ROCPROFSYS_ABORT_FAIL_REGEX"
             DEPENDS python-external-exclude-inefficient-${_VERSION}
             ENVIRONMENT "${_python_environment}")
 
-        rocprofsys_add_python_test(
+        rocprof_sys_add_python_test(
             NAME python-builtin-check
             COMMAND ${ROCPROFSYS_CAT_COMMAND}
             PYTHON_VERSION ${_VERSION}
-            FILE rocprofsys-tests-output/python-builtin/${_VERSION}/trip_count.txt
+            FILE rocprof-sys-tests-output/python-builtin/${_VERSION}/trip_count.txt
             PASS_REGEX "\\\[inefficient\\\]\\\[builtin.py:14\\\]"
             DEPENDS python-builtin-${_VERSION}
             ENVIRONMENT "${_python_environment}")
 
-        rocprofsys_add_python_test(
+        rocprof_sys_add_python_test(
             NAME python-builtin-noprofile-check
             COMMAND ${ROCPROFSYS_CAT_COMMAND}
             PYTHON_VERSION ${_VERSION}
-            FILE rocprofsys-tests-output/python-builtin-noprofile/${_VERSION}/trip_count.txt
+            FILE rocprof-sys-tests-output/python-builtin-noprofile/${_VERSION}/trip_count.txt
             PASS_REGEX ".(run)..(noprofile.py)."
             FAIL_REGEX ".(fib|inefficient)..(noprofile.py).|ROCPROFSYS_ABORT_FAIL_REGEX"
             DEPENDS python-builtin-noprofile-${_VERSION}
             ENVIRONMENT "${_python_environment}")
     else()
-        rocprofsys_message(
+        rocprof_sys_message(
             WARNING
             "Neither 'cat' nor 'cmake -E cat' are available. Python source checks are disabled"
             )
     endif()
 
-    function(ROCPROFSYS_ADD_PYTHON_VALIDATION_TEST)
+    function(ROCPROF_SYS_ADD_PYTHON_VALIDATION_TEST)
         cmake_parse_arguments(
             TEST "" "NAME;TIMEMORY_METRIC;TIMEMORY_FILE;PERFETTO_METRIC;PERFETTO_FILE"
             "ARGS" ${ARGN})
 
-        rocprofsys_add_python_test(
+        rocprof_sys_add_python_test(
             NAME ${TEST_NAME}-validate-timemory
             COMMAND
                 ${_PYTHON_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/validate-timemory-json.py
                 -m ${TEST_TIMEMORY_METRIC} ${TEST_ARGS} -i
             PYTHON_VERSION ${_VERSION}
-            FILE rocprofsys-tests-output/${TEST_NAME}/${_VERSION}/${TEST_TIMEMORY_FILE}
+            FILE rocprof-sys-tests-output/${TEST_NAME}/${_VERSION}/${TEST_TIMEMORY_FILE}
             DEPENDS ${TEST_NAME}-${_VERSION}
             PASS_REGEX
-                "rocprofsys-tests-output/${TEST_NAME}/${_VERSION}/${TEST_TIMEMORY_FILE} validated"
+                "rocprof-sys-tests-output/${TEST_NAME}/${_VERSION}/${TEST_TIMEMORY_FILE} validated"
             ENVIRONMENT "${_python_environment}")
 
-        rocprofsys_add_python_test(
+        rocprof_sys_add_python_test(
             NAME ${TEST_NAME}-validate-perfetto
             COMMAND
                 ${_PYTHON_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/validate-perfetto-proto.py
                 -m ${TEST_PERFETTO_METRIC} ${TEST_ARGS} -p -t
                 /opt/trace_processor/bin/trace_processor_shell -i
             PYTHON_VERSION ${_VERSION}
-            FILE rocprofsys-tests-output/${TEST_NAME}/${_VERSION}/${TEST_PERFETTO_FILE}
+            FILE rocprof-sys-tests-output/${TEST_NAME}/${_VERSION}/${TEST_PERFETTO_FILE}
             DEPENDS ${TEST_NAME}-${_VERSION}
             PASS_REGEX
-                "rocprofsys-tests-output/${TEST_NAME}/${_VERSION}/${TEST_PERFETTO_FILE} validated"
+                "rocprof-sys-tests-output/${TEST_NAME}/${_VERSION}/${TEST_PERFETTO_FILE} validated"
             ENVIRONMENT "${_python_environment}")
     endfunction()
 
@@ -207,7 +207,7 @@ foreach(_VERSION ${ROCPROFSYS_PYTHON_VERSIONS})
         2
         3)
 
-    rocprofsys_add_python_validation_test(
+    rocprof_sys_add_python_validation_test(
         NAME python-source
         TIMEMORY_METRIC "trip_count"
         TIMEMORY_FILE "trip_count.json"
@@ -256,7 +256,7 @@ foreach(_VERSION ${ROCPROFSYS_PYTHON_VERSIONS})
         10
         1)
 
-    rocprofsys_add_python_validation_test(
+    rocprof_sys_add_python_validation_test(
         NAME python-builtin
         TIMEMORY_METRIC "trip_count"
         TIMEMORY_FILE "trip_count.json"

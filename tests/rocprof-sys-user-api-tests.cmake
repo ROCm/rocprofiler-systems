@@ -4,7 +4,7 @@
 #
 # -------------------------------------------------------------------------------------- #
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     NAME user-api
     TARGET user-api
     LABELS "loops"

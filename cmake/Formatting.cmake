@@ -7,10 +7,10 @@ include_guard(DIRECTORY)
 # ----------------------------------------------------------------------------------------#
 
 # clang-tidy
-macro(ROCPROFSYS_ACTIVATE_CLANG_TIDY)
+macro(ROCPROF_SYS_ACTIVATE_CLANG_TIDY)
     if(ROCPROFSYS_USE_CLANG_TIDY)
         find_program(CLANG_TIDY_COMMAND NAMES clang-tidy)
-        rocprofsys_add_feature(CLANG_TIDY_COMMAND "Path to clang-tidy command")
+        rocprof_sys_add_feature(CLANG_TIDY_COMMAND "Path to clang-tidy command")
         if(NOT CLANG_TIDY_COMMAND)
             timemory_message(
                 WARNING "ROCPROFSYS_USE_CLANG_TIDY is ON but clang-tidy is not found!")
@@ -43,7 +43,7 @@ find_program(ROCPROFSYS_CLANG_FORMAT_EXE NAMES clang-format-11 clang-format-mp-1
 find_program(ROCPROFSYS_CMAKE_FORMAT_EXE NAMES cmake-format)
 find_program(ROCPROFSYS_BLACK_FORMAT_EXE NAMES black)
 
-add_custom_target(format-rocprofsys)
+add_custom_target(format-rocprof-sys)
 if(NOT TARGET format)
     add_custom_target(format)
 endif()
@@ -86,7 +86,7 @@ if(ROCPROFSYS_CLANG_FORMAT_EXE
 
     if(ROCPROFSYS_CLANG_FORMAT_EXE)
         add_custom_target(
-            format-rocprofsys-source
+            format-rocprof-sys-source
             ${ROCPROFSYS_CLANG_FORMAT_EXE} -i ${sources} ${headers} ${examples}
             ${tests_source}
             COMMENT
@@ -95,7 +95,7 @@ if(ROCPROFSYS_CLANG_FORMAT_EXE
 
     if(ROCPROFSYS_BLACK_FORMAT_EXE)
         add_custom_target(
-            format-rocprofsys-python
+            format-rocprof-sys-python
             ${ROCPROFSYS_BLACK_FORMAT_EXE} -q ${PROJECT_SOURCE_DIR}
             COMMENT
                 "[rocprof-sys] Running Python formatter ${ROCPROFSYS_BLACK_FORMAT_EXE}..."
@@ -107,7 +107,7 @@ if(ROCPROFSYS_CLANG_FORMAT_EXE
 
     if(ROCPROFSYS_CMAKE_FORMAT_EXE)
         add_custom_target(
-            format-rocprofsys-cmake
+            format-rocprof-sys-cmake
             ${ROCPROFSYS_CMAKE_FORMAT_EXE} -i ${cmake_files}
             COMMENT
                 "[rocprof-sys] Running CMake formatter ${ROCPROFSYS_CMAKE_FORMAT_EXE}...")
@@ -117,15 +117,15 @@ if(ROCPROFSYS_CLANG_FORMAT_EXE
     endif()
 
     foreach(_TYPE source python cmake)
-        if(TARGET format-rocprofsys-${_TYPE})
-            add_dependencies(format-rocprofsys format-rocprofsys-${_TYPE})
-            add_dependencies(format-${_TYPE} format-rocprofsys-${_TYPE})
+        if(TARGET format-rocprof-sys-${_TYPE})
+            add_dependencies(format-rocprof-sys format-rocprof-sys-${_TYPE})
+            add_dependencies(format-${_TYPE} format-rocprof-sys-${_TYPE})
         endif()
     endforeach()
 
     foreach(_TYPE source python)
-        if(TARGET format-rocprofsys-${_TYPE})
-            add_dependencies(format format-rocprofsys-${_TYPE})
+        if(TARGET format-rocprof-sys-${_TYPE})
+            add_dependencies(format format-rocprof-sys-${_TYPE})
         endif()
     endforeach()
 else()

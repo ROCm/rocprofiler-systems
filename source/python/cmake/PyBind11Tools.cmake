@@ -1,5 +1,5 @@
 #
-function(ROCPROFSYS_FIND_PYTHON _VAR)
+function(ROCPROF_SYS_FIND_PYTHON _VAR)
     set(options REQUIRED QUIET)
     set(args VERSION ROOT_DIR)
     set(kwargs COMPONENTS)
@@ -68,7 +68,7 @@ function(ROCPROFSYS_FIND_PYTHON _VAR)
                 "${_PYTHON_VERSION_LIST}"
                 PARENT_SCOPE)
         else()
-            rocprofsys_message(WARNING "${_PYTHON_ERROR_VALUE}")
+            rocprof_sys_message(WARNING "${_PYTHON_ERROR_VALUE}")
         endif()
     endif()
 endfunction()
@@ -141,9 +141,9 @@ function(_ROCPROFSYS_PYBIND11_ADD_LTO_FLAGS target_name prefer_thin_lto)
         endif()
 
         if(PYBIND11_LTO_CXX_FLAGS)
-            rocprofsys_message(STATUS "${target_name} :: LTO enabled")
+            rocprof_sys_message(STATUS "${target_name} :: LTO enabled")
         else()
-            rocprofsys_message(
+            rocprof_sys_message(
                 STATUS
                 "${target_name} :: LTO disabled (not supported by the compiler and/or linker)"
                 )
@@ -162,14 +162,14 @@ function(_ROCPROFSYS_PYBIND11_ADD_LTO_FLAGS target_name prefer_thin_lto)
     endif()
 endfunction()
 #
-function(ROCPROFSYS_PYBIND11_ADD_MODULE target_name)
+function(ROCPROF_SYS_PYBIND11_ADD_MODULE target_name)
     set(options MODULE SHARED EXCLUDE_FROM_ALL NO_EXTRAS SYSTEM THIN_LTO LTO)
     set(args PYTHON_VERSION VISIBILITY CXX_STANDARD)
     set(kwargs)
     cmake_parse_arguments(ARG "${options}" "${args}" "${kwargs}" ${ARGN})
 
     if(ARG_MODULE AND ARG_SHARED)
-        rocprofsys_message(FATAL_ERROR "Can't be both MODULE and SHARED")
+        rocprof_sys_message(FATAL_ERROR "Can't be both MODULE and SHARED")
     elseif(ARG_SHARED)
         set(lib_type SHARED)
     else()
@@ -261,7 +261,7 @@ function(ROCPROFSYS_PYBIND11_ADD_MODULE target_name)
     endif()
 
     if(ARG_LTO OR ARG_THIN_LTO)
-        _rocprofsys_pybind11_add_lto_flags(${target_name} ${ARG_THIN_LTO})
+        _rocprof_sys_pybind11_add_lto_flags(${target_name} ${ARG_THIN_LTO})
     endif()
 
     if(NOT MSVC AND NOT ${CMAKE_BUILD_TYPE} MATCHES Debug|RelWithDebInfo)

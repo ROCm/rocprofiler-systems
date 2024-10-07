@@ -25,7 +25,7 @@ set(_thread_limit_pass_regex "\\|${THREAD_LIMIT_TEST_VALUE}>>>")
 set(_thread_limit_fail_regex
     "\\|${THREAD_LIMIT_TEST_VALUE_PLUS_ONE}>>>|ROCPROFSYS_ABORT_FAIL_REGEX")
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     SKIP_BASELINE
     NAME thread-limit
     TARGET thread-limit

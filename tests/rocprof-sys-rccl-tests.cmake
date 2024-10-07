@@ -7,7 +7,7 @@
 foreach(_TARGET ${RCCL_TEST_TARGETS})
     string(REPLACE "rccl-tests::" "" _NAME "${_TARGET}")
     string(REPLACE "_" "-" _NAME "${_NAME}")
-    rocprofsys_add_test(
+    rocprof_sys_add_test(
         NAME rccl-test-${_NAME}
         TARGET ${_TARGET}
         LABELS "rccl-tests;rcclp"

@@ -1,13 +1,13 @@
 # ======================================================================================
 # PAPI.cmake
 #
-# Configure papi for rocprofsys
+# Configure papi for rocprof-sys
 #
 # ======================================================================================
 
 include_guard(GLOBAL)
 
-rocprofsys_checkout_git_submodule(
+rocprof_sys_checkout_git_submodule(
     RELATIVE_PATH external/papi
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     REPO_URL https://bitbucket.org/icl/papi.git
@@ -45,7 +45,7 @@ if(NOT EXISTS "${ROCPROFSYS_PAPI_INSTALL_DIR}")
         ${ROCPROFSYS_PAPI_INSTALL_DIR}/lib/libpfm.so)
 endif()
 
-rocprofsys_add_option(ROCPROFSYS_PAPI_AUTO_COMPONENTS "Automatically enable components"
+rocprof_sys_add_option(ROCPROFSYS_PAPI_AUTO_COMPONENTS "Automatically enable components"
                       OFF)
 
 # -------------- PACKAGES -----------------------------------------------------
@@ -137,7 +137,7 @@ endif()
 set(ROCPROFSYS_PAPI_COMPONENTS
     "${_ROCPROFSYS_PAPI_COMPONENTS}"
     CACHE STRING "PAPI components")
-rocprofsys_add_feature(ROCPROFSYS_PAPI_COMPONENTS "PAPI components")
+rocprof_sys_add_feature(ROCPROFSYS_PAPI_COMPONENTS "PAPI components")
 string(REPLACE ";" "\ " _ROCPROFSYS_PAPI_COMPONENTS "${ROCPROFSYS_PAPI_COMPONENTS}")
 set(ROCPROFSYS_PAPI_EXTRA_ENV)
 
@@ -145,7 +145,7 @@ foreach(_COMP ${ROCPROFSYS_PAPI_COMPONENTS})
     string(REPLACE ";" ", " _ROCPROFSYS_VALID_PAPI_COMPONENTS_MSG
                    "${ROCPROFSYS_VALID_PAPI_COMPONENTS}")
     if(NOT "${_COMP}" IN_LIST ROCPROFSYS_VALID_PAPI_COMPONENTS)
-        rocprofsys_message(
+        rocprof_sys_message(
             AUTHOR_WARNING
             "ROCPROFSYS_PAPI_COMPONENTS contains an unknown component '${_COMP}'. Known components: ${_ROCPROFSYS_VALID_PAPI_COMPONENTS_MSG}"
             )
@@ -169,7 +169,7 @@ endif()
 
 if("perf_event_uncore" IN_LIST ROCPROFSYS_PAPI_COMPONENTS AND NOT "perf_event" IN_LIST
                                                               ROCPROFSYS_PAPI_COMPONENTS)
-    rocprofsys_message(
+    rocprof_sys_message(
         FATAL_ERROR
         "ROCPROFSYS_PAPI_COMPONENTS :: 'perf_event_uncore' requires 'perf_event' component"
         )
@@ -181,7 +181,7 @@ find_program(
     PATH_SUFFIXES bin)
 
 if(NOT MAKE_EXECUTABLE)
-    rocprofsys_message(
+    rocprof_sys_message(
         FATAL_ERROR
         "make/gmake executable not found. Please re-run with -DMAKE_EXECUTABLE=/path/to/make"
         )
@@ -200,7 +200,7 @@ set(PAPI_C_COMPILER
 
 include(ExternalProject)
 externalproject_add(
-    rocprofsys-papi-build
+    rocprof-sys-papi-build
     PREFIX ${PROJECT_BINARY_DIR}/external/papi
     SOURCE_DIR ${ROCPROFSYS_PAPI_SOURCE_DIR}/src
     BUILD_IN_SOURCE 1
@@ -220,7 +220,7 @@ externalproject_add(
 
 # target for re-executing the installation
 add_custom_target(
-    rocprofsys-papi-install
+    rocprof-sys-papi-install
     COMMAND ${CMAKE_COMMAND} -E env CFLAGS=-fPIC\ -O3\ -Wno-stringop-truncation
             ${ROCPROFSYS_PAPI_EXTRA_ENV} ${MAKE_EXECUTABLE} static install -s
     COMMAND ${CMAKE_COMMAND} -E env CFLAGS=-fPIC\ -O3\ -Wno-stringop-truncation
@@ -229,7 +229,7 @@ add_custom_target(
     COMMENT "Installing PAPI...")
 
 add_custom_target(
-    rocprofsys-papi-clean
+    rocprof-sys-papi-clean
     COMMAND ${MAKE_EXECUTABLE} distclean
     COMMAND ${CMAKE_COMMAND} -E rm -rf ${ROCPROFSYS_PAPI_INSTALL_DIR}/include/*
     COMMAND ${CMAKE_COMMAND} -E rm -rf ${ROCPROFSYS_PAPI_INSTALL_DIR}/lib/*
@@ -259,16 +259,16 @@ set(PAPI_pfm_STATIC_LIBRARY
     ${ROCPROFSYS_PAPI_INSTALL_DIR}/lib/libpfm.a
     CACHE FILEPATH "PAPI library" FORCE)
 
-target_include_directories(rocprofsys-papi SYSTEM
+target_include_directories(rocprof-sys-papi SYSTEM
                            INTERFACE $<BUILD_INTERFACE:${PAPI_INCLUDE_DIR}>)
-target_link_libraries(rocprofsys-papi INTERFACE $<BUILD_INTERFACE:${PAPI_LIBRARY}>
+target_link_libraries(rocprof-sys-papi INTERFACE $<BUILD_INTERFACE:${PAPI_LIBRARY}>
                                                 $<BUILD_INTERFACE:${PAPI_pfm_LIBRARY}>)
-rocprofsys_target_compile_definitions(
-    rocprofsys-papi INTERFACE ROCPROFSYS_USE_PAPI $<BUILD_INTERFACE:TIMEMORY_USE_PAPI=1>)
+rocprof_sys_target_compile_definitions(
+    rocprof-sys-papi INTERFACE ROCPROFSYS_USE_PAPI $<BUILD_INTERFACE:TIMEMORY_USE_PAPI=1>)
 
 install(
     DIRECTORY ${ROCPROFSYS_PAPI_INSTALL_DIR}/lib/
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/${PACKAGE_NAME}
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}
     COMPONENT papi
     FILES_MATCHING
     PATTERN "*.so*")

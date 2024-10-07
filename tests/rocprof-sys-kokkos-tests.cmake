@@ -4,7 +4,7 @@
 #
 # -------------------------------------------------------------------------------------- #
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     NAME lulesh
     TARGET lulesh
     MPI ${LULESH_USE_MPI}
@@ -30,7 +30,7 @@ rocprofsys_add_test(
     REWRITE_RUN_PASS_REGEX "\\|_\\[kokkos\\] [a-zA-Z]"
     RUNTIME_PASS_REGEX "\\|_\\[kokkos\\] [a-zA-Z]")
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     SKIP_RUNTIME SKIP_REWRITE
     NAME lulesh-baseline-kokkosp-librocprof-sys
     TARGET lulesh
@@ -43,7 +43,7 @@ rocprofsys_add_test(
         "${_base_environment};ROCPROFSYS_USE_KOKKOSP=ON;ROCPROFSYS_COUT_OUTPUT=ON;ROCPROFSYS_SAMPLING_FREQ=50;ROCPROFSYS_KOKKOSP_PREFIX=[kokkos];KOKKOS_PROFILE_LIBRARY=librocprof-sys.so"
     BASELINE_PASS_REGEX "\\|_\\[kokkos\\] [a-zA-Z]")
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     SKIP_RUNTIME SKIP_REWRITE
     NAME lulesh-baseline-kokkosp-librocprof-sys-dl
     TARGET lulesh
@@ -56,7 +56,7 @@ rocprofsys_add_test(
         "${_base_environment};ROCPROFSYS_USE_KOKKOSP=ON;ROCPROFSYS_COUT_OUTPUT=ON;ROCPROFSYS_SAMPLING_FREQ=50;ROCPROFSYS_KOKKOSP_PREFIX=[kokkos];KOKKOS_PROFILE_LIBRARY=librocprof-sys-dl.so"
     BASELINE_PASS_REGEX "\\|_\\[kokkos\\] [a-zA-Z]")
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     SKIP_BASELINE
     NAME lulesh-kokkosp
     TARGET lulesh
@@ -79,7 +79,7 @@ rocprofsys_add_test(
     RUN_ARGS -i 10 -s 20 -p
     ENVIRONMENT "${_base_environment};ROCPROFSYS_USE_KOKKOSP=ON")
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     SKIP_BASELINE
     NAME lulesh-perfetto
     TARGET lulesh
@@ -101,7 +101,7 @@ rocprofsys_add_test(
     RUN_ARGS -i 10 -s 20 -p
     ENVIRONMENT "${_perfetto_environment};ROCPROFSYS_USE_KOKKOSP=OFF")
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     NAME lulesh-timemory
     TARGET lulesh
     MPI ${LULESH_USE_MPI}

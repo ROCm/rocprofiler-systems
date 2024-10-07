@@ -1,30 +1,30 @@
 # ------------------------------------------------------------------------------#
 #
-# rocprofsys-run target
+# rocprof-sys-run target
 #
 # ------------------------------------------------------------------------------#
 
 add_executable(
-    rocprofsys-run
+    rocprof-sys-run
     ${CMAKE_CURRENT_LIST_DIR}/rocprof-sys-run.cpp
     ${CMAKE_CURRENT_LIST_DIR}/rocprof-sys-run.hpp ${CMAKE_CURRENT_LIST_DIR}/impl.cpp)
 
-target_compile_definitions(rocprofsys-run PRIVATE TIMEMORY_CMAKE=1)
-target_include_directories(rocprofsys-run PRIVATE ${CMAKE_CURRENT_LIST_DIR})
+target_compile_definitions(rocprof-sys-run PRIVATE TIMEMORY_CMAKE=1)
+target_include_directories(rocprof-sys-run PRIVATE ${CMAKE_CURRENT_LIST_DIR})
 target_link_libraries(
-    rocprofsys-run
-    PRIVATE rocprofsys::rocprofsys-compile-definitions rocprofsys::rocprofsys-headers
-            rocprofsys::rocprofsys-common-library rocprofsys::rocprofsys-core
-            rocprofsys::rocprofsys-sanitizer)
+    rocprof-sys-run
+    PRIVATE rocprof-sys::rocprof-sys-compile-definitions rocprof-sys::rocprof-sys-headers
+            rocprof-sys::rocprof-sys-common-library rocprof-sys::rocprof-sys-core
+            rocprof-sys::rocprof-sys-sanitizer)
 set_target_properties(
-    rocprofsys-run
+    rocprof-sys-run
     PROPERTIES BUILD_RPATH "\$ORIGIN:\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
                INSTALL_RPATH "${ROCPROFSYS_EXE_INSTALL_RPATH}"
                OUTPUT_NAME "rocprof-sys-run")
 
-rocprofsys_strip_target(rocprofsys-run)
+rocprof_sys_strip_target(rocprof-sys-run)
 
 install(
-    TARGETS rocprofsys-run
+    TARGETS rocprof-sys-run
     DESTINATION ${CMAKE_INSTALL_BINDIR}
     OPTIONAL)

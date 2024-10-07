@@ -8,7 +8,7 @@ set(ROCPROFSYS_ROCM_EVENTS_TEST
     "GRBM_COUNT,GPUBusy,SQ_WAVES,SQ_INSTS_VALU,VALUInsts,TCC_HIT_sum,TA_TA_BUSY[0]:device=0,TA_TA_BUSY[11]:device=0"
     )
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     NAME transpose
     TARGET transpose
     MPI ${TRANSPOSE_USE_MPI}
@@ -28,7 +28,7 @@ rocprofsys_add_test(
         uniform_int_distribution
     ENVIRONMENT "${_base_environment}")
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     SKIP_REWRITE SKIP_RUNTIME
     NAME transpose-two-kernels
     TARGET transpose
@@ -40,7 +40,7 @@ rocprofsys_add_test(
         "${_base_environment};ROCPROFSYS_ROCTRACER_HSA_ACTIVITY=OFF;ROCPROFSYS_ROCTRACER_HSA_API=OFF"
     )
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     SKIP_BASELINE SKIP_RUNTIME
     NAME transpose-loops
     TARGET transpose
@@ -65,7 +65,7 @@ rocprofsys_add_test(
     REWRITE_FAIL_REGEX "0 instrumented loops in procedure transpose")
 
 if(ROCPROFSYS_USE_ROCPROFILER)
-    rocprofsys_add_test(
+    rocprof_sys_add_test(
         SKIP_BASELINE SKIP_RUNTIME
         NAME transpose-rocprofiler
         TARGET transpose
@@ -80,7 +80,7 @@ if(ROCPROFSYS_USE_ROCPROFILER)
             "rocprof-device-0-GRBM_COUNT.txt(.*)rocprof-device-0-GPUBusy.txt(.*)rocprof-device-0-SQ_WAVES.txt(.*)rocprof-device-0-SQ_INSTS_VALU.txt(.*)rocprof-device-0-VALUInsts.txt(.*)rocprof-device-0-TCC_HIT_sum.txt(.*)rocprof-device-0-TA_TA_BUSY_0.txt(.*)rocprof-device-0-TA_TA_BUSY_11.txt"
         )
 
-    rocprofsys_add_test(
+    rocprof_sys_add_test(
         SKIP_BASELINE SKIP_RUNTIME
         NAME transpose-rocprofiler-no-roctracer
         TARGET transpose

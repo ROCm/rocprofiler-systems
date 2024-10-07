@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
-project(rocprofsys-lulesh-example LANGUAGES C CXX)
+project(rocprof-sys-lulesh-example LANGUAGES C CXX)
 
 if(ROCPROFSYS_DISABLE_EXAMPLES)
     get_filename_component(_DIR ${CMAKE_CURRENT_LIST_DIR} NAME)
@@ -65,7 +65,7 @@ endif()
 file(GLOB headers ${PROJECT_SOURCE_DIR}/*.h ${PROJECT_SOURCE_DIR}/*.hxx)
 file(GLOB sources ${PROJECT_SOURCE_DIR}/*.cc)
 
-rocprofsys_causal_example_executable(
+rocprof_sys_causal_example_executable(
     "lulesh"
     SOURCES ${sources} ${headers}
     LINK_LIBRARIES Kokkos::kokkos lulesh-mpi
@@ -76,7 +76,7 @@ if(ROCPROFSYS_INSTALL_EXAMPLES)
         install(
             TARGETS kokkoscore kokkoscontainers
             DESTINATION ${CMAKE_INSTALL_LIBDIR}
-            COMPONENT rocprofsys-examples)
+            COMPONENT rocprof-sys-examples)
         set_target_properties(lulesh PROPERTIES INSTALL_RPATH
                                                 "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}")
     endif()

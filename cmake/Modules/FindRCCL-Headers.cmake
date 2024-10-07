@@ -60,7 +60,7 @@ else()
 endif()
 
 if(NOT EXISTS "${RCCL-Headers_INCLUDE_DIR}/${_RCCL-Headers_FILE}")
-    rocprofsys_message(
+    rocprof_sys_message(
         AUTHOR_WARNING
         "RCCL header (${RCCL-Headers_INCLUDE_DIR}/${_RCCL-Headers_FILE}) does not exist! Setting RCCL-Headers_INCLUDE_DIR to internal RCCL include directory: ${RCCL-Headers_INCLUDE_DIR_INTERNAL}"
         )

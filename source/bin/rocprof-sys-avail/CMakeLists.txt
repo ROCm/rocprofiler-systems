@@ -1,13 +1,13 @@
 # ------------------------------------------------------------------------------#
 #
-# rocprofsys-avail target
+# rocprof-sys-avail target
 #
 # ------------------------------------------------------------------------------#
 
-add_executable(rocprofsys-avail)
+add_executable(rocprof-sys-avail)
 
 target_sources(
-    rocprofsys-avail
+    rocprof-sys-avail
     PRIVATE ${CMAKE_CURRENT_LIST_DIR}/avail.cpp
             ${CMAKE_CURRENT_LIST_DIR}/avail.hpp
             ${CMAKE_CURRENT_LIST_DIR}/common.cpp
@@ -22,21 +22,21 @@ target_sources(
             ${CMAKE_CURRENT_LIST_DIR}/info_type.cpp
             ${CMAKE_CURRENT_LIST_DIR}/info_type.hpp)
 
-target_include_directories(rocprofsys-avail PRIVATE ${CMAKE_CURRENT_LIST_DIR})
-target_compile_definitions(rocprofsys-avail PRIVATE ROCPROFSYS_EXTERN_COMPONENTS=0)
+target_include_directories(rocprof-sys-avail PRIVATE ${CMAKE_CURRENT_LIST_DIR})
+target_compile_definitions(rocprof-sys-avail PRIVATE ROCPROFSYS_EXTERN_COMPONENTS=0)
 target_link_libraries(
-    rocprofsys-avail
-    PRIVATE rocprofsys::rocprofsys-compile-definitions
-            rocprofsys::rocprofsys-interface-library rocprofsys::librocprofsys-static)
+    rocprof-sys-avail
+    PRIVATE rocprof-sys::rocprof-sys-compile-definitions
+            rocprof-sys::rocprof-sys-interface-library rocprof-sys::librocprof-sys-static)
 set_target_properties(
-    rocprofsys-avail
+    rocprof-sys-avail
     PROPERTIES BUILD_RPATH "\$ORIGIN:\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
                INSTALL_RPATH "${ROCPROFSYS_EXE_INSTALL_RPATH}"
                OUTPUT_NAME rocprof-sys-avail)
 
-rocprofsys_strip_target(rocprofsys-avail)
+rocprof_sys_strip_target(rocprof-sys-avail)
 
 install(
-    TARGETS rocprofsys-avail
+    TARGETS rocprof-sys-avail
     DESTINATION ${CMAKE_INSTALL_BINDIR}
     OPTIONAL)

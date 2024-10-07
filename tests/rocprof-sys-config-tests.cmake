@@ -18,12 +18,12 @@ else()
 endif()
 
 add_test(
-    NAME rocprofsys-invalid-config
-    COMMAND $<TARGET_FILE:rocprofsys-instrument> -- ${_CONFIG_TEST_EXE}
+    NAME rocprof-sys-invalid-config
+    COMMAND $<TARGET_FILE:rocprof-sys-instrument> -- ${_CONFIG_TEST_EXE}
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 
 set_tests_properties(
-    rocprofsys-invalid-config
+    rocprof-sys-invalid-config
     PROPERTIES
         ENVIRONMENT
         "ROCPROFSYS_CONFIG_FILE=${CMAKE_CURRENT_BINARY_DIR}/invalid.cfg;ROCPROFSYS_CI=ON;ROCPROFSYS_CI_TIMEOUT=120"
@@ -35,12 +35,12 @@ set_tests_properties(
         ON)
 
 add_test(
-    NAME rocprofsys-missing-config
-    COMMAND $<TARGET_FILE:rocprofsys-instrument> -- ${_CONFIG_TEST_EXE}
+    NAME rocprof-sys-missing-config
+    COMMAND $<TARGET_FILE:rocprof-sys-instrument> -- ${_CONFIG_TEST_EXE}
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 
 set_tests_properties(
-    rocprofsys-missing-config
+    rocprof-sys-missing-config
     PROPERTIES
         ENVIRONMENT
         "ROCPROFSYS_CONFIG_FILE=${CMAKE_CURRENT_BINARY_DIR}/missing.cfg;ROCPROFSYS_CI=ON;ROCPROFSYS_CI_TIMEOUT=120"

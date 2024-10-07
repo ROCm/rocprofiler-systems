@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
-project(rocprofsys-openmp LANGUAGES CXX)
+project(rocprof-sys-openmp LANGUAGES CXX)
 
 file(GLOB common_source ${CMAKE_CURRENT_SOURCE_DIR}/common/*.cpp)
 add_library(openmp-common OBJECT ${common_source})
@@ -17,7 +17,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_link_libraries(openmp-common PUBLIC OpenMP::OpenMP_CXX)
     set(ROCPROFSYS_OPENMP_USING_LIBOMP_LIBRARY
         ON
-        CACHE INTERNAL "Used by rocprofsys testing" FORCE)
+        CACHE INTERNAL "Used by rocprof-sys testing" FORCE)
 else()
     find_program(CLANGXX_EXECUTABLE NAMES clang++)
     find_library(
@@ -25,22 +25,22 @@ else()
         NAMES omp omp5 ${CMAKE_SHARED_LIBRARY_PREFIX}omp${CMAKE_SHARED_LIBRARY_SUFFIX}.5)
     if(CLANGXX_EXECUTABLE
        AND LIBOMP_LIBRARY
-       AND COMMAND rocprofsys_custom_compilation
+       AND COMMAND rocprof_sys_custom_compilation
        AND USE_CLANG_OMP)
         target_compile_options(openmp-common PUBLIC -W -Wall -fopenmp=libomp)
         target_link_libraries(openmp-common PUBLIC ${LIBOMP_LIBRARY})
-        rocprofsys_custom_compilation(COMPILER ${CLANGXX_EXECUTABLE} TARGET openmp-common)
-        rocprofsys_custom_compilation(COMPILER ${CLANGXX_EXECUTABLE} TARGET openmp-cg)
-        rocprofsys_custom_compilation(COMPILER ${CLANGXX_EXECUTABLE} TARGET openmp-lu)
+        rocprof_sys_custom_compilation(COMPILER ${CLANGXX_EXECUTABLE} TARGET openmp-common)
+        rocprof_sys_custom_compilation(COMPILER ${CLANGXX_EXECUTABLE} TARGET openmp-cg)
+        rocprof_sys_custom_compilation(COMPILER ${CLANGXX_EXECUTABLE} TARGET openmp-lu)
         set(ROCPROFSYS_OPENMP_USING_LIBOMP_LIBRARY
             ON
-            CACHE INTERNAL "Used by rocprofsys testing" FORCE)
+            CACHE INTERNAL "Used by rocprof-sys testing" FORCE)
     else()
         find_package(OpenMP REQUIRED)
         target_link_libraries(openmp-common PUBLIC OpenMP::OpenMP_CXX)
         set(ROCPROFSYS_OPENMP_USING_LIBOMP_LIBRARY
             OFF
-            CACHE INTERNAL "Used by rocprofsys testing" FORCE)
+            CACHE INTERNAL "Used by rocprof-sys testing" FORCE)
     endif()
 endif()
 
@@ -51,5 +51,5 @@ if(ROCPROFSYS_INSTALL_EXAMPLES)
     install(
         TARGETS openmp-cg openmp-lu
         DESTINATION bin
-        COMPONENT rocprofsys-examples)
+        COMPONENT rocprof-sys-examples)
 endif()

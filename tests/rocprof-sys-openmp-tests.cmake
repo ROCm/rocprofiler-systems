@@ -10,7 +10,7 @@ else()
     set(_OMPT_PASS_REGEX "")
 endif()
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     NAME openmp-cg
     TARGET openmp-cg
     LABELS "openmp"
@@ -24,7 +24,7 @@ rocprofsys_add_test(
     RUNTIME_PASS_REGEX "${_OMPT_PASS_REGEX}"
     REWRITE_FAIL_REGEX "0 instrumented loops in procedure")
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     SKIP_RUNTIME
     NAME openmp-lu
     TARGET openmp-lu
@@ -75,7 +75,7 @@ set(_notmp_sampling_file_regex
     "sampling-no-tmp-files-sampling/sampling_percent.(json|txt)(.*)sampling-no-tmp-files-sampling/sampling_cpu_clock.(json|txt)(.*)sampling-no-tmp-files-sampling/sampling_wall_clock.(json|txt)"
     )
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     SKIP_BASELINE SKIP_RUNTIME SKIP_REWRITE
     NAME openmp-cg-sampling-duration
     TARGET openmp-cg
@@ -83,7 +83,7 @@ rocprofsys_add_test(
     ENVIRONMENT "${_ompt_sampling_environ}"
     SAMPLING_PASS_REGEX "${_ompt_sampling_samp_regex}(.*)${_ompt_sampling_file_regex}")
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     SKIP_BASELINE SKIP_RUNTIME SKIP_REWRITE
     NAME openmp-lu-sampling-duration
     TARGET openmp-lu
@@ -91,7 +91,7 @@ rocprofsys_add_test(
     ENVIRONMENT "${_ompt_sampling_environ}"
     SAMPLING_PASS_REGEX "${_ompt_sampling_samp_regex}(.*)${_ompt_sampling_file_regex}")
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     SKIP_BASELINE SKIP_RUNTIME SKIP_REWRITE
     NAME openmp-cg-sampling-no-tmp-files
     TARGET openmp-cg

@@ -1,10 +1,10 @@
 # ----------------------------------------------------------------------------- #
 #
-# rocprofsys: contains all instrumentation functionality
+# rocprof-sys: contains all instrumentation functionality
 #
-# rocprofsys-dl: contains minimal symbols and dlopen's rocprofsys
+# rocprof-sys-dl: contains minimal symbols and dlopen's rocprof-sys
 #
-# rocprofsys-user: contains symbols for user API
+# rocprof-sys-user: contains symbols for user API
 #
 # ----------------------------------------------------------------------------- #
 
@@ -17,52 +17,52 @@ if(ROCPROFSYS_USE_ROCPROFILER
    AND ROCmVersion_TRIPLE_VERSION VERSION_LESS 5.2.0
    AND NOT CMAKE_INSTALL_RPATH_USE_LINK_PATH)
     set(ROCPROFSYS_LIB_INSTALL_RPATH
-        "\$ORIGIN:\$ORIGIN/${PACKAGE_NAME}:${rocprofiler_LIBRARY_DIR}")
+        "\$ORIGIN:\$ORIGIN/${PROJECT_NAME}:${rocprofiler_LIBRARY_DIR}")
 else()
-    set(ROCPROFSYS_LIB_INSTALL_RPATH "\$ORIGIN:\$ORIGIN/${PACKAGE_NAME}")
+    set(ROCPROFSYS_LIB_INSTALL_RPATH "\$ORIGIN:\$ORIGIN/${PROJECT_NAME}")
 endif()
 
 # ------------------------------------------------------------------------------#
 #
-# rocprofsys interface library
+# rocprof-sys interface library
 #
 # ------------------------------------------------------------------------------#
 
-add_library(rocprofsys-interface-library INTERFACE)
-add_library(rocprofsys::rocprofsys-interface-library ALIAS rocprofsys-interface-library)
+add_library(rocprof-sys-interface-library INTERFACE)
+add_library(rocprof-sys::rocprof-sys-interface-library ALIAS rocprof-sys-interface-library)
 
 target_include_directories(
-    rocprofsys-interface-library INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
+    rocprof-sys-interface-library INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
                                            ${CMAKE_CURRENT_SOURCE_DIR}/rocprof-sys)
 
 target_link_libraries(
-    rocprofsys-interface-library
+    rocprof-sys-interface-library
     INTERFACE
-        $<BUILD_INTERFACE:rocprofsys::rocprofsys-headers>
-        $<BUILD_INTERFACE:rocprofsys::rocprofsys-threading>
-        $<BUILD_INTERFACE:rocprofsys::rocprofsys-common-library>
-        $<BUILD_INTERFACE:rocprofsys::rocprofsys-compile-options>
-        $<BUILD_INTERFACE:rocprofsys::rocprofsys-compile-definitions>
-        $<BUILD_INTERFACE:rocprofsys::rocprofsys-perfetto>
-        $<BUILD_INTERFACE:rocprofsys::rocprofsys-timemory>
-        $<BUILD_INTERFACE:rocprofsys::rocprofsys-elfutils>
-        $<BUILD_INTERFACE:rocprofsys::rocprofsys-bfd>
-        $<BUILD_INTERFACE:rocprofsys::rocprofsys-mpi>
-        $<BUILD_INTERFACE:rocprofsys::rocprofsys-ptl>
-        $<BUILD_INTERFACE:rocprofsys::rocprofsys-hip>
-        $<BUILD_INTERFACE:rocprofsys::rocprofsys-roctracer>
-        $<BUILD_INTERFACE:rocprofsys::rocprofsys-rocprofiler>
-        $<BUILD_INTERFACE:rocprofsys::rocprofsys-rocm-smi>
-        $<BUILD_INTERFACE:rocprofsys::rocprofsys-rccl>
-        $<BUILD_INTERFACE:rocprofsys::rocprofsys-static-libgcc-optional>
-        $<BUILD_INTERFACE:rocprofsys::rocprofsys-static-libstdcxx-optional>
-        $<BUILD_INTERFACE:rocprofsys::rocprofsys-sanitizer>
-        $<BUILD_INTERFACE:$<IF:$<BOOL:${ROCPROFSYS_BUILD_LTO}>,rocprofsys::rocprofsys-lto,>>
+        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-headers>
+        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-threading>
+        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-common-library>
+        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-compile-options>
+        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-compile-definitions>
+        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-perfetto>
+        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-timemory>
+        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-elfutils>
+        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-bfd>
+        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-mpi>
+        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-ptl>
+        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-hip>
+        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-roctracer>
+        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-rocprofiler>
+        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-rocm-smi>
+        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-rccl>
+        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-static-libgcc-optional>
+        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-static-libstdcxx-optional>
+        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-sanitizer>
+        $<BUILD_INTERFACE:$<IF:$<BOOL:${ROCPROFSYS_BUILD_LTO}>,rocprof-sys::rocprof-sys-lto,>>
     )
 
 # ------------------------------------------------------------------------------#
 #
-# rocprofsys internal libraries
+# rocprof-sys internal libraries
 #
 # ------------------------------------------------------------------------------#
 
@@ -72,7 +72,7 @@ add_subdirectory(binary)
 
 # ------------------------------------------------------------------------------#
 #
-# rocprofsys exported libraries
+# rocprof-sys exported libraries
 #
 # ------------------------------------------------------------------------------#
 

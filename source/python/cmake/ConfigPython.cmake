@@ -61,13 +61,13 @@ foreach(_VAR FIND_STRATEGY FIND_VIRTUALENV FIND_FRAMEWORK FIND_IMPLEMENTATIONS
 endforeach()
 
 # display version
-rocprofsys_add_feature(ROCPROFSYS_PYTHON_VERSIONS "Python version for rocprofsys" DOC)
+rocprof_sys_add_feature(ROCPROFSYS_PYTHON_VERSIONS "Python version for rocprofsys" DOC)
 
 option(PYBIND11_INSTALL "Enable Pybind11 installation" OFF)
 
 if(ROCPROFSYS_BUILD_PYTHON AND NOT TARGET pybind11)
     # checkout PyBind11 if not checked out
-    rocprofsys_checkout_git_submodule(
+    rocprof_sys_checkout_git_submodule(
         RECURSIVE
         RELATIVE_PATH external/pybind11
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -78,9 +78,9 @@ if(ROCPROFSYS_BUILD_PYTHON AND NOT TARGET pybind11)
         set(CMAKE_INTERPROCEDURAL_OPTIMIZATION OFF)
     endif()
     set(PYBIND11_NOPYTHON ON)
-    rocprofsys_save_variables(IPO VARIABLES CMAKE_INTERPROCEDURAL_OPTIMIZATION)
+    rocprof_sys_save_variables(IPO VARIABLES CMAKE_INTERPROCEDURAL_OPTIMIZATION)
     add_subdirectory(${PROJECT_SOURCE_DIR}/external/pybind11)
-    rocprofsys_restore_variables(IPO VARIABLES CMAKE_INTERPROCEDURAL_OPTIMIZATION)
+    rocprof_sys_restore_variables(IPO VARIABLES CMAKE_INTERPROCEDURAL_OPTIMIZATION)
 endif()
 
 execute_process(

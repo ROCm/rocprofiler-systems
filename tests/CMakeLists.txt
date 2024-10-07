@@ -1,5 +1,5 @@
 #
-#   rocprofsys tests
+#   rocprof-sys tests
 #
 include_guard(GLOBAL)
 

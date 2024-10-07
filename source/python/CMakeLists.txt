@@ -5,7 +5,7 @@
 # ########################################################################################
 
 if(ROCPROFSYS_BUILD_STATIC_LIBSTDCXX)
-    # rocprofsys_message(FATAL_ERROR "static libstdc++ is not compatible with python
+    # rocprof_sys_message(FATAL_ERROR "static libstdc++ is not compatible with python
     # bindings")
 endif()
 
@@ -17,10 +17,10 @@ set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME python)
 
 # ########################################################################################
 
-function(ROCPROFSYS_CONFIGURE_PYTARGET _TARGET _VERSION)
+function(ROCPROF_SYS_CONFIGURE_PYTARGET _TARGET _VERSION)
 
-    add_library(rocprofsys::${_TARGET} ALIAS ${_TARGET})
-    target_link_libraries(${_TARGET} PRIVATE libpyrocprofsys-interface)
+    add_library(rocprof-sys::${_TARGET} ALIAS ${_TARGET})
+    target_link_libraries(${_TARGET} PRIVATE libpyrocprof-sys-interface)
     add_dependencies(libpyrocprofsys ${_TARGET})
 
     set_target_properties(
@@ -60,11 +60,11 @@ endfunction()
 
 # ########################################################################################
 
-add_library(rocprofsys-python-compile-options INTERFACE)
-add_library(rocprofsys::rocprofsys-python-compile-options ALIAS
-            rocprofsys-python-compile-options)
+add_library(rocprof-sys-python-compile-options INTERFACE)
+add_library(rocprof-sys::rocprof-sys-python-compile-options ALIAS
+            rocprof-sys-python-compile-options)
 add_target_cxx_flag_if_avail(
-    rocprofsys-python-compile-options "-Wno-unused-value" "-Wno-range-loop-analysis"
+    rocprof-sys-python-compile-options "-Wno-unused-value" "-Wno-range-loop-analysis"
     "-Wno-deprecated-declarations" "-Wno-unused-but-set-parameter"
     "-ftls-model=global-dynamic")
 
@@ -73,21 +73,21 @@ set(pysources ${CMAKE_CURRENT_LIST_DIR}/libpyrocprofsys.cpp)
 
 set(pybind_libs pybind11::module)
 
-add_library(libpyrocprofsys-interface INTERFACE)
+add_library(libpyrocprof-sys-interface INTERFACE)
 target_link_libraries(
-    libpyrocprofsys-interface
+    libpyrocprof-sys-interface
     INTERFACE pybind11::module
               timemory::timemory-headers
-              rocprofsys::rocprofsys-headers
-              rocprofsys::rocprofsys-compile-options
-              rocprofsys::rocprofsys-static-libgcc-optional
-              rocprofsys::rocprofsys-lto
-              rocprofsys::rocprofsys-dl-library
-              rocprofsys::rocprofsys-user-library
-              rocprofsys::rocprofsys-python
-              rocprofsys::rocprofsys-python-compile-options)
+              rocprof-sys::rocprof-sys-headers
+              rocprof-sys::rocprof-sys-compile-options
+              rocprof-sys::rocprof-sys-static-libgcc-optional
+              rocprof-sys::rocprof-sys-lto
+              rocprof-sys::rocprof-sys-dl-library
+              rocprof-sys::rocprof-sys-user-library
+              rocprof-sys::rocprof-sys-python
+              rocprof-sys::rocprof-sys-python-compile-options)
 
-rocprofsys_target_compile_definitions(libpyrocprofsys-interface
+rocprof_sys_target_compile_definitions(libpyrocprof-sys-interface
                                       INTERFACE ROCPROFSYS_PYBIND11_SOURCE)
 
 add_custom_target(libpyrocprofsys)
@@ -104,20 +104,20 @@ foreach(_IN ${PYTHON_FILES})
         OPTIONAL)
 endforeach()
 
-rocprofsys_python_console_script("rocprof-sys-python" "rocprofsys")
+rocprof_sys_python_console_script("rocprof-sys-python" "rocprofsys")
 
 set(_INDEX 0)
 foreach(_VERSION ${ROCPROFSYS_PYTHON_VERSIONS})
     # add_library(libpyrocprofsys MODULE ${pysources} ${pyheaders})
     list(GET ROCPROFSYS_PYTHON_ROOT_DIRS ${_INDEX} Python3_ROOT_DIR)
-    rocprofsys_pybind11_add_module(
-        libpyrocprofsys-${_VERSION} MODULE
+    rocprof_sys_pybind11_add_module(
+        libpyrocprof-sys-${_VERSION} MODULE
         PYTHON_VERSION ${_VERSION}
         VISIBILITY "hidden" ${pysources} ${pyheaders})
-    rocprofsys_configure_pytarget(libpyrocprofsys-${_VERSION} ${_VERSION})
+    rocprof_sys_configure_pytarget(libpyrocprof-sys-${_VERSION} ${_VERSION})
 
     if(ROCPROFSYS_USE_PYTHON)
-        rocprofsys_python_console_script(
+        rocprof_sys_python_console_script(
             "rocprof-sys-python" "rocprofsys"
             VERSION ${_VERSION}
             ROOT_DIR "${Python3_ROOT_DIR}")

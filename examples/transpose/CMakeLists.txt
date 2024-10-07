@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
-project(rocprofsys-transpose-example LANGUAGES CXX)
+project(rocprof-sys-transpose-example LANGUAGES CXX)
 
 if(ROCPROFSYS_DISABLE_EXAMPLES)
     get_filename_component(_DIR ${CMAKE_CURRENT_LIST_DIR} NAME)
@@ -36,7 +36,7 @@ endif()
 
 if((NOT CMAKE_CXX_COMPILER_IS_HIPCC OR (NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang"
                                         AND NOT hip_FOUND))
-   AND (NOT COMMAND rocprofsys_custom_compilation AND NOT HIPCC_EXECUTABLE))
+   AND (NOT COMMAND rocprof_sys_custom_compilation AND NOT HIPCC_EXECUTABLE))
     message(AUTHOR_WARNING "transpose target could not be built")
     return()
 endif()
@@ -56,7 +56,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang"
    AND NOT HIPCC_EXECUTABLE)
     target_link_libraries(
         transpose
-        PRIVATE $<TARGET_NAME_IF_EXISTS:rocprofsys::rocprofsys-compile-options>
+        PRIVATE $<TARGET_NAME_IF_EXISTS:rocprof-sys::rocprof-sys-compile-options>
                 $<TARGET_NAME_IF_EXISTS:hip::host> $<TARGET_NAME_IF_EXISTS:hip::device>)
 else()
     target_compile_options(transpose PRIVATE -W -Wall)
@@ -73,12 +73,12 @@ endif()
 
 if(NOT CMAKE_CXX_COMPILER_IS_HIPCC AND HIPCC_EXECUTABLE)
     # defined in MacroUtilities.cmake
-    rocprofsys_custom_compilation(COMPILER ${HIPCC_EXECUTABLE} TARGET transpose)
+    rocprof_sys_custom_compilation(COMPILER ${HIPCC_EXECUTABLE} TARGET transpose)
 endif()
 
 if(ROCPROFSYS_INSTALL_EXAMPLES)
     install(
         TARGETS transpose
         DESTINATION bin
-        COMPONENT rocprofsys-examples)
+        COMPONENT rocprof-sys-examples)
 endif()

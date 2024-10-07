@@ -23,9 +23,9 @@ fi
 
 : ${EXAMPLE_DIR:=examples}
 : ${EXAMPLE_NAME:=user-api}
-: ${SOURCE_DIR:=$(mktemp -t -d rocprofsys-test-source-XXXX)}
-: ${BINARY_DIR:=$(mktemp -t -d rocprofsys-test-build-XXXX)}
-: ${INSTALL_DIR:=$(mktemp -t -d rocprofsys-install-XXXX)}
+: ${SOURCE_DIR:=$(mktemp -t -d rocprof-sys-test-source-XXXX)}
+: ${BINARY_DIR:=$(mktemp -t -d rocprof-sys-test-build-XXXX)}
+: ${INSTALL_DIR:=$(mktemp -t -d rocprof-sys-install-XXXX)}
 : ${INSTALL_SCRIPT:=""}
 
 usage()
@@ -36,7 +36,7 @@ usage()
     print_option example-dir "<PATH>" "Directory containing example" "${EXAMPLE_DIR}"
     print_option source-dir "<PATH>" "Location to copy example to" "${SOURCE_DIR}"
     print_option binary-dir "<PATH>" "Location to build" "${BINARY_DIR}"
-    print_option install-dir "<PATH>" "Location of rocprofsys installation" "${INSTALL_DIR}"
+    print_option install-dir "<PATH>" "Location of rocprof-sys installation" "${INSTALL_DIR}"
     print_option install-script "<FILEPATH>" "Absolute path to the installer script" ""
 }
 
@@ -125,7 +125,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(rocprof-sys REQUIRED COMPONENTS user)
 find_package(Threads REQUIRED)
 
-get_target_property(LIBS rocprofsys::rocprofsys INTERFACE_LINK_LIBRARIES)
+get_target_property(LIBS rocprof-sys::rocprof-sys INTERFACE_LINK_LIBRARIES)
 foreach(_LIB \${LIBS})
     foreach(_VAR LINK_LIBRARIES INCLUDE_DIRECTORIES)
         get_target_property(_VAL \${_LIB} INTERFACE_\${_VAR})
@@ -137,7 +137,7 @@ endforeach()
 
 file(GLOB sources \${CMAKE_CURRENT_LIST_DIR}/*.cpp \${CMAKE_CURRENT_LIST_DIR}/*.c)
 add_executable(app \${sources})
-target_link_libraries(app PRIVATE Threads::Threads rocprofsys::rocprofsys)
+target_link_libraries(app PRIVATE Threads::Threads rocprof-sys::rocprof-sys)
 EOF
 
 export CMAKE_PREFIX_PATH=${INSTALL_DIR}:${CMAKE_PREFIX_PATH}

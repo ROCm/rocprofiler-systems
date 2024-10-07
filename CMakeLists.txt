@@ -21,14 +21,14 @@ string(REGEX REPLACE "([0-9]+)\.([0-9]+)\.([0-9]+)(.*)" "\\1.\\2.\\3" ROCPROFSYS
                      "${FULL_VERSION_STRING}")
 
 project(
-    rocprofsys
+    rocprof-sys
     LANGUAGES C CXX
     VERSION ${ROCPROFSYS_VERSION}
     DESCRIPTION "CPU/GPU Application tracing with static/dynamic binary instrumentation"
     HOMEPAGE_URL "https://github.com/ROCm/rocprofiler-systems")
 
 set(PACKAGE_NAME "rocprof-sys")
-set(PACKAGE_NAME_UNDERSCORE "rocprof_sys")
+set(PROJECT_NAME_UNDERSCORED "rocprof_sys")
 
 find_package(Git)
 
@@ -117,29 +117,29 @@ include(GNUInstallDirs) # install directories
 include(MacroUtilities) # various functions and macros
 
 if(CI_BUILD)
-    rocprofsys_add_option(ROCPROFSYS_BUILD_CI "Enable internal asserts, etc." ON ADVANCED
+    rocprof_sys_add_option(ROCPROFSYS_BUILD_CI "Enable internal asserts, etc." ON ADVANCED
                           NO_FEATURE)
-    rocprofsys_add_option(ROCPROFSYS_BUILD_TESTING "Enable building the testing suite" ON
+    rocprof_sys_add_option(ROCPROFSYS_BUILD_TESTING "Enable building the testing suite" ON
                           ADVANCED)
-    rocprofsys_add_option(ROCPROFSYS_BUILD_DEBUG
+    rocprof_sys_add_option(ROCPROFSYS_BUILD_DEBUG
                           "Enable building with extensive debug symbols" OFF ADVANCED)
-    rocprofsys_add_option(
+    rocprof_sys_add_option(
         ROCPROFSYS_BUILD_HIDDEN_VISIBILITY
         "Build with hidden visibility (disable for Debug builds)" OFF ADVANCED)
-    rocprofsys_add_option(ROCPROFSYS_STRIP_LIBRARIES "Strip the libraries" OFF ADVANCED)
+    rocprof_sys_add_option(ROCPROFSYS_STRIP_LIBRARIES "Strip the libraries" OFF ADVANCED)
 else()
-    rocprofsys_add_option(ROCPROFSYS_BUILD_CI "Enable internal asserts, etc." OFF
+    rocprof_sys_add_option(ROCPROFSYS_BUILD_CI "Enable internal asserts, etc." OFF
                           ADVANCED NO_FEATURE)
-    rocprofsys_add_option(ROCPROFSYS_BUILD_EXAMPLES "Enable building the examples" OFF
+    rocprof_sys_add_option(ROCPROFSYS_BUILD_EXAMPLES "Enable building the examples" OFF
                           ADVANCED)
-    rocprofsys_add_option(ROCPROFSYS_BUILD_TESTING "Enable building the testing suite"
+    rocprof_sys_add_option(ROCPROFSYS_BUILD_TESTING "Enable building the testing suite"
                           OFF ADVANCED)
-    rocprofsys_add_option(ROCPROFSYS_BUILD_DEBUG
+    rocprof_sys_add_option(ROCPROFSYS_BUILD_DEBUG
                           "Enable building with extensive debug symbols" OFF ADVANCED)
-    rocprofsys_add_option(
+    rocprof_sys_add_option(
         ROCPROFSYS_BUILD_HIDDEN_VISIBILITY
         "Build with hidden visibility (disable for Debug builds)" ON ADVANCED)
-    rocprofsys_add_option(ROCPROFSYS_STRIP_LIBRARIES "Strip the libraries"
+    rocprof_sys_add_option(ROCPROFSYS_STRIP_LIBRARIES "Strip the libraries"
                           ${_STRIP_LIBRARIES_DEFAULT} ADVANCED)
 endif()
 
@@ -153,54 +153,54 @@ set(CMAKE_CXX_STANDARD
     17
     CACHE STRING "CXX language standard")
 
-rocprofsys_add_feature(CMAKE_BUILD_TYPE "Build optimization level")
-rocprofsys_add_feature(CMAKE_INSTALL_PREFIX "Installation prefix")
-rocprofsys_add_feature(CMAKE_CXX_COMPILER "C++ compiler")
-rocprofsys_add_feature(CMAKE_CXX_STANDARD "CXX language standard")
-rocprofsys_add_option(CMAKE_CXX_STANDARD_REQUIRED "Require C++ language standard" ON)
-rocprofsys_add_option(CMAKE_CXX_EXTENSIONS "Compiler specific language extensions" OFF)
-rocprofsys_add_option(CMAKE_INSTALL_RPATH_USE_LINK_PATH
+rocprof_sys_add_feature(CMAKE_BUILD_TYPE "Build optimization level")
+rocprof_sys_add_feature(CMAKE_INSTALL_PREFIX "Installation prefix")
+rocprof_sys_add_feature(CMAKE_CXX_COMPILER "C++ compiler")
+rocprof_sys_add_feature(CMAKE_CXX_STANDARD "CXX language standard")
+rocprof_sys_add_option(CMAKE_CXX_STANDARD_REQUIRED "Require C++ language standard" ON)
+rocprof_sys_add_option(CMAKE_CXX_EXTENSIONS "Compiler specific language extensions" OFF)
+rocprof_sys_add_option(CMAKE_INSTALL_RPATH_USE_LINK_PATH
                       "Enable rpath to linked libraries" ON)
 set(CMAKE_INSTALL_MESSAGE
     "LAZY"
     CACHE STRING "Installation message")
 mark_as_advanced(CMAKE_INSTALL_MESSAGE)
 
-rocprofsys_add_option(ROCPROFSYS_USE_CLANG_TIDY "Enable clang-tidy" OFF)
-rocprofsys_add_option(ROCPROFSYS_USE_BFD
+rocprof_sys_add_option(ROCPROFSYS_USE_CLANG_TIDY "Enable clang-tidy" OFF)
+rocprof_sys_add_option(ROCPROFSYS_USE_BFD
                       "Enable BFD support (map call-stack samples to LOC)" ON)
-rocprofsys_add_option(ROCPROFSYS_USE_MPI "Enable MPI support" OFF)
-rocprofsys_add_option(ROCPROFSYS_USE_HIP "Enable HIP support" ON)
-rocprofsys_add_option(ROCPROFSYS_USE_PAPI "Enable HW counter support via PAPI" ON)
-rocprofsys_add_option(ROCPROFSYS_USE_ROCTRACER "Enable roctracer support"
+rocprof_sys_add_option(ROCPROFSYS_USE_MPI "Enable MPI support" OFF)
+rocprof_sys_add_option(ROCPROFSYS_USE_HIP "Enable HIP support" ON)
+rocprof_sys_add_option(ROCPROFSYS_USE_PAPI "Enable HW counter support via PAPI" ON)
+rocprof_sys_add_option(ROCPROFSYS_USE_ROCTRACER "Enable roctracer support"
                       ${ROCPROFSYS_USE_HIP})
-rocprofsys_add_option(ROCPROFSYS_USE_ROCPROFILER "Enable rocprofiler support"
+rocprof_sys_add_option(ROCPROFSYS_USE_ROCPROFILER "Enable rocprofiler support"
                       ${ROCPROFSYS_USE_HIP})
-rocprofsys_add_option(
+rocprof_sys_add_option(
     ROCPROFSYS_USE_ROCM_SMI "Enable rocm-smi support for power/temp/etc. sampling"
     ${ROCPROFSYS_USE_HIP})
-rocprofsys_add_option(ROCPROFSYS_USE_RCCL "Enable RCCL support" ${ROCPROFSYS_USE_HIP})
-rocprofsys_add_option(ROCPROFSYS_USE_MPI_HEADERS
+rocprof_sys_add_option(ROCPROFSYS_USE_RCCL "Enable RCCL support" ${ROCPROFSYS_USE_HIP})
+rocprof_sys_add_option(ROCPROFSYS_USE_MPI_HEADERS
                       "Enable wrapping MPI functions w/o enabling MPI dependency" ON)
-rocprofsys_add_option(ROCPROFSYS_USE_OMPT "Enable OpenMP tools support" ON)
-rocprofsys_add_option(ROCPROFSYS_USE_PYTHON "Enable Python support" OFF)
-rocprofsys_add_option(ROCPROFSYS_BUILD_DYNINST "Build dyninst from submodule" OFF)
-rocprofsys_add_option(ROCPROFSYS_BUILD_LIBUNWIND "Build libunwind from submodule" ON)
-rocprofsys_add_option(ROCPROFSYS_BUILD_CODECOV "Build for code coverage" OFF)
-rocprofsys_add_option(ROCPROFSYS_INSTALL_PERFETTO_TOOLS
+rocprof_sys_add_option(ROCPROFSYS_USE_OMPT "Enable OpenMP tools support" ON)
+rocprof_sys_add_option(ROCPROFSYS_USE_PYTHON "Enable Python support" OFF)
+rocprof_sys_add_option(ROCPROFSYS_BUILD_DYNINST "Build dyninst from submodule" OFF)
+rocprof_sys_add_option(ROCPROFSYS_BUILD_LIBUNWIND "Build libunwind from submodule" ON)
+rocprof_sys_add_option(ROCPROFSYS_BUILD_CODECOV "Build for code coverage" OFF)
+rocprof_sys_add_option(ROCPROFSYS_INSTALL_PERFETTO_TOOLS
                       "Install perfetto tools (i.e. traced, perfetto, etc.)" OFF)
 
 if(ROCPROFSYS_USE_PAPI)
-    rocprofsys_add_option(ROCPROFSYS_BUILD_PAPI "Build PAPI from submodule" ON)
+    rocprof_sys_add_option(ROCPROFSYS_BUILD_PAPI "Build PAPI from submodule" ON)
 endif()
 
 if(ROCPROFSYS_USE_PYTHON)
-    rocprofsys_add_option(ROCPROFSYS_BUILD_PYTHON
+    rocprof_sys_add_option(ROCPROFSYS_BUILD_PYTHON
                           "Build python bindings with internal pybind11" ON)
 elseif("$ENV{ROCPROFSYS_CI}")
     # quiet warnings in dashboard
     if(ROCPROFSYS_PYTHON_ENVS OR ROCPROFSYS_PYTHON_PREFIX)
-        rocprofsys_message(
+        rocprof_sys_message(
             STATUS
             "Ignoring values of ROCPROFSYS_PYTHON_ENVS and/or ROCPROFSYS_PYTHON_PREFIX")
     endif()
@@ -225,7 +225,7 @@ elseif(
     AND NOT ROCPROFSYS_USE_ROCPROFILER
     AND NOT ROCPROFSYS_USE_ROCM_SMI
     AND NOT ROCPROFSYS_USE_RCCL)
-    rocprofsys_message(
+    rocprof_sys_message(
         AUTHOR_WARNING
         "Setting ROCPROFSYS_USE_HIP=OFF because roctracer, rocprofiler, rccl, and rocm-smi options are disabled"
         )
@@ -259,7 +259,7 @@ set(ROCPROFSYS_MAX_THREADS
         STRING
         "Maximum number of threads in the host application. Likely only needs to be increased if host app does not use thread-pool but creates many threads"
     )
-rocprofsys_add_feature(
+rocprof_sys_add_feature(
     ROCPROFSYS_MAX_THREADS
     "Maximum number of total threads supported in the host application (default: max of 128 or 16 * nproc)"
     )
@@ -267,12 +267,12 @@ rocprofsys_add_feature(
 compute_pow2_ceil(_MAX_THREADS "${ROCPROFSYS_MAX_THREADS}")
 
 if(_MAX_THREADS GREATER 0 AND NOT ROCPROFSYS_MAX_THREADS EQUAL _MAX_THREADS)
-    rocprofsys_message(
+    rocprof_sys_message(
         FATAL_ERROR
         "Error! ROCPROFSYS_MAX_THREADS must be a power of 2. Recommendation: ${_MAX_THREADS}"
         )
 elseif(NOT ROCPROFSYS_MAX_THREADS EQUAL _MAX_THREADS)
-    rocprofsys_message(
+    rocprof_sys_message(
         AUTHOR_WARNING
         "ROCPROFSYS_MAX_THREADS (=${ROCPROFSYS_MAX_THREADS}) must be a power of 2. We were unable to verify it so we are emitting this warning instead. Estimate resulted in: ${_MAX_THREADS}"
         )
@@ -284,7 +284,7 @@ set(ROCPROFSYS_MAX_UNWIND_DEPTH
         STRING
         "Maximum call-stack depth to search during call-stack unwinding. Decreasing this value will result in sampling consuming less memory"
     )
-rocprofsys_add_feature(
+rocprof_sys_add_feature(
     ROCPROFSYS_MAX_UNWIND_DEPTH
     "Maximum call-stack depth to search during call-stack unwinding. Decreasing this value will result in sampling consuming less memory"
     )
@@ -304,7 +304,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 include(Formatting) # format target
 include(Packages) # finds third-party libraries
 
-rocprofsys_activate_clang_tidy()
+rocprof_sys_activate_clang_tidy()
 
 # custom visibility settings
 if(ROCPROFSYS_BUILD_HIDDEN_VISIBILITY)
@@ -327,9 +327,9 @@ endif()
 set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME core)
 
 if(ROCPROFSYS_BUILD_CODECOV)
-    rocprofsys_save_variables(CODECOV_FLAGS VARIABLES CMAKE_C_FLAGS CMAKE_CXX_FLAGS)
+    rocprof_sys_save_variables(CODECOV_FLAGS VARIABLES CMAKE_C_FLAGS CMAKE_CXX_FLAGS)
     foreach(_BUILD_TYPE DEBUG MINSIZEREL RELWITHDEBINFO RELEASE)
-        rocprofsys_save_variables(CODECOV_FLAGS VARIABLES CMAKE_C_FLAGS_${_BUILD_TYPE}
+        rocprof_sys_save_variables(CODECOV_FLAGS VARIABLES CMAKE_C_FLAGS_${_BUILD_TYPE}
                                                           CMAKE_CXX_FLAGS_${_BUILD_TYPE})
     endforeach()
 
@@ -349,10 +349,10 @@ endif()
 add_subdirectory(source)
 
 if(ROCPROFSYS_BUILD_CODECOV)
-    rocprofsys_restore_variables(CODECOV_FLAGS VARIABLES CMAKE_C_FLAGS CMAKE_CXX_FLAGS)
+    rocprof_sys_restore_variables(CODECOV_FLAGS VARIABLES CMAKE_C_FLAGS CMAKE_CXX_FLAGS)
 
     foreach(_BUILD_TYPE DEBUG MINSIZEREL RELWITHDEBINFO RELEASE)
-        rocprofsys_restore_variables(
+        rocprof_sys_restore_variables(
             CODECOV_FLAGS VARIABLES CMAKE_C_FLAGS_${_BUILD_TYPE}
                                     CMAKE_CXX_FLAGS_${_BUILD_TYPE})
     endforeach()
@@ -374,38 +374,38 @@ endif()
 
 configure_file(
     ${PROJECT_SOURCE_DIR}/LICENSE
-    ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/doc/${PACKAGE_NAME}/LICENSE
+    ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/doc/${PROJECT_NAME}/LICENSE
     COPYONLY)
 
 configure_file(
     ${PROJECT_SOURCE_DIR}/perfetto.cfg
-    ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/${PACKAGE_NAME}/perfetto.cfg
+    ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/perfetto.cfg
     COPYONLY)
 
 configure_file(
     ${PROJECT_SOURCE_DIR}/cmake/Templates/setup-env.sh.in
-    ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/${PACKAGE_NAME}/setup-env.sh @ONLY)
+    ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/setup-env.sh @ONLY)
 
 configure_file(
     ${PROJECT_SOURCE_DIR}/cmake/Templates/modulefile.in
-    ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/modulefiles/${PACKAGE_NAME}/${ROCPROFSYS_VERSION}
+    ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/modulefiles/${PROJECT_NAME}/${ROCPROFSYS_VERSION}
     @ONLY)
 
 install(
-    FILES ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/${PACKAGE_NAME}/setup-env.sh
-          ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/${PACKAGE_NAME}/perfetto.cfg
-    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PACKAGE_NAME}
+    FILES ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/setup-env.sh
+          ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/perfetto.cfg
+    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}
     COMPONENT setup)
 
 install(
     FILES
-        ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/modulefiles/${PACKAGE_NAME}/${ROCPROFSYS_VERSION}
-    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/modulefiles/${PACKAGE_NAME}
+        ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/modulefiles/${PROJECT_NAME}/${ROCPROFSYS_VERSION}
+    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/modulefiles/${PROJECT_NAME}
     COMPONENT setup)
 
 install(
-    FILES ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/doc/${PACKAGE_NAME}/LICENSE
-    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/doc/${PACKAGE_NAME}
+    FILES ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/doc/${PROJECT_NAME}/LICENSE
+    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/doc/${PROJECT_NAME}
     COMPONENT setup)
 
 # ------------------------------------------------------------------------------#
@@ -454,4 +454,4 @@ include(ConfigCPack)
 #
 # ------------------------------------------------------------------------------#
 
-rocprofsys_print_features()
+rocprof_sys_print_features()

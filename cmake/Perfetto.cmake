@@ -1,7 +1,7 @@
 # ======================================================================================
 # Perfetto.cmake
 #
-# Configure perfetto for rocprofsys
+# Configure perfetto for rocprof-sys
 #
 # ======================================================================================
 
@@ -136,14 +136,14 @@ if(ROCPROFSYS_INSTALL_PERFETTO_TOOLS)
         PATH_SUFFIXES bin)
 
     if(NOT ROCPROFSYS_CURL_EXECUTABLE)
-        rocprofsys_message(
+        rocprof_sys_message(
             SEND_ERROR
             "curl executable cannot be found. install-build-deps script for perfetto will fail"
             )
     endif()
 
     externalproject_add(
-        rocprofsys-perfetto-build
+        rocprof-sys-perfetto-build
         PREFIX ${PROJECT_BINARY_DIR}/external/perfetto
         SOURCE_DIR ${ROCPROFSYS_PERFETTO_SOURCE_DIR}
         BUILD_IN_SOURCE 1
@@ -156,17 +156,17 @@ if(ROCPROFSYS_INSTALL_PERFETTO_TOOLS)
         BUILD_BYPRODUCTS ${ROCPROFSYS_PERFETTO_BINARY_DIR}/args.gn)
 
     add_custom_target(
-        rocprofsys-perfetto-clean
+        rocprof-sys-perfetto-clean
         COMMAND ${ROCPROFSYS_NINJA_EXECUTABLE} -t clean
         COMMAND
             ${CMAKE_COMMAND} -E rm -rf
-            ${PROJECT_BINARY_DIR}/external/perfetto/src/rocprofsys-perfetto-build-stamp
+            ${PROJECT_BINARY_DIR}/external/perfetto/src/rocprof-sys-perfetto-build-stamp
         WORKING_DIRECTORY ${ROCPROFSYS_PERFETTO_BINARY_DIR}
         COMMENT "Cleaning Perfetto...")
 
     install(
         DIRECTORY ${ROCPROFSYS_PERFETTO_INSTALL_DIR}/
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/${PACKAGE_NAME}
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}
         COMPONENT perfetto
         FILES_MATCHING
         PATTERN "*libperfetto.so*")
@@ -192,17 +192,17 @@ endif()
 #
 # ---------------------------------------------------------------------------------------#
 
-add_library(rocprofsys-perfetto-library STATIC)
-add_library(rocprofsys::rocprofsys-perfetto-library ALIAS rocprofsys-perfetto-library)
+add_library(rocprof-sys-perfetto-library STATIC)
+add_library(rocprof-sys::rocprof-sys-perfetto-library ALIAS rocprof-sys-perfetto-library)
 target_sources(
-    rocprofsys-perfetto-library PRIVATE ${ROCPROFSYS_PERFETTO_SOURCE_DIR}/sdk/perfetto.cc
+    rocprof-sys-perfetto-library PRIVATE ${ROCPROFSYS_PERFETTO_SOURCE_DIR}/sdk/perfetto.cc
                                         ${ROCPROFSYS_PERFETTO_SOURCE_DIR}/sdk/perfetto.h)
 target_link_libraries(
-    rocprofsys-perfetto-library
-    PRIVATE rocprofsys::rocprofsys-threading rocprofsys::rocprofsys-static-libgcc
-            rocprofsys::rocprofsys-static-libstdcxx)
+    rocprof-sys-perfetto-library
+    PRIVATE rocprof-sys::rocprof-sys-threading rocprof-sys::rocprof-sys-static-libgcc
+            rocprof-sys::rocprof-sys-static-libstdcxx)
 set_target_properties(
-    rocprofsys-perfetto-library
+    rocprof-sys-perfetto-library
     PROPERTIES OUTPUT_NAME perfetto
                ARCHIVE_OUTPUT_DIRECTORY ${ROCPROFSYS_PERFETTO_BINARY_DIR}
                POSITION_INDEPENDENT_CODE ON
@@ -229,10 +229,10 @@ mark_as_advanced(PERFETTO_LIBRARY)
 #
 # ---------------------------------------------------------------------------------------#
 
-rocprofsys_target_compile_definitions(rocprofsys-perfetto
+rocprof_sys_target_compile_definitions(rocprof-sys-perfetto
                                       INTERFACE ROCPROFSYS_USE_PERFETTO)
-target_include_directories(rocprofsys-perfetto SYSTEM
+target_include_directories(rocprof-sys-perfetto SYSTEM
                            INTERFACE $<BUILD_INTERFACE:${PERFETTO_INCLUDE_DIR}>)
 target_link_libraries(
-    rocprofsys-perfetto INTERFACE $<BUILD_INTERFACE:${PERFETTO_LIBRARY}>
-                                  $<BUILD_INTERFACE:rocprofsys::rocprofsys-threading>)
+    rocprof-sys-perfetto INTERFACE $<BUILD_INTERFACE:${PERFETTO_LIBRARY}>
+                                  $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-threading>)

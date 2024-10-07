@@ -4,7 +4,7 @@
 #
 # -------------------------------------------------------------------------------------- #
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     SKIP_BASELINE SKIP_SAMPLING
     NAME code-coverage
     TARGET code-coverage
@@ -43,7 +43,7 @@ rocprofsys_add_test(
     RUNTIME_PASS_REGEX "(\\\[[0-9]+\\\]) code coverage     ::  66.67%"
     REWRITE_RUN_PASS_REGEX "(\\\[[0-9]+\\\]) code coverage     ::  66.67%")
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     SKIP_BASELINE SKIP_SAMPLING
     NAME code-coverage-hybrid
     TARGET code-coverage
@@ -70,7 +70,7 @@ rocprofsys_add_test(
     RUNTIME_PASS_REGEX "(\\\[[0-9]+\\\]) code coverage     ::  66.67%"
     REWRITE_RUN_PASS_REGEX "(\\\[[0-9]+\\\]) code coverage     ::  66.67%")
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     SKIP_BASELINE SKIP_SAMPLING
     NAME code-coverage-basic-blocks
     TARGET code-coverage
@@ -109,7 +109,7 @@ rocprofsys_add_test(
     RUNTIME_PASS_REGEX "(\\\[[0-9]+\\\]) function coverage ::  66.67%"
     REWRITE_RUN_PASS_REGEX "(\\\[[0-9]+\\\]) function coverage ::  66.67%")
 
-rocprofsys_add_test(
+rocprof_sys_add_test(
     SKIP_BASELINE SKIP_SAMPLING
     NAME code-coverage-basic-blocks-hybrid
     TARGET code-coverage

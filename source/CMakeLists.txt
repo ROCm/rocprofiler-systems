@@ -18,11 +18,11 @@ if(ROCPROFSYS_USE_PYTHON)
 endif()
 
 if(ROCPROFSYS_BUILD_DEVELOPER)
-    add_custom_target(rocprofsys-precommit)
-    foreach(_TARGET format-rocprofsys-source format-rocprofsys-cmake
+    add_custom_target(rocprof-sys-precommit)
+    foreach(_TARGET format-rocprof-sys-source format-rocprof-sys-cmake
                     format-timemory-source format-timemory-cmake)
         if(TARGET ${_TARGET})
-            add_dependencies(rocprofsys-precommit ${_TARGET})
+            add_dependencies(rocprof-sys-precommit ${_TARGET})
         endif()
     endforeach()
 endif()

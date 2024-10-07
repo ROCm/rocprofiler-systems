@@ -12,48 +12,48 @@ include(Compilers)
 include(FindPackageHandleStandardArgs)
 include(MacroUtilities)
 
-rocprofsys_add_option(
+rocprof_sys_add_option(
     ROCPROFSYS_BUILD_DEVELOPER "Extra build flags for development like -Werror"
     ${ROCPROFSYS_BUILD_CI})
-rocprofsys_add_option(ROCPROFSYS_BUILD_RELEASE "Build with minimal debug line info" OFF)
-rocprofsys_add_option(ROCPROFSYS_BUILD_EXTRA_OPTIMIZATIONS "Extra optimization flags" OFF)
-rocprofsys_add_option(ROCPROFSYS_BUILD_LTO "Build with link-time optimization" OFF)
-rocprofsys_add_option(ROCPROFSYS_USE_COMPILE_TIMING
+rocprof_sys_add_option(ROCPROFSYS_BUILD_RELEASE "Build with minimal debug line info" OFF)
+rocprof_sys_add_option(ROCPROFSYS_BUILD_EXTRA_OPTIMIZATIONS "Extra optimization flags" OFF)
+rocprof_sys_add_option(ROCPROFSYS_BUILD_LTO "Build with link-time optimization" OFF)
+rocprof_sys_add_option(ROCPROFSYS_USE_COMPILE_TIMING
                       "Build with timing metrics for compilation" OFF)
-rocprofsys_add_option(ROCPROFSYS_USE_SANITIZER
+rocprof_sys_add_option(ROCPROFSYS_USE_SANITIZER
                       "Build with -fsanitze=\${ROCPROFSYS_SANITIZER_TYPE}" OFF)
-rocprofsys_add_option(ROCPROFSYS_BUILD_STATIC_LIBGCC
+rocprof_sys_add_option(ROCPROFSYS_BUILD_STATIC_LIBGCC
                       "Build with -static-libgcc if possible" OFF)
-rocprofsys_add_option(ROCPROFSYS_BUILD_STATIC_LIBSTDCXX
+rocprof_sys_add_option(ROCPROFSYS_BUILD_STATIC_LIBSTDCXX
                       "Build with -static-libstdc++ if possible" OFF)
-rocprofsys_add_option(ROCPROFSYS_BUILD_STACK_PROTECTOR "Build with -fstack-protector" ON)
-rocprofsys_add_cache_option(
+rocprof_sys_add_option(ROCPROFSYS_BUILD_STACK_PROTECTOR "Build with -fstack-protector" ON)
+rocprof_sys_add_cache_option(
     ROCPROFSYS_BUILD_LINKER
     "If set to a non-empty value, pass -fuse-ld=\${ROCPROFSYS_BUILD_LINKER}" STRING "bfd")
-rocprofsys_add_cache_option(ROCPROFSYS_BUILD_NUMBER "Internal CI use" STRING "0" ADVANCED
+rocprof_sys_add_cache_option(ROCPROFSYS_BUILD_NUMBER "Internal CI use" STRING "0" ADVANCED
                             NO_FEATURE)
 
-rocprofsys_add_interface_library(rocprofsys-static-libgcc
+rocprof_sys_add_interface_library(rocprof-sys-static-libgcc
                                  "Link to static version of libgcc")
-rocprofsys_add_interface_library(rocprofsys-static-libstdcxx
+rocprof_sys_add_interface_library(rocprof-sys-static-libstdcxx
                                  "Link to static version of libstdc++")
-rocprofsys_add_interface_library(rocprofsys-static-libgcc-optional
+rocprof_sys_add_interface_library(rocprof-sys-static-libgcc-optional
                                  "Link to static version of libgcc")
-rocprofsys_add_interface_library(rocprofsys-static-libstdcxx-optional
+rocprof_sys_add_interface_library(rocprof-sys-static-libstdcxx-optional
                                  "Link to static version of libstdc++")
 
-target_compile_definitions(rocprofsys-compile-options INTERFACE $<$<CONFIG:DEBUG>:DEBUG>)
+target_compile_definitions(rocprof-sys-compile-options INTERFACE $<$<CONFIG:DEBUG>:DEBUG>)
 
 set(ROCPROFSYS_SANITIZER_TYPE
     "leak"
     CACHE STRING "Sanitizer type")
 if(ROCPROFSYS_USE_SANITIZER)
-    rocprofsys_add_feature(ROCPROFSYS_SANITIZER_TYPE
+    rocprof_sys_add_feature(ROCPROFSYS_SANITIZER_TYPE
                            "Sanitizer type, e.g. leak, thread, address, memory, etc.")
 endif()
 
 if(ROCPROFSYS_BUILD_CI)
-    rocprofsys_target_compile_definitions(${LIBNAME}-compile-options
+    rocprof_sys_target_compile_definitions(${LIBNAME}-compile-options
                                           INTERFACE ROCPROFSYS_CI)
 endif()
 
@@ -78,7 +78,7 @@ find_package_handle_standard_args(rt-library REQUIRED_VARS rt_LIBRARY)
 # find_package_handle_standard_args(dw-library REQUIRED_VARS dw_LIBRARY)
 
 if(dl_LIBRARY)
-    target_link_libraries(rocprofsys-compile-options INTERFACE ${dl_LIBRARY})
+    target_link_libraries(rocprof-sys-compile-options INTERFACE ${dl_LIBRARY})
 endif()
 
 # ----------------------------------------------------------------------------------------#
@@ -104,58 +104,58 @@ endif()
 # ----------------------------------------------------------------------------------------#
 # extra flags for debug information in debug or optimized binaries
 #
-rocprofsys_add_interface_library(
-    rocprofsys-compile-debuginfo
+rocprof_sys_add_interface_library(
+    rocprof-sys-compile-debuginfo
     "Attempts to set best flags for more expressive profiling information in debug or optimized binaries"
     )
 
-add_target_flag_if_avail(rocprofsys-compile-debuginfo "-g3" "-fno-omit-frame-pointer"
+add_target_flag_if_avail(rocprof-sys-compile-debuginfo "-g3" "-fno-omit-frame-pointer"
                          "-fno-optimize-sibling-calls")
 
 if(CMAKE_CUDA_COMPILER_IS_NVIDIA)
-    add_target_cuda_flag(rocprofsys-compile-debuginfo "-lineinfo")
+    add_target_cuda_flag(rocprof-sys-compile-debuginfo "-lineinfo")
 endif()
 
 target_compile_options(
-    rocprofsys-compile-debuginfo
+    rocprof-sys-compile-debuginfo
     INTERFACE $<$<COMPILE_LANGUAGE:C>:$<$<C_COMPILER_ID:GNU>:-rdynamic>>
               $<$<COMPILE_LANGUAGE:CXX>:$<$<CXX_COMPILER_ID:GNU>:-rdynamic>>)
 
 if(NOT APPLE)
-    target_link_options(rocprofsys-compile-debuginfo INTERFACE
+    target_link_options(rocprof-sys-compile-debuginfo INTERFACE
                         $<$<CXX_COMPILER_ID:GNU>:-rdynamic>)
 endif()
 
 if(CMAKE_CUDA_COMPILER_IS_NVIDIA)
     target_compile_options(
-        rocprofsys-compile-debuginfo
+        rocprof-sys-compile-debuginfo
         INTERFACE
             $<$<COMPILE_LANGUAGE:CUDA>:$<$<CXX_COMPILER_ID:GNU>:-Xcompiler=-rdynamic>>)
 endif()
 
 if(dl_LIBRARY)
-    target_link_libraries(rocprofsys-compile-debuginfo INTERFACE ${dl_LIBRARY})
+    target_link_libraries(rocprof-sys-compile-debuginfo INTERFACE ${dl_LIBRARY})
 endif()
 
 if(rt_LIBRARY)
-    target_link_libraries(rocprofsys-compile-debuginfo INTERFACE ${rt_LIBRARY})
+    target_link_libraries(rocprof-sys-compile-debuginfo INTERFACE ${rt_LIBRARY})
 endif()
 
 # ----------------------------------------------------------------------------------------#
 # non-debug optimizations
 #
-rocprofsys_add_interface_library(rocprofsys-compile-extra "Extra optimization flags")
+rocprof_sys_add_interface_library(rocprof-sys-compile-extra "Extra optimization flags")
 if(NOT ROCPROFSYS_BUILD_CODECOV AND ROCPROFSYS_BUILD_EXTRA_OPTIMIZATIONS)
     add_target_flag_if_avail(
-        rocprofsys-compile-extra "-finline-functions" "-funroll-loops" "-ftree-vectorize"
+        rocprof-sys-compile-extra "-finline-functions" "-funroll-loops" "-ftree-vectorize"
         "-ftree-loop-optimize" "-ftree-loop-vectorize")
 endif()
 
 if(NOT "${CMAKE_BUILD_TYPE}" STREQUAL "Debug"
    AND ROCPROFSYS_BUILD_EXTRA_OPTIMIZATIONS
    AND NOT ROCPROFSYS_BUILD_CODECOV)
-    target_link_libraries(rocprofsys-compile-options
-                          INTERFACE $<BUILD_INTERFACE:rocprofsys-compile-extra>)
+    target_link_libraries(rocprof-sys-compile-options
+                          INTERFACE $<BUILD_INTERFACE:rocprof-sys-compile-extra>)
     add_flag_if_avail(
         "-fno-signaling-nans" "-fno-trapping-math" "-fno-signed-zeros"
         "-ffinite-math-only" "-fno-math-errno" "-fpredictive-commoning"
@@ -168,62 +168,62 @@ endif()
 #
 add_cxx_flag_if_avail("-faligned-new")
 
-rocprofsys_add_interface_library(rocprofsys-lto "Adds link-time-optimization flags")
+rocprof_sys_add_interface_library(rocprof-sys-lto "Adds link-time-optimization flags")
 
 if(NOT ROCPROFSYS_BUILD_CODECOV)
-    rocprofsys_save_variables(FLTO VARIABLES CMAKE_CXX_FLAGS)
+    rocprof_sys_save_variables(FLTO VARIABLES CMAKE_CXX_FLAGS)
     set(_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
     set(CMAKE_CXX_FLAGS "-flto=thin ${_CXX_FLAGS}")
 
-    add_target_flag_if_avail(rocprofsys-lto "-flto=thin")
-    if(NOT cxx_rocprofsys_lto_flto_thin)
+    add_target_flag_if_avail(rocprof-sys-lto "-flto=thin")
+    if(NOT cxx_rocprof_sys_lto_flto_thin)
         set(CMAKE_CXX_FLAGS "-flto ${_CXX_FLAGS}")
-        add_target_flag_if_avail(rocprofsys-lto "-flto")
-        if(NOT cxx_rocprofsys_lto_flto)
+        add_target_flag_if_avail(rocprof-sys-lto "-flto")
+        if(NOT cxx_rocprof_sys_lto_flto)
             set(ROCPROFSYS_BUILD_LTO OFF)
         else()
-            target_link_options(rocprofsys-lto INTERFACE -flto)
+            target_link_options(rocprof-sys-lto INTERFACE -flto)
         endif()
-        add_target_flag_if_avail(rocprofsys-lto "-fno-fat-lto-objects")
-        if(cxx_rocprofsys_lto_fno_fat_lto_objects)
-            target_link_options(rocprofsys-lto INTERFACE -fno-fat-lto-objects)
+        add_target_flag_if_avail(rocprof-sys-lto "-fno-fat-lto-objects")
+        if(cxx_rocprof_sys_lto_fno_fat_lto_objects)
+            target_link_options(rocprof-sys-lto INTERFACE -fno-fat-lto-objects)
         endif()
     else()
-        target_link_options(rocprofsys-lto INTERFACE -flto=thin)
+        target_link_options(rocprof-sys-lto INTERFACE -flto=thin)
     endif()
 
-    rocprofsys_restore_variables(FLTO VARIABLES CMAKE_CXX_FLAGS)
+    rocprof_sys_restore_variables(FLTO VARIABLES CMAKE_CXX_FLAGS)
 endif()
 
 # ----------------------------------------------------------------------------------------#
 # print compilation timing reports (Clang compiler)
 #
-rocprofsys_add_interface_library(
-    rocprofsys-compile-timing
+rocprof_sys_add_interface_library(
+    rocprof-sys-compile-timing
     "Adds compiler flags which report compilation timing metrics")
 if(CMAKE_CXX_COMPILER_IS_CLANG)
-    add_target_flag_if_avail(rocprofsys-compile-timing "-ftime-trace")
-    if(NOT cxx_rocprofsys_compile_timing_ftime_trace)
-        add_target_flag_if_avail(rocprofsys-compile-timing "-ftime-report")
+    add_target_flag_if_avail(rocprof-sys-compile-timing "-ftime-trace")
+    if(NOT cxx_rocprof_sys_compile_timing_ftime_trace)
+        add_target_flag_if_avail(rocprof-sys-compile-timing "-ftime-report")
     endif()
 else()
-    add_target_flag_if_avail(rocprofsys-compile-timing "-ftime-report")
+    add_target_flag_if_avail(rocprof-sys-compile-timing "-ftime-report")
 endif()
 
 if(ROCPROFSYS_USE_COMPILE_TIMING)
-    target_link_libraries(rocprofsys-compile-options INTERFACE rocprofsys-compile-timing)
+    target_link_libraries(rocprof-sys-compile-options INTERFACE rocprof-sys-compile-timing)
 endif()
 
 # ----------------------------------------------------------------------------------------#
 # fstack-protector
 #
-rocprofsys_add_interface_library(rocprofsys-stack-protector
+rocprof_sys_add_interface_library(rocprof-sys-stack-protector
                                  "Adds stack-protector compiler flags")
-add_target_flag_if_avail(rocprofsys-stack-protector "-fstack-protector-strong"
+add_target_flag_if_avail(rocprof-sys-stack-protector "-fstack-protector-strong"
                          "-Wstack-protector")
 
 if(ROCPROFSYS_BUILD_STACK_PROTECTOR)
-    target_link_libraries(rocprofsys-compile-options INTERFACE rocprofsys-stack-protector)
+    target_link_libraries(rocprof-sys-compile-options INTERFACE rocprof-sys-stack-protector)
 endif()
 
 # ----------------------------------------------------------------------------------------#
@@ -231,17 +231,17 @@ endif()
 #
 if(ROCPROFSYS_BUILD_DEVELOPER)
     add_target_flag_if_avail(
-        rocprofsys-compile-options "-Werror" "-Wdouble-promotion" "-Wshadow" "-Wextra"
+        rocprof-sys-compile-options "-Werror" "-Wdouble-promotion" "-Wshadow" "-Wextra"
         "-Wpedantic" "-Wstack-usage=524288" # 512 KB
         "/showIncludes")
     if(ROCPROFSYS_BUILD_NUMBER GREATER 2)
-        add_target_flag_if_avail(rocprofsys-compile-options "-gsplit-dwarf")
+        add_target_flag_if_avail(rocprof-sys-compile-options "-gsplit-dwarf")
     endif()
 endif()
 
 if(ROCPROFSYS_BUILD_LINKER)
     target_link_options(
-        rocprofsys-compile-options INTERFACE
+        rocprof-sys-compile-options INTERFACE
         $<$<C_COMPILER_ID:GNU>:-fuse-ld=${ROCPROFSYS_BUILD_LINKER}>
         $<$<CXX_COMPILER_ID:GNU>:-fuse-ld=${ROCPROFSYS_BUILD_LINKER}>)
 endif()
@@ -251,20 +251,20 @@ endif()
 #
 if(ROCPROFSYS_BUILD_RELEASE AND NOT ROCPROFSYS_BUILD_DEBUG)
     add_target_flag_if_avail(
-        rocprofsys-compile-options "-g1" "-feliminate-unused-debug-symbols"
+        rocprof-sys-compile-options "-g1" "-feliminate-unused-debug-symbols"
         "-gno-column-info" "-gno-variable-location-views" "-gline-tables-only")
 endif()
 
 # ----------------------------------------------------------------------------------------#
 # visibility build flags
 #
-rocprofsys_add_interface_library(rocprofsys-default-visibility
+rocprof_sys_add_interface_library(rocprof-sys-default-visibility
                                  "Adds -fvisibility=default compiler flag")
-rocprofsys_add_interface_library(rocprofsys-hidden-visibility
+rocprof_sys_add_interface_library(rocprof-sys-hidden-visibility
                                  "Adds -fvisibility=hidden compiler flag")
 
-add_target_flag_if_avail(rocprofsys-default-visibility "-fvisibility=default")
-add_target_flag_if_avail(rocprofsys-hidden-visibility "-fvisibility=hidden"
+add_target_flag_if_avail(rocprof-sys-default-visibility "-fvisibility=default")
+add_target_flag_if_avail(rocprof-sys-hidden-visibility "-fvisibility=hidden"
                          "-fvisibility-inlines-hidden")
 
 # ----------------------------------------------------------------------------------------#
@@ -292,26 +292,26 @@ set(ROCPROFSYS_SANITIZER_TYPES
     alignment)
 set_property(CACHE ROCPROFSYS_SANITIZER_TYPE PROPERTY STRINGS
                                                       "${ROCPROFSYS_SANITIZER_TYPES}")
-rocprofsys_add_interface_library(rocprofsys-sanitizer-compile-options
+rocprof_sys_add_interface_library(rocprof-sys-sanitizer-compile-options
                                  "Adds compiler flags for sanitizers")
-rocprofsys_add_interface_library(
-    rocprofsys-sanitizer
+rocprof_sys_add_interface_library(
+    rocprof-sys-sanitizer
     "Adds compiler flags to enable ${ROCPROFSYS_SANITIZER_TYPE} sanitizer (-fsanitizer=${ROCPROFSYS_SANITIZER_TYPE})"
     )
 
 set(COMMON_SANITIZER_FLAGS "-fno-optimize-sibling-calls" "-fno-omit-frame-pointer"
                            "-fno-inline-functions")
-add_target_flag(rocprofsys-sanitizer-compile-options ${COMMON_SANITIZER_FLAGS})
+add_target_flag(rocprof-sys-sanitizer-compile-options ${COMMON_SANITIZER_FLAGS})
 
 foreach(_TYPE ${ROCPROFSYS_SANITIZER_TYPES})
     set(_FLAG "-fsanitize=${_TYPE}")
-    rocprofsys_add_interface_library(
-        rocprofsys-${_TYPE}-sanitizer
+    rocprof_sys_add_interface_library(
+        rocprof-sys-${_TYPE}-sanitizer
         "Adds compiler flags to enable ${_TYPE} sanitizer (${_FLAG})")
-    add_target_flag(rocprofsys-${_TYPE}-sanitizer ${_FLAG})
-    target_link_libraries(rocprofsys-${_TYPE}-sanitizer
-                          INTERFACE rocprofsys-sanitizer-compile-options)
-    set_property(TARGET rocprofsys-${_TYPE}-sanitizer
+    add_target_flag(rocprof-sys-${_TYPE}-sanitizer ${_FLAG})
+    target_link_libraries(rocprof-sys-${_TYPE}-sanitizer
+                          INTERFACE rocprof-sys-sanitizer-compile-options)
+    set_property(TARGET rocprof-sys-${_TYPE}-sanitizer
                  PROPERTY INTERFACE_LINK_OPTIONS ${_FLAG} ${COMMON_SANITIZER_FLAGS})
 endforeach()
 
@@ -320,13 +320,13 @@ unset(COMMON_SANITIZER_FLAGS)
 
 if(ROCPROFSYS_USE_SANITIZER)
     foreach(_TYPE ${ROCPROFSYS_SANITIZER_TYPE})
-        if(TARGET rocprofsys-${_TYPE}-sanitizer)
+        if(TARGET rocprof-sys-${_TYPE}-sanitizer)
             target_link_libraries(rocprof-sys-sanitizer
-                                  INTERFACE rocprofsys-${_TYPE}-sanitizer)
+                                  INTERFACE rocprof-sys-${_TYPE}-sanitizer)
         else()
             message(
                 FATAL_ERROR
-                    "Error! Target 'rocprofsys-${_TYPE}-sanitizer' does not exist!")
+                    "Error! Target 'rocprof-sys-${_TYPE}-sanitizer' does not exist!")
         endif()
     endforeach()
 else()
@@ -337,29 +337,29 @@ endif()
 # static lib flags
 #
 target_compile_options(
-    rocprofsys-static-libgcc
+    rocprof-sys-static-libgcc
     INTERFACE $<$<COMPILE_LANGUAGE:C>:$<$<C_COMPILER_ID:GNU>:-static-libgcc>>
               $<$<COMPILE_LANGUAGE:CXX>:$<$<CXX_COMPILER_ID:GNU>:-static-libgcc>>)
 target_link_options(
-    rocprofsys-static-libgcc INTERFACE
+    rocprof-sys-static-libgcc INTERFACE
     $<$<COMPILE_LANGUAGE:C>:$<$<C_COMPILER_ID:GNU,Clang>:-static-libgcc>>
     $<$<COMPILE_LANGUAGE:CXX>:$<$<CXX_COMPILER_ID:GNU,Clang>:-static-libgcc>>)
 
 target_compile_options(
-    rocprofsys-static-libstdcxx
+    rocprof-sys-static-libstdcxx
     INTERFACE $<$<COMPILE_LANGUAGE:CXX>:$<$<CXX_COMPILER_ID:GNU>:-static-libstdc++>>)
 target_link_options(
-    rocprofsys-static-libstdcxx INTERFACE
+    rocprof-sys-static-libstdcxx INTERFACE
     $<$<COMPILE_LANGUAGE:CXX>:$<$<CXX_COMPILER_ID:GNU,Clang>:-static-libstdc++>>)
 
 if(ROCPROFSYS_BUILD_STATIC_LIBGCC)
-    target_link_libraries(rocprofsys-static-libgcc-optional
-                          INTERFACE rocprofsys-static-libgcc)
+    target_link_libraries(rocprof-sys-static-libgcc-optional
+                          INTERFACE rocprof-sys-static-libgcc)
 endif()
 
 if(ROCPROFSYS_BUILD_STATIC_LIBSTDCXX)
-    target_link_libraries(rocprofsys-static-libstdcxx-optional
-                          INTERFACE rocprofsys-static-libstdcxx)
+    target_link_libraries(rocprof-sys-static-libstdcxx-optional
+                          INTERFACE rocprof-sys-static-libstdcxx)
 endif()
 
 # ----------------------------------------------------------------------------------------#
@@ -368,5 +368,5 @@ endif()
 get_property(LANGUAGES GLOBAL PROPERTY ENABLED_LANGUAGES)
 
 if(NOT APPLE OR "$ENV{CONDA_PYTHON_EXE}" STREQUAL "")
-    add_user_flags(rocprofsys-compile-options "CXX")
+    add_user_flags(rocprof-sys-compile-options "CXX")
 endif()

@@ -5,16 +5,16 @@
 # -------------------------------------------------------------------------------------- #
 
 if(ROCPROFSYS_USE_PAPI
-   AND (rocprofsys_perf_event_paranoid LESS_EQUAL 3
-        OR rocprofsys_cap_sys_admin EQUAL 0
-        OR rocprofsys_cap_perfmon EQUAL 0))
+   AND (rocprof_sys_perf_event_paranoid LESS_EQUAL 3
+        OR rocprof_sys_cap_sys_admin EQUAL 0
+        OR rocprof_sys_cap_perfmon EQUAL 0))
     set(_annotate_environment
         "${_base_environment}"
         "ROCPROFSYS_TIMEMORY_COMPONENTS=thread_cpu_clock papi_array"
         "ROCPROFSYS_PAPI_EVENTS=perf::PERF_COUNT_SW_CPU_CLOCK"
         "ROCPROFSYS_USE_SAMPLING=OFF")
 
-    rocprofsys_add_test(
+    rocprof_sys_add_test(
         SKIP_BASELINE SKIP_RUNTIME
         NAME annotate
         TARGET parallel-overhead
@@ -38,13 +38,13 @@ if(ROCPROFSYS_USE_PAPI
         ENVIRONMENT "${_annotate_environment}"
         LABELS "annotate;papi")
 
-    rocprofsys_add_validation_test(
+    rocprof_sys_add_validation_test(
         NAME annotate-binary-rewrite
         PERFETTO_FILE "perfetto-trace.proto"
         LABELS "annotate;papi"
         ARGS --key-names perf::PERF_COUNT_SW_CPU_CLOCK thread_cpu_clock --key-counts 8 8)
 
-    rocprofsys_add_validation_test(
+    rocprof_sys_add_validation_test(
         NAME annotate-sampling
         PERFETTO_FILE "perfetto-trace.proto"
         LABELS "papi"
@@ -54,7 +54,7 @@ else()
         "${_base_environment}" "ROCPROFSYS_TIMEMORY_COMPONENTS=thread_cpu_clock"
         "ROCPROFSYS_USE_SAMPLING=OFF")
 
-    rocprofsys_add_test(
+    rocprof_sys_add_test(
         SKIP_BASELINE SKIP_RUNTIME
         NAME annotate
         TARGET parallel-overhead
@@ -78,13 +78,13 @@ else()
         ENVIRONMENT "${_annotate_environment}"
         LABELS "annotate")
 
-    rocprofsys_add_validation_test(
+    rocprof_sys_add_validation_test(
         NAME annotate-binary-rewrite
         PERFETTO_FILE "perfetto-trace.proto"
         LABELS "annotate"
         ARGS --key-names thread_cpu_clock --key-counts 8)
 
-    rocprofsys_add_validation_test(
+    rocprof_sys_add_validation_test(
         NAME annotate-sampling
         PERFETTO_FILE "perfetto-trace.proto"
         LABELS "annotate"

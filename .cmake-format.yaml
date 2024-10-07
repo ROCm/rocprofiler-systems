@@ -1,6 +1,6 @@
 parse:
   additional_commands:
-    rocprofsys_checkout_git_submodule:
+    rocprof_sys_checkout_git_submodule:
       flags:
       - RECURSIVE
       kwargs:
@@ -10,15 +10,15 @@ parse:
         REPO_URL: '*'
         REPO_BRANCH: '*'
         ADDITIONAL_COMMANDS: '*'
-    rocprofsys_save_variables:
+    rocprof_sys_save_variables:
       kwargs:
         VARIABLES: '*'
         CONDITION: '*'
-    rocprofsys_restore_variables:
+    rocprof_sys_restore_variables:
       kwargs:
         VARIABLES: '*'
         CONDITION: '*'
-    rocprofsys_add_test:
+    rocprof_sys_add_test:
       flags:
         - SKIP_BASELINE
         - SKIP_SAMPLING
@@ -50,7 +50,7 @@ parse:
         BASELINE_FAIL_REGEX: '*'
         REWRITE_RUN_PASS_REGEX: '*'
         REWRITE_RUN_FAIL_REGEX: '*'
-    rocprofsys_add_causal_test:
+    rocprof_sys_add_causal_test:
       flags:
         - SKIP_BASELINE
       kwargs:
@@ -72,12 +72,12 @@ parse:
         BASELINE_FAIL_REGEX: '*'
         CAUSAL_VALIDATE_PASS_REGEX: '*'
         CAUSAL_VALIDATE_FAIL_REGEX: '*'
-    rocprofsys_target_compile_definitions:
+    rocprof_sys_target_compile_definitions:
       kwargs:
         PUBLIC: '*'
         PRIVATE: '*'
         INTERFACE: '*'
-    rocprofsys_add_bin_test:
+    rocprof_sys_add_bin_test:
       flags:
       - WILL_FAIL
       kwargs:
@@ -94,7 +94,7 @@ parse:
         PASS_REGEX: '*'
         FAIL_REGEX: '*'
         SKIP_REGEX: '*'
-    rocprofsys_add_python_test:
+    rocprof_sys_add_python_test:
       flags:
       - STANDALONE
       kwargs:
@@ -113,7 +113,7 @@ parse:
         PASS_REGEX: '*'
         FAIL_REGEX: '*'
         SKIP_REGEX: '*'
-    rocprofsys_add_python_validation_test:
+    rocprof_sys_add_python_validation_test:
       kwargs:
         NAME: '*'
         ARGS: '*'
@@ -128,7 +128,7 @@ parse:
         - SEND_ERROR
         - FATAL_ERROR
         - AUTHOR_WARNING
-    rocprofsys_find_python:
+    rocprof_sys_find_python:
       flags:
         - REQUIRED
         - QUIET
@@ -136,11 +136,11 @@ parse:
         VERSION: '*'
         ROOT_DIR: '*'
         COMPONENTS: '*'
-    rocprofsys_python_console_script:
+    rocprof_sys_python_console_script:
       kwargs:
         VERSION: '*'
         ROOT_DIR: '*'
-    rocprofsys_pybind11_add_module:
+    rocprof_sys_pybind11_add_module:
       flags:
         - MODULE
         - SHARED
@@ -153,7 +153,7 @@ parse:
         PYTHON_VERSION: '*'
         CXX_STANDARD: '*'
         VISIBILITY: '*'
-    rocprofsys_directory:
+    rocprof_sys_directory:
       flags:
         - MKDIR
         - FAIL
@@ -162,14 +162,14 @@ parse:
         OUTPUT_VARIABLE: '*'
         WORKING_DIRECTORY: '*'
         PATHS: '*'
-    rocprofsys_check_python_dirs_and_versions:
+    rocprof_sys_check_python_dirs_and_versions:
       flags:
         - UNSET
         - FAIL
       kwargs:
         RESULT_VARIABLE: '*'
         OUTPUT_VARIABLE: '*'
-    rocprofsys_find_static_library:
+    rocprof_sys_find_static_library:
       flags:
         - NO_CACHE
         - REQUIRED
@@ -188,7 +188,7 @@ parse:
         PATHS: '*'
         PATH_SUFFIXES: '*'
         DOC: '*'
-    rocprofsys_find_shared_library:
+    rocprof_sys_find_shared_library:
       flags:
         - NO_CACHE
         - REQUIRED
@@ -207,14 +207,14 @@ parse:
         PATHS: '*'
         PATH_SUFFIXES: '*'
         DOC: '*'
-    rocprofsys_causal_example_executable:
+    rocprof_sys_causal_example_executable:
       kwargs:
         TAG: '*'
         SOURCES: '*'
         DEFINITIONS: '*'
         LINK_LIBRARIES: '*'
         INCLUDE_DIRECTORIES: '*'
-    rocprofsys_add_validation_test:
+    rocprof_sys_add_validation_test:
       kwargs:
         NAME: '*'
         ARGS: '*'

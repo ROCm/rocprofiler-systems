@@ -34,7 +34,7 @@ if [ -d "$(realpath /tmp)" ]; then
     export TMPDIR
 fi
 
-: ${CONFIG_DIR:=$(mktemp -t -d rocprofsys-test-install-XXXX)}
+: ${CONFIG_DIR:=$(mktemp -t -d rocprof-sys-test-install-XXXX)}
 : ${SOURCE_DIR:=$(dirname ${SCRIPT_DIR})}
 : ${ENABLE_ROCPROFSYS_INSTRUMENT:=1}
 : ${ENABLE_ROCPROFSYS_AVAIL:=1}

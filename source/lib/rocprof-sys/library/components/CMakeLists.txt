@@ -34,19 +34,19 @@ set(component_headers
     ${CMAKE_CURRENT_LIST_DIR}/pthread_create_gotcha.hpp
     ${CMAKE_CURRENT_LIST_DIR}/pthread_mutex_gotcha.hpp)
 
-target_sources(rocprofsys-object-library PRIVATE ${component_sources}
+target_sources(rocprof-sys-object-library PRIVATE ${component_sources}
                                                  ${component_headers})
 
 if(ROCPROFSYS_USE_ROCPROFILER)
-    target_sources(rocprofsys-object-library
+    target_sources(rocprof-sys-object-library
                    PRIVATE ${CMAKE_CURRENT_LIST_DIR}/rocprofiler.cpp)
 endif()
 
 if(ROCPROFSYS_USE_ROCTRACER)
-    target_sources(rocprofsys-object-library
+    target_sources(rocprof-sys-object-library
                    PRIVATE ${CMAKE_CURRENT_LIST_DIR}/roctracer.cpp)
 endif()
 
 if(ROCPROFSYS_USE_RCCL)
-    target_sources(rocprofsys-object-library PRIVATE ${CMAKE_CURRENT_LIST_DIR}/rcclp.cpp)
+    target_sources(rocprof-sys-object-library PRIVATE ${CMAKE_CURRENT_LIST_DIR}/rcclp.cpp)
 endif()
