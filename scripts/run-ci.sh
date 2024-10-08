@@ -20,7 +20,7 @@ toupper()
 : ${BINARY_DIR:=${PWD}/build}
 : ${SITE:=$(hostname)}
 : ${NAME:=""}
-: ${SUBMIT_URL:="my.cdash.org/submit.php?project=Omnitrace"}
+: ${SUBMIT_URL:="my.cdash.org/submit.php?project=rocprofiler-systems"}
 : ${CODECOV:=0}
 
 usage()
@@ -172,7 +172,7 @@ verbose-run mkdir -p ${BINARY_DIR}
 
 cat << EOF > ${BINARY_DIR}/CTestCustom.cmake
 
-set(CTEST_PROJECT_NAME "Omnitrace")
+set(CTEST_PROJECT_NAME "rocprofiler-systems")
 set(CTEST_NIGHTLY_START_TIME "05:00:00 UTC")
 
 set(CTEST_DROP_METHOD "http")

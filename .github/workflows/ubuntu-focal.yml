@@ -3,7 +3,7 @@ run-name: ubuntu-focal
 
 on:
   push:
-    branches: [ main, develop, amd-mainline, amd-staging, release/** ]
+    branches: [ amd-mainline, amd-staging, release/** ]
     paths-ignore:
       - '*.md'
       - 'docs/**'
@@ -15,7 +15,7 @@ on:
       - '.github/workflows/formatting.yml'
       - 'docker/**'
   pull_request:
-    branches: [ main, develop, amd-mainline, amd-staging, release/** ]
+    branches: [ amd-mainline, amd-staging, release/** ]
     paths-ignore:
       - '*.md'
       - 'docs/**'
@@ -39,7 +39,7 @@ jobs:
   ubuntu-focal-external:
     runs-on: ubuntu-20.04
     container:
-      image: jrmadsen/omnitrace:ci-base-ubuntu-20.04
+      image: dgaliffiamd/rocprof-sys:ci-base-ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
@@ -140,7 +140,7 @@ jobs:
           -DCMAKE_C_COMPILER=$(echo '${{ matrix.compiler }}' | sed 's/+/c/g')
           -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
-          -DCMAKE_INSTALL_PREFIX=/opt/omnitrace
+          -DCMAKE_INSTALL_PREFIX=/opt/rocprof-sys
           -DOMNITRACE_BUILD_TESTING=ON
           -DOMNITRACE_USE_MPI=OFF
           -DOMNITRACE_USE_HIP=OFF
@@ -196,7 +196,7 @@ jobs:
       shell: bash
       run: |
         source /usr/share/modules/init/$(basename ${SHELL})
-        module use /opt/omnitrace/share/modulefiles
+        module use /opt/rocprof-sys/share/modulefiles
         module avail
         module load omnitrace
         ./scripts/test-install.sh --test-omnitrace-{instrument,avail,sample,rewrite,runtime}=1 --test-omnitrace-python=${{ matrix.python }}
@@ -205,7 +205,7 @@ jobs:
       timeout-minutes: 10
       run: |
         set -v
-        ./scripts/test-find-package.sh --install-dir /opt/omnitrace
+        ./scripts/test-find-package.sh --install-dir /opt/rocprof-sys
 
     - name: CTest Artifacts
       if: failure()
@@ -238,12 +238,12 @@ jobs:
   ubuntu-focal-external-rocm:
     runs-on: ubuntu-20.04
     container:
-      image: jrmadsen/omnitrace:ci-base-ubuntu-20.04
+      image: dgaliffiamd/rocprof-sys:ci-base-ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
         compiler: ['g++']
-        rocm-version: ['5.4', '5.5', '5.6']
+        rocm-version: ['6.2']
         mpi-headers: ['OFF']
         build-jobs: ['3']
         ctest-exclude: ['-LE "mpi-example|transpose"']
@@ -328,7 +328,7 @@ jobs:
           -DCMAKE_C_COMPILER=$(echo '${{ matrix.compiler }}' | sed 's/+/c/g')
           -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
           -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
-          -DCMAKE_INSTALL_PREFIX=/opt/omnitrace
+          -DCMAKE_INSTALL_PREFIX=/opt/rocprof-sys
           -DOMNITRACE_BUILD_TESTING=ON
           -DOMNITRACE_BUILD_DEVELOPER=ON
           -DOMNITRACE_BUILD_EXTRA_OPTIMIZATIONS=OFF
@@ -358,14 +358,14 @@ jobs:
       timeout-minutes: 15
       shell: bash
       run: |
-        source /opt/omnitrace/share/omnitrace/setup-env.sh
+        source /opt/rocprof-sys/share/omnitrace/setup-env.sh
         ./scripts/test-install.sh --test-omnitrace-{instrument,avail,sample,python,rewrite,runtime}=1
 
     - name: Test User API
       timeout-minutes: 10
       run: |
         set -v
-        ./scripts/test-find-package.sh --install-dir /opt/omnitrace
+        ./scripts/test-find-package.sh --install-dir /opt/rocprof-sys
 
     - name: CTest Artifacts
       if: failure()
@@ -476,7 +476,7 @@ jobs:
           -DCMAKE_C_COMPILER=$(echo '${{ matrix.compiler }}' | sed 's/+/c/g')
           -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
-          -DCMAKE_INSTALL_PREFIX=/opt/omnitrace
+          -DCMAKE_INSTALL_PREFIX=/opt/rocprof-sys
           -DOMNITRACE_BUILD_TESTING=ON
           -DOMNITRACE_BUILD_DYNINST=ON
           -DOMNITRACE_USE_MPI=${USE_MPI}
@@ -515,14 +515,14 @@ jobs:
       working-directory: ${{ github.workspace }}/build
       run: |
         cpack -G STGZ
-        mkdir -p /opt/omnitrace
-        ./omnitrace-*.sh --prefix=/opt/omnitrace --exclude-subdir --skip-license
+        mkdir -p /opt/rocprof-sys
+        ./omnitrace-*.sh --prefix=/opt/rocprof-sys --exclude-subdir --skip-license
 
     - name: Test Install with setup-env.sh
       timeout-minutes: 15
       run: |
         set -v
-        source /opt/omnitrace/share/omnitrace/setup-env.sh
+        source /opt/rocprof-sys/share/omnitrace/setup-env.sh
         ${{ github.workspace }}/scripts/test-install.sh --test-omnitrace-{instrument,avail,sample,python,rewrite,runtime}=1
 
     - name: Test Install with Modulefile
@@ -530,7 +530,7 @@ jobs:
       run: |
         set -v
         source /usr/share/modules/init/$(basename ${SHELL})
-        module use /opt/omnitrace/share/modulefiles
+        module use /opt/rocprof-sys/share/modulefiles
         module load omnitrace
         ${{ github.workspace }}/scripts/test-install.sh --test-omnitrace-{instrument,avail,sample,python,rewrite,runtime}=1
 
@@ -538,7 +538,7 @@ jobs:
       timeout-minutes: 10
       run: |
         set -v
-        ${{ github.workspace }}/scripts/test-find-package.sh --install-dir /opt/omnitrace
+        ${{ github.workspace }}/scripts/test-find-package.sh --install-dir /opt/rocprof-sys
 
     - name: CTest Artifacts
       if: failure()
@@ -572,7 +572,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     container:
-      image: jrmadsen/omnitrace:ci-base-ubuntu-20.04
+      image: dgaliffiamd/rocprof-sys:ci-base-ubuntu-20.04
       options: --cap-add CAP_SYS_ADMIN
 
     env:
@@ -618,7 +618,7 @@ jobs:
           --site GitHub
           --coverage
           --
-          -DCMAKE_INSTALL_PREFIX=/opt/omnitrace
+          -DCMAKE_INSTALL_PREFIX=/opt/rocprof-sys
           -DOMNITRACE_BUILD_CI=OFF
           -DOMNITRACE_BUILD_TESTING=ON
           -DOMNITRACE_BUILD_DYNINST=OFF
