@@ -6,6 +6,9 @@
 Video tutorials
 ****************************************************
 
+The following video tutorials provide a visual guide to using ROCm Systems Profiler.
+They were recorded using the former name of the tool, Omnitrace, but the content is still applicable.
+
 Installing a binary release
 ========================================
 
