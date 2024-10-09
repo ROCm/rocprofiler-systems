@@ -117,7 +117,7 @@ rocprofiler_systems_add_bin_test(
     LABELS rocprofiler-systems-instrument
     TIMEOUT 45
     PASS_REGEX
-        ".*\\\[rocprofiler-systems-instrument\\\] Usage:.*\\\[DEBUG OPTIONS\\\].*\\\[MODE OPTIONS\\\].*\\\[LIBRARY OPTIONS\\\].*\\\[SYMBOL SELECTION OPTIONS\\\].*\\\[RUNTIME OPTIONS\\\].*\\\[GRANULARITY OPTIONS\\\].*\\\[DYNINST OPTIONS\\\].*"
+        ".*\\\[rocprof-sys-instrument\\\] Usage:.*\\\[DEBUG OPTIONS\\\].*\\\[MODE OPTIONS\\\].*\\\[LIBRARY OPTIONS\\\].*\\\[SYMBOL SELECTION OPTIONS\\\].*\\\[RUNTIME OPTIONS\\\].*\\\[GRANULARITY OPTIONS\\\].*\\\[DYNINST OPTIONS\\\].*"
     )
 
 # on RedHat, /usr/bin/ls is a script for `coreutils --coreutils-prog=ls`
@@ -149,7 +149,7 @@ rocprofiler_systems_add_bin_test(
 rocprofiler_systems_add_bin_test(
     NAME rocprofiler-systems-instrument-simulate-ls-check
     DEPENDS rocprofiler-systems-instrument-simulate-ls
-    COMMAND ls rocprof-sys-tests-output/rocprof-sys-instrument-simulate-ls/instrumentation
+    COMMAND ls rocprof-sys-tests-output/rocprofiler-systems-instrument-simulate-ls/instrumentation
     TIMEOUT 60
     PASS_REGEX
         ".*available.json.*available.txt.*available.xml.*excluded.json.*excluded.txt.*excluded.xml.*instrumented.json.*instrumented.txt.*instrumented.xml.*overlapping.json.*overlapping.txt.*overlapping.xml.*"
@@ -204,7 +204,7 @@ rocprofiler_systems_add_bin_test(
     DEPENDS rocprofiler-systems-instrument-write-log
     COMMAND
         ls
-        rocprof-sys-tests-output/rocprof-sys-instrument-write-log/instrumentation/user.log
+        rocprof-sys-tests-output/rocprofiler-systems-instrument-write-log/instrumentation/user.log
     LABELS "log"
     TIMEOUT 60
     PASS_REGEX "user.log"
