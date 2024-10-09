@@ -140,7 +140,7 @@ jobs:
           -DCMAKE_C_COMPILER=$(echo '${{ matrix.compiler }}' | sed 's/+/c/g')
           -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
-          -DCMAKE_INSTALL_PREFIX=/opt/rocprof-sys
+          -DCMAKE_INSTALL_PREFIX=/opt/rocprofiler-systems
           -DROCPROFSYS_BUILD_TESTING=ON
           -DROCPROFSYS_USE_MPI=OFF
           -DROCPROFSYS_USE_HIP=OFF
@@ -196,7 +196,7 @@ jobs:
       shell: bash
       run: |
         source /usr/share/modules/init/$(basename ${SHELL})
-        module use /opt/rocprof-sys/share/modulefiles
+        module use /opt/rocprofiler-systems/share/modulefiles
         module avail
         module load rocprof-sys
         ./scripts/test-install.sh --test-rocprof-sys-{instrument,avail,sample,rewrite,runtime}=1 --test-rocprof-sys-python=${{ matrix.python }}
@@ -205,7 +205,7 @@ jobs:
       timeout-minutes: 10
       run: |
         set -v
-        ./scripts/test-find-package.sh --install-dir /opt/rocprof-sys
+        ./scripts/test-find-package.sh --install-dir /opt/rocprofiler-systems
 
     - name: CTest Artifacts
       if: failure()
@@ -328,7 +328,7 @@ jobs:
           -DCMAKE_C_COMPILER=$(echo '${{ matrix.compiler }}' | sed 's/+/c/g')
           -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
           -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
-          -DCMAKE_INSTALL_PREFIX=/opt/rocprof-sys
+          -DCMAKE_INSTALL_PREFIX=/opt/rocprofiler-systems
           -DROCPROFSYS_BUILD_TESTING=ON
           -DROCPROFSYS_BUILD_DEVELOPER=ON
           -DROCPROFSYS_BUILD_EXTRA_OPTIMIZATIONS=OFF
@@ -358,14 +358,14 @@ jobs:
       timeout-minutes: 15
       shell: bash
       run: |
-        source /opt/rocprof-sys/share/rocprof-sys/setup-env.sh
+        source /opt/rocprofiler-systems/share/rocprof-sys/setup-env.sh
         ./scripts/test-install.sh --test-rocprof-sys-{instrument,avail,sample,python,rewrite,runtime}=1
 
     - name: Test User API
       timeout-minutes: 10
       run: |
         set -v
-        ./scripts/test-find-package.sh --install-dir /opt/rocprof-sys
+        ./scripts/test-find-package.sh --install-dir /opt/rocprofiler-systems
 
     - name: CTest Artifacts
       if: failure()
@@ -476,7 +476,7 @@ jobs:
           -DCMAKE_C_COMPILER=$(echo '${{ matrix.compiler }}' | sed 's/+/c/g')
           -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
-          -DCMAKE_INSTALL_PREFIX=/opt/rocprof-sys
+          -DCMAKE_INSTALL_PREFIX=/opt/rocprofiler-systems
           -DROCPROFSYS_BUILD_TESTING=ON
           -DROCPROFSYS_BUILD_DYNINST=ON
           -DROCPROFSYS_USE_MPI=${USE_MPI}
@@ -515,14 +515,14 @@ jobs:
       working-directory: ${{ github.workspace }}/build
       run: |
         cpack -G STGZ
-        mkdir -p /opt/rocprof-sys
-        ./rocprof-sys-*.sh --prefix=/opt/rocprof-sys --exclude-subdir --skip-license
+        mkdir -p /opt/rocprofiler-systems
+        ./rocprofiler-systems-*.sh --prefix=/opt/rocprofiler-systems --exclude-subdir --skip-license
 
     - name: Test Install with setup-env.sh
       timeout-minutes: 15
       run: |
         set -v
-        source /opt/rocprof-sys/share/rocprof-sys/setup-env.sh
+        source /opt/rocprofiler-systems/share/rocprof-sys/setup-env.sh
         ${{ github.workspace }}/scripts/test-install.sh --test-rocprof-sys-{instrument,avail,sample,python,rewrite,runtime}=1
 
     - name: Test Install with Modulefile
@@ -530,7 +530,7 @@ jobs:
       run: |
         set -v
         source /usr/share/modules/init/$(basename ${SHELL})
-        module use /opt/rocprof-sys/share/modulefiles
+        module use /opt/rocprofiler-systems/share/modulefiles
         module load rocprof-sys
         ${{ github.workspace }}/scripts/test-install.sh --test-rocprof-sys-{instrument,avail,sample,python,rewrite,runtime}=1
 
@@ -538,7 +538,7 @@ jobs:
       timeout-minutes: 10
       run: |
         set -v
-        ${{ github.workspace }}/scripts/test-find-package.sh --install-dir /opt/rocprof-sys
+        ${{ github.workspace }}/scripts/test-find-package.sh --install-dir /opt/rocprofiler-systems
 
     - name: CTest Artifacts
       if: failure()
@@ -618,7 +618,7 @@ jobs:
           --site GitHub
           --coverage
           --
-          -DCMAKE_INSTALL_PREFIX=/opt/rocprof-sys
+          -DCMAKE_INSTALL_PREFIX=/opt/rocprofiler-systems
           -DROCPROFSYS_BUILD_CI=OFF
           -DROCPROFSYS_BUILD_TESTING=ON
           -DROCPROFSYS_BUILD_DYNINST=OFF

@@ -31,7 +31,7 @@
 #    endif
 #endif
 
-#include "rocprof-sys/user.h"
+#include "rocprofiler-systems/user.h"
 
 #include <atomic>
 #include <cstdint>

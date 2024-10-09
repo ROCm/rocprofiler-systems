@@ -1,7 +1,7 @@
 
-#include <rocprof-sys/categories.h>
-#include <rocprof-sys/types.h>
-#include <rocprof-sys/user.h>
+#include <rocprofiler-systems/categories.h>
+#include <rocprofiler-systems/types.h>
+#include <rocprofiler-systems/user.h>
 
 #include <atomic>
 #include <cassert>

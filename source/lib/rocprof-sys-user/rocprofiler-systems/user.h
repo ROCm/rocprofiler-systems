@@ -33,8 +33,8 @@
 #    endif
 #endif
 
-#include "rocprof-sys/categories.h"
-#include "rocprof-sys/types.h"
+#include "rocprofiler-systems/categories.h"
+#include "rocprofiler-systems/types.h"
 
 #if defined(__cplusplus)
 extern "C"

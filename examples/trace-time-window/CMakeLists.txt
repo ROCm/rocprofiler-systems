@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 
-project(rocprof-sys-trace-time-window-example LANGUAGES CXX)
+project(rocprofiler-systems-trace-time-window-example LANGUAGES CXX)
 
 if(ROCPROFSYS_DISABLE_EXAMPLES)
     get_filename_component(_DIR ${CMAKE_CURRENT_LIST_DIR} NAME)
@@ -20,5 +20,5 @@ if(ROCPROFSYS_INSTALL_EXAMPLES)
     install(
         TARGETS trace-time-window
         DESTINATION bin
-        COMPONENT rocprof-sys-examples)
+        COMPONENT rocprofiler-systems-examples)
 endif()

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
-project(rocprof-sys-examples LANGUAGES C CXX)
+project(rocprofiler-systems-examples LANGUAGES C CXX)
 
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
     set(CMAKE_BUILD_TYPE
@@ -23,13 +23,14 @@ endif()
 
 option(BUILD_SHARED_LIBS "Build dynamic libraries" ON)
 
-if(CMAKE_PROJECT_NAME STREQUAL "rocprof-sys")
+if(CMAKE_PROJECT_NAME STREQUAL "rocprofiler-systems")
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
-    rocprof_sys_add_option(ROCPROFSYS_INSTALL_EXAMPLES "Install rocprof-sys examples" OFF)
+    rocprofiler_systems_add_option(ROCPROFSYS_INSTALL_EXAMPLES
+                                   "Install rocprofiler-systems examples" OFF)
 else()
-    option(ROCPROFSYS_INSTALL_EXAMPLES "Install rocprof-sys examples" ON)
+    option(ROCPROFSYS_INSTALL_EXAMPLES "Install rocprofiler-systems examples" ON)
 endif()
 
 if(ROCPROFSYS_INSTALL_EXAMPLES)

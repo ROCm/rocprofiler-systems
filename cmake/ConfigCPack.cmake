@@ -1,6 +1,6 @@
 # configure packaging
 
-function(rocprof_sys_parse_release)
+function(rocprofiler_systems_parse_release)
     if(EXISTS /etc/lsb-release AND NOT IS_DIRECTORY /etc/lsb-release)
         file(READ /etc/lsb-release _LSB_RELEASE)
         if(_LSB_RELEASE)
@@ -27,7 +27,7 @@ function(rocprof_sys_parse_release)
 endfunction()
 
 # parse either /etc/lsb-release or /etc/os-release
-rocprof_sys_parse_release()
+rocprofiler_systems_parse_release()
 
 if(NOT _SYSTEM_NAME)
     set(_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}")
@@ -83,8 +83,8 @@ if(ROCPROFSYS_USE_MPI)
                 "Invalid ROCPROFSYS_MPI_IMPL (${ROCPROFSYS_MPI_IMPL}). Should be one of: ${VALID_MPI_IMPLS}"
             )
     else()
-        rocprof_sys_add_feature(ROCPROFSYS_MPI_IMPL
-                                "MPI implementation for CPack DEBIAN depends")
+        rocprofiler_systems_add_feature(ROCPROFSYS_MPI_IMPL
+                                        "MPI implementation for CPack DEBIAN depends")
     endif()
 
     if("${ROCPROFSYS_MPI_IMPL}" STREQUAL "openmpi")
@@ -118,7 +118,7 @@ endif()
 set(ROCPROFSYS_PACKAGE_FILE_NAME
     ${CPACK_PACKAGE_NAME}-${ROCPROFSYS_VERSION}-${ROCPROFSYS_CPACK_SYSTEM_NAME}${ROCPROFSYS_CPACK_PACKAGE_SUFFIX}
     )
-rocprof_sys_add_feature(ROCPROFSYS_PACKAGE_FILE_NAME "CPack filename")
+rocprofiler_systems_add_feature(ROCPROFSYS_PACKAGE_FILE_NAME "CPack filename")
 
 # -------------------------------------------------------------------------------------- #
 #
@@ -241,22 +241,25 @@ if(DEFINED ENV{CPACK_RPM_PACKAGE_RELEASE})
     set(CPACK_RPM_PACKAGE_RELEASE $ENV{CPACK_RPM_PACKAGE_RELEASE})
 endif()
 
-rocprof_sys_add_feature(CPACK_PACKAGE_NAME "Package name")
-rocprof_sys_add_feature(CPACK_PACKAGE_VERSION "Package version")
-rocprof_sys_add_feature(CPACK_PACKAGING_INSTALL_PREFIX "Package installation prefix")
+rocprofiler_systems_add_feature(CPACK_PACKAGE_NAME "Package name")
+rocprofiler_systems_add_feature(CPACK_PACKAGE_VERSION "Package version")
+rocprofiler_systems_add_feature(CPACK_PACKAGING_INSTALL_PREFIX
+                                "Package installation prefix")
 
-rocprof_sys_add_feature(CPACK_DEBIAN_FILE_NAME "Debian file name")
-rocprof_sys_add_feature(CPACK_DEBIAN_PACKAGE_RELEASE "Debian package release version")
-rocprof_sys_add_feature(CPACK_DEBIAN_PACKAGE_DEPENDS "Debian package dependencies")
-rocprof_sys_add_feature(CPACK_DEBIAN_PACKAGE_SHLIBDEPS
-                        "Debian package shared library dependencies")
+rocprofiler_systems_add_feature(CPACK_DEBIAN_FILE_NAME "Debian file name")
+rocprofiler_systems_add_feature(CPACK_DEBIAN_PACKAGE_RELEASE
+                                "Debian package release version")
+rocprofiler_systems_add_feature(CPACK_DEBIAN_PACKAGE_DEPENDS
+                                "Debian package dependencies")
+rocprofiler_systems_add_feature(CPACK_DEBIAN_PACKAGE_SHLIBDEPS
+                                "Debian package shared library dependencies")
 
-rocprof_sys_add_feature(CPACK_RPM_FILE_NAME "RPM file name")
-rocprof_sys_add_feature(CPACK_RPM_PACKAGE_RELEASE "RPM package release version")
-rocprof_sys_add_feature(CPACK_RPM_PACKAGE_REQUIRES "RPM package dependencies")
-rocprof_sys_add_feature(CPACK_RPM_PACKAGE_AUTOREQPROV
-                        "RPM package auto generate requires and provides")
-rocprof_sys_add_feature(CPACK_RPM_PACKAGE_REQUIRES "RPM package requires")
-rocprof_sys_add_feature(CPACK_RPM_PACKAGE_PROVIDES "RPM package provides")
+rocprofiler_systems_add_feature(CPACK_RPM_FILE_NAME "RPM file name")
+rocprofiler_systems_add_feature(CPACK_RPM_PACKAGE_RELEASE "RPM package release version")
+rocprofiler_systems_add_feature(CPACK_RPM_PACKAGE_REQUIRES "RPM package dependencies")
+rocprofiler_systems_add_feature(CPACK_RPM_PACKAGE_AUTOREQPROV
+                                "RPM package auto generate requires and provides")
+rocprofiler_systems_add_feature(CPACK_RPM_PACKAGE_REQUIRES "RPM package requires")
+rocprofiler_systems_add_feature(CPACK_RPM_PACKAGE_PROVIDES "RPM package provides")
 
 include(CPack)

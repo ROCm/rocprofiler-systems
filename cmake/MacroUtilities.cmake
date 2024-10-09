@@ -15,16 +15,16 @@ include(CMakeParseArguments)
 # message which handles ROCPROFSYS_QUIET_CONFIG settings
 # -----------------------------------------------------------------------
 #
-function(ROCPROF_SYS_MESSAGE TYPE)
+function(ROCPROFILER_SYSTEMS_MESSAGE TYPE)
     if(NOT ROCPROFSYS_QUIET_CONFIG)
-        message(${TYPE} "[rocprof-sys] ${ARGN}")
+        message(${TYPE} "[rocprofiler-systems] ${ARGN}")
     endif()
 endfunction()
 
 # -----------------------------------------------------------------------
 # Save a set of variables with the given prefix
 # -----------------------------------------------------------------------
-macro(ROCPROF_SYS_SAVE_VARIABLES _PREFIX)
+macro(ROCPROFILER_SYSTEMS_SAVE_VARIABLES _PREFIX)
     # parse args
     cmake_parse_arguments(
         SAVE
@@ -58,7 +58,7 @@ endmacro()
 # -----------------------------------------------------------------------
 # Restore a set of variables with the given prefix
 # -----------------------------------------------------------------------
-macro(ROCPROF_SYS_RESTORE_VARIABLES _PREFIX)
+macro(ROCPROFILER_SYSTEMS_RESTORE_VARIABLES _PREFIX)
     # parse args
     cmake_parse_arguments(
         RESTORE
@@ -92,10 +92,10 @@ macro(ROCPROF_SYS_RESTORE_VARIABLES _PREFIX)
 endmacro()
 
 # -----------------------------------------------------------------------
-# function - rocprof_sys_capitalize - make a string capitalized (first letter is capital)
-# usage: capitalize("SHARED" CShared) message(STATUS "-- CShared is \"${CShared}\"") $ --
-# CShared is "Shared"
-function(ROCPROF_SYS_CAPITALIZE str var)
+# function - rocprofiler_systems_capitalize - make a string capitalized (first letter is
+# capital) usage: capitalize("SHARED" CShared) message(STATUS "-- CShared is
+# \"${CShared}\"") $ -- CShared is "Shared"
+function(ROCPROFILER_SYSTEMS_CAPITALIZE str var)
     # make string lower
     string(TOLOWER "${str}" str)
     string(SUBSTRING "${str}" 0 1 _first)
@@ -108,11 +108,11 @@ function(ROCPROF_SYS_CAPITALIZE str var)
 endfunction()
 
 # ------------------------------------------------------------------------------#
-# function rocprof_sys_strip_target(<TARGET> [FORCE] [EXPLICIT])
+# function rocprofiler_systems_strip_target(<TARGET> [FORCE] [EXPLICIT])
 #
 # Creates a post-build command which strips a binary. FORCE flag will override
 #
-function(ROCPROF_SYS_STRIP_TARGET)
+function(ROCPROFILER_SYSTEMS_STRIP_TARGET)
     cmake_parse_arguments(STRIP "FORCE;EXPLICIT" "" "ARGS" ${ARGN})
 
     list(LENGTH STRIP_UNPARSED_ARGUMENTS NUM_UNPARSED)
@@ -120,14 +120,15 @@ function(ROCPROF_SYS_STRIP_TARGET)
     if(NUM_UNPARSED EQUAL 1)
         set(_TARGET "${STRIP_UNPARSED_ARGUMENTS}")
     else()
-        rocprof_sys_message(
-            FATAL_ERROR "rocprof_sys_strip_target cannot deduce target from \"${ARGN}\"")
+        rocprofiler_systems_message(
+            FATAL_ERROR
+            "rocprofiler_systems_strip_target cannot deduce target from \"${ARGN}\"")
     endif()
 
     if(NOT TARGET "${_TARGET}")
-        rocprof_sys_message(
+        rocprofiler_systems_message(
             FATAL_ERROR
-            "rocprof_sys_strip_target not provided valid target: \"${_TARGET}\"")
+            "rocprofiler_systems_strip_target not provided valid target: \"${_TARGET}\"")
     endif()
 
     if(CMAKE_STRIP AND (STRIP_FORCE OR ROCPROFSYS_STRIP_LIBRARIES))
@@ -143,17 +144,16 @@ function(ROCPROF_SYS_STRIP_TARGET)
                 TARGET ${_TARGET}
                 POST_BUILD
                 COMMAND
-                    ${CMAKE_STRIP} -w --keep-symbol="rocprof_sys_init"
-                    --keep-symbol="rocprof_sys_finalize"
-                    --keep-symbol="rocprof_sys_push_trace"
-                    --keep-symbol="rocprof_sys_pop_trace"
-                    --keep-symbol="rocprof_sys_push_region"
-                    --keep-symbol="rocprof_sys_pop_region"
-                    --keep-symbol="rocprof_sys_set_env"
-                    --keep-symbol="rocprof_sys_set_mpi"
-                    --keep-symbol="rocprof_sys_reset_preload"
-                    --keep-symbol="rocprof_sys_set_instrumented"
-                    --keep-symbol="rocprof_sys_user_*" --keep-symbol="ompt_start_tool"
+                    ${CMAKE_STRIP} -w --keep-symbol="rocprofsys_init"
+                    --keep-symbol="rocprofsys_finalize"
+                    --keep-symbol="rocprofsys_push_trace"
+                    --keep-symbol="rocprofsys_pop_trace"
+                    --keep-symbol="rocprofsys_push_region"
+                    --keep-symbol="rocprofsys_pop_region"
+                    --keep-symbol="rocprofsys_set_env" --keep-symbol="rocprofsys_set_mpi"
+                    --keep-symbol="rocprofsys_reset_preload"
+                    --keep-symbol="rocprofsys_set_instrumented"
+                    --keep-symbol="rocprofsys_user_*" --keep-symbol="ompt_start_tool"
                     --keep-symbol="kokkosp_*" --keep-symbol="OnLoad"
                     --keep-symbol="OnUnload" --keep-symbol="OnLoadToolProp"
                     --keep-symbol="OnUnloadTool" --keep-symbol="__libc_start_main"
@@ -165,22 +165,17 @@ function(ROCPROF_SYS_STRIP_TARGET)
 endfunction()
 
 # ------------------------------------------------------------------------------#
-# function add_rocprof_sys_test_target()
+# function add_rocprofiler_systems_test_target()
 #
 # Creates a target which runs ctest but depends on all the tests being built.
 #
-function(ADD_ROCPROFSYS_TEST_TARGET)
-    if(NOT TARGET rocprof-sys-test)
-        add_custom_target(
-            rocprof-sys-test
-            COMMAND ${CMAKE_COMMAND} --build ${PROJECT_BINARY_DIR} --target test
-            WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-            COMMENT "Running tests...")
-    endif()
-endfunction()
+# function(ADD_ROCPROFSYS_TEST_TARGET) if(NOT TARGET rocprofiler-systems-test)
+# add_custom_target( rocprofiler-systems-test COMMAND ${CMAKE_COMMAND} --build
+# ${PROJECT_BINARY_DIR} --target test WORKING_DIRECTORY ${PROJECT_BINARY_DIR} COMMENT
+# "Running tests...") endif() endfunction()
 
 # ----------------------------------------------------------------------------------------#
-# macro rocprof_sys_checkout_git_submodule()
+# macro rocprofiler_systems_checkout_git_submodule()
 #
 # Run "git submodule update" if a file in a submodule does not exist
 #
@@ -189,7 +184,7 @@ endfunction()
 # value) -- (default: PROJECT_SOURCE_DIR) TEST_FILE (one value) -- file to check for
 # (default: CMakeLists.txt) ADDITIONAL_CMDS (many value) -- any addition commands to pass
 #
-function(ROCPROF_SYS_CHECKOUT_GIT_SUBMODULE)
+function(ROCPROFILER_SYSTEMS_CHECKOUT_GIT_SUBMODULE)
     # parse args
     cmake_parse_arguments(
         CHECKOUT "RECURSIVE"
@@ -258,7 +253,7 @@ function(ROCPROF_SYS_CHECKOUT_GIT_SUBMODULE)
         if(RET GREATER 0)
             set(_CMD "${GIT_EXECUTABLE} submodule update --init ${_RECURSE}
                 ${CHECKOUT_ADDITIONAL_CMDS} ${CHECKOUT_RELATIVE_PATH}")
-            message(STATUS "function(rocprof_sys_checkout_git_submodule) failed.")
+            message(STATUS "function(rocprofiler_systems_checkout_git_submodule) failed.")
             message(FATAL_ERROR "Command: \"${_CMD}\"")
         else()
             set(_TEST_FILE_EXISTS ON)
@@ -298,7 +293,7 @@ function(ROCPROF_SYS_CHECKOUT_GIT_SUBMODULE)
                 "${GIT_EXECUTABLE} clone -b ${CHECKOUT_REPO_BRANCH}
                 ${CHECKOUT_ADDITIONAL_CMDS} ${CHECKOUT_REPO_URL} ${CHECKOUT_RELATIVE_PATH}"
                 )
-            message(STATUS "function(rocprof_sys_checkout_git_submodule) failed.")
+            message(STATUS "function(rocprofiler_systems_checkout_git_submodule) failed.")
             message(FATAL_ERROR "Command: \"${_CMD}\"")
         else()
             set(_TEST_FILE_EXISTS ON)
@@ -316,7 +311,7 @@ endfunction()
 # ----------------------------------------------------------------------------------------#
 # try to find a package quietly
 #
-function(ROCPROF_SYS_TEST_FIND_PACKAGE PACKAGE_NAME OUTPUT_VAR)
+function(ROCPROFILER_SYSTEMS_TEST_FIND_PACKAGE PACKAGE_NAME OUTPUT_VAR)
     cmake_parse_arguments(PACKAGE "" "" "UNSET" ${ARGN})
     find_package(${PROJECT_NAME} QUIET ${PACKAGE_UNPARSED_ARGUMENTS})
     if(NOT ${PROJECT_NAME}_FOUND)
@@ -336,7 +331,7 @@ endfunction()
 # ----------------------------------------------------------------------------------------#
 # macro to add an interface lib
 #
-macro(ROCPROF_SYS_ADD_INTERFACE_LIBRARY _TARGET)
+macro(ROCPROFILER_SYSTEMS_ADD_INTERFACE_LIBRARY _TARGET)
     add_library(${_TARGET} INTERFACE)
     add_library(${PROJECT_NAME}::${_TARGET} ALIAS ${_TARGET})
     install(
@@ -356,7 +351,7 @@ endmacro()
 # specified by the existence of the variable <NAME>, to the list of enabled/disabled
 # features, plus a docstring describing the feature
 #
-function(ROCPROF_SYS_ADD_FEATURE _var _description)
+function(ROCPROFILER_SYSTEMS_ADD_FEATURE _var _description)
     set(EXTRA_DESC "")
     foreach(currentArg ${ARGN})
         if(NOT "${currentArg}" STREQUAL "${_var}"
@@ -388,12 +383,12 @@ endfunction()
 # function add_option(<OPTION_NAME> <DOCSRING> <DEFAULT_SETTING> [NO_FEATURE]) Add an
 # option and add as a feature if NO_FEATURE is not provided
 #
-function(ROCPROF_SYS_ADD_OPTION _NAME _MESSAGE _DEFAULT)
+function(ROCPROFILER_SYSTEMS_ADD_OPTION _NAME _MESSAGE _DEFAULT)
     option(${_NAME} "${_MESSAGE}" ${_DEFAULT})
     if("NO_FEATURE" IN_LIST ARGN)
         mark_as_advanced(${_NAME})
     else()
-        rocprof_sys_add_feature(${_NAME} "${_MESSAGE}")
+        rocprofiler_systems_add_feature(${_NAME} "${_MESSAGE}")
         if(ROCPROFSYS_BUILD_DOCS)
             set_property(GLOBAL APPEND PROPERTY ${PROJECT_NAME}_CMAKE_OPTIONS_DOC
                                                 "${_NAME}` | ${_MESSAGE} |")
@@ -408,10 +403,10 @@ function(ROCPROF_SYS_ADD_OPTION _NAME _MESSAGE _DEFAULT)
 endfunction()
 
 # ----------------------------------------------------------------------------------------#
-# function rocprof_sys_add_cache_option(<OPTION_NAME> <DOCSRING> <TYPE> <DEFAULT_VALUE>
-# [NO_FEATURE] [ADVANCED] [CMAKE_DEFINE])
+# function rocprofiler_systems_add_cache_option(<OPTION_NAME> <DOCSRING> <TYPE>
+# <DEFAULT_VALUE> [NO_FEATURE] [ADVANCED] [CMAKE_DEFINE])
 #
-function(ROCPROF_SYS_ADD_CACHE_OPTION _NAME _MESSAGE _TYPE _DEFAULT)
+function(ROCPROFILER_SYSTEMS_ADD_CACHE_OPTION _NAME _MESSAGE _TYPE _DEFAULT)
     set(_FORCE)
     if("FORCE" IN_LIST ARGN)
         set(_FORCE FORCE)
@@ -424,7 +419,7 @@ function(ROCPROF_SYS_ADD_CACHE_OPTION _NAME _MESSAGE _TYPE _DEFAULT)
     if("NO_FEATURE" IN_LIST ARGN)
         mark_as_advanced(${_NAME})
     else()
-        rocprof_sys_add_feature(${_NAME} "${_MESSAGE}")
+        rocprofiler_systems_add_feature(${_NAME} "${_MESSAGE}")
 
         if(ROCPROFSYS_BUILD_DOCS)
             set_property(GLOBAL APPEND PROPERTY ${PROJECT_NAME}_CMAKE_OPTIONS_DOC
@@ -442,9 +437,9 @@ function(ROCPROF_SYS_ADD_CACHE_OPTION _NAME _MESSAGE _TYPE _DEFAULT)
 endfunction()
 
 # ----------------------------------------------------------------------------------------#
-# function rocprof_sys_report_feature_changes() :: print changes in features
+# function rocprofiler_systems_report_feature_changes() :: print changes in features
 #
-function(ROCPROF_SYS_REPORT_FEATURE_CHANGES)
+function(ROCPROFILER_SYSTEMS_REPORT_FEATURE_CHANGES)
     get_property(_features GLOBAL PROPERTY ${PROJECT_NAME}_FEATURES)
     if(NOT "${_features}" STREQUAL "")
         list(REMOVE_DUPLICATES _features)
@@ -452,9 +447,9 @@ function(ROCPROF_SYS_REPORT_FEATURE_CHANGES)
     endif()
     foreach(_feature ${_features})
         if("${ARGN}" STREQUAL "")
-            rocprof_sys_watch_for_change(${_feature})
+            rocprofiler_systems_watch_for_change(${_feature})
         elseif("${_feature}" IN_LIST ARGN)
-            rocprof_sys_watch_for_change(${_feature})
+            rocprofiler_systems_watch_for_change(${_feature})
         endif()
     endforeach()
 endfunction()
@@ -462,7 +457,7 @@ endfunction()
 # ----------------------------------------------------------------------------------------#
 # function print_enabled_features() Print enabled  features plus their docstrings.
 #
-function(ROCPROF_SYS_PRINT_ENABLED_FEATURES)
+function(ROCPROFILER_SYSTEMS_PRINT_ENABLED_FEATURES)
     set(_basemsg "The following features are defined/enabled (+):")
     set(_currentFeatureText "${_basemsg}")
     get_property(_features GLOBAL PROPERTY ${PROJECT_NAME}_FEATURES)
@@ -486,7 +481,7 @@ function(ROCPROF_SYS_PRINT_ENABLED_FEATURES)
                     string(REGEX REPLACE "^${PROJECT_NAME}_USE_" "" _feature_tmp
                                          "${_feature}")
                     string(TOLOWER "${_feature_tmp}" _feature_tmp_l)
-                    rocprof_sys_capitalize("${_feature_tmp}" _feature_tmp_c)
+                    rocprofiler_systems_capitalize("${_feature_tmp}" _feature_tmp_c)
                     foreach(_var _feature _feature_tmp _feature_tmp_l _feature_tmp_c)
                         set(_ver "${${${_var}}_VERSION}")
                         if(NOT "${_ver}" STREQUAL "")
@@ -510,7 +505,7 @@ endfunction()
 # ----------------------------------------------------------------------------------------#
 # function print_disabled_features() Print disabled features plus their docstrings.
 #
-function(ROCPROF_SYS_PRINT_DISABLED_FEATURES)
+function(ROCPROFILER_SYSTEMS_PRINT_DISABLED_FEATURES)
     set(_basemsg "The following features are NOT defined/enabled (-):")
     set(_currentFeatureText "${_basemsg}")
     get_property(_features GLOBAL PROPERTY ${PROJECT_NAME}_FEATURES)
@@ -539,10 +534,10 @@ endfunction()
 # ----------------------------------------------------------------------------------------#
 # function print_features() Print all features plus their docstrings.
 #
-function(ROCPROF_SYS_PRINT_FEATURES)
-    rocprof_sys_report_feature_changes()
-    rocprof_sys_print_enabled_features()
-    rocprof_sys_print_disabled_features()
+function(ROCPROFILER_SYSTEMS_PRINT_FEATURES)
+    rocprofiler_systems_report_feature_changes()
+    rocprofiler_systems_print_enabled_features()
+    rocprofiler_systems_print_disabled_features()
 endfunction()
 
 # ----------------------------------------------------------------------------------------#
@@ -552,7 +547,7 @@ endfunction()
 # source files DIRECTORY   --> all files in directory PROJECT     --> all files/targets in
 # a project/subproject
 #
-function(rocprof_sys_custom_compilation)
+function(rocprofiler_systems_custom_compilation)
     cmake_parse_arguments(COMP "GLOBAL;PROJECT" "COMPILER" "DIRECTORY;TARGET;SOURCE"
                           ${ARGN})
 
@@ -574,7 +569,7 @@ function(rocprof_sys_custom_compilation)
     if(NOT ROCPROFSYS_COMPILE_LAUNCHER)
         message(
             FATAL_ERROR
-                "rocprof-sys could not find 'rocprof-sys-launch-compiler'. Please set '-DROCPROFSYS_COMPILE_LAUNCHER=/path/to/launcher'"
+                "rocprofiler-systems could not find 'rocprof-sys-launch-compiler'. Please set '-DROCPROFSYS_COMPILE_LAUNCHER=/path/to/launcher'"
             )
     endif()
 
@@ -593,7 +588,7 @@ function(rocprof_sys_custom_compilation)
     else()
         foreach(_TYPE PROJECT DIRECTORY TARGET SOURCE)
             # make project/subproject scoping easy, e.g.
-            # rocprof_sys_custom_compilation(PROJECT) after project(...)
+            # rocprofiler_systems_custom_compilation(PROJECT) after project(...)
             if("${_TYPE}" STREQUAL "PROJECT" AND COMP_${_TYPE})
                 list(APPEND COMP_DIRECTORY ${PROJECT_SOURCE_DIR})
                 unset(COMP_${_TYPE})
@@ -619,7 +614,7 @@ function(rocprof_sys_custom_compilation)
     endif()
 endfunction()
 
-function(ROCPROF_SYS_WATCH_FOR_CHANGE _var)
+function(ROCPROFILER_SYSTEMS_WATCH_FOR_CHANGE _var)
     list(LENGTH ARGN _NUM_EXTRA_ARGS)
     if(_NUM_EXTRA_ARGS EQUAL 1)
         set(_VAR ${ARGN})
@@ -637,42 +632,43 @@ function(ROCPROF_SYS_WATCH_FOR_CHANGE _var)
 
     update_var(OFF)
 
-    set(_rocprof_sys_watch_var_name ROCPROFSYS_WATCH_VALUE_${_var})
-    if(DEFINED ${_rocprof_sys_watch_var_name})
-        if("${${_var}}" STREQUAL "${${_rocprof_sys_watch_var_name}}")
+    set(_rocprofiler_systems_watch_var_name ROCPROFSYS_WATCH_VALUE_${_var})
+    if(DEFINED ${_rocprofiler_systems_watch_var_name})
+        if("${${_var}}" STREQUAL "${${_rocprofiler_systems_watch_var_name}}")
             return()
         else()
-            rocprof_sys_message(
+            rocprofiler_systems_message(
                 STATUS
-                "${_var} changed :: ${${_rocprof_sys_watch_var_name}} --> ${${_var}}")
+                "${_var} changed :: ${${_rocprofiler_systems_watch_var_name}} --> ${${_var}}"
+                )
             update_var(ON)
         endif()
     else()
         if(NOT "${${_var}}" STREQUAL "")
-            rocprof_sys_message(STATUS "${_var} :: ${${_var}}")
+            rocprofiler_systems_message(STATUS "${_var} :: ${${_var}}")
             update_var(ON)
         endif()
     endif()
 
     # store the value for the next run
-    set(${_rocprof_sys_watch_var_name}
+    set(${_rocprofiler_systems_watch_var_name}
         "${${_var}}"
         CACHE INTERNAL "Last value of ${_var}" FORCE)
 endfunction()
 
-function(ROCPROF_SYS_DIRECTORY)
+function(ROCPROFILER_SYSTEMS_DIRECTORY)
     cmake_parse_arguments(F "MKDIR;FAIL;FORCE" "PREFIX;OUTPUT_VARIABLE;WORKING_DIRECTORY"
                           "PATHS" ${ARGN})
 
     if(F_PREFIX AND NOT IS_ABSOLUTE "${F_PREFIX}")
         if(F_WORKING_DIRECTORY)
-            rocprof_sys_message(
+            rocprofiler_systems_message(
                 STATUS
                 "PREFIX was specified as a relative path, using working directory + prefix :: '${F_WORKING_DIRECTORY}/${F_PREFIX}'..."
                 )
             set(F_PREFIX ${F_WORKING_DIRECTORY}/${F_PREFIX})
         else()
-            rocprof_sys_message(
+            rocprofiler_systems_message(
                 FATAL_ERROR
                 "PREFIX was specified but it is not an absolute path: ${F_PREFIX}")
         endif()
@@ -694,9 +690,10 @@ function(ROCPROF_SYS_DIRECTORY)
         endif()
 
         if(NOT EXISTS "${_PATH}" AND F_FAIL)
-            rocprof_sys_message(FATAL_ERROR "Directory '${_PATH}' does not exist")
+            rocprofiler_systems_message(FATAL_ERROR "Directory '${_PATH}' does not exist")
         elseif(NOT IS_DIRECTORY "${_PATH}" AND F_FAIL)
-            rocprof_sys_message(FATAL_ERROR "'${_PATH}' exists but is not a directory")
+            rocprofiler_systems_message(FATAL_ERROR
+                                        "'${_PATH}' exists but is not a directory")
         elseif(NOT EXISTS "${_PATH}" AND F_MKDIR)
             execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${_PATH}
                             WORKING_DIRECTORY ${F_WORKING_DIRECTORY})
@@ -720,7 +717,7 @@ function(ROCPROF_SYS_DIRECTORY)
     endif()
 endfunction()
 
-function(ROCPROF_SYS_CHECK_PYTHON_DIRS_AND_VERSIONS)
+function(ROCPROFILER_SYSTEMS_CHECK_PYTHON_DIRS_AND_VERSIONS)
     cmake_parse_arguments(F "FAIL;UNSET" "RESULT_VARIABLE;OUTPUT_VARIABLE" "" ${ARGN})
 
     list(LENGTH ROCPROFSYS_PYTHON_VERSIONS _NUM_PYTHON_VERSIONS)
@@ -745,15 +742,15 @@ function(ROCPROF_SYS_CHECK_PYTHON_DIRS_AND_VERSIONS)
 
     if(NOT ${_RET} EQUAL 0)
         if(F_FAIL)
-            rocprof_sys_message(
+            rocprofiler_systems_message(
                 WARNING
                 "Error! Number of python versions  : ${_NUM_PYTHON_VERSIONS}. VERSIONS :: ${ROCPROFSYS_PYTHON_VERSIONS}"
                 )
-            rocprof_sys_message(
+            rocprofiler_systems_message(
                 WARNING
                 "Error! Number of python root directories : ${_NUM_PYTHON_ROOT_DIRS}. ROOT DIRS :: ${ROCPROFSYS_PYTHON_ROOT_DIRS}"
                 )
-            rocprof_sys_message(
+            rocprofiler_systems_message(
                 FATAL_ERROR
                 "Error! Number of python versions != number of python root directories")
         elseif(F_UNSET)
@@ -769,7 +766,7 @@ endfunction()
 # ----------------------------------------------------------------------------
 # Console scripts
 #
-function(ROCPROF_SYS_PYTHON_CONSOLE_SCRIPT SCRIPT_NAME SCRIPT_SUBMODULE)
+function(ROCPROFILER_SYSTEMS_PYTHON_CONSOLE_SCRIPT SCRIPT_NAME SCRIPT_SUBMODULE)
     set(options)
     set(args VERSION ROOT_DIR)
     set(kwargs)
@@ -823,17 +820,17 @@ function(ROCPROF_SYS_PYTHON_CONSOLE_SCRIPT SCRIPT_NAME SCRIPT_SUBMODULE)
     endif()
 endfunction()
 
-function(ROCPROF_SYS_FIND_STATIC_LIBRARY)
+function(ROCPROFILER_SYSTEMS_FIND_STATIC_LIBRARY)
     set(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_STATIC_LIBRARY_SUFFIX})
     find_library(${ARGN})
 endfunction()
 
-function(ROCPROF_SYS_FIND_SHARED_LIBRARY)
+function(ROCPROFILER_SYSTEMS_FIND_SHARED_LIBRARY)
     set(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_SHARED_LIBRARY_SUFFIX})
     find_library(${ARGN})
 endfunction()
 
-function(ROCPROF_SYS_BUILDTREE_TPL _TPL_TARGET _NEW_NAME _BUILD_TREE_DIR)
+function(ROCPROFILER_SYSTEMS_BUILDTREE_TPL _TPL_TARGET _NEW_NAME _BUILD_TREE_DIR)
     get_target_property(_TPL_VERSION ${_TPL_TARGET} VERSION)
     get_target_property(_TPL_SOVERSION ${_TPL_TARGET} SOVERSION)
     get_target_property(_TPL_NAME ${_TPL_TARGET} OUTPUT_NAME)
@@ -866,7 +863,7 @@ function(ROCPROF_SYS_BUILDTREE_TPL _TPL_TARGET _NEW_NAME _BUILD_TREE_DIR)
         COMMENT "Creating ${_NEW_NAME} from ${_TPL_TARGET}...")
 endfunction()
 
-function(ROCPROF_SYS_INSTALL_TPL _TPL_TARGET _NEW_NAME _BUILD_TREE_DIR _COMPONENT)
+function(ROCPROFILER_SYSTEMS_INSTALL_TPL _TPL_TARGET _NEW_NAME _BUILD_TREE_DIR _COMPONENT)
     get_target_property(_TPL_VERSION ${_TPL_TARGET} VERSION)
     get_target_property(_TPL_SOVERSION ${_TPL_TARGET} SOVERSION)
     get_target_property(_TPL_NAME ${_TPL_TARGET} OUTPUT_NAME)
@@ -880,8 +877,8 @@ function(ROCPROF_SYS_INSTALL_TPL _TPL_TARGET _NEW_NAME _BUILD_TREE_DIR _COMPONEN
     endforeach()
 
     # build tree symbolic links
-    rocprof_sys_buildtree_tpl("${_TPL_TARGET}" "${_NEW_NAME}" "${_BUILD_TREE_DIR}"
-                              ${ARGN})
+    rocprofiler_systems_buildtree_tpl("${_TPL_TARGET}" "${_NEW_NAME}"
+                                      "${_BUILD_TREE_DIR}" ${ARGN})
 
     install(
         FILES $<TARGET_FILE:${_TPL_TARGET}>

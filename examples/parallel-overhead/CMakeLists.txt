@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
-project(rocprof-sys-parallel-overhead-example LANGUAGES CXX)
+project(rocprofiler-systems-parallel-overhead-example LANGUAGES CXX)
 
 if(ROCPROFSYS_DISABLE_EXAMPLES)
     get_filename_component(_DIR ${CMAKE_CURRENT_LIST_DIR} NAME)
@@ -30,5 +30,5 @@ if(ROCPROFSYS_INSTALL_EXAMPLES)
     install(
         TARGETS parallel-overhead parallel-overhead-locks
         DESTINATION bin
-        COMPONENT rocprof-sys-examples)
+        COMPONENT rocprofiler-systems-examples)
 endif()

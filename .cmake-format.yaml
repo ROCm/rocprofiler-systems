@@ -1,6 +1,6 @@
 parse:
   additional_commands:
-    rocprof_sys_checkout_git_submodule:
+    rocprofiler_systems_checkout_git_submodule:
       flags:
       - RECURSIVE
       kwargs:
@@ -10,15 +10,15 @@ parse:
         REPO_URL: '*'
         REPO_BRANCH: '*'
         ADDITIONAL_COMMANDS: '*'
-    rocprof_sys_save_variables:
+    rocprofiler_systems_save_variables:
       kwargs:
         VARIABLES: '*'
         CONDITION: '*'
-    rocprof_sys_restore_variables:
+    rocprofiler_systems_restore_variables:
       kwargs:
         VARIABLES: '*'
         CONDITION: '*'
-    rocprof_sys_add_test:
+    rocprofiler_systems_add_test:
       flags:
         - SKIP_BASELINE
         - SKIP_SAMPLING
@@ -50,7 +50,7 @@ parse:
         BASELINE_FAIL_REGEX: '*'
         REWRITE_RUN_PASS_REGEX: '*'
         REWRITE_RUN_FAIL_REGEX: '*'
-    rocprof_sys_add_causal_test:
+    rocprofiler_systems_add_causal_test:
       flags:
         - SKIP_BASELINE
       kwargs:
@@ -72,12 +72,12 @@ parse:
         BASELINE_FAIL_REGEX: '*'
         CAUSAL_VALIDATE_PASS_REGEX: '*'
         CAUSAL_VALIDATE_FAIL_REGEX: '*'
-    rocprof_sys_target_compile_definitions:
+    rocprofiler_systems_target_compile_definitions:
       kwargs:
         PUBLIC: '*'
         PRIVATE: '*'
         INTERFACE: '*'
-    rocprof_sys_add_bin_test:
+    rocprofiler_systems_add_bin_test:
       flags:
       - WILL_FAIL
       kwargs:
@@ -94,7 +94,7 @@ parse:
         PASS_REGEX: '*'
         FAIL_REGEX: '*'
         SKIP_REGEX: '*'
-    rocprof_sys_add_python_test:
+    rocprofiler_systems_add_python_test:
       flags:
       - STANDALONE
       kwargs:
@@ -113,7 +113,7 @@ parse:
         PASS_REGEX: '*'
         FAIL_REGEX: '*'
         SKIP_REGEX: '*'
-    rocprof_sys_add_python_validation_test:
+    rocprofiler_systems_add_python_validation_test:
       kwargs:
         NAME: '*'
         ARGS: '*'
@@ -128,7 +128,7 @@ parse:
         - SEND_ERROR
         - FATAL_ERROR
         - AUTHOR_WARNING
-    rocprof_sys_find_python:
+    rocprofiler_systems_find_python:
       flags:
         - REQUIRED
         - QUIET
@@ -136,11 +136,11 @@ parse:
         VERSION: '*'
         ROOT_DIR: '*'
         COMPONENTS: '*'
-    rocprof_sys_python_console_script:
+    rocprofiler_systems_python_console_script:
       kwargs:
         VERSION: '*'
         ROOT_DIR: '*'
-    rocprof_sys_pybind11_add_module:
+    rocprofiler_systems_pybind11_add_module:
       flags:
         - MODULE
         - SHARED
@@ -153,7 +153,7 @@ parse:
         PYTHON_VERSION: '*'
         CXX_STANDARD: '*'
         VISIBILITY: '*'
-    rocprof_sys_directory:
+    rocprofiler_systems_directory:
       flags:
         - MKDIR
         - FAIL
@@ -162,14 +162,14 @@ parse:
         OUTPUT_VARIABLE: '*'
         WORKING_DIRECTORY: '*'
         PATHS: '*'
-    rocprof_sys_check_python_dirs_and_versions:
+    rocprofiler_systems_check_python_dirs_and_versions:
       flags:
         - UNSET
         - FAIL
       kwargs:
         RESULT_VARIABLE: '*'
         OUTPUT_VARIABLE: '*'
-    rocprof_sys_find_static_library:
+    rocprofiler_systems_find_static_library:
       flags:
         - NO_CACHE
         - REQUIRED
@@ -188,7 +188,7 @@ parse:
         PATHS: '*'
         PATH_SUFFIXES: '*'
         DOC: '*'
-    rocprof_sys_find_shared_library:
+    rocprofiler_systems_find_shared_library:
       flags:
         - NO_CACHE
         - REQUIRED
@@ -207,14 +207,14 @@ parse:
         PATHS: '*'
         PATH_SUFFIXES: '*'
         DOC: '*'
-    rocprof_sys_causal_example_executable:
+    rocprofiler_systems_causal_example_executable:
       kwargs:
         TAG: '*'
         SOURCES: '*'
         DEFINITIONS: '*'
         LINK_LIBRARIES: '*'
         INCLUDE_DIRECTORIES: '*'
-    rocprof_sys_add_validation_test:
+    rocprofiler_systems_add_validation_test:
       kwargs:
         NAME: '*'
         ARGS: '*'

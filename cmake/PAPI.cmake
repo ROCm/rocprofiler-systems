@@ -1,13 +1,13 @@
 # ======================================================================================
 # PAPI.cmake
 #
-# Configure papi for rocprof-sys
+# Configure papi for rocprofiler-systems
 #
 # ======================================================================================
 
 include_guard(GLOBAL)
 
-rocprof_sys_checkout_git_submodule(
+rocprofiler_systems_checkout_git_submodule(
     RELATIVE_PATH external/papi
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     REPO_URL https://bitbucket.org/icl/papi.git
@@ -45,8 +45,8 @@ if(NOT EXISTS "${ROCPROFSYS_PAPI_INSTALL_DIR}")
         ${ROCPROFSYS_PAPI_INSTALL_DIR}/lib/libpfm.so)
 endif()
 
-rocprof_sys_add_option(ROCPROFSYS_PAPI_AUTO_COMPONENTS "Automatically enable components"
-                       OFF)
+rocprofiler_systems_add_option(ROCPROFSYS_PAPI_AUTO_COMPONENTS
+                               "Automatically enable components" OFF)
 
 # -------------- PACKAGES -----------------------------------------------------
 
@@ -137,7 +137,7 @@ endif()
 set(ROCPROFSYS_PAPI_COMPONENTS
     "${_ROCPROFSYS_PAPI_COMPONENTS}"
     CACHE STRING "PAPI components")
-rocprof_sys_add_feature(ROCPROFSYS_PAPI_COMPONENTS "PAPI components")
+rocprofiler_systems_add_feature(ROCPROFSYS_PAPI_COMPONENTS "PAPI components")
 string(REPLACE ";" "\ " _ROCPROFSYS_PAPI_COMPONENTS "${ROCPROFSYS_PAPI_COMPONENTS}")
 set(ROCPROFSYS_PAPI_EXTRA_ENV)
 
@@ -145,7 +145,7 @@ foreach(_COMP ${ROCPROFSYS_PAPI_COMPONENTS})
     string(REPLACE ";" ", " _ROCPROFSYS_VALID_PAPI_COMPONENTS_MSG
                    "${ROCPROFSYS_VALID_PAPI_COMPONENTS}")
     if(NOT "${_COMP}" IN_LIST ROCPROFSYS_VALID_PAPI_COMPONENTS)
-        rocprof_sys_message(
+        rocprofiler_systems_message(
             AUTHOR_WARNING
             "ROCPROFSYS_PAPI_COMPONENTS contains an unknown component '${_COMP}'. Known components: ${_ROCPROFSYS_VALID_PAPI_COMPONENTS_MSG}"
             )
@@ -169,7 +169,7 @@ endif()
 
 if("perf_event_uncore" IN_LIST ROCPROFSYS_PAPI_COMPONENTS AND NOT "perf_event" IN_LIST
                                                               ROCPROFSYS_PAPI_COMPONENTS)
-    rocprof_sys_message(
+    rocprofiler_systems_message(
         FATAL_ERROR
         "ROCPROFSYS_PAPI_COMPONENTS :: 'perf_event_uncore' requires 'perf_event' component"
         )
@@ -181,7 +181,7 @@ find_program(
     PATH_SUFFIXES bin)
 
 if(NOT MAKE_EXECUTABLE)
-    rocprof_sys_message(
+    rocprofiler_systems_message(
         FATAL_ERROR
         "make/gmake executable not found. Please re-run with -DMAKE_EXECUTABLE=/path/to/make"
         )
@@ -200,7 +200,7 @@ set(PAPI_C_COMPILER
 
 include(ExternalProject)
 externalproject_add(
-    rocprof-sys-papi-build
+    rocprofiler-systems-papi-build
     PREFIX ${PROJECT_BINARY_DIR}/external/papi
     SOURCE_DIR ${ROCPROFSYS_PAPI_SOURCE_DIR}/src
     BUILD_IN_SOURCE 1
@@ -220,7 +220,7 @@ externalproject_add(
 
 # target for re-executing the installation
 add_custom_target(
-    rocprof-sys-papi-install
+    rocprofiler-systems-papi-install
     COMMAND ${CMAKE_COMMAND} -E env CFLAGS=-fPIC\ -O3\ -Wno-stringop-truncation
             ${ROCPROFSYS_PAPI_EXTRA_ENV} ${MAKE_EXECUTABLE} static install -s
     COMMAND ${CMAKE_COMMAND} -E env CFLAGS=-fPIC\ -O3\ -Wno-stringop-truncation
@@ -229,7 +229,7 @@ add_custom_target(
     COMMENT "Installing PAPI...")
 
 add_custom_target(
-    rocprof-sys-papi-clean
+    rocprofiler-systems-papi-clean
     COMMAND ${MAKE_EXECUTABLE} distclean
     COMMAND ${CMAKE_COMMAND} -E rm -rf ${ROCPROFSYS_PAPI_INSTALL_DIR}/include/*
     COMMAND ${CMAKE_COMMAND} -E rm -rf ${ROCPROFSYS_PAPI_INSTALL_DIR}/lib/*
@@ -259,12 +259,14 @@ set(PAPI_pfm_STATIC_LIBRARY
     ${ROCPROFSYS_PAPI_INSTALL_DIR}/lib/libpfm.a
     CACHE FILEPATH "PAPI library" FORCE)
 
-target_include_directories(rocprof-sys-papi SYSTEM
+target_include_directories(rocprofiler-systems-papi SYSTEM
                            INTERFACE $<BUILD_INTERFACE:${PAPI_INCLUDE_DIR}>)
-target_link_libraries(rocprof-sys-papi INTERFACE $<BUILD_INTERFACE:${PAPI_LIBRARY}>
-                                                 $<BUILD_INTERFACE:${PAPI_pfm_LIBRARY}>)
-rocprof_sys_target_compile_definitions(
-    rocprof-sys-papi INTERFACE ROCPROFSYS_USE_PAPI $<BUILD_INTERFACE:TIMEMORY_USE_PAPI=1>)
+target_link_libraries(
+    rocprofiler-systems-papi INTERFACE $<BUILD_INTERFACE:${PAPI_LIBRARY}>
+                                       $<BUILD_INTERFACE:${PAPI_pfm_LIBRARY}>)
+rocprofiler_systems_target_compile_definitions(
+    rocprofiler-systems-papi INTERFACE ROCPROFSYS_USE_PAPI
+                                       $<BUILD_INTERFACE:TIMEMORY_USE_PAPI=1>)
 
 install(
     DIRECTORY ${ROCPROFSYS_PAPI_INSTALL_DIR}/lib/
@@ -291,7 +293,7 @@ foreach(
     papi_version
     papi_xml_event_info)
 
-    string(REPLACE "_" "-" _UTIL_EXE_INSTALL_NAME "rocprof-sys-${_UTIL_EXE}")
+    string(REPLACE "_" "-" _UTIL_EXE_INSTALL_NAME "${BINARY_NAME_PREFIX}-${_UTIL_EXE}")
 
     # RPM installer on RedHat/RockyLinux throws error that #!/usr/bin/python should either
     # be #!/usr/bin/python2 or #!/usr/bin/python3

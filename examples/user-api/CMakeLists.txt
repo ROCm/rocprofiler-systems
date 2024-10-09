@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
-project(rocprof-sys-user-api-example LANGUAGES CXX)
+project(rocprofiler-systems-user-api-example LANGUAGES CXX)
 
 if(ROCPROFSYS_DISABLE_EXAMPLES)
     get_filename_component(_DIR ${CMAKE_CURRENT_LIST_DIR} NAME)
@@ -13,16 +13,17 @@ endif()
 
 set(CMAKE_BUILD_TYPE "Debug")
 find_package(Threads REQUIRED)
-if(NOT TARGET rocprof-sys::rocprof-sys-user-library)
-    find_package(rocprof-sys REQUIRED COMPONENTS user)
+if(NOT TARGET rocprofiler-systems::rocprofiler-systems-user-library)
+    find_package(rocprofiler-systems REQUIRED COMPONENTS user)
 endif()
 add_executable(user-api user-api.cpp)
-target_link_libraries(user-api PRIVATE Threads::Threads
-                                       rocprof-sys::rocprof-sys-user-library)
+target_link_libraries(
+    user-api PRIVATE Threads::Threads
+                     rocprofiler-systems::rocprofiler-systems-user-library)
 
 if(ROCPROFSYS_INSTALL_EXAMPLES)
     install(
         TARGETS user-api
         DESTINATION bin
-        COMPONENT rocprof-sys-examples)
+        COMPONENT rocprofiler-systems-examples)
 endif()

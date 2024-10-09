@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
-project(rocprof-sys-causal-example LANGUAGES CXX)
+project(rocprofiler-systems-causal-example LANGUAGES CXX)
 
 if(ROCPROFSYS_DISABLE_EXAMPLES)
     get_filename_component(_DIR ${CMAKE_CURRENT_LIST_DIR} NAME)
@@ -13,8 +13,8 @@ endif()
 
 set(CMAKE_BUILD_TYPE "Release")
 find_package(Threads REQUIRED)
-if(NOT TARGET rocprof-sys::rocprof-sys-user-library)
-    find_package(rocprof-sys REQUIRED COMPONENTS user)
+if(NOT TARGET rocprofiler-systems::rocprofiler-systems-user-library)
+    find_package(rocprofiler-systems REQUIRED COMPONENTS user)
 endif()
 
 add_library(causal-interface-library INTERFACE)
@@ -23,19 +23,19 @@ target_compile_options(causal-interface-library INTERFACE -g3 -gdwarf-3
 target_link_libraries(causal-interface-library INTERFACE Threads::Threads
                                                          ${CMAKE_DL_LIBS})
 
-rocprof_sys_causal_example_executable(
+rocprofiler_systems_causal_example_executable(
     "causal-both"
     SOURCES causal.cpp impl.cpp
     LINK_LIBRARIES causal-interface-library
     DEFINITIONS USE_RNG=1 USE_CPU=1)
 
-rocprof_sys_causal_example_executable(
+rocprofiler_systems_causal_example_executable(
     "causal-rng"
     SOURCES causal.cpp impl.cpp
     LINK_LIBRARIES causal-interface-library
     DEFINITIONS USE_RNG=1 USE_CPU=0)
 
-rocprof_sys_causal_example_executable(
+rocprofiler_systems_causal_example_executable(
     "causal-cpu"
     SOURCES causal.cpp impl.cpp
     LINK_LIBRARIES causal-interface-library

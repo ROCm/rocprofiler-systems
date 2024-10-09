@@ -13,8 +13,8 @@ endif()
 
 message(
     STATUS
-        "Writing ${OUTPUT_DIR}/rocprof-sys-install.py for rocprof-sys v${ROCPROFSYS_VERSION}"
+        "Writing ${OUTPUT_DIR}/rocprofiler-systems-install.py for rocprofiler-systems v${ROCPROFSYS_VERSION}"
     )
 
 configure_file(${CMAKE_CURRENT_LIST_DIR}/../cmake/Templates/rocprof-sys-install.py.in
-               ${OUTPUT_DIR}/rocprof-sys-install.py @ONLY)
+               ${OUTPUT_DIR}/rocprofiler-systems-install.py @ONLY)

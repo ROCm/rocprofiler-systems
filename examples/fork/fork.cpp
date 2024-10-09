@@ -1,5 +1,5 @@
 
-#include <rocprof-sys/user.h>
+#include <rocprofiler-systems/user.h>
 
 #include <chrono>
 #include <cstdio>

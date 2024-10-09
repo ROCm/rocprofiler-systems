@@ -1,10 +1,10 @@
 # ----------------------------------------------------------------------------- #
 #
-# rocprof-sys: contains all instrumentation functionality
+# rocprofiler-systems: contains all instrumentation functionality
 #
-# rocprof-sys-dl: contains minimal symbols and dlopen's rocprof-sys
+# rocprofiler-systems-dl: contains minimal symbols and dlopen's rocprofiler-systems
 #
-# rocprof-sys-user: contains symbols for user API
+# rocprofiler-systems-user: contains symbols for user API
 #
 # ----------------------------------------------------------------------------- #
 
@@ -24,46 +24,46 @@ endif()
 
 # ------------------------------------------------------------------------------#
 #
-# rocprof-sys interface library
+# rocprofiler-systems interface library
 #
 # ------------------------------------------------------------------------------#
 
-add_library(rocprof-sys-interface-library INTERFACE)
-add_library(rocprof-sys::rocprof-sys-interface-library ALIAS
-            rocprof-sys-interface-library)
+add_library(rocprofiler-systems-interface-library INTERFACE)
+add_library(rocprofiler-systems::rocprofiler-systems-interface-library ALIAS
+            rocprofiler-systems-interface-library)
 
 target_include_directories(
-    rocprof-sys-interface-library INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
-                                            ${CMAKE_CURRENT_SOURCE_DIR}/rocprof-sys)
+    rocprofiler-systems-interface-library
+    INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/rocprof-sys)
 
 target_link_libraries(
-    rocprof-sys-interface-library
+    rocprofiler-systems-interface-library
     INTERFACE
-        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-headers>
-        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-threading>
-        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-common-library>
-        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-compile-options>
-        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-compile-definitions>
-        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-perfetto>
-        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-timemory>
-        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-elfutils>
-        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-bfd>
-        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-mpi>
-        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-ptl>
-        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-hip>
-        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-roctracer>
-        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-rocprofiler>
-        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-rocm-smi>
-        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-rccl>
-        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-static-libgcc-optional>
-        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-static-libstdcxx-optional>
-        $<BUILD_INTERFACE:rocprof-sys::rocprof-sys-sanitizer>
-        $<BUILD_INTERFACE:$<IF:$<BOOL:${ROCPROFSYS_BUILD_LTO}>,rocprof-sys::rocprof-sys-lto,>>
+        $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-headers>
+        $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-threading>
+        $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-common-library>
+        $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-compile-options>
+        $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-compile-definitions>
+        $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-perfetto>
+        $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-timemory>
+        $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-elfutils>
+        $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-bfd>
+        $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-mpi>
+        $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-ptl>
+        $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-hip>
+        $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-roctracer>
+        $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-rocprofiler>
+        $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-rocm-smi>
+        $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-rccl>
+        $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-static-libgcc-optional>
+        $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-static-libstdcxx-optional>
+        $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-sanitizer>
+        $<BUILD_INTERFACE:$<IF:$<BOOL:${ROCPROFSYS_BUILD_LTO}>,rocprofiler-systems::rocprofiler-systems-lto,>>
     )
 
 # ------------------------------------------------------------------------------#
 #
-# rocprof-sys internal libraries
+# rocprofiler-systems internal libraries
 #
 # ------------------------------------------------------------------------------#
 
@@ -73,7 +73,7 @@ add_subdirectory(binary)
 
 # ------------------------------------------------------------------------------#
 #
-# rocprof-sys exported libraries
+# rocprofiler-systems exported libraries
 #
 # ------------------------------------------------------------------------------#
 

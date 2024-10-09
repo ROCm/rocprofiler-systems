@@ -91,43 +91,46 @@ if(UNIX)
     endif()
 endif()
 
-add_library(rocprof-sys-rt-library SHARED)
-add_library(rocprof-sys::rocprof-sys-rt-library ALIAS rocprof-sys-rt-library)
+add_library(rocprofiler-systems-rt-library SHARED)
+add_library(rocprofiler-systems::rocprofiler-systems-rt-library ALIAS
+            rocprofiler-systems-rt-library)
 
-target_sources(rocprof-sys-rt-library PRIVATE ${SRC_LIST})
+target_sources(rocprofiler-systems-rt-library PRIVATE ${SRC_LIST})
 target_include_directories(
-    rocprof-sys-rt-library PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-                                   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/h>)
-target_compile_definitions(rocprof-sys-rt-library PRIVATE ${UNIFIED_DEFINES})
+    rocprofiler-systems-rt-library
+    PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/h>)
+target_compile_definitions(rocprofiler-systems-rt-library PRIVATE ${UNIFIED_DEFINES})
 target_link_libraries(
-    rocprof-sys-rt-library
+    rocprofiler-systems-rt-library
     PUBLIC $<BUILD_INTERFACE:${dl_LIBRARY}>
-    PRIVATE rocprof-sys::rocprof-sys-threading)
+    PRIVATE rocprofiler-systems::rocprofiler-systems-threading)
 
-add_target_cxx_flag_if_avail(rocprof-sys-rt-library "-g3")
+add_target_cxx_flag_if_avail(rocprofiler-systems-rt-library "-g3")
 
 set_target_properties(
-    rocprof-sys-rt-library
-    PROPERTIES OUTPUT_NAME rocprof-sys-rt
+    rocprofiler-systems-rt-library
+    PROPERTIES OUTPUT_NAME ${BINARY_NAME_PREFIX}-rt
                VERSION ${PROJECT_VERSION}
                SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
                BUILD_RPATH "\$ORIGIN"
                INSTALL_RPATH "\$ORIGIN")
 
-rocprof_sys_strip_target(rocprof-sys-rt-library)
+rocprofiler_systems_strip_target(rocprofiler-systems-rt-library)
 
-install(TARGETS rocprof-sys-rt-library DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(TARGETS rocprofiler-systems-rt-library DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 if(NOT EXISTS ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME})
     file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME})
 endif()
 
 add_custom_target(
-    rocprof-sys-rt-library-dyninstAPI_RT-symlink ALL
-    ${CMAKE_COMMAND} -E create_symlink ../$<TARGET_FILE_NAME:rocprof-sys-rt-library>
+    rocprofiler-systems-rt-library-dyninstAPI_RT-symlink ALL
+    ${CMAKE_COMMAND} -E create_symlink
+    ../$<TARGET_FILE_NAME:rocprofiler-systems-rt-library>
     ${CMAKE_SHARED_LIBRARY_PREFIX}dyninstAPI_RT${CMAKE_SHARED_LIBRARY_SUFFIX}
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}
-    DEPENDS rocprof-sys-rt-library
+    DEPENDS rocprofiler-systems-rt-library
     COMMENT
         "Creating ${CMAKE_SHARED_LIBRARY_PREFIX}dyninstAPI_RT${CMAKE_SHARED_LIBRARY_SUFFIX} to rocprof-sys-rt..."
     )

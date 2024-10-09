@@ -4,7 +4,7 @@
 #
 # -------------------------------------------------------------------------------------- #
 
-rocprof_sys_add_causal_test(
+rocprofiler_systems_add_causal_test(
     NAME cpu-omni-func
     TARGET causal-cpu-omni
     RUN_ARGS 70 10 432525 1000000000
@@ -13,7 +13,7 @@ rocprof_sys_add_causal_test(
         "Starting causal experiment #1(.*)causal/experiments.json(.*)causal/experiments.coz"
     )
 
-rocprof_sys_add_causal_test(
+rocprofiler_systems_add_causal_test(
     SKIP_BASELINE
     NAME cpu-omni-func-ndebug
     TARGET causal-cpu-omni-ndebug
@@ -23,7 +23,7 @@ rocprof_sys_add_causal_test(
         "Starting causal experiment #1(.*)causal/experiments.json(.*)causal/experiments.coz"
     )
 
-rocprof_sys_add_causal_test(
+rocprofiler_systems_add_causal_test(
     SKIP_BASELINE
     NAME cpu-omni-line
     TARGET causal-cpu-omni
@@ -33,7 +33,7 @@ rocprof_sys_add_causal_test(
         "Starting causal experiment #1(.*)causal/experiments.json(.*)causal/experiments.coz"
     )
 
-rocprof_sys_add_causal_test(
+rocprofiler_systems_add_causal_test(
     NAME both-omni-func
     TARGET causal-both-omni
     RUN_ARGS 70 10 432525 400000000
@@ -59,7 +59,7 @@ rocprof_sys_add_causal_test(
         "Starting causal experiment #1(.*)causal/experiments.json(.*)causal/experiments.coz"
     )
 
-rocprof_sys_add_causal_test(
+rocprofiler_systems_add_causal_test(
     NAME lulesh-func
     TARGET lulesh-omni
     RUN_ARGS -i 35 -s 50 -p
@@ -69,7 +69,7 @@ rocprof_sys_add_causal_test(
         "Starting causal experiment #1(.*)causal/experiments.json(.*)causal/experiments.coz"
     )
 
-rocprof_sys_add_causal_test(
+rocprofiler_systems_add_causal_test(
     SKIP_BASELINE
     NAME lulesh-func-ndebug
     TARGET lulesh-omni-ndebug
@@ -80,7 +80,7 @@ rocprof_sys_add_causal_test(
         "Starting causal experiment #1(.*)causal/experiments.json(.*)causal/experiments.coz"
     )
 
-rocprof_sys_add_causal_test(
+rocprofiler_systems_add_causal_test(
     SKIP_BASELINE
     NAME lulesh-line
     TARGET lulesh-omni
@@ -108,7 +108,7 @@ macro(
     _V30
     _TOL # tolerance for virtual speedup
     )
-    # arguments to rocprof-sys-causal
+    # arguments to rocprofiler-systems-causal
     set(${_NAME}_args "${_causal_common_args} ${_MODE} ${_EXPER}")
 
     # arguments to validate-causal-json.py
@@ -133,7 +133,7 @@ else()
     set(_causal_e2e_environment "ROCPROFSYS_VERBOSE=0")
 endif()
 
-rocprof_sys_add_causal_test(
+rocprofiler_systems_add_causal_test(
     SKIP_BASELINE
     NAME cpu-omni-slow-func-e2e
     TARGET causal-cpu-omni
@@ -147,7 +147,7 @@ rocprof_sys_add_causal_test(
     ENVIRONMENT "${_causal_e2e_environment}"
     PROPERTIES PROCESSORS 2 PROCESSOR_AFFINITY OFF)
 
-rocprof_sys_add_causal_test(
+rocprofiler_systems_add_causal_test(
     SKIP_BASELINE
     NAME cpu-omni-fast-func-e2e
     TARGET causal-cpu-omni
@@ -161,7 +161,7 @@ rocprof_sys_add_causal_test(
     ENVIRONMENT "${_causal_e2e_environment}"
     PROPERTIES PROCESSORS 2 PROCESSOR_AFFINITY OFF)
 
-rocprof_sys_add_causal_test(
+rocprofiler_systems_add_causal_test(
     SKIP_BASELINE
     NAME cpu-omni-line-100-e2e
     TARGET causal-cpu-omni
@@ -175,7 +175,7 @@ rocprof_sys_add_causal_test(
     ENVIRONMENT "${_causal_e2e_environment}"
     PROPERTIES PROCESSORS 2 PROCESSOR_AFFINITY OFF)
 
-rocprof_sys_add_causal_test(
+rocprofiler_systems_add_causal_test(
     SKIP_BASELINE
     NAME cpu-omni-line-110-e2e
     TARGET causal-cpu-omni

@@ -4,7 +4,7 @@
 #
 # -------------------------------------------------------------------------------------- #
 
-rocprof_sys_add_test(
+rocprofiler_systems_add_test(
     SKIP_BASELINE SKIP_SAMPLING ${_TRACE_WINDOW_SKIP}
     NAME trace-time-window
     TARGET trace-time-window
@@ -13,7 +13,7 @@ rocprof_sys_add_test(
     LABELS "time-window"
     ENVIRONMENT "${_window_environment};ROCPROFSYS_TRACE_DURATION=1.25")
 
-rocprof_sys_add_validation_test(
+rocprofiler_systems_add_validation_test(
     NAME trace-time-window-binary-rewrite
     TIMEMORY_METRIC "wall_clock"
     TIMEMORY_FILE "wall_clock.json"
@@ -38,7 +38,7 @@ rocprof_sys_add_validation_test(
          1
          -p)
 
-rocprof_sys_add_validation_test(
+rocprofiler_systems_add_validation_test(
     NAME trace-time-window-runtime-instrument
     TIMEMORY_METRIC "wall_clock"
     TIMEMORY_FILE "wall_clock.json"
@@ -63,7 +63,7 @@ rocprof_sys_add_validation_test(
          1
          -p)
 
-rocprof_sys_add_test(
+rocprofiler_systems_add_test(
     SKIP_BASELINE SKIP_SAMPLING ${_TRACE_WINDOW_SKIP}
     NAME trace-time-window-delay
     TARGET trace-time-window
@@ -74,7 +74,7 @@ rocprof_sys_add_test(
         "${_window_environment};ROCPROFSYS_TRACE_DELAY=0.75;ROCPROFSYS_TRACE_DURATION=0.75"
     )
 
-rocprof_sys_add_validation_test(
+rocprofiler_systems_add_validation_test(
     NAME trace-time-window-delay-binary-rewrite
     TIMEMORY_METRIC "wall_clock"
     TIMEMORY_FILE "wall_clock.json"
@@ -92,7 +92,7 @@ rocprof_sys_add_validation_test(
          0
          -p)
 
-rocprof_sys_add_validation_test(
+rocprofiler_systems_add_validation_test(
     NAME trace-time-window-delay-runtime-instrument
     TIMEMORY_METRIC "wall_clock"
     TIMEMORY_FILE "wall_clock.json"

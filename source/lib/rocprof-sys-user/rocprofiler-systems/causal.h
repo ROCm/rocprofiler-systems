@@ -37,7 +37,7 @@
 #endif
 
 #if ROCPROFSYS_CAUSAL_ENABLED > 0
-#    include <rocprof-sys/user.h>
+#    include <rocprofiler-systems/user.h>
 
 #    if !defined(ROCPROFSYS_CAUSAL_LABEL)
 /** @cond ROCPROFSYS_HIDDEN_DEFINES */

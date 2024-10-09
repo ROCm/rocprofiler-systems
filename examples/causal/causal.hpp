@@ -27,7 +27,7 @@
 #define CAUSAL_LABEL   __FILE__ ":" CAUSAL_STR(__LINE__)
 
 #if defined(USE_OMNI) && USE_OMNI > 0
-#    include <rocprof-sys/causal.h>
+#    include <rocprofiler-systems/causal.h>
 #    define CAUSAL_PROGRESS              ROCPROFSYS_CAUSAL_PROGRESS
 #    define CAUSAL_PROGRESS_NAMED(LABEL) ROCPROFSYS_CAUSAL_PROGRESS_NAMED(LABEL)
 #    define CAUSAL_BEGIN(LABEL)          ROCPROFSYS_CAUSAL_BEGIN(LABEL)

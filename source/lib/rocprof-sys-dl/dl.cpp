@@ -39,8 +39,8 @@
 #include "common/join.hpp"
 #include "common/setup.hpp"
 #include "dl/dl.hpp"
-#include "rocprof-sys/categories.h"
-#include "rocprof-sys/types.h"
+#include "rocprofiler-systems/categories.h"
+#include "rocprofiler-systems/types.h"
 
 #include <timemory/utility/filepath.hpp>
 

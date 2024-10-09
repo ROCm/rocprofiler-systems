@@ -6,9 +6,9 @@ include(CMakePackageConfigHelpers)
 set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME config)
 
 install(
-    EXPORT rocprof-sys-library-targets
+    EXPORT rocprofiler-systems-library-targets
     FILE ${PROJECT_NAME}-library-targets.cmake
-    NAMESPACE rocprof-sys::
+    NAMESPACE rocprofiler-systems::
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PROJECT_NAME})
 
 # ------------------------------------------------------------------------------#
@@ -20,7 +20,7 @@ set(LIB_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR})
 set(PROJECT_BUILD_TARGETS user)
 
 configure_package_config_file(
-    ${PROJECT_SOURCE_DIR}/cmake/Templates/${PROJECT_NAME}-config.cmake.in
+    ${PROJECT_SOURCE_DIR}/cmake/Templates/rocprof-sys-config.cmake.in
     ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PROJECT_NAME}/${PROJECT_NAME}-config.cmake
     INSTALL_DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/${PROJECT_NAME}
     INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}
@@ -70,7 +70,7 @@ endif()
 
 export(
     EXPORT ${PROJECT_NAME}-library-targets
-    NAMESPACE rocprof-sys::
+    NAMESPACE rocprofiler-systems::
     FILE "${_BUILDTREE_EXPORT_DIR}/${PROJECT_NAME}-library-targets.cmake")
 
 set(${PROJECT_NAME}_DIR

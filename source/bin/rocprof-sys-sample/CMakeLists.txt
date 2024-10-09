@@ -1,27 +1,28 @@
 # ------------------------------------------------------------------------------#
 #
-# rocprof-sys-sample target
+# rocprofiler-systems-sample target
 #
 # ------------------------------------------------------------------------------#
 
-add_executable(rocprof-sys-sample ${CMAKE_CURRENT_LIST_DIR}/rocprof-sys-sample.cpp
-                                  ${CMAKE_CURRENT_LIST_DIR}/impl.cpp)
+add_executable(rocprofiler-systems-sample ${CMAKE_CURRENT_LIST_DIR}/rocprof-sys-sample.cpp
+                                          ${CMAKE_CURRENT_LIST_DIR}/impl.cpp)
 
-target_compile_definitions(rocprof-sys-sample PRIVATE TIMEMORY_CMAKE=1)
-target_include_directories(rocprof-sys-sample PRIVATE ${CMAKE_CURRENT_LIST_DIR})
+target_compile_definitions(rocprofiler-systems-sample PRIVATE TIMEMORY_CMAKE=1)
+target_include_directories(rocprofiler-systems-sample PRIVATE ${CMAKE_CURRENT_LIST_DIR})
 target_link_libraries(
-    rocprof-sys-sample
-    PRIVATE rocprof-sys::rocprof-sys-compile-definitions rocprof-sys::rocprof-sys-headers
-            rocprof-sys::rocprof-sys-common-library)
+    rocprofiler-systems-sample
+    PRIVATE rocprofiler-systems::rocprofiler-systems-compile-definitions
+            rocprofiler-systems::rocprofiler-systems-headers
+            rocprofiler-systems::rocprofiler-systems-common-library)
 set_target_properties(
-    rocprof-sys-sample
+    rocprofiler-systems-sample
     PROPERTIES BUILD_RPATH "\$ORIGIN:\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
                INSTALL_RPATH "${ROCPROFSYS_EXE_INSTALL_RPATH}"
-               OUTPUT_NAME "rocprof-sys-sample")
+               OUTPUT_NAME ${BINARY_NAME_PREFIX}-sample)
 
-rocprof_sys_strip_target(rocprof-sys-sample)
+rocprofiler_systems_strip_target(rocprofiler-systems-sample)
 
 install(
-    TARGETS rocprof-sys-sample
+    TARGETS rocprofiler-systems-sample
     DESTINATION ${CMAKE_INSTALL_BINDIR}
     OPTIONAL)

@@ -24,8 +24,8 @@
 #include "dl/dl.hpp"
 #include "library/coverage.hpp"
 #include "library/coverage/impl.hpp"
-#include "rocprof-sys/categories.h"
-#include "rocprof-sys/user.h"
+#include "rocprofiler-systems/categories.h"
+#include "rocprofiler-systems/user.h"
 
 #include <timemory/backends/process.hpp>
 #include <timemory/backends/threading.hpp>

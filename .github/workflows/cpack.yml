@@ -297,13 +297,13 @@ jobs:
           shopt -s nullglob
           for i in $(find build-release -type f | egrep '/(stgz|deb|rpm)/.*\.(sh|deb|rpm)$'); do mv ${i} ./; done
           sudo rm -rf build-release
-          sudo rm -rf /opt/rocprof-sys
+          sudo rm -rf /opt/rocprofiler-systems
 
       - name: Test STGZ Install
         timeout-minutes: 20
         run: |
           set -v
-          for i in rocprof-sys-*.sh
+          for i in rocprofiler-systems-*.sh
           do
             ./docker/test-docker-release.sh --distro ${{ matrix.os-distro }} --versions ${{ matrix.os-version }} --rocm-versions ${{ matrix.rocm-version }} -- --stgz ${i}
           done
@@ -314,4 +314,4 @@ jobs:
         with:
           fail_on_unmatched_files: True
           files: |
-            rocprof-sys-*.sh
+            rocprofiler-systems-*.sh

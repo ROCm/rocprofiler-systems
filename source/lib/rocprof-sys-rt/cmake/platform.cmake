@@ -29,14 +29,14 @@ if(INVALID_PLATFORM)
         OUTPUT_VARIABLE DYNSYSNAME_OUT
         OUTPUT_STRIP_TRAILING_WHITESPACE)
     string(REPLACE "\n" "" PLATFORM ${DYNSYSNAME_OUT})
-    rocprof_sys_message(STATUS
-                        "-- Attempting to automatically identify platform: ${PLATFORM}")
+    rocprofiler_systems_message(
+        STATUS "-- Attempting to automatically identify platform: ${PLATFORM}")
 endif()
 
 list(FIND VALID_PLATFORMS ${PLATFORM} PLATFORM_FOUND)
 
 if(PLATFORM_FOUND EQUAL -1)
-    rocprof_sys_message(
+    rocprofiler_systems_message(
         FATAL_ERROR
         "Error: unknown platform ${PLATFORM}; please set the PLATFORM environment variable to one of the following options: ${VALID_PLATFORMS}"
         )

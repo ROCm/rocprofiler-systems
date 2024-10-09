@@ -15,7 +15,7 @@ if(EXISTS /etc/os-release AND NOT IS_DIRECTORY /etc/os-release)
     unset(_OS_RELEASE_RAW)
 endif()
 
-rocprof_sys_message(STATUS "OS release: ${_OS_RELEASE}")
+rocprofiler_systems_message(STATUS "OS release: ${_OS_RELEASE}")
 
 include(ProcessorCount)
 if(NOT DEFINED NUM_PROCS_REAL)
@@ -184,13 +184,13 @@ execute_process(
     RESULT_VARIABLE _mpiexec_oversubscribe
     OUTPUT_QUIET ERROR_QUIET)
 
-set(rocprof_sys_perf_event_paranoid "4")
-set(rocprof_sys_cap_sys_admin "1")
-set(rocprof_sys_cap_perfmon "1")
+set(rocprofiler_systems_perf_event_paranoid "4")
+set(rocprofiler_systems_cap_sys_admin "1")
+set(rocprofiler_systems_cap_perfmon "1")
 
 if(EXISTS "/proc/sys/kernel/perf_event_paranoid")
-    file(STRINGS "/proc/sys/kernel/perf_event_paranoid" rocprof_sys_perf_event_paranoid
-         LIMIT_COUNT 1)
+    file(STRINGS "/proc/sys/kernel/perf_event_paranoid"
+         rocprofiler_systems_perf_event_paranoid LIMIT_COUNT 1)
 endif()
 
 execute_process(
@@ -204,19 +204,20 @@ if(_capchk_compile EQUAL 0)
     execute_process(
         COMMAND ${PROJECT_BINARY_DIR}/bin/rocprof-sys-capchk CAP_SYS_ADMIN effective
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-        RESULT_VARIABLE rocprof_sys_cap_sys_admin
+        RESULT_VARIABLE rocprofiler_systems_cap_sys_admin
         OUTPUT_QUIET ERROR_QUIET)
 
     execute_process(
         COMMAND ${PROJECT_BINARY_DIR}/bin/rocprof-sys-capchk CAP_PERFMON effective
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-        RESULT_VARIABLE rocprof_sys_cap_perfmon
+        RESULT_VARIABLE rocprofiler_systems_cap_perfmon
         OUTPUT_QUIET ERROR_QUIET)
 endif()
 
-rocprof_sys_message(STATUS "perf_event_paranoid: ${rocprof_sys_perf_event_paranoid}")
-rocprof_sys_message(STATUS "CAP_SYS_ADMIN: ${rocprof_sys_cap_sys_admin}")
-rocprof_sys_message(STATUS "CAP_PERFMON: ${rocprof_sys_cap_perfmon}")
+rocprofiler_systems_message(
+    STATUS "perf_event_paranoid: ${rocprofiler_systems_perf_event_paranoid}")
+rocprofiler_systems_message(STATUS "CAP_SYS_ADMIN: ${rocprofiler_systems_cap_sys_admin}")
+rocprofiler_systems_message(STATUS "CAP_PERFMON: ${rocprofiler_systems_cap_perfmon}")
 
 if(_mpiexec_oversubscribe EQUAL 0)
     list(APPEND MPIEXEC_EXECUTABLE_ARGS --oversubscribe)
@@ -248,8 +249,8 @@ if(ROCPROFSYS_USE_HIP AND (NOT DEFINED ROCPROFSYS_CI_GPU OR ROCPROFSYS_CI_GPU))
         endif()
     endif()
     if(NOT _VALID_GPU)
-        rocprof_sys_message(AUTHOR_WARNING
-                            "rocm-smi did not successfully run. Disabling GPU tests...")
+        rocprofiler_systems_message(
+            AUTHOR_WARNING "rocm-smi did not successfully run. Disabling GPU tests...")
     endif()
 endif()
 
@@ -260,12 +261,12 @@ endif()
 
 # -------------------------------------------------------------------------------------- #
 
-macro(ROCPROF_SYS_CHECK_PASS_FAIL_REGEX NAME PASS FAIL)
+macro(ROCPROFILER_SYSTEMS_CHECK_PASS_FAIL_REGEX NAME PASS FAIL)
     if(NOT "${${PASS}}" STREQUAL ""
        AND NOT "${${FAIL}}" STREQUAL ""
        AND NOT "${${FAIL}}" MATCHES "\\|ROCPROFSYS_ABORT_FAIL_REGEX"
        AND NOT "${${FAIL}}" MATCHES "${ROCPROFSYS_ABORT_FAIL_REGEX}")
-        rocprof_sys_message(
+        rocprofiler_systems_message(
             FATAL_ERROR
             "${NAME} has set pass and fail regexes but fail regex does not include '|ROCPROFSYS_ABORT_FAIL_REGEX'"
             )
@@ -281,7 +282,7 @@ endmacro()
 
 # -------------------------------------------------------------------------------------- #
 
-function(ROCPROF_SYS_WRITE_TEST_CONFIG _FILE _ENV)
+function(ROCPROFILER_SYSTEMS_WRITE_TEST_CONFIG _FILE _ENV)
     set(_ENV_ONLY
         "ROCPROFSYS_(CI|CI_TIMEOUT|MODE|USE_MPIP|DEBUG_[A-Z_]+|FORCE_ROCPROFILER_INIT|DEFAULT_MIN_INSTRUCTIONS|MONOCHROME|VERBOSE)="
         )
@@ -330,7 +331,7 @@ endfunction()
 
 # -------------------------------------------------------------------------------------- #
 # extends the timeout when sanitizers are used due to slowdown
-function(ROCPROF_SYS_ADJUST_TIMEOUT_FOR_SANITIZER _VAR)
+function(ROCPROFILER_SYSTEMS_ADJUST_TIMEOUT_FOR_SANITIZER _VAR)
     if(ROCPROFSYS_USE_SANITIZER)
         math(EXPR _timeout_v "2 * ${${_VAR}}")
         set(${_VAR}
@@ -341,12 +342,12 @@ endfunction()
 
 # -------------------------------------------------------------------------------------- #
 # extends the timeout when sanitizers are used due to slowdown
-macro(ROCPROF_SYS_PATCH_SANITIZER_ENVIRONMENT _VAR)
+macro(ROCPROFILER_SYSTEMS_PATCH_SANITIZER_ENVIRONMENT _VAR)
     if(ROCPROFSYS_USE_SANITIZER)
         if(ROCPROFSYS_USE_SANITIZER)
             if(ROCPROFSYS_SANITIZER_TYPE MATCHES "address")
                 if(NOT ASAN_LIBRARY)
-                    rocprof_sys_message(
+                    rocprofiler_systems_message(
                         FATAL_ERROR
                         "Please define the realpath to the address sanitizer library in variable ASAN_LIBRARY"
                         )
@@ -354,7 +355,7 @@ macro(ROCPROF_SYS_PATCH_SANITIZER_ENVIRONMENT _VAR)
                 list(APPEND ${_VAR} "LD_PRELOAD=${ASAN_LIBRARY}")
             elseif(ROCPROFSYS_SANITIZER_TYPE MATCHES "thread")
                 if(NOT TSAN_LIBRARY)
-                    rocprof_sys_message(
+                    rocprofiler_systems_message(
                         FATAL_ERROR
                         "Please define the realpath to the thread sanitizer library in variable TSAN_LIBRARY"
                         )
@@ -367,7 +368,7 @@ endmacro()
 
 # -------------------------------------------------------------------------------------- #
 
-function(ROCPROF_SYS_ADD_TEST)
+function(ROCPROFILER_SYSTEMS_ADD_TEST)
     foreach(_PREFIX SAMPLING RUNTIME REWRITE REWRITE_RUN BASELINE)
         foreach(_TYPE PASS FAIL SKIP)
             list(APPEND _REGEX_OPTS "${_PREFIX}_${_TYPE}_REGEX")
@@ -388,8 +389,8 @@ function(ROCPROF_SYS_ADD_TEST)
     endforeach()
 
     if(TEST_GPU AND NOT _VALID_GPU)
-        rocprof_sys_message(STATUS
-                            "${TEST_NAME} requires a GPU and no valid GPUs were found")
+        rocprofiler_systems_message(
+            STATUS "${TEST_NAME} requires a GPU and no valid GPUs were found")
         return()
     endif()
 
@@ -481,7 +482,7 @@ function(ROCPROF_SYS_ADD_TEST)
             add_test(
                 NAME ${TEST_NAME}-sampling
                 COMMAND
-                    ${COMMAND_PREFIX} $<TARGET_FILE:rocprof-sys-sample>
+                    ${COMMAND_PREFIX} $<TARGET_FILE:rocprofiler-systems-sample>
                     ${TEST_SAMPLE_ARGS} -- $<TARGET_FILE:${TEST_TARGET}> ${TEST_RUN_ARGS}
                 WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
         endif()
@@ -490,7 +491,7 @@ function(ROCPROF_SYS_ADD_TEST)
             add_test(
                 NAME ${TEST_NAME}-binary-rewrite
                 COMMAND
-                    $<TARGET_FILE:rocprof-sys-instrument> -o
+                    $<TARGET_FILE:rocprofiler-systems-instrument> -o
                     $<TARGET_FILE_DIR:${TEST_TARGET}>/${TEST_NAME}.inst
                     ${TEST_REWRITE_ARGS} -- $<TARGET_FILE:${TEST_TARGET}>
                 WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
@@ -498,7 +499,7 @@ function(ROCPROF_SYS_ADD_TEST)
             add_test(
                 NAME ${TEST_NAME}-binary-rewrite-run
                 COMMAND
-                    ${COMMAND_PREFIX} $<TARGET_FILE:rocprof-sys-run> --
+                    ${COMMAND_PREFIX} $<TARGET_FILE:rocprofiler-systems-run> --
                     $<TARGET_FILE_DIR:${TEST_TARGET}>/${TEST_NAME}.inst ${TEST_RUN_ARGS}
                 WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
         endif()
@@ -506,8 +507,8 @@ function(ROCPROF_SYS_ADD_TEST)
         if(NOT TEST_SKIP_RUNTIME AND NOT ROCPROFSYS_USE_SANITIZER)
             add_test(
                 NAME ${TEST_NAME}-runtime-instrument
-                COMMAND $<TARGET_FILE:rocprof-sys-instrument> ${TEST_RUNTIME_ARGS} --
-                        $<TARGET_FILE:${TEST_TARGET}> ${TEST_RUN_ARGS}
+                COMMAND $<TARGET_FILE:rocprofiler-systems-instrument> ${TEST_RUNTIME_ARGS}
+                        -- $<TARGET_FILE:${TEST_TARGET}> ${TEST_RUN_ARGS}
                 WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
         endif()
 
@@ -563,10 +564,10 @@ function(ROCPROF_SYS_ADD_TEST)
             endif()
 
             if("${_TEST}" MATCHES "binary-rewrite-run|runtime-instrument|sampling")
-                rocprof_sys_patch_sanitizer_environment(_environ)
+                rocprofiler_systems_patch_sanitizer_environment(_environ)
             endif()
 
-            rocprof_sys_adjust_timeout_for_sanitizer(_timeout)
+            rocprofiler_systems_adjust_timeout_for_sanitizer(_timeout)
 
             foreach(_TYPE PASS FAIL SKIP)
                 if(_REGEX_VAR)
@@ -578,10 +579,10 @@ function(ROCPROF_SYS_ADD_TEST)
 
             list(APPEND _environ "ROCPROFSYS_CI_TIMEOUT=${_timeout}")
 
-            rocprof_sys_check_pass_fail_regex("${TEST_NAME}-${_TEST}" "${_PASS_REGEX}"
-                                              "${_FAIL_REGEX}")
+            rocprofiler_systems_check_pass_fail_regex("${TEST_NAME}-${_TEST}"
+                                                      "${_PASS_REGEX}" "${_FAIL_REGEX}")
             if(TEST ${TEST_NAME}-${_TEST})
-                rocprof_sys_write_test_config(${TEST_NAME}-${_TEST}.cfg _environ)
+                rocprofiler_systems_write_test_config(${TEST_NAME}-${_TEST}.cfg _environ)
                 set_tests_properties(
                     ${TEST_NAME}-${_TEST}
                     PROPERTIES ENVIRONMENT
@@ -604,7 +605,7 @@ endfunction()
 
 # -------------------------------------------------------------------------------------- #
 
-function(ROCPROF_SYS_ADD_CAUSAL_TEST)
+function(ROCPROFILER_SYSTEMS_ADD_CAUSAL_TEST)
     foreach(_PREFIX CAUSAL CAUSAL_VALIDATE)
         foreach(_TYPE PASS FAIL SKIP)
             list(APPEND _REGEX_OPTS "${_PREFIX}_${_TYPE}_REGEX")
@@ -620,7 +621,8 @@ function(ROCPROF_SYS_ADD_CAUSAL_TEST)
         ${ARGN})
 
     if(NOT DEFINED TEST_CAUSAL_MODE)
-        rocprof_sys_message(FATAL_ERROR "${TEST_NAME} :: CAUSAL_MODE must be defined")
+        rocprofiler_systems_message(FATAL_ERROR
+                                    "${TEST_NAME} :: CAUSAL_MODE must be defined")
     endif()
 
     if(NOT TEST_CAUSAL_TIMEOUT)
@@ -636,7 +638,7 @@ function(ROCPROF_SYS_ADD_CAUSAL_TEST)
     endif()
 
     if(TARGET ${TEST_TARGET})
-        set(COMMAND_PREFIX $<TARGET_FILE:rocprof-sys-causal> --reset -m
+        set(COMMAND_PREFIX $<TARGET_FILE:rocprofiler-systems-causal> --reset -m
                            ${TEST_CAUSAL_MODE} ${TEST_CAUSAL_ARGS} --)
 
         if(NOT TEST_SKIP_BASELINE)
@@ -709,7 +711,7 @@ function(ROCPROF_SYS_ADD_CAUSAL_TEST)
 
             set(_timeout ${TEST_CAUSAL_TIMEOUT})
 
-            rocprof_sys_adjust_timeout_for_sanitizer(_timeout)
+            rocprofiler_systems_adjust_timeout_for_sanitizer(_timeout)
 
             if("${_TEST}" MATCHES "validate-causal")
                 set(_timeout ${TEST_CAUSAL_VALIDATE_TIMEOUT})
@@ -734,9 +736,9 @@ function(ROCPROF_SYS_ADD_CAUSAL_TEST)
             endforeach()
 
             list(APPEND _environ "ROCPROFSYS_CI_TIMEOUT=${_timeout}")
-            rocprof_sys_write_test_config(${_NAME}.cfg _environ)
-            rocprof_sys_check_pass_fail_regex("${_NAME}" "${_PASS_REGEX}"
-                                              "${_FAIL_REGEX}")
+            rocprofiler_systems_write_test_config(${_NAME}.cfg _environ)
+            rocprofiler_systems_check_pass_fail_regex("${_NAME}" "${_PASS_REGEX}"
+                                                      "${_FAIL_REGEX}")
             set_tests_properties(
                 ${_NAME}
                 PROPERTIES ENVIRONMENT
@@ -758,7 +760,7 @@ endfunction()
 
 # -------------------------------------------------------------------------------------- #
 
-function(ROCPROF_SYS_ADD_PYTHON_TEST)
+function(ROCPROFILER_SYSTEMS_ADD_PYTHON_TEST)
     if(NOT ROCPROFSYS_USE_PYTHON)
         return()
     endif()
@@ -775,7 +777,7 @@ function(ROCPROF_SYS_ADD_PYTHON_TEST)
         set(TEST_TIMEOUT 120)
     endif()
 
-    rocprof_sys_adjust_timeout_for_sanitizer(TEST_TIMEOUT)
+    rocprofiler_systems_adjust_timeout_for_sanitizer(TEST_TIMEOUT)
 
     set(PYTHON_EXECUTABLE "${TEST_PYTHON_EXECUTABLE}")
 
@@ -837,7 +839,8 @@ function(ROCPROF_SYS_ADD_PYTHON_TEST)
         # assign fail variable to fail regex
         set(_FAIL_REGEX TEST_FAIL_REGEX)
 
-        rocprof_sys_check_pass_fail_regex("${_TEST}" "${_PASS_REGEX}" "${_FAIL_REGEX}")
+        rocprofiler_systems_check_pass_fail_regex("${_TEST}" "${_PASS_REGEX}"
+                                                  "${_FAIL_REGEX}")
         set_tests_properties(
             ${_TEST}
             PROPERTIES ENVIRONMENT
@@ -875,8 +878,8 @@ if(NOT ROCPROFSYS_USE_PYTHON)
                         RESULT_VARIABLE ROCPROFSYS_VALIDATION_PYTHON_PERFETTO)
 
         if(NOT ROCPROFSYS_VALIDATION_PYTHON_PERFETTO EQUAL 0)
-            rocprof_sys_message(AUTHOR_WARNING
-                                "Python3 found but perfetto support is disabled")
+            rocprofiler_systems_message(AUTHOR_WARNING
+                                        "Python3 found but perfetto support is disabled")
         endif()
     endif()
 else()
@@ -888,7 +891,7 @@ else()
 
         list(GET ROCPROFSYS_PYTHON_ROOT_DIRS ${_INDEX} _PYTHON_ROOT_DIR)
 
-        rocprof_sys_find_python(
+        rocprofiler_systems_find_python(
             _PYTHON
             ROOT_DIR "${_PYTHON_ROOT_DIR}"
             COMPONENTS Interpreter)
@@ -902,7 +905,7 @@ else()
             if(ROCPROFSYS_VALIDATION_PYTHON_PERFETTO EQUAL 0)
                 break()
             else()
-                rocprof_sys_message(
+                rocprofiler_systems_message(
                     AUTHOR_WARNING
                     "${_PYTHON_EXECUTABLE} found but perfetto support is disabled")
             endif()
@@ -913,7 +916,7 @@ else()
 endif()
 
 if(NOT ROCPROFSYS_VALIDATION_PYTHON)
-    rocprof_sys_message(
+    rocprofiler_systems_message(
         AUTHOR_WARNING "Python3 interpreter not found. Validation tests will be disabled")
 endif()
 
@@ -923,7 +926,7 @@ endif()
 #
 # -------------------------------------------------------------------------------------- #
 
-function(ROCPROF_SYS_ADD_VALIDATION_TEST)
+function(ROCPROFILER_SYSTEMS_ADD_VALIDATION_TEST)
 
     if(NOT ROCPROFSYS_VALIDATION_PYTHON)
         return()
@@ -937,7 +940,7 @@ function(ROCPROF_SYS_ADD_VALIDATION_TEST)
         ${ARGN})
 
     if(NOT TEST "${TEST_NAME}")
-        rocprof_sys_message(
+        rocprofiler_systems_message(
             AUTHOR_WARNING
             "No validation test(s) for ${TEST_NAME} because test does not exist")
         return()
@@ -947,7 +950,7 @@ function(ROCPROF_SYS_ADD_VALIDATION_TEST)
         set(TEST_TIMEOUT 30)
     endif()
 
-    rocprof_sys_adjust_timeout_for_sanitizer(TEST_TIMEOUT)
+    rocprofiler_systems_adjust_timeout_for_sanitizer(TEST_TIMEOUT)
 
     set(PYTHON_EXECUTABLE "${ROCPROFSYS_VALIDATION_PYTHON}")
 
@@ -998,7 +1001,8 @@ function(ROCPROF_SYS_ADD_VALIDATION_TEST)
             continue()
         endif()
 
-        rocprof_sys_check_pass_fail_regex("${_TEST}" "TEST_PASS_REGEX" "TEST_FAIL_REGEX")
+        rocprofiler_systems_check_pass_fail_regex("${_TEST}" "TEST_PASS_REGEX"
+                                                  "TEST_FAIL_REGEX")
         set_tests_properties(
             ${_TEST}
             PROPERTIES ENVIRONMENT

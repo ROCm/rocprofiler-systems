@@ -7,51 +7,63 @@ include_guard(DIRECTORY)
 #
 # ########################################################################################
 
-rocprof_sys_add_interface_library(
-    rocprof-sys-headers
-    "Provides minimal set of include flags to compile with rocprof-sys")
-rocprof_sys_add_interface_library(rocprof-sys-threading "Enables multithreading support")
-rocprof_sys_add_interface_library(
-    rocprof-sys-dyninst
+rocprofiler_systems_add_interface_library(
+    rocprofiler-systems-headers
+    "Provides minimal set of include flags to compile with rocprofiler-systems")
+rocprofiler_systems_add_interface_library(rocprofiler-systems-threading
+                                          "Enables multithreading support")
+rocprofiler_systems_add_interface_library(
+    rocprofiler-systems-dyninst
     "Provides flags and libraries for Dyninst (dynamic instrumentation)")
-rocprof_sys_add_interface_library(rocprof-sys-hip "Provides flags and libraries for HIP")
-rocprof_sys_add_interface_library(rocprof-sys-roctracer
-                                  "Provides flags and libraries for roctracer")
-rocprof_sys_add_interface_library(rocprof-sys-rocprofiler
-                                  "Provides flags and libraries for rocprofiler")
-rocprof_sys_add_interface_library(rocprof-sys-rocm-smi
-                                  "Provides flags and libraries for rocm-smi")
-rocprof_sys_add_interface_library(
-    rocprof-sys-rccl "Provides flags for ROCm Communication Collectives Library (RCCL)")
-rocprof_sys_add_interface_library(rocprof-sys-mpi "Provides MPI or MPI headers")
-rocprof_sys_add_interface_library(rocprof-sys-bfd "Provides Binary File Descriptor (BFD)")
-rocprof_sys_add_interface_library(rocprof-sys-ptl "Enables PTL support (tasking)")
-rocprof_sys_add_interface_library(rocprof-sys-papi "Enable PAPI support")
-rocprof_sys_add_interface_library(rocprof-sys-ompt "Enable OMPT support")
-rocprof_sys_add_interface_library(rocprof-sys-python "Enables Python support")
-rocprof_sys_add_interface_library(rocprof-sys-elfutils "Provides ElfUtils")
-rocprof_sys_add_interface_library(rocprof-sys-perfetto "Enables Perfetto support")
-rocprof_sys_add_interface_library(rocprof-sys-timemory "Provides timemory libraries")
-rocprof_sys_add_interface_library(
-    rocprof-sys-timemory-config "CMake interface library applied to all timemory targets")
-rocprof_sys_add_interface_library(rocprof-sys-compile-definitions "Compile definitions")
+rocprofiler_systems_add_interface_library(rocprofiler-systems-hip
+                                          "Provides flags and libraries for HIP")
+rocprofiler_systems_add_interface_library(rocprofiler-systems-roctracer
+                                          "Provides flags and libraries for roctracer")
+rocprofiler_systems_add_interface_library(rocprofiler-systems-rocprofiler
+                                          "Provides flags and libraries for rocprofiler")
+rocprofiler_systems_add_interface_library(rocprofiler-systems-rocm-smi
+                                          "Provides flags and libraries for rocm-smi")
+rocprofiler_systems_add_interface_library(
+    rocprofiler-systems-rccl
+    "Provides flags for ROCm Communication Collectives Library (RCCL)")
+rocprofiler_systems_add_interface_library(rocprofiler-systems-mpi
+                                          "Provides MPI or MPI headers")
+rocprofiler_systems_add_interface_library(rocprofiler-systems-bfd
+                                          "Provides Binary File Descriptor (BFD)")
+rocprofiler_systems_add_interface_library(rocprofiler-systems-ptl
+                                          "Enables PTL support (tasking)")
+rocprofiler_systems_add_interface_library(rocprofiler-systems-papi "Enable PAPI support")
+rocprofiler_systems_add_interface_library(rocprofiler-systems-ompt "Enable OMPT support")
+rocprofiler_systems_add_interface_library(rocprofiler-systems-python
+                                          "Enables Python support")
+rocprofiler_systems_add_interface_library(rocprofiler-systems-elfutils
+                                          "Provides ElfUtils")
+rocprofiler_systems_add_interface_library(rocprofiler-systems-perfetto
+                                          "Enables Perfetto support")
+rocprofiler_systems_add_interface_library(rocprofiler-systems-timemory
+                                          "Provides timemory libraries")
+rocprofiler_systems_add_interface_library(
+    rocprofiler-systems-timemory-config
+    "CMake interface library applied to all timemory targets")
+rocprofiler_systems_add_interface_library(rocprofiler-systems-compile-definitions
+                                          "Compile definitions")
 
 # libraries with relevant compile definitions
 set(ROCPROFSYS_EXTENSION_LIBRARIES
-    rocprof-sys::rocprof-sys-hip
-    rocprof-sys::rocprof-sys-roctracer
-    rocprof-sys::rocprof-sys-rocprofiler
-    rocprof-sys::rocprof-sys-rocm-smi
-    rocprof-sys::rocprof-sys-rccl
-    rocprof-sys::rocprof-sys-bfd
-    rocprof-sys::rocprof-sys-mpi
-    rocprof-sys::rocprof-sys-ptl
-    rocprof-sys::rocprof-sys-ompt
-    rocprof-sys::rocprof-sys-papi
-    rocprof-sys::rocprof-sys-perfetto)
+    rocprofiler-systems::rocprofiler-systems-hip
+    rocprofiler-systems::rocprofiler-systems-roctracer
+    rocprofiler-systems::rocprofiler-systems-rocprofiler
+    rocprofiler-systems::rocprofiler-systems-rocm-smi
+    rocprofiler-systems::rocprofiler-systems-rccl
+    rocprofiler-systems::rocprofiler-systems-bfd
+    rocprofiler-systems::rocprofiler-systems-mpi
+    rocprofiler-systems::rocprofiler-systems-ptl
+    rocprofiler-systems::rocprofiler-systems-ompt
+    rocprofiler-systems::rocprofiler-systems-papi
+    rocprofiler-systems::rocprofiler-systems-perfetto)
 
 target_include_directories(
-    rocprof-sys-headers
+    rocprofiler-systems-headers
     INTERFACE $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/source/lib>
               $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/source/lib/core>
               $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source/lib>
@@ -60,7 +72,8 @@ target_include_directories(
               $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source/lib/rocprof-sys-user>)
 
 # include threading because of rooflines
-target_link_libraries(rocprof-sys-headers INTERFACE rocprof-sys::rocprof-sys-threading)
+target_link_libraries(rocprofiler-systems-headers
+                      INTERFACE rocprofiler-systems::rocprofiler-systems-threading)
 
 # ensure the env overrides the appending /opt/rocm later
 string(REPLACE ":" ";" CMAKE_PREFIX_PATH "$ENV{CMAKE_PREFIX_PATH};${CMAKE_PREFIX_PATH}")
@@ -95,11 +108,12 @@ find_library(pthread_LIBRARY NAMES pthread pthreads)
 find_package_handle_standard_args(pthread-library REQUIRED_VARS pthread_LIBRARY)
 
 if(pthread_LIBRARY)
-    target_link_libraries(rocprof-sys-threading INTERFACE ${pthread_LIBRARY})
+    target_link_libraries(rocprofiler-systems-threading INTERFACE ${pthread_LIBRARY})
 else()
-    find_package(Threads ${rocprof_sys_FIND_QUIETLY} ${rocprof_sys_FIND_REQUIREMENT})
+    find_package(Threads ${rocprofiler_systems_FIND_QUIETLY}
+                 ${rocprofiler_systems_FIND_REQUIREMENT})
     if(Threads_FOUND)
-        target_link_libraries(rocprof-sys-threading INTERFACE Threads::Threads)
+        target_link_libraries(rocprofiler-systems-threading INTERFACE Threads::Threads)
     endif()
 endif()
 
@@ -107,7 +121,7 @@ foreach(_LIB dl rt)
     find_library(${_LIB}_LIBRARY NAMES ${_LIB})
     find_package_handle_standard_args(${_LIB}-library REQUIRED_VARS ${_LIB}_LIBRARY)
     if(${_LIB}_LIBRARY)
-        target_link_libraries(rocprof-sys-threading INTERFACE ${${_LIB}_LIBRARY})
+        target_link_libraries(rocprofiler-systems-threading INTERFACE ${${_LIB}_LIBRARY})
     endif()
 endforeach()
 
@@ -125,7 +139,7 @@ if(ROCPROFSYS_USE_HIP
 
     if(NOT ROCmVersion_FOUND)
         find_package(
-            hip ${rocprof_sys_FIND_QUIETLY} REQUIRED HINTS
+            hip ${rocprofiler_systems_FIND_QUIETLY} REQUIRED HINTS
             ${ROCPROFSYS_DEFAULT_ROCM_PATH} PATHS ${ROCPROFSYS_DEFAULT_ROCM_PATH})
         if(SPACK_BUILD)
             find_package(ROCmVersion HINTS ${ROCM_PATH} PATHS ${ROCM_PATH})
@@ -164,7 +178,8 @@ if(ROCPROFSYS_USE_HIP
         set(roctracer_kfdwrapper_LIBRARY)
     endif()
 
-    rocprof_sys_add_feature(ROCPROFSYS_ROCM_VERSION "ROCm version used by rocprof-sys")
+    rocprofiler_systems_add_feature(ROCPROFSYS_ROCM_VERSION
+                                    "ROCm version used by rocprofiler-systems")
 else()
     set(ROCPROFSYS_HIP_VERSION "0.0.0")
     set(ROCPROFSYS_HIP_VERSION_MAJOR 0)
@@ -179,9 +194,10 @@ endif()
 # ----------------------------------------------------------------------------------------#
 
 if(ROCPROFSYS_USE_HIP)
-    find_package(hip ${rocprof_sys_FIND_QUIETLY} REQUIRED)
-    rocprof_sys_target_compile_definitions(rocprof-sys-hip INTERFACE ROCPROFSYS_USE_HIP)
-    target_link_libraries(rocprof-sys-hip INTERFACE hip::host)
+    find_package(hip ${rocprofiler_systems_FIND_QUIETLY} REQUIRED)
+    rocprofiler_systems_target_compile_definitions(rocprofiler-systems-hip
+                                                   INTERFACE ROCPROFSYS_USE_HIP)
+    target_link_libraries(rocprofiler-systems-hip INTERFACE hip::host)
 endif()
 
 # ----------------------------------------------------------------------------------------#
@@ -191,11 +207,12 @@ endif()
 # ----------------------------------------------------------------------------------------#
 
 if(ROCPROFSYS_USE_ROCTRACER)
-    find_package(roctracer ${rocprof_sys_FIND_QUIETLY} REQUIRED)
-    rocprof_sys_target_compile_definitions(rocprof-sys-roctracer
-                                           INTERFACE ROCPROFSYS_USE_ROCTRACER)
-    target_link_libraries(rocprof-sys-roctracer INTERFACE roctracer::roctracer
-                                                          rocprof-sys::rocprof-sys-hip)
+    find_package(roctracer ${rocprofiler_systems_FIND_QUIETLY} REQUIRED)
+    rocprofiler_systems_target_compile_definitions(rocprofiler-systems-roctracer
+                                                   INTERFACE ROCPROFSYS_USE_ROCTRACER)
+    target_link_libraries(
+        rocprofiler-systems-roctracer
+        INTERFACE roctracer::roctracer rocprofiler-systems::rocprofiler-systems-hip)
 endif()
 
 # ----------------------------------------------------------------------------------------#
@@ -204,10 +221,11 @@ endif()
 #
 # ----------------------------------------------------------------------------------------#
 if(ROCPROFSYS_USE_ROCPROFILER)
-    find_package(rocprofiler ${rocprof_sys_FIND_QUIETLY} REQUIRED)
-    rocprof_sys_target_compile_definitions(rocprof-sys-rocprofiler
-                                           INTERFACE ROCPROFSYS_USE_ROCPROFILER)
-    target_link_libraries(rocprof-sys-rocprofiler INTERFACE rocprofiler::rocprofiler)
+    find_package(rocprofiler ${rocprofiler_systems_FIND_QUIETLY} REQUIRED)
+    rocprofiler_systems_target_compile_definitions(rocprofiler-systems-rocprofiler
+                                                   INTERFACE ROCPROFSYS_USE_ROCPROFILER)
+    target_link_libraries(rocprofiler-systems-rocprofiler
+                          INTERFACE rocprofiler::rocprofiler)
 endif()
 
 # ----------------------------------------------------------------------------------------#
@@ -217,10 +235,10 @@ endif()
 # ----------------------------------------------------------------------------------------#
 
 if(ROCPROFSYS_USE_ROCM_SMI)
-    find_package(rocm-smi ${rocprof_sys_FIND_QUIETLY} REQUIRED)
-    rocprof_sys_target_compile_definitions(rocprof-sys-rocm-smi
-                                           INTERFACE ROCPROFSYS_USE_ROCM_SMI)
-    target_link_libraries(rocprof-sys-rocm-smi INTERFACE rocm-smi::rocm-smi)
+    find_package(rocm-smi ${rocprofiler_systems_FIND_QUIETLY} REQUIRED)
+    rocprofiler_systems_target_compile_definitions(rocprofiler-systems-rocm-smi
+                                                   INTERFACE ROCPROFSYS_USE_ROCM_SMI)
+    target_link_libraries(rocprofiler-systems-rocm-smi INTERFACE rocm-smi::rocm-smi)
 endif()
 
 # ----------------------------------------------------------------------------------------#
@@ -230,9 +248,10 @@ endif()
 # ----------------------------------------------------------------------------------------#
 
 if(ROCPROFSYS_USE_RCCL)
-    find_package(RCCL-Headers ${rocprof_sys_FIND_QUIETLY} REQUIRED)
-    target_link_libraries(rocprof-sys-rccl INTERFACE roc::rccl-headers)
-    rocprof_sys_target_compile_definitions(rocprof-sys-rccl INTERFACE ROCPROFSYS_USE_RCCL)
+    find_package(RCCL-Headers ${rocprofiler_systems_FIND_QUIETLY} REQUIRED)
+    target_link_libraries(rocprofiler-systems-rccl INTERFACE roc::rccl-headers)
+    rocprofiler_systems_target_compile_definitions(rocprofiler-systems-rccl
+                                                   INTERFACE ROCPROFSYS_USE_RCCL)
 endif()
 
 # ----------------------------------------------------------------------------------------#
@@ -245,15 +264,16 @@ endif()
 set(_ROCPROFSYS_MPI_HEADERS_ALLOW_MPICH ${MPI_HEADERS_ALLOW_MPICH})
 
 if(ROCPROFSYS_USE_MPI)
-    find_package(MPI ${rocprof_sys_FIND_QUIETLY} REQUIRED)
-    target_link_libraries(rocprof-sys-mpi INTERFACE MPI::MPI_C MPI::MPI_CXX)
-    rocprof_sys_target_compile_definitions(rocprof-sys-mpi INTERFACE TIMEMORY_USE_MPI=1
-                                                                     ROCPROFSYS_USE_MPI)
+    find_package(MPI ${rocprofiler_systems_FIND_QUIETLY} REQUIRED)
+    target_link_libraries(rocprofiler-systems-mpi INTERFACE MPI::MPI_C MPI::MPI_CXX)
+    rocprofiler_systems_target_compile_definitions(
+        rocprofiler-systems-mpi INTERFACE TIMEMORY_USE_MPI=1 ROCPROFSYS_USE_MPI)
 elseif(ROCPROFSYS_USE_MPI_HEADERS)
-    find_package(MPI-Headers ${rocprof_sys_FIND_QUIETLY} REQUIRED)
-    rocprof_sys_target_compile_definitions(
-        rocprof-sys-mpi INTERFACE TIMEMORY_USE_MPI_HEADERS=1 ROCPROFSYS_USE_MPI_HEADERS)
-    target_link_libraries(rocprof-sys-mpi INTERFACE MPI::MPI_HEADERS)
+    find_package(MPI-Headers ${rocprofiler_systems_FIND_QUIETLY} REQUIRED)
+    rocprofiler_systems_target_compile_definitions(
+        rocprofiler-systems-mpi INTERFACE TIMEMORY_USE_MPI_HEADERS=1
+                                          ROCPROFSYS_USE_MPI_HEADERS)
+    target_link_libraries(rocprofiler-systems-mpi INTERFACE MPI::MPI_HEADERS)
 endif()
 
 # ----------------------------------------------------------------------------------------#
@@ -262,8 +282,8 @@ endif()
 #
 # ----------------------------------------------------------------------------------------#
 
-rocprof_sys_target_compile_definitions(
-    rocprof-sys-ompt INTERFACE ROCPROFSYS_USE_OMPT=$<BOOL:${ROCPROFSYS_USE_OMPT}>)
+rocprofiler_systems_target_compile_definitions(
+    rocprofiler-systems-ompt INTERFACE ROCPROFSYS_USE_OMPT=$<BOOL:${ROCPROFSYS_USE_OMPT}>)
 
 # ----------------------------------------------------------------------------------------#
 #
@@ -273,10 +293,11 @@ rocprof_sys_target_compile_definitions(
 
 include(ElfUtils)
 
-target_include_directories(rocprof-sys-elfutils SYSTEM INTERFACE ${ElfUtils_INCLUDE_DIRS})
-target_compile_definitions(rocprof-sys-elfutils INTERFACE ${ElfUtils_DEFINITIONS})
-target_link_directories(rocprof-sys-elfutils INTERFACE ${ElfUtils_LIBRARY_DIRS})
-target_link_libraries(rocprof-sys-elfutils INTERFACE ${ElfUtils_LIBRARIES})
+target_include_directories(rocprofiler-systems-elfutils SYSTEM
+                           INTERFACE ${ElfUtils_INCLUDE_DIRS})
+target_compile_definitions(rocprofiler-systems-elfutils INTERFACE ${ElfUtils_DEFINITIONS})
+target_link_directories(rocprofiler-systems-elfutils INTERFACE ${ElfUtils_LIBRARY_DIRS})
+target_link_libraries(rocprofiler-systems-elfutils INTERFACE ${ElfUtils_LIBRARIES})
 
 # ----------------------------------------------------------------------------------------#
 #
@@ -285,7 +306,7 @@ target_link_libraries(rocprof-sys-elfutils INTERFACE ${ElfUtils_LIBRARIES})
 # ----------------------------------------------------------------------------------------#
 
 if(ROCPROFSYS_BUILD_DYNINST)
-    rocprof_sys_checkout_git_submodule(
+    rocprofiler_systems_checkout_git_submodule(
         RELATIVE_PATH external/dyninst
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
         REPO_URL https://github.com/jrmadsen/dyninst.git
@@ -318,7 +339,7 @@ if(ROCPROFSYS_BUILD_DYNINST)
         set(CMAKE_BUILD_RPATH "")
     endif()
 
-    rocprof_sys_save_variables(
+    rocprofiler_systems_save_variables(
         PIC VARIABLES CMAKE_POSITION_INDEPENDENT_CODE CMAKE_INSTALL_RPATH
                       CMAKE_BUILD_RPATH CMAKE_INSTALL_RPATH_USE_LINK_PATH)
     set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -333,7 +354,7 @@ if(ROCPROFSYS_BUILD_DYNINST)
         "${PROJECT_NAME}"
         CACHE PATH "Third-party library install-tree install library prefix" FORCE)
     add_subdirectory(external/dyninst EXCLUDE_FROM_ALL)
-    rocprof_sys_restore_variables(
+    rocprofiler_systems_restore_variables(
         PIC VARIABLES CMAKE_POSITION_INDEPENDENT_CODE CMAKE_INSTALL_RPATH
                       CMAKE_BUILD_RPATH CMAKE_INSTALL_RPATH_USE_LINK_PATH)
 
@@ -372,21 +393,22 @@ if(ROCPROFSYS_BUILD_DYNINST)
         FILES_MATCHING
         PATTERN "*${CMAKE_SHARED_LIBRARY_SUFFIX}*")
 
-    target_link_libraries(rocprof-sys-dyninst INTERFACE Dyninst::Dyninst)
+    target_link_libraries(rocprofiler-systems-dyninst INTERFACE Dyninst::Dyninst)
 
 else()
-    find_package(Dyninst ${rocprof_sys_FIND_QUIETLY} REQUIRED
+    find_package(Dyninst ${rocprofiler_systems_FIND_QUIETLY} REQUIRED
                  COMPONENTS dyninstAPI parseAPI instructionAPI symtabAPI)
 
     if(TARGET Dyninst::Dyninst) # updated Dyninst CMake system was found
-        target_link_libraries(rocprof-sys-dyninst INTERFACE Dyninst::Dyninst)
+        target_link_libraries(rocprofiler-systems-dyninst INTERFACE Dyninst::Dyninst)
     else() # updated Dyninst CMake system was not found
         set(_BOOST_COMPONENTS atomic system thread date_time)
-        set(rocprof_sys_BOOST_COMPONENTS
+        set(rocprofiler_systems_BOOST_COMPONENTS
             "${_BOOST_COMPONENTS}"
-            CACHE STRING "Boost components used by Dyninst in rocprof-sys")
+            CACHE STRING "Boost components used by Dyninst in rocprofiler-systems")
         set(Boost_NO_BOOST_CMAKE ON)
-        find_package(Boost QUIET REQUIRED COMPONENTS ${rocprof_sys_BOOST_COMPONENTS})
+        find_package(Boost QUIET REQUIRED
+                     COMPONENTS ${rocprofiler_systems_BOOST_COMPONENTS})
 
         # some installs of dyninst don't set this properly
         if(EXISTS "${DYNINST_INCLUDE_DIR}" AND NOT DYNINST_HEADER_DIR)
@@ -417,8 +439,8 @@ else()
                 PATH_SUFFIXES include)
         endif()
 
-        target_link_libraries(rocprof-sys-dyninst INTERFACE ${DYNINST_LIBRARIES}
-                                                            ${Boost_LIBRARIES})
+        target_link_libraries(rocprofiler-systems-dyninst INTERFACE ${DYNINST_LIBRARIES}
+                                                                    ${Boost_LIBRARIES})
         foreach(
             _TARG
             dyninst
@@ -433,18 +455,20 @@ else()
             date_time
             TBB)
             if(TARGET Dyninst::${_TARG})
-                target_link_libraries(rocprof-sys-dyninst INTERFACE Dyninst::${_TARG})
+                target_link_libraries(rocprofiler-systems-dyninst
+                                      INTERFACE Dyninst::${_TARG})
             elseif(TARGET Boost::${_TARG})
-                target_link_libraries(rocprof-sys-dyninst INTERFACE Boost::${_TARG})
+                target_link_libraries(rocprofiler-systems-dyninst
+                                      INTERFACE Boost::${_TARG})
             elseif(TARGET ${_TARG})
-                target_link_libraries(rocprof-sys-dyninst INTERFACE ${_TARG})
+                target_link_libraries(rocprofiler-systems-dyninst INTERFACE ${_TARG})
             endif()
         endforeach()
         target_include_directories(
-            rocprof-sys-dyninst SYSTEM INTERFACE ${TBB_INCLUDE_DIR} ${Boost_INCLUDE_DIRS}
-                                                 ${DYNINST_HEADER_DIR})
-        rocprof_sys_target_compile_definitions(rocprof-sys-dyninst
-                                               INTERFACE ROCPROFSYS_USE_DYNINST)
+            rocprofiler-systems-dyninst SYSTEM
+            INTERFACE ${TBB_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${DYNINST_HEADER_DIR})
+        rocprofiler_systems_target_compile_definitions(rocprofiler-systems-dyninst
+                                                       INTERFACE ROCPROFSYS_USE_DYNINST)
     endif()
 endif()
 
@@ -456,11 +480,11 @@ endif()
 
 if(ROCPROFSYS_BUILD_STATIC_LIBGCC)
     if(CMAKE_C_COMPILER_ID MATCHES "GNU")
-        rocprof_sys_save_variables(STATIC_LIBGCC_C VARIABLES CMAKE_C_FLAGS)
+        rocprofiler_systems_save_variables(STATIC_LIBGCC_C VARIABLES CMAKE_C_FLAGS)
         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -static-libgcc")
     endif()
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-        rocprof_sys_save_variables(STATIC_LIBGCC_CXX VARIABLES CMAKE_CXX_FLAGS)
+        rocprofiler_systems_save_variables(STATIC_LIBGCC_CXX VARIABLES CMAKE_CXX_FLAGS)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc")
     else()
         set(ROCPROFSYS_BUILD_STATIC_LIBGCC OFF)
@@ -469,7 +493,7 @@ endif()
 
 if(ROCPROFSYS_BUILD_STATIC_LIBSTDCXX)
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-        rocprof_sys_save_variables(STATIC_LIBSTDCXX_CXX VARIABLES CMAKE_CXX_FLAGS)
+        rocprofiler_systems_save_variables(STATIC_LIBSTDCXX_CXX VARIABLES CMAKE_CXX_FLAGS)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libstdc++")
     else()
         set(ROCPROFSYS_BUILD_STATIC_LIBSTDCXX OFF)
@@ -483,7 +507,7 @@ endif()
 # ----------------------------------------------------------------------------------------#
 
 set(perfetto_DIR ${PROJECT_SOURCE_DIR}/external/perfetto)
-rocprof_sys_checkout_git_submodule(
+rocprofiler_systems_checkout_git_submodule(
     RELATIVE_PATH external/perfetto
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     REPO_URL https://github.com/google/perfetto.git
@@ -499,7 +523,7 @@ include(Perfetto)
 # ----------------------------------------------------------------------------------------#
 
 if(ROCPROFSYS_BUILD_DEVICETRACE)
-    rocprof_sys_checkout_git_submodule(
+    rocprofiler_systems_checkout_git_submodule(
         RELATIVE_PATH external/elfio
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
         REPO_URL https://github.com/jrmadsen/ELFIO.git
@@ -525,22 +549,23 @@ endif()
 # ----------------------------------------------------------------------------------------#
 
 target_compile_definitions(
-    rocprof-sys-timemory-config
+    rocprofiler-systems-timemory-config
     INTERFACE TIMEMORY_PAPI_ARRAY_SIZE=12 TIMEMORY_USE_ROOFLINE=0 TIMEMORY_USE_ERT=0
               TIMEMORY_USE_CONTAINERS=0 TIMEMORY_USE_ERT_EXTERN=0
               TIMEMORY_USE_CONTAINERS_EXTERN=0)
 
 if(ROCPROFSYS_BUILD_STACK_PROTECTOR)
-    add_target_flag_if_avail(rocprof-sys-timemory-config "-fstack-protector-strong"
-                             "-Wstack-protector")
+    add_target_flag_if_avail(rocprofiler-systems-timemory-config
+                             "-fstack-protector-strong" "-Wstack-protector")
 endif()
 
 if(ROCPROFSYS_BUILD_DEBUG)
-    add_target_flag_if_avail(rocprof-sys-timemory-config "-fno-omit-frame-pointer" "-g3")
+    add_target_flag_if_avail(rocprofiler-systems-timemory-config
+                             "-fno-omit-frame-pointer" "-g3")
 endif()
 
 set(TIMEMORY_EXTERNAL_INTERFACE_LIBRARY
-    rocprof-sys-timemory-config
+    rocprofiler-systems-timemory-config
     CACHE STRING "timemory configuration interface library")
 set(TIMEMORY_INSTALL_HEADERS
     OFF
@@ -606,7 +631,7 @@ set(TIMEMORY_SANITIZER_TYPE
     CACHE STRING "Sanitizer type, e.g. leak, thread, address, memory, etc." FORCE)
 
 if(DEFINED TIMEMORY_BUILD_GOTCHA AND NOT TIMEMORY_BUILD_GOTCHA)
-    rocprof_sys_message(
+    rocprofiler_systems_message(
         FATAL_ERROR
         "Using an external gotcha is not allowed due to known bug that has not been accepted upstream"
         )
@@ -649,13 +674,13 @@ set(TIMEMORY_CXX_LIBRARY_EXCLUDE
 mark_as_advanced(TIMEMORY_SETTINGS_PREFIX)
 mark_as_advanced(TIMEMORY_PROJECT_NAME)
 
-rocprof_sys_checkout_git_submodule(
+rocprofiler_systems_checkout_git_submodule(
     RELATIVE_PATH external/timemory
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     REPO_URL https://github.com/NERSC/timemory.git
     REPO_BRANCH omnitrace)
 
-rocprof_sys_save_variables(
+rocprofiler_systems_save_variables(
     BUILD_CONFIG VARIABLES BUILD_SHARED_LIBS BUILD_STATIC_LIBS
                            CMAKE_POSITION_INDEPENDENT_CODE CMAKE_PREFIX_PATH)
 
@@ -688,34 +713,36 @@ if(ROCPROFSYS_BUILD_LIBUNWIND)
         PATTERN "*${CMAKE_SHARED_LIBRARY_SUFFIX}*")
 endif()
 
-rocprof_sys_restore_variables(
+rocprofiler_systems_restore_variables(
     BUILD_CONFIG VARIABLES BUILD_SHARED_LIBS BUILD_STATIC_LIBS
                            CMAKE_POSITION_INDEPENDENT_CODE CMAKE_PREFIX_PATH)
 
-if(TARGET rocprof-sys-papi-build)
+if(TARGET rocprofiler-systems-papi-build)
     foreach(_TARGET PAPI::papi timemory-core timemory-common timemory-papi-component
                     timemory-cxx)
         if(TARGET "${_TARGET}")
-            add_dependencies(${_TARGET} rocprof-sys-papi-build)
+            add_dependencies(${_TARGET} rocprofiler-systems-papi-build)
         endif()
         foreach(_LINK shared static)
             if(TARGET "${_TARGET}-${_LINK}")
-                add_dependencies(${_TARGET}-${_LINK} rocprof-sys-papi-build)
+                add_dependencies(${_TARGET}-${_LINK} rocprofiler-systems-papi-build)
             endif()
         endforeach()
     endforeach()
 endif()
 
 target_link_libraries(
-    rocprof-sys-timemory
+    rocprofiler-systems-timemory
     INTERFACE $<BUILD_INTERFACE:timemory::timemory-headers>
               $<BUILD_INTERFACE:timemory::timemory-gotcha>
               $<BUILD_INTERFACE:timemory::timemory-cxx-static>)
 
-target_link_libraries(rocprof-sys-bfd INTERFACE $<BUILD_INTERFACE:timemory::timemory-bfd>)
+target_link_libraries(rocprofiler-systems-bfd
+                      INTERFACE $<BUILD_INTERFACE:timemory::timemory-bfd>)
 
 if(ROCPROFSYS_USE_BFD)
-    rocprof_sys_target_compile_definitions(rocprof-sys-bfd INTERFACE ROCPROFSYS_USE_BFD)
+    rocprofiler_systems_target_compile_definitions(rocprofiler-systems-bfd
+                                                   INTERFACE ROCPROFSYS_USE_BFD)
 endif()
 
 # ----------------------------------------------------------------------------------------#
@@ -726,7 +753,7 @@ endif()
 
 # timemory might provide PTL::ptl-shared
 if(NOT TARGET PTL::ptl-shared)
-    rocprof_sys_checkout_git_submodule(
+    rocprofiler_systems_checkout_git_submodule(
         RELATIVE_PATH external/PTL
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
         REPO_URL https://github.com/jrmadsen/PTL.git
@@ -740,7 +767,7 @@ if(NOT TARGET PTL::ptl-shared)
     if(NOT DEFINED BUILD_OBJECT_LIBS)
         set(BUILD_OBJECT_LIBS OFF)
     endif()
-    rocprof_sys_save_variables(
+    rocprofiler_systems_save_variables(
         BUILD_CONFIG
         VARIABLES BUILD_SHARED_LIBS BUILD_STATIC_LIBS BUILD_OBJECT_LIBS
                   CMAKE_POSITION_INDEPENDENT_CODE CMAKE_CXX_VISIBILITY_PRESET
@@ -755,17 +782,17 @@ if(NOT TARGET PTL::ptl-shared)
 
     add_subdirectory(external/PTL EXCLUDE_FROM_ALL)
 
-    rocprof_sys_restore_variables(
+    rocprofiler_systems_restore_variables(
         BUILD_CONFIG
         VARIABLES BUILD_SHARED_LIBS BUILD_STATIC_LIBS BUILD_OBJECT_LIBS
                   CMAKE_POSITION_INDEPENDENT_CODE CMAKE_CXX_VISIBILITY_PRESET
                   CMAKE_VISIBILITY_INLINES_HIDDEN)
 endif()
 
-target_sources(rocprof-sys-ptl
+target_sources(rocprofiler-systems-ptl
                INTERFACE $<BUILD_INTERFACE:$<TARGET_OBJECTS:PTL::ptl-object>>)
 target_include_directories(
-    rocprof-sys-ptl
+    rocprofiler-systems-ptl
     INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/external/PTL/source>
               $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/external/PTL/source>)
 
@@ -780,21 +807,22 @@ include(Compilers)
 
 if(ROCPROFSYS_BUILD_STATIC_LIBSTDCXX)
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-        rocprof_sys_restore_variables(STATIC_LIBSTDCXX_CXX VARIABLES CMAKE_CXX_FLAGS)
+        rocprofiler_systems_restore_variables(STATIC_LIBSTDCXX_CXX
+                                              VARIABLES CMAKE_CXX_FLAGS)
     endif()
 endif()
 
 if(ROCPROFSYS_BUILD_STATIC_LIBGCC)
     if(CMAKE_C_COMPILER_ID MATCHES "GNU")
-        rocprof_sys_restore_variables(STATIC_LIBGCC_C VARIABLES CMAKE_C_FLAGS)
+        rocprofiler_systems_restore_variables(STATIC_LIBGCC_C VARIABLES CMAKE_C_FLAGS)
     endif()
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-        rocprof_sys_restore_variables(STATIC_LIBGCC_CXX VARIABLES CMAKE_CXX_FLAGS)
+        rocprofiler_systems_restore_variables(STATIC_LIBGCC_CXX VARIABLES CMAKE_CXX_FLAGS)
     endif()
 endif()
 
-rocprof_sys_add_feature(CMAKE_C_FLAGS "C compiler flags")
-rocprof_sys_add_feature(CMAKE_CXX_FLAGS "C++ compiler flags")
+rocprofiler_systems_add_feature(CMAKE_C_FLAGS "C compiler flags")
+rocprofiler_systems_add_feature(CMAKE_CXX_FLAGS "C++ compiler flags")
 
 # ----------------------------------------------------------------------------------------#
 #
@@ -810,7 +838,7 @@ if(ROCPROFSYS_USE_PYTHON)
     include(ConfigPython)
     include(PyBind11Tools)
 
-    rocprof_sys_watch_for_change(ROCPROFSYS_PYTHON_ROOT_DIRS _PYTHON_DIRS_CHANGED)
+    rocprofiler_systems_watch_for_change(ROCPROFSYS_PYTHON_ROOT_DIRS _PYTHON_DIRS_CHANGED)
 
     if(_PYTHON_DIRS_CHANGED)
         unset(ROCPROFSYS_PYTHON_VERSION CACHE)
@@ -818,7 +846,7 @@ if(ROCPROFSYS_USE_PYTHON)
         unset(ROCPROFSYS_INSTALL_PYTHONDIR CACHE)
     else()
         foreach(_VAR PREFIX ENVS)
-            rocprof_sys_watch_for_change(ROCPROFSYS_PYTHON_${_VAR} _CHANGED)
+            rocprofiler_systems_watch_for_change(ROCPROFSYS_PYTHON_${_VAR} _CHANGED)
 
             if(_CHANGED)
                 unset(ROCPROFSYS_PYTHON_ROOT_DIRS CACHE)
@@ -830,7 +858,7 @@ if(ROCPROFSYS_USE_PYTHON)
     endif()
 
     if(ROCPROFSYS_PYTHON_PREFIX AND ROCPROFSYS_PYTHON_ENVS)
-        rocprof_sys_directory(
+        rocprofiler_systems_directory(
             FAIL
             PREFIX ${ROCPROFSYS_PYTHON_PREFIX}
             PATHS ${ROCPROFSYS_PYTHON_ENVS}
@@ -844,7 +872,7 @@ if(ROCPROFSYS_USE_PYTHON)
         set(ROCPROFSYS_PYTHON_VERSIONS "${ROCPROFSYS_PYTHON_VERSION}")
 
         if(NOT ROCPROFSYS_PYTHON_ROOT_DIRS)
-            rocprof_sys_find_python(_PY VERSION ${ROCPROFSYS_PYTHON_VERSION})
+            rocprofiler_systems_find_python(_PY VERSION ${ROCPROFSYS_PYTHON_VERSION})
             set(ROCPROFSYS_PYTHON_ROOT_DIRS
                 "${_PY_ROOT_DIR}"
                 CACHE INTERNAL "" FORCE)
@@ -859,7 +887,7 @@ if(ROCPROFSYS_USE_PYTHON)
         set(_PY_VERSIONS)
 
         foreach(_DIR ${ROCPROFSYS_PYTHON_ROOT_DIRS})
-            rocprof_sys_find_python(_PY ROOT_DIR ${_DIR})
+            rocprofiler_systems_find_python(_PY ROOT_DIR ${_DIR})
 
             if(NOT _PY_FOUND)
                 continue()
@@ -877,7 +905,7 @@ if(ROCPROFSYS_USE_PYTHON)
         NOT ROCPROFSYS_PYTHON_VERSIONS
         AND NOT ROCPROFSYS_PYTHON_VERSION
         AND NOT ROCPROFSYS_PYTHON_ROOT_DIRS)
-        rocprof_sys_find_python(_PY REQUIRED)
+        rocprofiler_systems_find_python(_PY REQUIRED)
         set(ROCPROFSYS_PYTHON_ROOT_DIRS
             "${_PY_ROOT_DIR}"
             CACHE INTERNAL "" FORCE)
@@ -886,10 +914,10 @@ if(ROCPROFSYS_USE_PYTHON)
             CACHE INTERNAL "" FORCE)
     endif()
 
-    rocprof_sys_watch_for_change(ROCPROFSYS_PYTHON_ROOT_DIRS)
-    rocprof_sys_watch_for_change(ROCPROFSYS_PYTHON_VERSIONS)
+    rocprofiler_systems_watch_for_change(ROCPROFSYS_PYTHON_ROOT_DIRS)
+    rocprofiler_systems_watch_for_change(ROCPROFSYS_PYTHON_VERSIONS)
 
-    rocprof_sys_check_python_dirs_and_versions(FAIL)
+    rocprofiler_systems_check_python_dirs_and_versions(FAIL)
 
     list(LENGTH ROCPROFSYS_PYTHON_VERSIONS _NUM_PYTHON_VERSIONS)
 
@@ -908,7 +936,7 @@ else()
         CACHE STRING "Installation prefix for python")
 endif()
 
-rocprof_sys_watch_for_change(ROCPROFSYS_INSTALL_PYTHONDIR)
+rocprofiler_systems_watch_for_change(ROCPROFSYS_INSTALL_PYTHONDIR)
 set(CMAKE_INSTALL_PYTHONDIR ${ROCPROFSYS_INSTALL_PYTHONDIR})
 
 # ----------------------------------------------------------------------------------------#
@@ -918,10 +946,10 @@ set(CMAKE_INSTALL_PYTHONDIR ${ROCPROFSYS_INSTALL_PYTHONDIR})
 # ----------------------------------------------------------------------------------------#
 
 if("${CMAKE_BUILD_TYPE}" MATCHES "Release" AND NOT ROCPROFSYS_BUILD_DEBUG)
-    add_target_flag_if_avail(rocprof-sys-compile-options "-g1")
+    add_target_flag_if_avail(rocprofiler-systems-compile-options "-g1")
 endif()
 
-target_compile_definitions(rocprof-sys-compile-definitions
+target_compile_definitions(rocprofiler-systems-compile-definitions
                            INTERFACE ROCPROFSYS_MAX_THREADS=${ROCPROFSYS_MAX_THREADS})
 
 foreach(_LIB ${ROCPROFSYS_EXTENSION_LIBRARIES})
@@ -929,7 +957,7 @@ foreach(_LIB ${ROCPROFSYS_EXTENSION_LIBRARIES})
     if(_COMPILE_DEFS)
         foreach(_DEF ${_COMPILE_DEFS})
             if("${_DEF}" MATCHES "ROCPROFSYS_")
-                target_compile_definitions(rocprof-sys-compile-definitions
+                target_compile_definitions(rocprofiler-systems-compile-definitions
                                            INTERFACE ${_DEF})
             endif()
         endforeach()

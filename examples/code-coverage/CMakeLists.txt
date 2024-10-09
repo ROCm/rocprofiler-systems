@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 
-project(rocprof-sys-code-coverage-example LANGUAGES CXX)
+project(rocprofiler-systems-code-coverage-example LANGUAGES CXX)
 
 if(ROCPROFSYS_DISABLE_EXAMPLES)
     get_filename_component(_DIR ${CMAKE_CURRENT_LIST_DIR} NAME)
@@ -23,7 +23,7 @@ if(ROCPROFSYS_INSTALL_EXAMPLES)
     install(
         TARGETS code-coverage
         DESTINATION bin
-        COMPONENT rocprof-sys-examples)
+        COMPONENT rocprofiler-systems-examples)
 endif()
 
 set(PYTHON_FILES code-coverage.py)
@@ -41,7 +41,7 @@ if(Python3_FOUND)
             install(
                 PROGRAMS ${PROJECT_BINARY_DIR}/${_FILE}
                 DESTINATION bin
-                COMPONENT rocprof-sys-examples)
+                COMPONENT rocprofiler-systems-examples)
         endif()
     endforeach()
 endif()

@@ -62,7 +62,7 @@ ROCPROFSYS_PROFILE               = ON
 ROCPROFSYS_TRACE                 = ON
 ROCPROFSYS_USE_SAMPLING          = ON
 ROCPROFSYS_USE_PROCESS_SAMPLING  = ON
-ROCPROFSYS_OUTPUT_PATH           = %env{CONFIG_DIR}%/rocprofsys-tests-output
+ROCPROFSYS_OUTPUT_PATH           = %env{CONFIG_DIR}%/rocprof-sys-tests-output
 ROCPROFSYS_OUTPUT_PREFIX         = %tag%/
 ROCPROFSYS_SAMPLING_FREQ         = 100
 ROCPROFSYS_SAMPLING_DELAY        = 0.05
@@ -179,7 +179,7 @@ test-rocprof-sys-rewrite()
         local LS_ARGS=""
     fi
     verbose-run rocprof-sys-instrument -e -v 1 -o ${CONFIG_DIR}/ls.inst --simulate -- ${LS_NAME}
-    for i in $(find ${CONFIG_DIR}/rocprofsys-tests-output/ls.inst -type f); do verbose-run ls ${i}; done
+    for i in $(find ${CONFIG_DIR}/rocprof-sys-tests-output/ls.inst -type f); do verbose-run ls ${i}; done
     verbose-run rocprof-sys-instrument -e -v 1 -o ${CONFIG_DIR}/ls.inst -- ${LS_NAME}
     verbose-run rocprof-sys-run -- ${CONFIG_DIR}/ls.inst ${LS_ARGS}
 }
@@ -194,7 +194,7 @@ test-rocprof-sys-runtime()
         local LS_ARGS=""
     fi
     verbose-run rocprof-sys-instrument -e -v 1 --simulate -- ${LS_NAME} ${LS_ARGS}
-    for i in $(find ${CONFIG_DIR}/rocprofsys-tests-output/$(basename ${LS_NAME}) -type f); do verbose-run ls ${i}; done
+    for i in $(find ${CONFIG_DIR}/rocprof-sys-tests-output/$(basename ${LS_NAME}) -type f); do verbose-run ls ${i}; done
     verbose-run rocprof-sys-instrument -e -v 1 -- ${LS_NAME} ${LS_ARGS}
 }
 

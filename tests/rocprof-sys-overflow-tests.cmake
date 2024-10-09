@@ -14,10 +14,10 @@ set(_overflow_environment
     "ROCPROFSYS_SAMPLING_OVERFLOW_FREQ=10000"
     "ROCPROFSYS_DEBUG_THREADING_GET_ID=ON")
 
-if(rocprof_sys_perf_event_paranoid LESS_EQUAL 3
-   OR rocprof_sys_cap_sys_admin EQUAL 0
-   OR rocprof_sys_cap_perfmon EQUAL 0)
-    rocprof_sys_add_test(
+if(rocprofiler_systems_perf_event_paranoid LESS_EQUAL 3
+   OR rocprofiler_systems_cap_sys_admin EQUAL 0
+   OR rocprofiler_systems_cap_perfmon EQUAL 0)
+    rocprofiler_systems_add_test(
         SKIP_BASELINE
         NAME overflow
         TARGET parallel-overhead

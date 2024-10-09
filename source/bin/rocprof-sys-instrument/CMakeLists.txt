@@ -1,15 +1,15 @@
 # ------------------------------------------------------------------------------#
 #
-# rocprof-sys-instrument target (formerly rocprof-sys-exe target prior to 1.8.1)
+# rocprofiler-systems-instrument target (formerly rocprofiler-systems-exe target prior to 1.8.1)
 #
 # ------------------------------------------------------------------------------#
 
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION OFF)
 
-add_executable(rocprof-sys-instrument)
+add_executable(rocprofiler-systems-instrument)
 
 target_sources(
-    rocprof-sys-instrument
+    rocprofiler-systems-instrument
     PRIVATE ${CMAKE_CURRENT_LIST_DIR}/details.cpp
             ${CMAKE_CURRENT_LIST_DIR}/function_signature.cpp
             ${CMAKE_CURRENT_LIST_DIR}/function_signature.hpp
@@ -25,37 +25,38 @@ target_sources(
             ${CMAKE_CURRENT_LIST_DIR}/rocprof-sys-instrument.hpp)
 
 target_link_libraries(
-    rocprof-sys-instrument
-    PRIVATE rocprof-sys::rocprof-sys-headers
-            rocprof-sys::rocprof-sys-dyninst
-            rocprof-sys::rocprof-sys-compile-options
-            rocprof-sys::rocprof-sys-compile-definitions
-            rocprof-sys::rocprof-sys-sanitizer
+    rocprofiler-systems-instrument
+    PRIVATE rocprofiler-systems::rocprofiler-systems-headers
+            rocprofiler-systems::rocprofiler-systems-dyninst
+            rocprofiler-systems::rocprofiler-systems-compile-options
+            rocprofiler-systems::rocprofiler-systems-compile-definitions
+            rocprofiler-systems::rocprofiler-systems-sanitizer
             timemory::timemory-headers
             timemory::timemory-extensions
             timemory::timemory-core)
 
 set_target_properties(
-    rocprof-sys-instrument
+    rocprofiler-systems-instrument
     PROPERTIES BUILD_RPATH "\$ORIGIN:\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
                INSTALL_RPATH "${ROCPROFSYS_EXE_INSTALL_RPATH}"
                INSTALL_RPATH_USE_LINK_PATH ON
-               OUTPUT_NAME "rocprof-sys-instrument")
+               OUTPUT_NAME ${BINARY_NAME_PREFIX}-instrument)
 
 if(ROCPROFSYS_BUILD_DYNINST)
-    target_compile_definitions(rocprof-sys-instrument PRIVATE ROCPROFSYS_BUILD_DYNINST=1)
+    target_compile_definitions(rocprofiler-systems-instrument
+                               PRIVATE ROCPROFSYS_BUILD_DYNINST=1)
 endif()
 
-add_target_flag_if_avail(rocprof-sys-instrument "-Wno-deprecated-declarations")
+add_target_flag_if_avail(rocprofiler-systems-instrument "-Wno-deprecated-declarations")
 
-rocprof_sys_strip_target(rocprof-sys-instrument)
+rocprofiler_systems_strip_target(rocprofiler-systems-instrument)
 
 if(CMAKE_BUILD_TYPE MATCHES "^(DEBUG|Debug)")
     string(REPLACE " " ";" _FLAGS "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
-    target_compile_options(rocprof-sys-instrument PRIVATE ${_FLAGS})
+    target_compile_options(rocprofiler-systems-instrument PRIVATE ${_FLAGS})
 endif()
 
 install(
-    TARGETS rocprof-sys-instrument
+    TARGETS rocprofiler-systems-instrument
     DESTINATION ${CMAKE_INSTALL_BINDIR}
     OPTIONAL)

@@ -5,8 +5,8 @@
 # ########################################################################################
 
 if(ROCPROFSYS_BUILD_STATIC_LIBSTDCXX)
-    # rocprof_sys_message(FATAL_ERROR "static libstdc++ is not compatible with python
-    # bindings")
+    # rocprofiler_systems_message(FATAL_ERROR "static libstdc++ is not compatible with
+    # python bindings")
 endif()
 
 # if set, will screw up loading library
@@ -17,10 +17,10 @@ set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME python)
 
 # ########################################################################################
 
-function(ROCPROF_SYS_CONFIGURE_PYTARGET _TARGET _VERSION)
+function(ROCPROFILER_SYSTEMS_CONFIGURE_PYTARGET _TARGET _VERSION)
 
-    add_library(rocprof-sys::${_TARGET} ALIAS ${_TARGET})
-    target_link_libraries(${_TARGET} PRIVATE libpyrocprof-sys-interface)
+    add_library(rocprofiler-systems::${_TARGET} ALIAS ${_TARGET})
+    target_link_libraries(${_TARGET} PRIVATE libpyrocprofiler-systems-interface)
     add_dependencies(libpyrocprofsys ${_TARGET})
 
     set_target_properties(
@@ -60,35 +60,35 @@ endfunction()
 
 # ########################################################################################
 
-add_library(rocprof-sys-python-compile-options INTERFACE)
-add_library(rocprof-sys::rocprof-sys-python-compile-options ALIAS
-            rocprof-sys-python-compile-options)
+add_library(rocprofiler-systems-python-compile-options INTERFACE)
+add_library(rocprofiler-systems::rocprofiler-systems-python-compile-options ALIAS
+            rocprofiler-systems-python-compile-options)
 add_target_cxx_flag_if_avail(
-    rocprof-sys-python-compile-options "-Wno-unused-value" "-Wno-range-loop-analysis"
-    "-Wno-deprecated-declarations" "-Wno-unused-but-set-parameter"
-    "-ftls-model=global-dynamic")
+    rocprofiler-systems-python-compile-options "-Wno-unused-value"
+    "-Wno-range-loop-analysis" "-Wno-deprecated-declarations"
+    "-Wno-unused-but-set-parameter" "-ftls-model=global-dynamic")
 
 file(GLOB pyheaders ${CMAKE_CURRENT_LIST_DIR}/libpyrocprofsys*.hpp)
 set(pysources ${CMAKE_CURRENT_LIST_DIR}/libpyrocprofsys.cpp)
 
 set(pybind_libs pybind11::module)
 
-add_library(libpyrocprof-sys-interface INTERFACE)
+add_library(libpyrocprofiler-systems-interface INTERFACE)
 target_link_libraries(
-    libpyrocprof-sys-interface
+    libpyrocprofiler-systems-interface
     INTERFACE pybind11::module
               timemory::timemory-headers
-              rocprof-sys::rocprof-sys-headers
-              rocprof-sys::rocprof-sys-compile-options
-              rocprof-sys::rocprof-sys-static-libgcc-optional
-              rocprof-sys::rocprof-sys-lto
-              rocprof-sys::rocprof-sys-dl-library
-              rocprof-sys::rocprof-sys-user-library
-              rocprof-sys::rocprof-sys-python
-              rocprof-sys::rocprof-sys-python-compile-options)
+              rocprofiler-systems::rocprofiler-systems-headers
+              rocprofiler-systems::rocprofiler-systems-compile-options
+              rocprofiler-systems::rocprofiler-systems-static-libgcc-optional
+              rocprofiler-systems::rocprofiler-systems-lto
+              rocprofiler-systems::rocprofiler-systems-dl-library
+              rocprofiler-systems::rocprofiler-systems-user-library
+              rocprofiler-systems::rocprofiler-systems-python
+              rocprofiler-systems::rocprofiler-systems-python-compile-options)
 
-rocprof_sys_target_compile_definitions(libpyrocprof-sys-interface
-                                       INTERFACE ROCPROFSYS_PYBIND11_SOURCE)
+rocprofiler_systems_target_compile_definitions(libpyrocprofiler-systems-interface
+                                               INTERFACE ROCPROFSYS_PYBIND11_SOURCE)
 
 add_custom_target(libpyrocprofsys)
 
@@ -104,21 +104,22 @@ foreach(_IN ${PYTHON_FILES})
         OPTIONAL)
 endforeach()
 
-rocprof_sys_python_console_script("rocprof-sys-python" "rocprofsys")
+rocprofiler_systems_python_console_script("${BINARY_NAME_PREFIX}-python" "rocprofsys")
 
 set(_INDEX 0)
 foreach(_VERSION ${ROCPROFSYS_PYTHON_VERSIONS})
     # add_library(libpyrocprofsys MODULE ${pysources} ${pyheaders})
     list(GET ROCPROFSYS_PYTHON_ROOT_DIRS ${_INDEX} Python3_ROOT_DIR)
-    rocprof_sys_pybind11_add_module(
-        libpyrocprof-sys-${_VERSION} MODULE
+    rocprofiler_systems_pybind11_add_module(
+        libpyrocprofiler-systems-${_VERSION} MODULE
         PYTHON_VERSION ${_VERSION}
         VISIBILITY "hidden" ${pysources} ${pyheaders})
-    rocprof_sys_configure_pytarget(libpyrocprof-sys-${_VERSION} ${_VERSION})
+    rocprofiler_systems_configure_pytarget(libpyrocprofiler-systems-${_VERSION}
+                                           ${_VERSION})
 
     if(ROCPROFSYS_USE_PYTHON)
-        rocprof_sys_python_console_script(
-            "rocprof-sys-python" "rocprofsys"
+        rocprofiler_systems_python_console_script(
+            "${BINARY_NAME_PREFIX}-python" "rocprofsys"
             VERSION ${_VERSION}
             ROOT_DIR "${Python3_ROOT_DIR}")
     endif()

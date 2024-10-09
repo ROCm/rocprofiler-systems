@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
-project(rocprof-sys-openmp LANGUAGES CXX)
+project(rocprofiler-systems-openmp LANGUAGES CXX)
 
 file(GLOB common_source ${CMAKE_CURRENT_SOURCE_DIR}/common/*.cpp)
 add_library(openmp-common OBJECT ${common_source})
@@ -17,7 +17,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_link_libraries(openmp-common PUBLIC OpenMP::OpenMP_CXX)
     set(ROCPROFSYS_OPENMP_USING_LIBOMP_LIBRARY
         ON
-        CACHE INTERNAL "Used by rocprof-sys testing" FORCE)
+        CACHE INTERNAL "Used by rocprofiler-systems testing" FORCE)
 else()
     find_program(CLANGXX_EXECUTABLE NAMES clang++)
     find_library(
@@ -25,23 +25,25 @@ else()
         NAMES omp omp5 ${CMAKE_SHARED_LIBRARY_PREFIX}omp${CMAKE_SHARED_LIBRARY_SUFFIX}.5)
     if(CLANGXX_EXECUTABLE
        AND LIBOMP_LIBRARY
-       AND COMMAND rocprof_sys_custom_compilation
+       AND COMMAND rocprofiler_systems_custom_compilation
        AND USE_CLANG_OMP)
         target_compile_options(openmp-common PUBLIC -W -Wall -fopenmp=libomp)
         target_link_libraries(openmp-common PUBLIC ${LIBOMP_LIBRARY})
-        rocprof_sys_custom_compilation(COMPILER ${CLANGXX_EXECUTABLE} TARGET
-                                       openmp-common)
-        rocprof_sys_custom_compilation(COMPILER ${CLANGXX_EXECUTABLE} TARGET openmp-cg)
-        rocprof_sys_custom_compilation(COMPILER ${CLANGXX_EXECUTABLE} TARGET openmp-lu)
+        rocprofiler_systems_custom_compilation(COMPILER ${CLANGXX_EXECUTABLE} TARGET
+                                               openmp-common)
+        rocprofiler_systems_custom_compilation(COMPILER ${CLANGXX_EXECUTABLE} TARGET
+                                               openmp-cg)
+        rocprofiler_systems_custom_compilation(COMPILER ${CLANGXX_EXECUTABLE} TARGET
+                                               openmp-lu)
         set(ROCPROFSYS_OPENMP_USING_LIBOMP_LIBRARY
             ON
-            CACHE INTERNAL "Used by rocprof-sys testing" FORCE)
+            CACHE INTERNAL "Used by rocprofiler-systems testing" FORCE)
     else()
         find_package(OpenMP REQUIRED)
         target_link_libraries(openmp-common PUBLIC OpenMP::OpenMP_CXX)
         set(ROCPROFSYS_OPENMP_USING_LIBOMP_LIBRARY
             OFF
-            CACHE INTERNAL "Used by rocprof-sys testing" FORCE)
+            CACHE INTERNAL "Used by rocprofiler-systems testing" FORCE)
     endif()
 endif()
 
@@ -52,5 +54,5 @@ if(ROCPROFSYS_INSTALL_EXAMPLES)
     install(
         TARGETS openmp-cg openmp-lu
         DESTINATION bin
-        COMPONENT rocprof-sys-examples)
+        COMPONENT rocprofiler-systems-examples)
 endif()
