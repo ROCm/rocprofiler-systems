@@ -149,7 +149,9 @@ rocprofiler_systems_add_bin_test(
 rocprofiler_systems_add_bin_test(
     NAME rocprofiler-systems-instrument-simulate-ls-check
     DEPENDS rocprofiler-systems-instrument-simulate-ls
-    COMMAND ls rocprof-sys-tests-output/rocprofiler-systems-instrument-simulate-ls/instrumentation
+    COMMAND
+        ls
+        rocprof-sys-tests-output/rocprofiler-systems-instrument-simulate-ls/instrumentation
     TIMEOUT 60
     PASS_REGEX
         ".*available.json.*available.txt.*available.xml.*excluded.json.*excluded.txt.*excluded.xml.*instrumented.json.*instrumented.txt.*instrumented.xml.*overlapping.json.*overlapping.txt.*overlapping.xml.*"
