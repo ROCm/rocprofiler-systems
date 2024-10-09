@@ -286,7 +286,7 @@ jobs:
         timeout-minutes: 10
         uses: actions/upload-artifact@v4
         with:
-          name: rocprof-sys-stgz-${{ matrix.os-distro }}-${{ matrix.os-version }}-rocm-${{ matrix.rocm-version }}-installer
+          name: rocprofiler-systems-stgz-${{ matrix.os-distro }}-${{ matrix.os-version }}-rocm-${{ matrix.rocm-version }}-installer
           path: |
             build-release/stgz/*.sh
 

@@ -209,7 +209,7 @@ jobs:
         cd build
         cpack -G STGZ
         mkdir -p /opt/rocprofiler-systems
-        ./rocprof-sys-*.sh --prefix=/opt/rocprofiler-systems --exclude-subdir --skip-license
+        ./rocprofiler-systems-*.sh --prefix=/opt/rocprofiler-systems --exclude-subdir --skip-license
 
     - name: Test Install with Modulefile
       timeout-minutes: 15
@@ -219,7 +219,7 @@ jobs:
         source /usr/share/modules/init/$(basename ${SHELL})
         module use /opt/rocprofiler-systems/share/modulefiles
         module avail
-        module load rocprof-sys
+        module load rocprofiler-systems
         ./scripts/test-install.sh --test-rocprof-sys-{instrument,avail,sample,python,rewrite,runtime}=1
 
     - name: Test User API

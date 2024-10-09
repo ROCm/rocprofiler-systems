@@ -137,7 +137,7 @@ jobs:
       shell: bash
       run: |
         set -v
-        source /opt/rocprofiler-systems/share/rocprof-sys/setup-env.sh
+        source /opt/rocprofiler-systems/share/rocprofiler-systems/setup-env.sh
         ./scripts/test-install.sh --test-rocprof-sys-{instrument,avail,sample,rewrite,runtime,python}=1
 
     - name: Test User API

@@ -36,4 +36,4 @@ jobs:
           generate_release_notes: True
           fail_on_unmatched_files: True
           files: |
-            rocprof-sys-install.py
+            rocprofiler-systems-install.py
