@@ -315,14 +315,19 @@ main(int argc, char** argv)
     if(!_omni_root.empty() && exists(_omni_root))
     {
         bin_search_paths.emplace_back(JOIN('/', _omni_root, "bin"));
-        bin_search_paths.emplace_back(JOIN('/', _omni_root, "lib", "rocprofiler-systems"));
-        bin_search_paths.emplace_back(JOIN('/', _omni_root, "lib", "rocprofiler-systems", "bin"));
+        bin_search_paths.emplace_back(
+            JOIN('/', _omni_root, "lib", "rocprofiler-systems"));
+        bin_search_paths.emplace_back(
+            JOIN('/', _omni_root, "lib", "rocprofiler-systems", "bin"));
         lib_search_paths.emplace_back(JOIN('/', _omni_root, "lib"));
-        lib_search_paths.emplace_back(JOIN('/', _omni_root, "lib", "rocprofiler-systems"));
-        lib_search_paths.emplace_back(JOIN('/', _omni_root, "lib", "rocprofiler-systems", "lib"));
+        lib_search_paths.emplace_back(
+            JOIN('/', _omni_root, "lib", "rocprofiler-systems"));
+        lib_search_paths.emplace_back(
+            JOIN('/', _omni_root, "lib", "rocprofiler-systems", "lib"));
         lib_search_paths.emplace_back(
             JOIN('/', _omni_root, "lib", "rocprofiler-systems", "lib64"));
-        ROCPROFSYS_ADD_LOG_ENTRY(argv[0], "::", "rocprofiler-systems root path: ", _omni_root);
+        ROCPROFSYS_ADD_LOG_ENTRY(argv[0],
+                                 "::", "rocprofiler-systems root path: ", _omni_root);
     }
 
     auto _omni_exe_path = get_realpath(get_absolute_exe_filepath(argv[0]));
@@ -334,11 +339,14 @@ main(int argc, char** argv)
     auto _omni_lib_path =
         JOIN('/', filepath::dirname(filepath::dirname(_omni_exe_path)), "lib");
     bin_search_paths.emplace_back(JOIN('/', _omni_lib_path, "rocprofiler-systems"));
-    bin_search_paths.emplace_back(JOIN('/', _omni_lib_path, "rocprofiler-systems", "bin"));
+    bin_search_paths.emplace_back(
+        JOIN('/', _omni_lib_path, "rocprofiler-systems", "bin"));
     lib_search_paths.emplace_back(_omni_lib_path);
     lib_search_paths.emplace_back(JOIN('/', _omni_lib_path, "rocprofiler-systems"));
-    lib_search_paths.emplace_back(JOIN('/', _omni_lib_path, "rocprofiler-systems", "lib"));
-    lib_search_paths.emplace_back(JOIN('/', _omni_lib_path, "rocprofiler-systems", "lib64"));
+    lib_search_paths.emplace_back(
+        JOIN('/', _omni_lib_path, "rocprofiler-systems", "lib"));
+    lib_search_paths.emplace_back(
+        JOIN('/', _omni_lib_path, "rocprofiler-systems", "lib64"));
 
     ROCPROFSYS_ADD_LOG_ENTRY(argv[0], "::", "rocprofsys bin path: ", _omni_exe_path);
     ROCPROFSYS_ADD_LOG_ENTRY(argv[0], "::", "rocprofsys lib path: ", _omni_lib_path);
