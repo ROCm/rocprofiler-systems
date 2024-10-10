@@ -665,7 +665,7 @@ set(TIMEMORY_SETTINGS_PREFIX
     "ROCPROFSYS_"
     CACHE STRING "Prefix used for settings and environment variables")
 set(TIMEMORY_PROJECT_NAME
-    "rocprofsys"
+    "rocprofiler-systems"
     CACHE STRING "Name for configuration")
 set(TIMEMORY_CXX_LIBRARY_EXCLUDE
     "kokkosp.cpp;pthread.cpp;timemory_c.cpp;trace.cpp;weak.cpp;library.cpp"
