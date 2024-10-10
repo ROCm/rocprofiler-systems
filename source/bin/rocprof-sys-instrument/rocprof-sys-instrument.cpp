@@ -311,18 +311,18 @@ main(int argc, char** argv)
     argv0 = argv[0];
 
     auto _omni_root = tim::get_env<std::string>(
-        "rocprof-sys_ROOT", tim::get_env<std::string>("ROCPROFSYS_ROOT", ""));
+        "rocprofiler_systems_ROOT", tim::get_env<std::string>("ROCPROFSYS_ROOT", ""));
     if(!_omni_root.empty() && exists(_omni_root))
     {
         bin_search_paths.emplace_back(JOIN('/', _omni_root, "bin"));
-        bin_search_paths.emplace_back(JOIN('/', _omni_root, "lib", "rocprofsys"));
-        bin_search_paths.emplace_back(JOIN('/', _omni_root, "lib", "rocprofsys", "bin"));
+        bin_search_paths.emplace_back(JOIN('/', _omni_root, "lib", "rocprofiler-systems"));
+        bin_search_paths.emplace_back(JOIN('/', _omni_root, "lib", "rocprofiler-systems", "bin"));
         lib_search_paths.emplace_back(JOIN('/', _omni_root, "lib"));
-        lib_search_paths.emplace_back(JOIN('/', _omni_root, "lib", "rocprofsys"));
-        lib_search_paths.emplace_back(JOIN('/', _omni_root, "lib", "rocprofsys", "lib"));
+        lib_search_paths.emplace_back(JOIN('/', _omni_root, "lib", "rocprofiler-systems"));
+        lib_search_paths.emplace_back(JOIN('/', _omni_root, "lib", "rocprofiler-systems", "lib"));
         lib_search_paths.emplace_back(
-            JOIN('/', _omni_root, "lib", "rocprofsys", "lib64"));
-        ROCPROFSYS_ADD_LOG_ENTRY(argv[0], "::", "rocprofsys root path: ", _omni_root);
+            JOIN('/', _omni_root, "lib", "rocprofiler-systems", "lib64"));
+        ROCPROFSYS_ADD_LOG_ENTRY(argv[0], "::", "rocprofiler-systems root path: ", _omni_root);
     }
 
     auto _omni_exe_path = get_realpath(get_absolute_exe_filepath(argv[0]));
@@ -333,12 +333,12 @@ main(int argc, char** argv)
 
     auto _omni_lib_path =
         JOIN('/', filepath::dirname(filepath::dirname(_omni_exe_path)), "lib");
-    bin_search_paths.emplace_back(JOIN('/', _omni_lib_path, "rocprofsys"));
-    bin_search_paths.emplace_back(JOIN('/', _omni_lib_path, "rocprofsys", "bin"));
+    bin_search_paths.emplace_back(JOIN('/', _omni_lib_path, "rocprofiler-systems"));
+    bin_search_paths.emplace_back(JOIN('/', _omni_lib_path, "rocprofiler-systems", "bin"));
     lib_search_paths.emplace_back(_omni_lib_path);
-    lib_search_paths.emplace_back(JOIN('/', _omni_lib_path, "rocprofsys"));
-    lib_search_paths.emplace_back(JOIN('/', _omni_lib_path, "rocprofsys", "lib"));
-    lib_search_paths.emplace_back(JOIN('/', _omni_lib_path, "rocprofsys", "lib64"));
+    lib_search_paths.emplace_back(JOIN('/', _omni_lib_path, "rocprofiler-systems"));
+    lib_search_paths.emplace_back(JOIN('/', _omni_lib_path, "rocprofiler-systems", "lib"));
+    lib_search_paths.emplace_back(JOIN('/', _omni_lib_path, "rocprofiler-systems", "lib64"));
 
     ROCPROFSYS_ADD_LOG_ENTRY(argv[0], "::", "rocprofsys bin path: ", _omni_exe_path);
     ROCPROFSYS_ADD_LOG_ENTRY(argv[0], "::", "rocprofsys lib path: ", _omni_lib_path);
@@ -347,6 +347,7 @@ main(int argc, char** argv)
     {
         if(itr.find("rocprofsys") != std::string::npos ||
            itr.find("rocprof-sys") != std::string::npos ||
+           itr.find("rocprofiler-systems") != std::string::npos ||
            std::regex_search(
                itr, std::regex{ "lib(dyninstAPI|stackwalk|pcontrol|patchAPI|parseAPI|"
                                 "instructionAPI|symtabAPI|dynDwarf|common|dynElf|tbb|"
