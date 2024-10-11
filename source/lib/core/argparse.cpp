@@ -1420,7 +1420,7 @@ add_extended_arguments(parser_t& _parser, parser_data& _data)
 
         for(const auto& citr : itr.second->get_categories())
         {
-            if(std::regex_search(citr, std::regex{ "rocprofsys|omnitrace|timemory|^("
+            if(std::regex_search(citr, std::regex{ "rocprofsys|timemory|^("
                                                    "native|custom|advanced|analysis)$" }))
                 continue;
             _category_count_map[citr] += 1;

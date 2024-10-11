@@ -74,7 +74,7 @@ setup()
     comp::user_ompt_bundle::reset();
     tim::auto_lock_t lk{ tim::type_mutex<ompt_handle_t>() };
     comp::user_ompt_bundle::configure<component::local_category_region<category::ompt>>();
-    f_bundle = std::make_unique<ompt_bundle_t>("omnitrace/ompt",
+    f_bundle = std::make_unique<ompt_bundle_t>("rocprofsys/ompt",
                                                quirk::config<quirk::auto_start>{});
 }
 
@@ -86,7 +86,7 @@ shutdown()
     _protect = true;
     if(f_bundle)
     {
-        if(tim::manager::instance()) tim::manager::instance()->cleanup("omnitrace-ompt");
+        if(tim::manager::instance()) tim::manager::instance()->cleanup("rocprofsys-ompt");
         f_bundle->stop();
         ompt_context_t::cleanup();
         trait::runtime_enabled<ompt_toolset_t>::set(false);

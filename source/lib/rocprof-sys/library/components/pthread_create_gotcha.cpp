@@ -240,7 +240,7 @@ pthread_create_gotcha::wrapper::operator()() const
         if(!thread_bundle_data_t::get()->at(_tid))
         {
             thread_data<thread_bundle_t>::construct(
-                TIMEMORY_JOIN('/', "omnitrace/process", process::get_id(), "thread",
+                TIMEMORY_JOIN('/', "rocprofsys/process", process::get_id(), "thread",
                               _tid),
                 quirk::config<quirk::auto_start>{});
             thread_bundle_data_t::get()->at(_tid)->start();

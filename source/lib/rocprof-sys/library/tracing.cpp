@@ -167,7 +167,7 @@ thread_init()
 
         if(_tidx > 0) threading::set_thread_name(JOIN(" ", "Thread", _tidx).c_str());
         thread_data<thread_bundle_t>::construct(
-            JOIN('/', "omnitrace/process", process::get_id(), "thread", _tidx),
+            JOIN('/', "rocprofsys/process", process::get_id(), "thread", _tidx),
             quirk::config<quirk::auto_start>{});
         // save the hash maps
         get_timemory_hash_ids(_tidx)     = tim::get_hash_ids();

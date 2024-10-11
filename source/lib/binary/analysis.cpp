@@ -26,7 +26,7 @@
 #    error "BFD support not enabled"
 #endif
 
-#define PACKAGE "omnitrace"
+#define PACKAGE "rocprofiler-systems"
 
 #include <bfd.h>
 
