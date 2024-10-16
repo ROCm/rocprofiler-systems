@@ -37,10 +37,10 @@ add this path to the ``PYTHONPATH`` environment variable, as in the following ex
 
 .. code-block:: shell
 
-   export PYTHONPATH=/opt/rocprof-sys/lib/python3.8/site-packages:${PYTHONPATH}
+   export PYTHONPATH=/opt/rocprofiler-systems/lib/python3.8/site-packages:${PYTHONPATH}
 
-Both the ``share/rocprof-sys/setup-env.sh`` script and the module file in
-``share/modulefiles/rocprof-sys`` automatically handle the prefixing of the ``PYTHONPATH``
+Both the ``share/rocprofiler-systems/setup-env.sh`` script and the module file in
+``share/modulefiles/rocprofiler-systems`` automatically handle the prefixing of the ``PYTHONPATH``
 environment variable.
 
 Running ROCm Systems Profiler on a Python script
@@ -58,7 +58,7 @@ and
 
 .. code-block:: shell
 
-   export PYTHONPATH=/opt/rocprof-sys/lib/python3.8/site-packages:${PYTHONPATH}
+   export PYTHONPATH=/opt/rocprofiler-systems/lib/python3.8/site-packages:${PYTHONPATH}
    python3.8 -m rocprofsys --help
 
 .. note::

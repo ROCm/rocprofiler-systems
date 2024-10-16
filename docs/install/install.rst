@@ -104,13 +104,13 @@ To install ROCm Systems Profiler using a binary installer script, follow these s
 
    .. code-block:: shell
 
-      mkdir /opt/rocprof-sys
+      mkdir /opt/rocprofiler-systems
 
 #. Run the installer script
 
    .. code-block:: shell
 
-      ./rocprof-sys-1.0.0-ubuntu-18.04-ROCm-405000-OMPT-PAPI.sh --prefix=/opt/rocprof-sys --exclude-subdir
+      ./rocprofiler-systems-1.0.0-ubuntu-18.04-ROCm-405000-OMPT-PAPI.sh --prefix=/opt/rocprofiler-systems --exclude-subdir
 
 Installing ROCm Systems Profiler from source
 ========================================
@@ -263,7 +263,7 @@ in `the Perfetto UI <https://ui.perfetto.dev>`_.
    git clone https://github.com/ROCm/rocprofiler-systems.git rocprof-sys-source
    cmake                                       \
        -B rocprof-sys-build                      \
-       -D CMAKE_INSTALL_PREFIX=/opt/rocprof-sys  \
+       -D CMAKE_INSTALL_PREFIX=/opt/rocprofiler-systems  \
        -D ROCPROFSYS_USE_HIP=ON                 \
        -D ROCPROFSYS_USE_ROCM_SMI=ON            \
        -D ROCPROFSYS_USE_ROCTRACER=ON           \
@@ -280,7 +280,7 @@ in `the Perfetto UI <https://ui.perfetto.dev>`_.
        rocprof-sys-source
    cmake --build rocprof-sys-build --target all --parallel 8
    cmake --build rocprof-sys-build --target install
-   source /opt/rocprof-sys/share/rocprof-sys/setup-env.sh
+   source /opt/rocprofiler-systems/share/rocprofiler-systems/setup-env.sh
 
 .. _mpi-support-rocprof-sys:
 
@@ -326,14 +326,14 @@ If environment modules are available and preferred, add them using these command
 
 .. code-block:: shell
 
-   module use /opt/rocprof-sys/share/modulefiles
-   module load rocprof-sys/1.0.0
+   module use /opt/rocprofiler-systems/share/modulefiles
+   module load rocprofiler-systems/1.0.0
 
 Alternatively, you can directly source the ``setup-env.sh`` script:
 
 .. code-block:: shell
 
-   source /opt/rocprof-sys/share/rocprof-sys/setup-env.sh
+   source /opt/rocprofiler-systems/share/rocprofiler-systems/setup-env.sh
 
 Test the executables
 -----------------------------------

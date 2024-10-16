@@ -1320,7 +1320,7 @@ The full XML specification for a configuration value contains the same informati
 
    <?xml version="1.0" encoding="utf-8"?>
    <timemory_xml>
-      <rocprof-sys>
+      <rocprofiler-systems>
          <settings>
                <cereal_class_version>2</cereal_class_version>
                <!-- Full setting specification -->
@@ -1345,7 +1345,7 @@ The full XML specification for a configuration value contains the same informati
                </ROCPROFSYS_ADD_SECONDARY>
                <!-- etc. -->
          </settings>
-      </rocprof-sys>
+      </rocprofiler-systems>
    </timemory_xml>
 
 However, when writing an XML configuration file, it is minimally acceptable
@@ -1355,11 +1355,11 @@ to set ``ROCPROFSYS_ADD_SECONDARY=false``:
 
    <?xml version="1.0" encoding="utf-8"?>
    <timemory_xml>
-      <rocprof-sys>
+      <rocprofiler-systems>
          <settings>
                <ROCPROFSYS_ADD_SECONDARY>
                   <value>false</value>
                </ROCPROFSYS_ADD_SECONDARY>
          </settings>
-      </rocprof-sys>
+      </rocprofiler-systems>
    </timemory_xml>

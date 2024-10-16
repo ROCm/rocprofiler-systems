@@ -268,13 +268,13 @@ The following snippets show how ``rocprof-sys-sample`` runs with various environ
 
       $ rocprof-sys-sample -- ./parallel-overhead-locks 30 4 100
 
-      HSA_TOOLS_LIB=/opt/rocprof-sys/lib/librocprof-sys-dl.so.1.7.1
+      HSA_TOOLS_LIB=/opt/rocprofiler-systems/lib/librocprof-sys-dl.so.1.7.1
       HSA_TOOLS_REPORT_LOAD_FAILURE=1
-      LD_PRELOAD=/opt/rocprof-sys/lib/librocprof-sys-dl.so.1.7.1
+      LD_PRELOAD=/opt/rocprofiler-systems/lib/librocprof-sys-dl.so.1.7.1
       ROCPROFSYS_USE_PROCESS_SAMPLING=false
       ROCPROFSYS_USE_SAMPLING=true
-      OMP_TOOL_LIBRARIES=/opt/rocprof-sys/lib/librocprof-sys-dl.so.1.7.1
-      ROCP_TOOL_LIB=/opt/rocprof-sys/lib/librocprof-sys.so.1.7.1
+      OMP_TOOL_LIBRARIES=/opt/rocprofiler-systems/lib/librocprof-sys-dl.so.1.7.1
+      ROCP_TOOL_LIB=/opt/rocprofiler-systems/lib/librocprof-sys.so.1.7.1
 
 *  The next snippet shows the environment updates when ``rocprof-sys-sample`` enables
    profiling, tracing, host process-sampling, device process-sampling, and all the available backends:
@@ -283,10 +283,10 @@ The following snippets show how ``rocprof-sys-sample`` runs with various environ
 
       $ rocprof-sys-sample -PTDH -I all -- ./parallel-overhead-locks 30 4 100
 
-      HSA_TOOLS_LIB=/opt/rocprof-sys/lib/librocprof-sys-dl.so.1.7.1
+      HSA_TOOLS_LIB=/opt/rocprofiler-systems/lib/librocprof-sys-dl.so.1.7.1
       HSA_TOOLS_REPORT_LOAD_FAILURE=1
-      KOKKOS_PROFILE_LIBRARY=/opt/rocprof-sys/lib/librocprof-sys.so.1.7.1
-      LD_PRELOAD=/opt/rocprof-sys/lib/librocprof-sys-dl.so.1.7.1
+      KOKKOS_PROFILE_LIBRARY=/opt/rocprofiler-systems/lib/librocprof-sys.so.1.7.1
+      LD_PRELOAD=/opt/rocprofiler-systems/lib/librocprof-sys-dl.so.1.7.1
       ROCPROFSYS_CPU_FREQ_ENABLED=true
       ROCPROFSYS_TRACE_THREAD_LOCKS=true
       ROCPROFSYS_TRACE_THREAD_RW_LOCKS=true
@@ -303,8 +303,8 @@ The following snippets show how ``rocprof-sys-sample`` runs with various environ
       ROCPROFSYS_USE_ROCTX=true
       ROCPROFSYS_USE_SAMPLING=true
       ROCPROFSYS_PROFILE=true
-      OMP_TOOL_LIBRARIES=/opt/rocprof-sys/lib/librocprof-sys-dl.so.1.7.1
-      ROCP_TOOL_LIB=/opt/rocprof-sys/lib/librocprof-sys.so.1.7.1
+      OMP_TOOL_LIBRARIES=/opt/rocprofiler-systems/lib/librocprof-sys-dl.so.1.7.1
+      ROCP_TOOL_LIB=/opt/rocprofiler-systems/lib/librocprof-sys.so.1.7.1
       ...
 
 *  The final snippet shows the environment updates when ``rocprof-sys-sample`` enables
@@ -316,7 +316,7 @@ The following snippets show how ``rocprof-sys-sample`` runs with various environ
 
       $ rocprof-sys-sample -PTDH -E all -o rocprof-sys-output %tag% -- ./parallel-overhead-locks 30 4 100
 
-      LD_PRELOAD=/opt/rocprof-sys/lib/librocprof-sys-dl.so.1.7.1
+      LD_PRELOAD=/opt/rocprofiler-systems/lib/librocprof-sys-dl.so.1.7.1
       ROCPROFSYS_CPU_FREQ_ENABLED=true
       ROCPROFSYS_OUTPUT_PATH=rocprof-sys-output
       ROCPROFSYS_OUTPUT_PREFIX=%tag%
@@ -347,7 +347,7 @@ Here is the full output from the previous
 
    $ rocprof-sys-sample -PTDH -E all -o rocprof-sys-output %tag% -c -- ./parallel-overhead-locks 30 4 100
 
-   LD_PRELOAD=/opt/rocprof-sys/lib/librocprof-sys-dl.so.1.11.3
+   LD_PRELOAD=/opt/rocprofiler-systems/lib/librocprof-sys-dl.so.1.11.3
    ROCPROFSYS_CONFIG_FILE=
    ROCPROFSYS_CPU_FREQ_ENABLED=true
    ROCPROFSYS_OUTPUT_PATH=rocprof-sys-output
@@ -397,7 +397,7 @@ Here is the full output from the previous
    [rocprof-sys][1785877][0][rocprofsys_finalize] rocprof-sys/process/1785877/thread/4 : 0.212029 sec wall_clock, 0.211694 sec thread_cpu_clock,   99.8 % thread_cpu_util,    1.152 MB peak_rss [laps: 1]
    [rocprof-sys][1785877][0][rocprofsys_finalize]
    [rocprof-sys][1785877][0][rocprofsys_finalize] Finalizing perfetto...
-   [rocprof-sys][1785877][perfetto]> Outputting '/home/user/code/rocprof-sys/build-release/rocprof-sys-output/2024-07-15_16.21/parallel-overhead-locksperfetto-trace-1785877.proto' (39.12 KB / 0.04 MB / 0.00 GB)... Done
+   [rocprof-sys][1785877][perfetto]> Outputting '/home/user/code/rocprofiler-systems/build-release/rocprofiler-systems-output/2024-07-15_16.21/parallel-overhead-locksperfetto-trace-1785877.proto' (39.12 KB / 0.04 MB / 0.00 GB)... Done
    [rocprof-sys][1785877][wall_clock]> Outputting 'rocprof-sys-output/2024-07-15_16.21/parallel-overhead-lockswall_clock-1785877.json'
    [rocprof-sys][1785877][wall_clock]> Outputting 'rocprof-sys-output/2024-07-15_16.21/parallel-overhead-lockswall_clock-1785877.txt'
    [rocprof-sys][1785877][metadata]> Outputting 'rocprof-sys-output/2024-07-15_16.21/parallel-overhead-locksmetadata-1785877.json' and 'rocprof-sys-output/2024-07-15_16.21/parallel-overhead-locksfunctions-1785877.json'

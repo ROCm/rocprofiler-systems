@@ -331,7 +331,7 @@ Examples
 
    #!/bin/bash -e
 
-   module load rocprof-sys
+   module load rocprofiler-systems
 
    N=20
    I=3

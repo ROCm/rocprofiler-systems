@@ -30,9 +30,9 @@ ROCm Systems Profiler API, such as ``rocprofsys_user_push_region`` and
 
 .. code-block:: shell
 
-   #include <rocprof-sys/categories.h>
-   #include <rocprof-sys/types.h>
-   #include <rocprof-sys/user.h>
+   #include <rocprofiler-systems/categories.h>
+   #include <rocprofiler-systems/types.h>
+   #include <rocprofiler-systems/user.h>
 
    #include <atomic>
    #include <cassert>
@@ -159,7 +159,7 @@ ROCm Systems Profiler API, such as ``rocprofsys_user_push_region`` and
 Linking the ROCm Systems Profiler libraries to another program
 =======================================================
 
-To link the ``rocprof-sys-user-library`` to another program,
+To link the ``rocprofiler-systems-user-library`` to another program,
 use the following CMake and ``g++`` directives.
 
 CMake
@@ -167,19 +167,19 @@ CMake
 
 .. code-block:: cmake
 
-   find_package(rocprof-sys REQUIRED COMPONENTS user)
+   find_package(rocprofiler-systems REQUIRED COMPONENTS user)
    add_executable(foo foo.cpp)
-   target_link_libraries(foo PRIVATE rocprof-sys::rocprof-sys-user-library)
+   target_link_libraries(foo PRIVATE rocprofiler-systems::rocprofiler-systems-user-library)
 
 g++ compilation
 -------------------------------------------------------
 
-Assuming ROCm Systems Profiler is installed in ``/opt/rocprof-sys``, use the ``g++`` compiler
+Assuming ROCm Systems Profiler is installed in ``/opt/rocprofiler-systems``, use the ``g++`` compiler
 to build the application.
 
 .. code-block:: shell
 
-   g++ -I/opt/rocprof-sys foo.cpp -o foo -lrocprof-sys-user
+   g++ -I/opt/rocprofiler-systems foo.cpp -o foo -lrocprofiler-systems-user
 
 Output from the API example program
 ========================================

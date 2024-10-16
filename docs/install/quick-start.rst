@@ -7,7 +7,7 @@ ROCm Systems Profiler quick start
 *************************************
 
 To install ROCm Systems Profiler, download the
-`ROCm Systems Profiler installer <https://github.com/ROCm/rocprofiler-systems/releases/latest/download/rocprof-sys-install.py>`_
+`ROCm Systems Profiler installer <https://github.com/ROCm/rocprofiler-systems/releases/latest/download/rocprofiler-systems-install.py>`_
 and specify ``--prefix <install-directory>``. The script attempts to auto-detect
 the appropriate OS distribution and version. To include AMD ROCm Software support,
 specify ``--rocm X.Y``, where ``X`` is the ROCm major
@@ -15,8 +15,8 @@ version and ``Y`` is the ROCm minor version, for example, ``--rocm 6.3``.
 
 .. code-block:: shell
 
-   wget https://github.com/ROCm/rocprofiler-systems/releases/latest/download/rocprof-sys-install.py
-   python3 ./rocprof-sys-install.py --prefix /opt/rocprof-sys --rocm 6.3
+   wget https://github.com/ROCm/rocprofiler-systems/releases/latest/download/rocprofiler-systems-install.py
+   python3 ./rocprofiler-systems-install.py --prefix /opt/rocprofiler-systems --rocm 6.3
 
 This script supports installation on Ubuntu, OpenSUSE, Red Hat, Debian, CentOS, and Fedora.
 If the target OS is compatible with one of the operating system versions listed in

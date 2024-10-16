@@ -114,10 +114,10 @@ WARN_LOGFILE           = doc/warnings.log
 # Configuration options related to the input files
 #---------------------------------------------------------------------------
 INPUT                  = ../../README.md \
-                         ../../source/lib/rocprof-sys-user/rocprof-sys/types.h \
-                         ../../source/lib/rocprof-sys-user/rocprof-sys/categories.h \
-                         ../../source/lib/rocprof-sys-user/rocprof-sys/user.h \
-                         ../../source/lib/rocprof-sys-user/rocprof-sys/causal.h
+                         ../../source/lib/rocprof-sys-user/rocprofiler-systems/types.h \
+                         ../../source/lib/rocprof-sys-user/rocprofiler-systems/categories.h \
+                         ../../source/lib/rocprof-sys-user/rocprofiler-systems/user.h \
+                         ../../source/lib/rocprof-sys-user/rocprofiler-systems/causal.h
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.h \
                          *.hh \

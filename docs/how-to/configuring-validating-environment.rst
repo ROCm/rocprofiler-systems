@@ -11,7 +11,7 @@ and validate the environment.
 
 .. note::
 
-   The following instructions use the installation path ``/opt/rocprof-sys``. If
+   The following instructions use the installation path ``/opt/rocprofiler-systems``. If
    ROCm Systems Profiler is installed elsewhere, substitute the actual installation path.
 
 Configuring the environment
@@ -22,26 +22,26 @@ After ROCm Systems Profiler is installed, source the ``setup-env.sh`` script to 
 
 .. code-block:: shell
 
-   source /opt/rocprof-sys/share/rocprof-sys/setup-env.sh
+   source /opt/rocprofiler-systems/share/rocprofiler-systems/setup-env.sh
 
 Alternatively, if environment modules are supported, add the ``<prefix>/share/modulefiles`` directory
 to ``MODULEPATH``:
 
 .. code-block:: shell
 
-   module use /opt/rocprof-sys/share/modulefiles
+   module use /opt/rocprofiler-systems/share/modulefiles
 
 .. note::
 
    As an alternative, the above line can be added to the ``${HOME}/.modulerc`` file.
 
 After ROCm Systems Profiler has been added to the ``MODULEPATH``, it can be loaded
-using ``module load rocprof-sys/<VERSION>`` and unloaded using ``module unload rocprof-sys/<VERSION>``.
+using ``module load rocprofiler-systems/<VERSION>`` and unloaded using ``module unload rocprofiler-systems/<VERSION>``.
 
 .. code-block:: shell
 
-   module load rocprof-sys/1.0.0
-   module unload rocprof-sys/1.0.0
+   module load rocprofiler-systems/1.0.0
+   module unload rocprofiler-systems/1.0.0
 
 .. note::
 
