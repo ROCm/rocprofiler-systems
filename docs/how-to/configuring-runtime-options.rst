@@ -462,7 +462,7 @@ Viewing components
    | wall_clock                        | Real-clock timer (i.e. wall-clock timer).    |
    | written_bytes                     | Number of bytes sent to the storage layer.   |
    | written_char                      | Number of bytes which this task has cause... |
-   | rocprof-sys                       | Invokes instrumentation functions  omnitr... |
+   | rocprof-sys                       | Invokes instrumentation functions rocprof... |
    | roctracer                         | High-precision ROCm API and kernel tracing.  |
    | sampling_wall_clock               | Wall-clock timing. Derived from statistic... |
    | sampling_cpu_clock                | CPU-clock timing. Derived from statistica... |

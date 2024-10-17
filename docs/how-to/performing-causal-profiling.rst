@@ -366,7 +366,7 @@ Examples
    #
    # total executions: 20
    #
-   rocprof-sys-causal        \
+   rocprof-sys-causal     \
       -n ${N}             \
       -s ${SPEEDUPS}      \
       -m function         \
@@ -386,7 +386,7 @@ Examples
    #
    # total executions: 20
    #
-   rocprof-sys-causal                \
+   rocprof-sys-causal             \
       -n ${N}                     \
       -s ${SPEEDUPS}              \
       -m line                     \
@@ -407,7 +407,7 @@ Examples
    #
    # total executions: 90
    #
-   rocprof-sys-causal            \
+   rocprof-sys-causal         \
       -n ${I}                 \
       -s ${SPEEDUPS_E2E}      \
       -m func                 \
@@ -429,7 +429,7 @@ Examples
    #
    # total executions: 90
    #
-   rocprof-sys-causal            \
+   rocprof-sys-causal         \
       -n ${I}                 \
       -s ${SPEEDUPS_E2E}      \
       -m line                 \
@@ -464,7 +464,7 @@ Examples
    # existing causal/experiments.func.(coz|json)
    # file due to "--reset" argument
    #
-   rocprof-sys-causal                            \
+   rocprof-sys-causal                         \
       --reset                                 \
       -n ${N}                                 \
       -s ${SPEEDUPS}                          \
@@ -494,7 +494,7 @@ Examples
    # existing causal/experiments.line.(coz|json)
    # file due to "--reset" argument
    #
-   rocprof-sys-causal                            \
+   rocprof-sys-causal                         \
       --reset                                 \
       -n ${N}                                 \
       -s ${SPEEDUPS}                          \

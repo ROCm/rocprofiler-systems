@@ -82,7 +82,7 @@ Use ``rocprof-sys-python --help`` to view the available options:
                            Logging verbosity
    -b, --builtin         Put 'profile' in the builtins. Use '@profile' to decorate a single function, or 'with profile:' to profile a single section of code.
    -c FILE, --config FILE
-                           OmniTrace configuration file
+                           ROCm Systems Profiler configuration file
    -s FILE, --setup FILE
                            Code to execute before the code to profile
    -F [BOOL], --full-filepath [BOOL]

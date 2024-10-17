@@ -372,7 +372,7 @@ run ``rocprof-sys-run`` with the instrumented program.
 .. code-block:: shell
 
    g++ hello.cpp -o hello
-   omniperf-instrument -M sampling -o hello.instr -- ./hello
+   rocprof-sys-instrument -M sampling -o hello.instr -- ./hello
    rocprof-sys-run -- ./hello.instr
 
 Instead of successfully running the binary with call-stack sampling,

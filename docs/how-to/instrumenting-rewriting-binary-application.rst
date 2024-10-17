@@ -210,7 +210,7 @@ view the help menu.
                                     be useful when the application uses Boost libraries and Dyninst is dynamically linked
                                     against the same boost libraries
       --internal-library-append      Append to the list of libraries which rocprof-sys treats as being used internally, e.g.
-                                    OmniTrace will find all the symbols in this library and prevent them from being
+                                    ROCm Systems Profiler will find all the symbols in this library and prevent them from being
                                     instrumented.
       --internal-library-remove [ ld-linux-x86-64.so.2
                                  libBrokenLocale.so.1
@@ -272,7 +272,7 @@ view the help menu.
                                  libz.so
                                  libzstd.so ]
                                     Remove the specified libraries from being treated as being used internally, e.g.
-                                    OmniTrace will permit all the symbols in these libraries to be eligible for
+                                    ROCm System Profiler will permit all the symbols in these libraries to be eligible for
                                     instrumentation.
       --linkage [ global | local | unique | unknown | weak ]
                                     Only instrument functions with specified linkage (default: global, local, unique)
