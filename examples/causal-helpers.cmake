@@ -47,9 +47,10 @@ function(rocprofiler_systems_causal_example_executable _NAME)
 
     add_executable(${_NAME}-rocprofsys ${CAUSAL_SOURCES})
     target_compile_definitions(${_NAME}-rocprofsys PRIVATE USE_COZ=0 USE_OMNI=1
-                                                     ${CAUSAL_DEFINITIONS})
-    target_include_directories(${_NAME}-rocprofsys PRIVATE ${ROCPROFSYS_EXAMPLE_ROOT_DIR}/causal
-                                                     ${CAUSAL_INCLUDE_DIRECTORIES})
+                                                           ${CAUSAL_DEFINITIONS})
+    target_include_directories(
+        ${_NAME}-rocprofsys PRIVATE ${ROCPROFSYS_EXAMPLE_ROOT_DIR}/causal
+                                    ${CAUSAL_INCLUDE_DIRECTORIES})
     target_link_libraries(
         ${_NAME}-rocprofsys
         PRIVATE ${CAUSAL_LINK_LIBRARIES}
@@ -70,18 +71,18 @@ function(rocprofiler_systems_causal_example_executable _NAME)
 
     add_executable(${_NAME}-rocprofsys-ndebug ${CAUSAL_SOURCES})
     target_compile_definitions(${_NAME}-rocprofsys-ndebug PRIVATE USE_COZ=0 USE_OMNI=1
-                                                            ${CAUSAL_DEFINITIONS})
+                                                                  ${CAUSAL_DEFINITIONS})
     target_include_directories(
         ${_NAME}-rocprofsys-ndebug PRIVATE ${ROCPROFSYS_EXAMPLE_ROOT_DIR}/causal
-                                     ${CAUSAL_INCLUDE_DIRECTORIES})
+                                           ${CAUSAL_INCLUDE_DIRECTORIES})
     target_link_libraries(
         ${_NAME}-rocprofsys-ndebug
         PRIVATE ${CAUSAL_LINK_LIBRARIES}
                 rocprofiler-systems::rocprofiler-systems-user-library
                 rocprofsys-causal-example-lib-no-debug)
 
-    add_dependencies(rocprofsys-causal-examples ${_NAME} ${_NAME}-rocprofsys ${_NAME}-ndebug
-                     ${_NAME}-rocprofsys-ndebug)
+    add_dependencies(rocprofsys-causal-examples ${_NAME} ${_NAME}-rocprofsys
+                     ${_NAME}-ndebug ${_NAME}-rocprofsys-ndebug)
 
     if(coz-profiler_FOUND)
         rocprofiler_systems_causal_example_interface(rocprofsys-causal-example-lib-coz)
@@ -94,8 +95,9 @@ function(rocprofiler_systems_causal_example_executable _NAME)
         target_include_directories(
             ${_NAME}-coz PRIVATE ${ROCPROFSYS_EXAMPLE_ROOT_DIR}/causal
                                  ${CAUSAL_INCLUDE_DIRECTORIES})
-        target_link_libraries(${_NAME}-coz PRIVATE ${CAUSAL_LINK_LIBRARIES}
-                                                   rocprofsys-causal-example-lib-coz coz::coz)
+        target_link_libraries(
+            ${_NAME}-coz PRIVATE ${CAUSAL_LINK_LIBRARIES}
+                                 rocprofsys-causal-example-lib-coz coz::coz)
 
         add_dependencies(rocprofsys-causal-examples ${_NAME}-coz)
     endif()
