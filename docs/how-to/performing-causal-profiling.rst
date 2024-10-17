@@ -373,7 +373,7 @@ Examples
       -o experiments.func \
       -S ".*\\.cpp"       \
       --                  \
-      ./causal-omni-cpu "${@}"
+      ./causal-rocprofsys-cpu "${@}"
 
 
    # 20 iterations in line mode with 1 speedup group
@@ -393,7 +393,7 @@ Examples
       -o experiments.line         \
       -S "causal\\.cpp:(100|110)" \
       --                          \
-      ./causal-omni-cpu "${@}"
+      ./causal-rocprofsys-cpu "${@}"
 
 
    # 3 iterations in function mode of 15 singular speedups
@@ -416,7 +416,7 @@ Examples
       -F "cpu_slow_func"      \
          "cpu_fast_func"      \
       --                      \
-      ./causal-omni-cpu "${@}"
+      ./causal-rocprofsys-cpu "${@}"
 
    # 3 iterations in line mode of 15 singular speedups
    # in end-to-end mode with 2 different source scopes
@@ -438,7 +438,7 @@ Examples
       -S "causal\\.cpp:100"   \
          "causal\\.cpp:110"   \
       --                      \
-      ./causal-omni-cpu "${@}"
+      ./causal-rocprofsys-cpu "${@}"
 
 
    export OMP_NUM_THREADS=8
@@ -473,7 +473,7 @@ Examples
       -S "lulesh.*"                           \
       -FE "^(Kokkos::|std::enable_if)"        \
       --                                      \
-      ./lulesh-omni -i 50 -s 200 -r 20 -b 5 -c 5 -p
+      ./lulesh-rocprofsys -i 50 -s 200 -r 20 -b 5 -c 5 -p
 
 
    # 5 iterations in line mode of 1 speedup
@@ -503,7 +503,7 @@ Examples
       -S "lulesh.*"                           \
       -FE "^(exec_range|execute);construct_shared_allocation;\\._omp_fn\\." \
       --                                      \
-      ./lulesh-omni -i 50 -s 200 -r 20 -b 5 -c 5 -p
+      ./lulesh-rocprofsys -i 50 -s 200 -r 20 -b 5 -c 5 -p
 
 
    # 5 iterations in line mode of 1 speedup
@@ -535,7 +535,7 @@ Examples
          "CalcVolumeForceForElems"            \
       -S "lulesh\\.cc"                        \
       --                                      \
-      ./lulesh-omni -i 50 -s 200 -r 20 -b 5 -c 5 -p
+      ./lulesh-rocprofsys -i 50 -s 200 -r 20 -b 5 -c 5 -p
 
 Using rocprof-sys-causal with other launchers like mpirun
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
