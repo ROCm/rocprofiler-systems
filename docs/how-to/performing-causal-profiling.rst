@@ -1,6 +1,6 @@
 .. meta::
-   :description: ROCm Systems Profiler documentation and reference
-   :keywords: rocprof-sys, rocprofiler-systems, Omnitrace, ROCm, profiler, tracking, visualization, tool, Instinct, accelerator, AMD
+   :description: ROCm Systems Profiler causal profiling documentation and reference
+   :keywords: rocprof-sys, rocprofiler-systems, Omnitrace, ROCm, causal profiling, profiler, tracking, visualization, tool, Instinct, accelerator, AMD
 
 ****************************************************
 Performing causal profiling
