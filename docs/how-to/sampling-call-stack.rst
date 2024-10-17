@@ -1,6 +1,6 @@
 .. meta::
-   :description: ROCm Systems Profiler documentation and reference
-   :keywords: rocprofiler-systems,rocprofsys, ROCm, profiler, tracking, visualization, tool, Instinct, accelerator, AMD
+   :description: ROCm Systems Profiler call stack sampling documentation and reference
+   :keywords: rocprofiler-systems,rocprofsys, ROCm, profiler, sampling, call stack, tracking, visualization, tool, Instinct, accelerator, AMD
 
 ****************************************************
 Sampling the call stack
