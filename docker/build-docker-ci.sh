@@ -6,7 +6,7 @@ set -e
 : ${DISTRO:=ubuntu}
 : ${VERSIONS:=20.04}
 : ${NJOBS=$(nproc)}
-: ${ELFUTILS_VERSION:=0.188}
+: ${ELFUTILS_VERSION:=0.186}
 : ${BOOST_VERSION:=1.79.0}
 : ${PYTHON_VERSIONS:="6 7 8 9 10 11 12"}
 : ${PUSH:=0}
@@ -42,7 +42,7 @@ usage()
     print_default_option versions "[VERSION] [VERSION...]" "Ubuntu, OpenSUSE, or RHEL release" "${VERSIONS}"
     print_default_option python-versions "[VERSION] [VERSION...]" "Python 3 minor releases" "${PYTHON_VERSIONS}"
     print_default_option "jobs -j" "[N]" "parallel build jobs" "${NJOBS}"
-    print_default_option elfutils-version "[0.183..0.186]" "ElfUtils version" "${ELFUTILS_VERSION}"
+    print_default_option elfutils-version "[0.183..0.188]" "ElfUtils version" "${ELFUTILS_VERSION}"
     print_default_option boost-version "[1.67.0..1.79.0]" "Boost version" "${BOOST_VERSION}"
     print_default_option user "[USERNAME]" "DockerHub username" "${USER}"
 }
