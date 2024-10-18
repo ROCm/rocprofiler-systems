@@ -39,7 +39,7 @@ jobs:
   ubuntu-jammy-external:
     runs-on: ubuntu-20.04
     container:
-      image: dgaliffiamd/rocprof-sys:ci-base-ubuntu-22.04
+      image: dgaliffiamd/rocprofiler-systems:ci-base-ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:

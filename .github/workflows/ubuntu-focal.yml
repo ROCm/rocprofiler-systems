@@ -39,7 +39,7 @@ jobs:
   ubuntu-focal-external:
     runs-on: ubuntu-20.04
     container:
-      image: dgaliffiamd/rocprof-sys:ci-base-ubuntu-20.04
+      image: dgaliffiamd/rocprofiler-systems:ci-base-ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
@@ -237,7 +237,7 @@ jobs:
   ubuntu-focal-external-rocm:
     runs-on: ubuntu-20.04
     container:
-      image: dgaliffiamd/rocprof-sys:ci-base-ubuntu-20.04
+      image: dgaliffiamd/rocprofiler-systems:ci-base-ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
@@ -569,7 +569,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     container:
-      image: dgaliffiamd/rocprof-sys:ci-base-ubuntu-20.04
+      image: dgaliffiamd/rocprofiler-systems:ci-base-ubuntu-20.04
       options: --cap-add CAP_SYS_ADMIN
 
     env:

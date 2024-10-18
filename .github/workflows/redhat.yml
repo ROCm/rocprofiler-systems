@@ -39,7 +39,7 @@ jobs:
   rhel:
     runs-on: ubuntu-latest
     container:
-      image: dgaliffiamd/rocprof-sys:ci-base-rhel-${{ matrix.os-release }}
+      image: dgaliffiamd/rocprofiler-systems:ci-base-rhel-${{ matrix.os-release }}
     strategy:
       fail-fast: false
       matrix:
