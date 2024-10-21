@@ -706,7 +706,7 @@ install(
     COMPONENT gotcha)
 if(ROCPROFSYS_BUILD_LIBUNWIND)
     install(
-        DIRECTORY ${PROJECT_BINARY_DIR}/external/timemory/external/libunwind/install/lib/
+        DIRECTORY ${PROJECT_BINARY_DIR}/external/timemory/external/libunwind/install/${CMAKE_DEFAULT_INSTALL_LIBDIR}/
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}
         COMPONENT libunwind
         FILES_MATCHING
