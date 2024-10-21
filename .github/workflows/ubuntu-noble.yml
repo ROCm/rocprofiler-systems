@@ -1,4 +1,4 @@
-name: Ubuntu 22.04 (GCC, Python, ROCm)
+name: Ubuntu 24.04 (GCC, Python, ROCm)
 run-name: ubuntu-noble
 
 on:
