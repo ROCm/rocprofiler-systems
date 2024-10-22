@@ -93,14 +93,14 @@ endif()
 
 set(_eu_root ${PROJECT_BINARY_DIR}/external/elfutils)
 set(_eu_inc_dirs $<BUILD_INTERFACE:${_eu_root}/include>)
-set(_eu_lib_dirs $<BUILD_INTERFACE:${_eu_root}/${CMAKE_DEFAULT_INSTALL_LIBDIR}>)
+set(_eu_lib_dirs $<BUILD_INTERFACE:${_eu_root}/${CMAKE_INSTALL_LIBDIR}>)
 set(_eu_libs
-    $<BUILD_INTERFACE:${_eu_root}/${CMAKE_DEFAULT_INSTALL_LIBDIR}/libdw${CMAKE_STATIC_LIBRARY_SUFFIX}>
-    $<BUILD_INTERFACE:${_eu_root}/${CMAKE_DEFAULT_INSTALL_LIBDIR}/libelf${CMAKE_STATIC_LIBRARY_SUFFIX}>
+    $<BUILD_INTERFACE:${_eu_root}/${CMAKE_INSTALL_LIBDIR}/libdw${CMAKE_STATIC_LIBRARY_SUFFIX}>
+    $<BUILD_INTERFACE:${_eu_root}/${CMAKE_INSTALL_LIBDIR}/libelf${CMAKE_STATIC_LIBRARY_SUFFIX}>
     )
 set(_eu_build_byproducts
-    "${_eu_root}/${CMAKE_DEFAULT_INSTALL_LIBDIR}/libdw${CMAKE_STATIC_LIBRARY_SUFFIX}"
-    "${_eu_root}/${CMAKE_DEFAULT_INSTALL_LIBDIR}/libelf${CMAKE_STATIC_LIBRARY_SUFFIX}")
+    "${_eu_root}/${CMAKE_INSTALL_LIBDIR}/libdw${CMAKE_STATIC_LIBRARY_SUFFIX}"
+    "${_eu_root}/${CMAKE_INSTALL_LIBDIR}/libelf${CMAKE_STATIC_LIBRARY_SUFFIX}")
 
 externalproject_add(
     rocprofiler-systems-elfutils-build
