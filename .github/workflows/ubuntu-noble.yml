@@ -69,28 +69,18 @@ jobs:
           for i in 8 9 10 11 12; do /opt/conda/envs/py3.${i}/bin/python -m pip install numpy perfetto dataclasses; done
 
     - name: Install ROCm Packages
-      timeout-minutes: 25
-      if: ${{ matrix.rocm-version != '0.0' }}
-      uses: nick-fields/retry@v3
-      with:
-        retry_wait_seconds: 30
-        timeout_minutes: 25
-        max_attempts: 5
-        shell: bash
-        command: |
-          # Parse the ROCm version
-          ROCM_VERSION=${{ matrix.rocm-version }}
-          ROCM_MAJOR=$(echo ${ROCM_VERSION} | sed 's/\./ /g' | awk '{print $1}')
-          ROCM_MINOR=$(echo ${ROCM_VERSION} | sed 's/\./ /g' | awk '{print $2}')
-          ROCM_VERSN=$(( (${ROCM_MAJOR}*10000)+(${ROCM_MINOR}*100) ))
-
-          # Get the ROCm installer - https://repo.radeon.com/amdgpu-install/6.2.2/ubuntu/noble/amdgpu-install_6.2.60202-1_all.deb
-          wget -q -O https://repo.radeon.com/amdgpu-install/${{ matrix.rocm-version }}/ubuntu/noble/amdgpu-install_${ROCM_MAJOR}.${ROCM_MINOR}.${ROCM_VERSN}-1_all.deb
-          apt-get install -y ./amdgpu-install_${ROCM_MAJOR}.${ROCM_MINOR}.${ROCM_VERSN}-1_all.deb
-          apt-get update
-
-          # Install ROCm
-          apt-get install -y rocm-dev
+      if: ${{ matrix.rocm-version > 0 }}
+      timeout-minutes: 30
+      shell: bash
+      run: |
+        ROCM_VERSION=${{ matrix.rocm-version }}
+        ROCM_MAJOR=$(echo ${ROCM_VERSION} | sed 's/\./ /g' | awk '{print $1}')
+        ROCM_MINOR=$(echo ${ROCM_VERSION} | sed 's/\./ /g' | awk '{print $2}')
+        ROCM_VERSN=$(( (${ROCM_MAJOR}*10000)+(${ROCM_MINOR}*100) ))
+        wget -q -O https://repo.radeon.com/amdgpu-install/${{ matrix.rocm-version }}/ubuntu/noble/amdgpu-install_${ROCM_MAJOR}.${ROCM_MINOR}.${ROCM_VERSN}-1_all.deb
+        apt-get install -y ./amdgpu-install_${ROCM_MAJOR}.${ROCM_MINOR}.${ROCM_VERSN}-1_all.deb
+        apt-get update
+        apt-get install -y rocm-dev
 
     - name: Configure, Build, and Test
       timeout-minutes: 115
