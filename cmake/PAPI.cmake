@@ -27,6 +27,8 @@ if(NOT EXISTS "${ROCPROFSYS_PAPI_SOURCE_DIR}")
                 ${ROCPROFSYS_PAPI_SOURCE_DIR})
 endif()
 
+message(STATUS "aleks: CMAKE_INSTALL_LIBDIR=${CMAKE_INSTALL_LIBDIR}")
+
 if(NOT EXISTS "${ROCPROFSYS_PAPI_INSTALL_DIR}")
     execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory
                             ${ROCPROFSYS_PAPI_INSTALL_DIR})
