@@ -434,7 +434,12 @@ jobs:
         max_attempts: 5
         command: |
           sudo apt-get update &&
-          sudo apt-get install -y build-essential m4 autoconf libtool python3-pip clang libomp-dev environment-modules ${{ matrix.deps }} ${{ matrix.compiler }} &&
+          sudo apt-get install -y \
+            autoconf autotools-dev bash-completion bison build-essential \
+            bzip2 cmake curl environment-modules flex gettext git-core gnupg2 \
+            gzip libiberty-dev libomp-dev libpapi-dev libpfm4-dev libtool locales \
+            lsb-release m4 python3-pip texinfo unzip wget zip zlib1g-dev \
+            ${{ matrix.deps }} ${{ matrix.compiler }} &&
           if [ "${{ matrix.mpi }}" = "mpich" ]; then sudo apt-get install -y libmpich-dev mpich; fi &&
           if [ "${{ matrix.mpi }}" = "openmpi" ]; then sudo apt-get install -y libopenmpi-dev openmpi-bin libfabric-dev; fi &&
           wget https://commondatastorage.googleapis.com/perfetto-luci-artifacts/v46.0/linux-amd64/trace_processor_shell -P /opt/trace_processor/bin &&
