@@ -33,16 +33,17 @@ if(NOT EXISTS "${ROCPROFSYS_PAPI_INSTALL_DIR}")
     execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory
                             ${ROCPROFSYS_PAPI_INSTALL_DIR}/include)
     execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory
-                            ${ROCPROFSYS_PAPI_INSTALL_DIR}/lib)
+                            ${ROCPROFSYS_PAPI_INSTALL_DIR}/${CMAKE_INSTALL_LIBDIR})
     execute_process(
         COMMAND
-            ${CMAKE_COMMAND} -E touch ${ROCPROFSYS_PAPI_INSTALL_DIR}/lib/libpapi.a
-            ${ROCPROFSYS_PAPI_INSTALL_DIR}/lib/libpfm.a
-            ${ROCPROFSYS_PAPI_INSTALL_DIR}/lib/libpfm.so)
+            ${CMAKE_COMMAND} -E touch
+            ${ROCPROFSYS_PAPI_INSTALL_DIR}/${CMAKE_INSTALL_LIBDIR}/libpapi.a
+            ${ROCPROFSYS_PAPI_INSTALL_DIR}/${CMAKE_INSTALL_LIBDIR}/libpfm.a
+            ${ROCPROFSYS_PAPI_INSTALL_DIR}/${CMAKE_INSTALL_LIBDIR}/libpfm.so)
     set(_ROCPROFSYS_PAPI_BUILD_BYPRODUCTS
-        ${ROCPROFSYS_PAPI_INSTALL_DIR}/lib/libpapi.a
-        ${ROCPROFSYS_PAPI_INSTALL_DIR}/lib/libpfm.a
-        ${ROCPROFSYS_PAPI_INSTALL_DIR}/lib/libpfm.so)
+        ${ROCPROFSYS_PAPI_INSTALL_DIR}/${CMAKE_INSTALL_LIBDIR}/libpapi.a
+        ${ROCPROFSYS_PAPI_INSTALL_DIR}/${CMAKE_INSTALL_LIBDIR}/libpfm.a
+        ${ROCPROFSYS_PAPI_INSTALL_DIR}/${CMAKE_INSTALL_LIBDIR}/libpfm.so)
 endif()
 
 rocprofiler_systems_add_option(ROCPROFSYS_PAPI_AUTO_COMPONENTS
@@ -232,11 +233,13 @@ add_custom_target(
     rocprofiler-systems-papi-clean
     COMMAND ${MAKE_EXECUTABLE} distclean
     COMMAND ${CMAKE_COMMAND} -E rm -rf ${ROCPROFSYS_PAPI_INSTALL_DIR}/include/*
-    COMMAND ${CMAKE_COMMAND} -E rm -rf ${ROCPROFSYS_PAPI_INSTALL_DIR}/lib/*
+    COMMAND ${CMAKE_COMMAND} -E rm -rf
+            ${ROCPROFSYS_PAPI_INSTALL_DIR}/${CMAKE_INSTALL_LIBDIR}/*
     COMMAND
-        ${CMAKE_COMMAND} -E touch ${ROCPROFSYS_PAPI_INSTALL_DIR}/lib/libpapi.a
-        ${ROCPROFSYS_PAPI_INSTALL_DIR}/lib/libpfm.a
-        ${ROCPROFSYS_PAPI_INSTALL_DIR}/lib/libpfm.so
+        ${CMAKE_COMMAND} -E touch
+        ${ROCPROFSYS_PAPI_INSTALL_DIR}/${CMAKE_INSTALL_LIBDIR}/libpapi.a
+        ${ROCPROFSYS_PAPI_INSTALL_DIR}/${CMAKE_INSTALL_LIBDIR}/libpfm.a
+        ${ROCPROFSYS_PAPI_INSTALL_DIR}/${CMAKE_INSTALL_LIBDIR}/libpfm.so
     WORKING_DIRECTORY ${ROCPROFSYS_PAPI_SOURCE_DIR}/src
     COMMENT "Cleaning PAPI...")
 
@@ -247,16 +250,16 @@ set(PAPI_INCLUDE_DIR
     ${ROCPROFSYS_PAPI_INSTALL_DIR}/include
     CACHE PATH "PAPI include folder" FORCE)
 set(PAPI_LIBRARY
-    ${ROCPROFSYS_PAPI_INSTALL_DIR}/lib/libpapi.a
+    ${ROCPROFSYS_PAPI_INSTALL_DIR}/${CMAKE_INSTALL_LIBDIR}/libpapi.a
     CACHE FILEPATH "PAPI library" FORCE)
 set(PAPI_pfm_LIBRARY
-    ${ROCPROFSYS_PAPI_INSTALL_DIR}/lib/libpfm.so
+    ${ROCPROFSYS_PAPI_INSTALL_DIR}/${CMAKE_INSTALL_LIBDIR}/libpfm.so
     CACHE FILEPATH "PAPI library" FORCE)
 set(PAPI_STATIC_LIBRARY
-    ${ROCPROFSYS_PAPI_INSTALL_DIR}/lib/libpapi.a
+    ${ROCPROFSYS_PAPI_INSTALL_DIR}/${CMAKE_INSTALL_LIBDIR}/libpapi.a
     CACHE FILEPATH "PAPI library" FORCE)
 set(PAPI_pfm_STATIC_LIBRARY
-    ${ROCPROFSYS_PAPI_INSTALL_DIR}/lib/libpfm.a
+    ${ROCPROFSYS_PAPI_INSTALL_DIR}/${CMAKE_INSTALL_LIBDIR}/libpfm.a
     CACHE FILEPATH "PAPI library" FORCE)
 
 target_include_directories(rocprofiler-systems-papi SYSTEM
@@ -269,7 +272,7 @@ rocprofiler_systems_target_compile_definitions(
                                        $<BUILD_INTERFACE:TIMEMORY_USE_PAPI=1>)
 
 install(
-    DIRECTORY ${ROCPROFSYS_PAPI_INSTALL_DIR}/lib/
+    DIRECTORY ${ROCPROFSYS_PAPI_INSTALL_DIR}/${CMAKE_INSTALL_LIBDIR}/
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}
     COMPONENT papi
     FILES_MATCHING

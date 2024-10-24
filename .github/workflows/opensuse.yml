@@ -98,6 +98,7 @@ jobs:
           -DROCPROFSYS_CI_MPI_RUN_AS_ROOT=ON
           -DROCPROFSYS_MAX_THREADS=64
           -DROCPROFSYS_DISABLE_EXAMPLES="transpose;rccl"
+          -DCMAKE_DEFAULT_INSTALL_LIBDIR=lib64
           -DROCPROFSYS_BUILD_NUMBER=${{ github.run_attempt }}
 
     - name: Install
