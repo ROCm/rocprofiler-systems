@@ -98,13 +98,13 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
     set(_STRIP_LIBRARIES_DEFAULT ON)
 endif()
 
-if(DEFINED CMAKE_INSTALL_LIBDIR AND NOT DEFINED CMAKE_DEFAULT_INSTALL_LIBDIR)
+if(DEFINED CMAKE_DEFAULT_INSTALL_LIBDIR AND NOT DEFINED CMAKE_INSTALL_LIBDIR)
     # always have a fresh install
     unset(CMAKE_INSTALL_LIBDIR CACHE)
     include(GNUInstallDirs) # install directories
     # force this because dyninst always installs to lib
-    set(CMAKE_DEFAULT_INSTALL_LIBDIR
-        "${CMAKE_INSTALL_LIBDIR}"
+    set(CMAKE_INSTALL_LIBDIR
+        "${CMAKE_DEFAULT_INSTALL_LIBDIR}"
         CACHE STRING "Object code libraries" FORCE)
 endif()
 
