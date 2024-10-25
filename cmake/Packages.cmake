@@ -707,8 +707,8 @@ install(
 if(ROCPROFSYS_BUILD_LIBUNWIND)
     install(
         DIRECTORY
-            ${PROJECT_BINARY_DIR}/external/timemory/external/libunwind/install/${CMAKE_INSTALL_LIBDIR}/
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}
+            ${PROJECT_BINARY_DIR}/external/timemory/external/libunwind/install/${CMAKE_DEFAULT_INSTALL_LIBDIR}/
+        DESTINATION ${CMAKE_DEFAULT_INSTALL_LIBDIR}/${PROJECT_NAME}
         COMPONENT libunwind
         FILES_MATCHING
         PATTERN "*${CMAKE_SHARED_LIBRARY_SUFFIX}*")
