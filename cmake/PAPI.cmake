@@ -32,8 +32,9 @@ if(NOT EXISTS "${ROCPROFSYS_PAPI_INSTALL_DIR}")
                             ${ROCPROFSYS_PAPI_INSTALL_DIR})
     execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory
                             ${ROCPROFSYS_PAPI_INSTALL_DIR}/include)
-    execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory
-                            ${ROCPROFSYS_PAPI_INSTALL_DIR}/${CMAKE_DEFAULT_INSTALL_LIBDIR})
+    execute_process(
+        COMMAND ${CMAKE_COMMAND} -E make_directory
+                ${ROCPROFSYS_PAPI_INSTALL_DIR}/${CMAKE_DEFAULT_INSTALL_LIBDIR})
     execute_process(
         COMMAND
             ${CMAKE_COMMAND} -E touch
