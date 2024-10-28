@@ -98,7 +98,8 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
     set(_STRIP_LIBRARIES_DEFAULT ON)
 endif()
 
-if(DEFINED CMAKE_DEFAULT_INSTALL_LIBDIR AND NOT DEFINED CMAKE_INSTALL_LIBDIR)
+if (NOT DEFINED CMAKE_INSTALL_LIBDIR)
+  if(DEFINED CMAKE_DEFAULT_INSTALL_LIBDIR)
     # always have a fresh install
     unset(CMAKE_INSTALL_LIBDIR CACHE)
     include(GNUInstallDirs) # install directories
@@ -106,6 +107,11 @@ if(DEFINED CMAKE_DEFAULT_INSTALL_LIBDIR AND NOT DEFINED CMAKE_INSTALL_LIBDIR)
     set(CMAKE_INSTALL_LIBDIR
         "${CMAKE_DEFAULT_INSTALL_LIBDIR}"
         CACHE STRING "Object code libraries" FORCE)
+  else()
+    set(CMAKE_INSTALL_LIBDIR
+      "lib"
+      CACHE STRING "Object code libraries" FORCE)
+  endif()
 endif()
 
 if(NOT "$ENV{ROCPROFSYS_CI}" STREQUAL "")
@@ -150,9 +156,6 @@ endif()
 include(Compilers) # compiler identification
 include(BuildSettings) # compiler flags
 
-set(CMAKE_INSTALL_LIBDIR
-    "lib"
-    CACHE STRING "Object code libraries (lib)" FORCE)
 set(CMAKE_CXX_STANDARD
     17
     CACHE STRING "CXX language standard")
