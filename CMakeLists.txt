@@ -99,19 +99,9 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
 endif()
 
 if(NOT DEFINED CMAKE_INSTALL_LIBDIR)
-    if(DEFINED CMAKE_DEFAULT_INSTALL_LIBDIR)
-        # always have a fresh install
-        unset(CMAKE_INSTALL_LIBDIR CACHE)
-        include(GNUInstallDirs) # install directories
-        # force this because dyninst always installs to lib
-        set(CMAKE_INSTALL_LIBDIR
-            "${CMAKE_DEFAULT_INSTALL_LIBDIR}"
-            CACHE STRING "Object code libraries" FORCE)
-    else()
-        set(CMAKE_INSTALL_LIBDIR
-            "lib"
-            CACHE STRING "Object code libraries" FORCE)
-    endif()
+    set(CMAKE_INSTALL_LIBDIR
+        "lib"
+        CACHE STRING "Object code libraries" FORCE)
 endif()
 
 if(NOT "$ENV{ROCPROFSYS_CI}" STREQUAL "")
