@@ -56,3 +56,5 @@ if(ROCPROFSYS_INSTALL_EXAMPLES)
         DESTINATION bin
         COMPONENT rocprofiler-systems-examples)
 endif()
+
+add_subdirectory(target)
