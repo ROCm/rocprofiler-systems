@@ -2456,7 +2456,7 @@ tmp_file::~tmp_file()
 
 void
 tmp_file::touch() const
- {
+{
     if(!filepath::exists(filename))
     {
         // if the filepath does not exist, open in out mode to create it

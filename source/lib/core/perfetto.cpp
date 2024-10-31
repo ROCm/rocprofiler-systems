@@ -133,7 +133,7 @@ start()
     tracing_session->SetOnErrorCallback([](::perfetto::TracingError _err) {
         if(_err.code == ::perfetto::TracingError::kTracingFailed)
             ROCPROFSYS_WARNING(0, "perfetto encountered a tracing error: %s\n",
-                              _err.message.c_str());
+                               _err.message.c_str());
     });
     tracing_session->Setup(cfg, _fd);
     tracing_session->StartBlocking();
