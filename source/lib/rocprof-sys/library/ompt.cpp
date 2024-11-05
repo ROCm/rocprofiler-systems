@@ -280,8 +280,8 @@ tool_initialize(ompt_function_lookup_t lookup, int initial_device_num,
 
     if(use_tool())
     {
-        ROCPROFSYS_BASIC_VERBOSE_F(2, "OpenMP-tools configuring for initial device %i\n\n",
-                                  initial_device_num);
+        ROCPROFSYS_BASIC_VERBOSE_F(
+            2, "OpenMP-tools configuring for initial device %i\n\n", initial_device_num);
 
         static auto _generate_key = [](std::string_view                       _key_v,
                                        const ::tim::openmp::argument_array_t& _args_v) {
@@ -289,14 +289,14 @@ tool_initialize(ompt_function_lookup_t lookup, int initial_device_num,
             (void) _args_v;
         };
 
-       tim::openmp::get_codeptr_ra_resolver<api_t>() =
+        tim::openmp::get_codeptr_ra_resolver<api_t>() =
             [](tim::openmp::context_info& _ctx_info) {
                 const auto& _key       = _ctx_info.label;
                 const auto* codeptr_ra = _ctx_info.codeptr_ra;
                 auto&       _args      = _ctx_info.arguments;
 
                 ROCPROFSYS_BASIC_VERBOSE(2, "resolving codeptr return address for %s\n",
-                                        _key.data());
+                                         _key.data());
 
                 if(!codeptr_ra) return _generate_key(_key, _args);
 
@@ -368,7 +368,8 @@ tool_initialize(ompt_function_lookup_t lookup, int initial_device_num,
                               params) {
             if(!params) return;
 
-            ROCPROFSYS_VERBOSE(3, "[ompt] configuring device %i...\n", params->device_num);
+            ROCPROFSYS_VERBOSE(3, "[ompt] configuring device %i...\n",
+                               params->device_num);
 
             auto& device_funcs =
                 tim::openmp::get_ompt_device_functions<api_t>().at(params->device_num);
@@ -513,7 +514,7 @@ extern "C"
                                               const char*  runtime_version)
     {
         ROCPROFSYS_BASIC_VERBOSE_F(0, "OpenMP version: %u, runtime version: %s\n",
-                                  omp_version, runtime_version);
+                                   omp_version, runtime_version);
         ROCPROFSYS_METADATA("OMP_VERSION", omp_version);
         ROCPROFSYS_METADATA("OMP_RUNTIME_VERSION", runtime_version);
         static auto* data = new ompt_start_tool_result_t{
