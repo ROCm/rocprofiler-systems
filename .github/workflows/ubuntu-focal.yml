@@ -46,7 +46,7 @@ jobs:
         compiler: ['g++-7', 'g++-8']
         lto: ['OFF']
         strip: ['OFF']
-        python: ['ON']
+        python: ['OFF']
         build-type: ['Release']
         mpi-headers: ['OFF']
         static-libgcc: ['OFF']
@@ -408,16 +408,6 @@ jobs:
         ompt: ['ON']
         papi: ['ON']
         deps: ['libtbb-dev libboost-{atomic,system,thread,date-time,filesystem,timer}-dev']
-        include:
-        - compiler: 'g++'
-          mpi: 'nompi'
-          boost: 'ON'
-          tbb: 'ON'
-          build-type: 'Release'
-          python: 'ON'
-          ompt: 'OFF'
-          papi: 'OFF'
-          deps: ''
 
     env:
       ELFUTILS_DOWNLOAD_VERSION: 0.186
