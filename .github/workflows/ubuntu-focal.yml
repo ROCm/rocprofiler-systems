@@ -244,15 +244,9 @@ jobs:
       matrix:
         compiler: ['g++']
         rocm-version: ['6.2']
-        mpi-headers: ['OFF']
+        mpi-headers: ['ON']
         build-jobs: ['3']
-        ctest-exclude: ['-LE "mpi-example|transpose"']
-        include:
-          - compiler: 'g++'
-            rocm-version: 'latest'
-            mpi-headers: 'ON'
-            build-jobs: '2'
-            ctest-exclude: '-LE transpose'
+        ctest-exclude: ['-LE transpose']
 
     env:
       BUILD_TYPE: MinSizeRel
