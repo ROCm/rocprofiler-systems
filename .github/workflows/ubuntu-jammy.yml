@@ -74,21 +74,6 @@ jobs:
             static-libstdcxx: 'OFF'
             build-dyninst: 'OFF'
             rocm-version: '6.2'
-          - compiler: 'g++'
-            hip: 'ON'
-            mpi: 'OFF'
-            ompt: 'OFF'
-            papi: 'OFF'
-            python: 'ON'
-            lto: 'OFF'
-            strip: 'OFF'
-            hidden: 'ON'
-            build-type: 'Release'
-            mpi-headers: 'OFF'
-            static-libgcc: 'OFF'
-            static-libstdcxx: 'OFF'
-            build-dyninst: 'OFF'
-            rocm-version: 'latest'
 
     env:
       OMPI_ALLOW_RUN_AS_ROOT: 1
