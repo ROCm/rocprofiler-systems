@@ -758,7 +758,8 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
     _backend_choices.erase("rcclp");
 #endif
 
-#if !defined(ROCPROFSYS_USE_ROCM_SMI)
+#if !defined(ROCPROFSYS_USE_ROCM)
+    _backend_choices.erase("rocm");
     _backend_choices.erase("rocm-smi");
 #endif
 

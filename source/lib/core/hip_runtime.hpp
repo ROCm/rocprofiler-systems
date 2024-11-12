@@ -24,7 +24,7 @@
 
 #include "core/defines.hpp"
 
-#if defined(ROCPROFSYS_USE_HIP) && ROCPROFSYS_USE_HIP > 0
+#if defined(ROCPROFSYS_USE_ROCM) && ROCPROFSYS_USE_ROCM > 0
 
 #    if defined(HIP_INCLUDE_HIP_HIP_RUNTIME_H) ||                                        \
         defined(HIP_INCLUDE_HIP_HIP_RUNTIME_API_H)

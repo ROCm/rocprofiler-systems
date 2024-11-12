@@ -55,7 +55,7 @@
 #define AMD_INTERNAL_BUILD 1
 #include <roctracer_hsa.h>
 
-#if __has_include(<hip/amd_detail/hip_prof_str.h>) || (defined(ROCPROFSYS_USE_HIP) && ROCPROFSYS_USE_HIP > 0)
+#if __has_include(<hip/amd_detail/hip_prof_str.h>) || (defined(ROCPROFSYS_USE_ROCM) && ROCPROFSYS_USE_ROCM > 0)
 #    include <hip/amd_detail/hip_prof_str.h>
 #    define ROCPROFSYS_HIP_API_ARGS 1
 #else

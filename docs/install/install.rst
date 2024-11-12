@@ -242,7 +242,7 @@ Installing ROCm Systems Profiler
 
 ROCm Systems Profiler has CMake configuration options for MPI support (``ROCPROFSYS_USE_MPI`` or
 ``ROCPROFSYS_USE_MPI_HEADERS``), HIP kernel tracing (``ROCPROFSYS_USE_ROCTRACER``),
-ROCm device sampling (``ROCPROFSYS_USE_ROCM_SMI``), OpenMP-Tools (``ROCPROFSYS_USE_OMPT``),
+ROCm tracing and sampling (``ROCPROFSYS_USE_ROCM``), OpenMP-Tools (``ROCPROFSYS_USE_OMPT``),
 hardware counters via PAPI (``ROCPROFSYS_USE_PAPI``), among other features.
 Various additional features can be enabled via the
 ``TIMEMORY_USE_*`` `CMake options <https://timemory.readthedocs.io/en/develop/installation.html#cmake-options>`_.
@@ -259,8 +259,7 @@ in `the Perfetto UI <https://ui.perfetto.dev>`_.
    cmake                                       \
        -B rocprof-sys-build                      \
        -D CMAKE_INSTALL_PREFIX=/opt/rocprofiler-systems  \
-       -D ROCPROFSYS_USE_HIP=ON                 \
-       -D ROCPROFSYS_USE_ROCM_SMI=ON            \
+       -D ROCPROFSYS_USE_ROCM=ON                 \
        -D ROCPROFSYS_USE_ROCTRACER=ON           \
        -D ROCPROFSYS_USE_PYTHON=ON              \
        -D ROCPROFSYS_USE_OMPT=ON                \

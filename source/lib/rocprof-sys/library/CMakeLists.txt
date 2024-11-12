@@ -57,7 +57,7 @@ if(ROCPROFSYS_USE_ROCPROFILER)
                 ${CMAKE_CURRENT_LIST_DIR}/rocprofiler.hpp)
 endif()
 
-if(ROCPROFSYS_USE_ROCM_SMI)
+if(ROCPROFSYS_USE_ROCM)
     target_sources(rocprofiler-systems-object-library
                    PRIVATE ${CMAKE_CURRENT_LIST_DIR}/rocm_smi.cpp)
 endif()

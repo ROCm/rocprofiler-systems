@@ -67,8 +67,7 @@ target_link_libraries(
         $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-perfetto>
         $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-timemory>
         $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-mpi>
-        $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-hip>
-        $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-rocm-smi>
+        $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-rocm>
         $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-static-libgcc-optional>
         $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-static-libstdcxx-optional>
         $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-sanitizer>

@@ -226,7 +226,7 @@ endif()
 # -------------------------------------------------------------------------------------- #
 
 set(_VALID_GPU OFF)
-if(ROCPROFSYS_USE_HIP AND (NOT DEFINED ROCPROFSYS_CI_GPU OR ROCPROFSYS_CI_GPU))
+if(ROCPROFSYS_USE_ROCM AND (NOT DEFINED ROCPROFSYS_CI_GPU OR ROCPROFSYS_CI_GPU))
     set(_VALID_GPU ON)
     find_program(
         ROCPROFSYS_ROCM_SMI_EXE
@@ -434,7 +434,7 @@ function(ROCPROFILER_SYSTEMS_ADD_TEST)
             list(APPEND TEST_LABELS "roctracer")
         endif()
 
-        if(NOT "ROCPROFSYS_USE_ROCM_SMI=OFF" IN_LIST TEST_ENVIRONMENT)
+        if(NOT "ROCPROFSYS_USE_ROCM=OFF" IN_LIST TEST_ENVIRONMENT)
             list(APPEND TEST_LABELS "rocm-smi")
         endif()
     endif()
@@ -444,7 +444,7 @@ function(ROCPROFILER_SYSTEMS_ADD_TEST)
         list(APPEND TEST_LABELS "roctracer")
     endif()
 
-    if("ROCPROFSYS_USE_ROCM_SMI=ON" IN_LIST TEST_ENVIRONMENT AND NOT "rocm-smi" IN_LIST
+    if("ROCPROFSYS_USE_ROCM=ON" IN_LIST TEST_ENVIRONMENT AND NOT "rocm-smi" IN_LIST
                                                                  TEST_ENVIRONMENT)
         list(APPEND TEST_LABELS "rocm-smi")
     endif()

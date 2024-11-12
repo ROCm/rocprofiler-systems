@@ -176,18 +176,15 @@ rocprofiler_systems_add_option(ROCPROFSYS_USE_CLANG_TIDY "Enable clang-tidy" OFF
 rocprofiler_systems_add_option(ROCPROFSYS_USE_BFD
                                "Enable BFD support (map call-stack samples to LOC)" ON)
 rocprofiler_systems_add_option(ROCPROFSYS_USE_MPI "Enable MPI support" OFF)
-rocprofiler_systems_add_option(ROCPROFSYS_USE_HIP "Enable HIP support" ON)
+rocprofiler_systems_add_option(ROCPROFSYS_USE_ROCM "Enable ROCm support" ON)
 rocprofiler_systems_add_option(ROCPROFSYS_USE_PAPI "Enable HW counter support via PAPI"
                                ON)
 rocprofiler_systems_add_option(ROCPROFSYS_USE_ROCTRACER "Enable roctracer support"
-                               ${ROCPROFSYS_USE_HIP})
+                               ${ROCPROFSYS_USE_ROCM})
 rocprofiler_systems_add_option(ROCPROFSYS_USE_ROCPROFILER "Enable rocprofiler support"
-                               ${ROCPROFSYS_USE_HIP})
-rocprofiler_systems_add_option(
-    ROCPROFSYS_USE_ROCM_SMI "Enable rocm-smi support for power/temp/etc. sampling"
-    ${ROCPROFSYS_USE_HIP})
+                               ${ROCPROFSYS_USE_ROCM})
 rocprofiler_systems_add_option(ROCPROFSYS_USE_RCCL "Enable RCCL support"
-                               ${ROCPROFSYS_USE_HIP})
+                               ${ROCPROFSYS_USE_ROCM})
 rocprofiler_systems_add_option(
     ROCPROFSYS_USE_MPI_HEADERS
     "Enable wrapping MPI functions w/o enabling MPI dependency" ON)
@@ -217,30 +214,26 @@ elseif("$ENV{ROCPROFSYS_CI}")
     endif()
 endif()
 
-if(NOT ROCPROFSYS_USE_HIP)
+if(NOT ROCPROFSYS_USE_ROCM)
     set(ROCPROFSYS_USE_ROCTRACER
         OFF
-        CACHE BOOL "Disabled via ROCPROFSYS_USE_HIP=OFF" FORCE)
+        CACHE BOOL "Disabled via ROCPROFSYS_USE_ROCM=OFF" FORCE)
     set(ROCPROFSYS_USE_ROCPROFILER
         OFF
-        CACHE BOOL "Disabled via ROCPROFSYS_USE_HIP=OFF" FORCE)
-    set(ROCPROFSYS_USE_ROCM_SMI
-        OFF
-        CACHE BOOL "Disabled via ROCPROFSYS_USE_HIP=OFF" FORCE)
+        CACHE BOOL "Disabled via ROCPROFSYS_USE_ROCM=OFF" FORCE)
     set(ROCPROFSYS_USE_RCCL
         OFF
-        CACHE BOOL "Disabled via ROCPROFSYS_USE_HIP=OFF" FORCE)
+        CACHE BOOL "Disabled via ROCPROFSYS_USE_ROCM=OFF" FORCE)
 elseif(
-    ROCPROFSYS_USE_HIP
+    ROCPROFSYS_USE_ROCM
     AND NOT ROCPROFSYS_USE_ROCTRACER
     AND NOT ROCPROFSYS_USE_ROCPROFILER
-    AND NOT ROCPROFSYS_USE_ROCM_SMI
     AND NOT ROCPROFSYS_USE_RCCL)
     rocprofiler_systems_message(
         AUTHOR_WARNING
-        "Setting ROCPROFSYS_USE_HIP=OFF because roctracer, rocprofiler, rccl, and rocm-smi options are disabled"
+        "Setting ROCPROFSYS_USE_ROCM=OFF because roctracer, rocprofiler, and rccl options are disabled"
         )
-    set(ROCPROFSYS_USE_HIP OFF)
+    set(ROCPROFSYS_USE_ROCM OFF)
 endif()
 
 if(ROCPROFSYS_BUILD_TESTING)

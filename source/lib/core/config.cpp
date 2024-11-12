@@ -1404,7 +1404,7 @@ configure_disabled_settings(const std::shared_ptr<settings>& _config)
         _config->find(itr)->second->set_hidden(true);
 #endif
 
-#if !defined(ROCPROFSYS_USE_ROCM_SMI) || ROCPROFSYS_USE_ROCM_SMI == 0
+#if !defined(ROCPROFSYS_USE_ROCM) || ROCPROFSYS_USE_ROCM == 0
     _config->find("ROCPROFSYS_USE_ROCM_SMI")->second->set_hidden(true);
     for(const auto& itr : _config->disable_category("rocm_smi"))
         _config->find(itr)->second->set_hidden(true);
@@ -1903,7 +1903,7 @@ get_use_rocprofiler()
 bool
 get_use_rocm_smi()
 {
-#if defined(ROCPROFSYS_USE_ROCM_SMI) && ROCPROFSYS_USE_ROCM_SMI > 0
+#if defined(ROCPROFSYS_USE_ROCM) && ROCPROFSYS_USE_ROCM > 0
     static auto _v = get_config()->find("ROCPROFSYS_USE_ROCM_SMI");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 #else
@@ -2360,7 +2360,7 @@ get_process_sampling_duration()
 std::string
 get_sampling_gpus()
 {
-#if defined(ROCPROFSYS_USE_ROCM_SMI) && ROCPROFSYS_USE_ROCM_SMI > 0
+#if defined(ROCPROFSYS_USE_ROCM) && ROCPROFSYS_USE_ROCM > 0
     static auto _v = get_config()->find("ROCPROFSYS_SAMPLING_GPUS");
     return static_cast<tim::tsettings<std::string>&>(*_v->second).get();
 #else

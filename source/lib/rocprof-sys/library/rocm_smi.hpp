@@ -128,7 +128,7 @@ private:
     static bool                          shutdown();
 };
 
-#if !defined(ROCPROFSYS_USE_ROCM_SMI)
+#if !defined(ROCPROFSYS_USE_ROCM)
 inline void
 setup()
 {}
@@ -154,7 +154,7 @@ inline void set_state(State) {}
 }  // namespace rocm_smi
 }  // namespace rocprofsys
 
-#if defined(ROCPROFSYS_USE_ROCM_SMI) && ROCPROFSYS_USE_ROCM_SMI > 0
+#if defined(ROCPROFSYS_USE_ROCM) && ROCPROFSYS_USE_ROCM > 0
 #    if !defined(ROCPROFSYS_EXTERN_COMPONENTS) ||                                        \
         (defined(ROCPROFSYS_EXTERN_COMPONENTS) && ROCPROFSYS_EXTERN_COMPONENTS > 0)
 

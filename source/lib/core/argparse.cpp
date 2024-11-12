@@ -603,7 +603,7 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
         update_env(_data, "ROCPROFSYS_USE_RCCLP", false);
 #endif
 
-#if defined(ROCPROFSYS_USE_ROCM_SMI)
+#if defined(ROCPROFSYS_USE_ROCM)
         update_env(_data, "ROCPROFSYS_USE_ROCM_SMI", false);
 #endif
 
@@ -640,6 +640,7 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
                 _update("ROCPROFSYS_USE_KOKKOSP", _v.count("kokkosp") > 0);
                 _update("ROCPROFSYS_USE_MPIP", _v.count("mpip") > 0);
                 _update("ROCPROFSYS_USE_OMPT", _v.count("ompt") > 0);
+                _update("ROCPROFSYS_USE_ROCM", _v.count("rocm") > 0);
                 _update("ROCPROFSYS_USE_RCCLP", _v.count("rcclp") > 0);
                 _update("ROCPROFSYS_USE_ROCTX", _v.count("roctx") > 0);
                 _update("ROCPROFSYS_USE_ROCM_SMI", _v.count("rocm-smi") > 0);
@@ -676,6 +677,7 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
                 _update("ROCPROFSYS_USE_KOKKOSP", _v.count("kokkosp") > 0);
                 _update("ROCPROFSYS_USE_MPIP", _v.count("mpip") > 0);
                 _update("ROCPROFSYS_USE_OMPT", _v.count("ompt") > 0);
+                _update("ROCPROFSYS_USE_ROCM", _v.count("rocm") > 0);
                 _update("ROCPROFSYS_USE_RCCLP", _v.count("rcclp") > 0);
                 _update("ROCPROFSYS_USE_ROCTX", _v.count("roctx") > 0);
                 _update("ROCPROFSYS_USE_ROCM_SMI", _v.count("rocm-smi") > 0);

@@ -22,17 +22,13 @@
 
 #include "common/defines.h"
 
-#if !defined(ROCPROFSYS_USE_ROCM_SMI)
-#    define ROCPROFSYS_USE_ROCM_SMI 0
-#endif
-
-#if !defined(ROCPROFSYS_USE_HIP)
-#    define ROCPROFSYS_USE_HIP 0
+#if !defined(ROCPROFSYS_USE_ROCM)
+#    define ROCPROFSYS_USE_ROCM 0
 #endif
 
 #include "core/hip_runtime.hpp"
 
-#if ROCPROFSYS_USE_HIP > 0
+#if ROCPROFSYS_USE_ROCM > 0
 #    if !defined(TIMEMORY_USE_HIP)
 #        define TIMEMORY_USE_HIP 1
 #    endif
@@ -44,11 +40,11 @@
 
 #include <timemory/manager.hpp>
 
-#if ROCPROFSYS_USE_ROCM_SMI > 0
+#if ROCPROFSYS_USE_ROCM > 0
 #    include <rocm_smi/rocm_smi.h>
 #endif
 
-#if ROCPROFSYS_USE_HIP > 0
+#if ROCPROFSYS_USE_ROCM > 0
 #    include <timemory/components/hip/backends.hpp>
 
 #    if !defined(ROCPROFSYS_HIP_RUNTIME_CALL)
@@ -72,7 +68,7 @@ namespace
 {
 namespace scope = ::tim::scope;
 
-#if ROCPROFSYS_USE_ROCM_SMI > 0
+#if ROCPROFSYS_USE_ROCM > 0
 #    define ROCPROFSYS_ROCM_SMI_CALL(ERROR_CODE)                                         \
         ::rocprofsys::gpu::check_rsmi_error(ERROR_CODE, __FILE__, __LINE__)
 
@@ -199,7 +195,7 @@ device_prop_serialize(ArchiveT& archive, const char* name, hipDeviceArch_t arg)
 int
 hip_device_count()
 {
-#if ROCPROFSYS_USE_HIP > 0
+#if ROCPROFSYS_USE_ROCM > 0
     return ::tim::hip::device_count();
 #else
     return 0;
@@ -209,7 +205,7 @@ hip_device_count()
 int
 rsmi_device_count()
 {
-#if ROCPROFSYS_USE_ROCM_SMI > 0
+#if ROCPROFSYS_USE_ROCM > 0
     if(!rsmi_init()) return 0;
 
     static auto _num_devices = []() {
@@ -234,11 +230,9 @@ rsmi_device_count()
 int
 device_count()
 {
-#if ROCPROFSYS_USE_ROCM_SMI > 0
+#if ROCPROFSYS_USE_ROCM > 0
     // store as static since calls after rsmi_shutdown will return zero
     return rsmi_device_count();
-#elif ROCPROFSYS_USE_HIP > 0
-    return ::tim::hip::device_count();
 #else
     return 0;
 #endif
@@ -251,7 +245,7 @@ add_hip_device_metadata(ArchiveT& ar)
     namespace cereal = tim::cereal;
     using cereal::make_nvp;
 
-#if ROCPROFSYS_USE_HIP > 0
+#if ROCPROFSYS_USE_ROCM > 0
     int        _device_count     = 0;
     int        _current_device   = 0;
     hipError_t _device_count_err = hipGetDeviceCount(&_device_count);

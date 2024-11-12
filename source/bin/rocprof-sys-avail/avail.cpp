@@ -508,7 +508,7 @@ main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-#if ROCPROFSYS_USE_HIP > 0
+#if ROCPROFSYS_USE_ROCM > 0
     if(gpu_count > 0)
     {
         size_t _num_metrics = 0;
