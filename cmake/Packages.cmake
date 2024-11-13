@@ -160,12 +160,12 @@ if(ROCPROFSYS_USE_ROCM
     endif()
 
     set(ROCPROFSYS_ROCM_VERSION ${ROCmVersion_FULL_VERSION})
-    set(ROCPROFSYS_HIP_VERSION_MAJOR ${ROCmVersion_MAJOR_VERSION})
-    set(ROCPROFSYS_HIP_VERSION_MINOR ${ROCmVersion_MINOR_VERSION})
-    set(ROCPROFSYS_HIP_VERSION_PATCH ${ROCmVersion_PATCH_VERSION})
-    set(ROCPROFSYS_HIP_VERSION ${ROCmVersion_TRIPLE_VERSION})
+    set(ROCPROFSYS_ROCM_VERSION_MAJOR ${ROCmVersion_MAJOR_VERSION})
+    set(ROCPROFSYS_ROCM_VERSION_MINOR ${ROCmVersion_MINOR_VERSION})
+    set(ROCPROFSYS_ROCM_VERSION_PATCH ${ROCmVersion_PATCH_VERSION})
+    set(ROCPROFSYS_ROCM_VERSION ${ROCmVersion_TRIPLE_VERSION})
 
-    if(ROCPROFSYS_HIP_VERSION_MAJOR GREATER_EQUAL 4 AND ROCPROFSYS_HIP_VERSION_MINOR
+    if(ROCPROFSYS_ROCM_VERSION_MAJOR GREATER_EQUAL 4 AND ROCPROFSYS_ROCM_VERSION_MINOR
                                                         GREATER 3)
         set(roctracer_kfdwrapper_LIBRARY)
     endif()
@@ -177,10 +177,10 @@ if(ROCPROFSYS_USE_ROCM
     rocprofiler_systems_add_feature(ROCPROFSYS_ROCM_VERSION
                                     "ROCm version used by rocprofiler-systems")
 else()
-    set(ROCPROFSYS_HIP_VERSION "0.0.0")
-    set(ROCPROFSYS_HIP_VERSION_MAJOR 0)
-    set(ROCPROFSYS_HIP_VERSION_MINOR 0)
-    set(ROCPROFSYS_HIP_VERSION_PATCH 0)
+    set(ROCPROFSYS_ROCM_VERSION "0.0.0")
+    set(ROCPROFSYS_ROCM_VERSION_MAJOR 0)
+    set(ROCPROFSYS_ROCM_VERSION_MINOR 0)
+    set(ROCPROFSYS_ROCM_VERSION_PATCH 0)
 endif()
 
 # ----------------------------------------------------------------------------------------#

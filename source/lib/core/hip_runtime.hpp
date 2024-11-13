@@ -35,22 +35,17 @@
 #    define HIP_PROF_HIP_API_STRING 1
 
 // following must be included before <roctracer_hip.h> for ROCm 6.0+
-#    if ROCPROFSYS_HIP_VERSION >= 60000
-#        if defined(USE_PROF_API)
-#            undef USE_PROF_API
-#        endif
-#        include <hip/hip_runtime.h>
-#        include <hip/hip_runtime_api.h>
-// must be included after hip_runtime_api.h
-#        include <hip/hip_deprecated.h>
-// must be included after hip_runtime_api.h
-#        include <hip_ostream_ops.h>
-// must be included after hip_runtime_api.h
-#        include <hip/amd_detail/hip_prof_str.h>
-#    else
-#        include <hip/hip_runtime.h>
-#        include <hip/hip_runtime_api.h>
+#    if defined(USE_PROF_API)
+#        undef USE_PROF_API
 #    endif
+#    include <hip/hip_runtime.h>
+#    include <hip/hip_runtime_api.h>
+// must be included after hip_runtime_api.h
+#    include <hip/hip_deprecated.h>
+// must be included after hip_runtime_api.h
+#    include <hip_ostream_ops.h>
+// must be included after hip_runtime_api.h
+#    include <hip/amd_detail/hip_prof_str.h>
 
 #    include <hip/hip_version.h>
 #endif

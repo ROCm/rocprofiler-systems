@@ -40,10 +40,6 @@
 #include <roctracer_ext.h>
 #include <roctracer_hip.h>
 
-#if ROCPROFSYS_HIP_VERSION < 50300
-#    include <roctracer_hcc.h>
-#endif
-
 #define AMD_INTERNAL_BUILD 1
 #include <roctracer_hsa.h>
 
@@ -143,15 +139,6 @@ roctracer::setup(void* table, bool on_load_trace)
                                                  { "ROCPROFSYS_ROCM_PATH", "ROCM_PATH" },
                                                  { ROCPROFSYS_DEFAULT_ROCM_PATH }) };
 
-#if ROCPROFSYS_HIP_VERSION_MAJOR == 4 && ROCPROFSYS_HIP_VERSION_MINOR < 4
-    dynamic_library _kfdwrapper{
-        "ROCPROFSYS_ROCTRACER_LIBKFDWRAPPER",
-        find_library_path("libkfdwrapper64.so", { "ROCPROFSYS_ROCM_PATH", "ROCM_PATH" },
-                          { ROCPROFSYS_DEFAULT_ROCM_PATH },
-                          { "roctracer/lib", "roctracer/lib64", "lib", "lib64" })
-    };
-#endif
-
     ROCPROFSYS_ROCTRACER_CALL(roctracer_set_properties(ACTIVITY_DOMAIN_HIP_API, nullptr));
 
     // Allocating tracing pool
@@ -161,14 +148,6 @@ roctracer::setup(void* table, bool on_load_trace)
     properties.buffer_size         = 0x100;
     properties.buffer_callback_fun = hip_activity_callback;
     ROCPROFSYS_ROCTRACER_CALL(roctracer_open_pool(&properties));
-
-#if ROCPROFSYS_HIP_VERSION_MAJOR == 4 && ROCPROFSYS_HIP_VERSION_MINOR >= 4
-    // HIP 4.5.0 has an invalid warning
-    redirect _rd{ std::cerr, "roctracer_enable_callback(), get_op_end(), invalid domain "
-                             "ID(4)  in: roctracer_enable_callback(hip_api_callback, "
-                             "nullptr)roctracer_enable_activity_expl(), get_op_end(), "
-                             "invalid domain ID(4)  in: roctracer_enable_activity()" };
-#endif
 
     if(get_trace_hip_api())
     {
@@ -234,25 +213,10 @@ roctracer::setup(void* table, bool on_load_trace)
         // Enable HSA GPU activity
         if(trace_hsa_activity)
         {
-#if ROCPROFSYS_HIP_VERSION < 50300
-            using namespace roctracer;
-            // initialize HSA tracing
-            const char*          output_prefix = nullptr;
-            hsa_ops_properties_t ops_properties{
-                table, reinterpret_cast<activity_async_callback_t>(hsa_activity_callback),
-                nullptr, output_prefix
-            };
-#elif ROCPROFSYS_HIP_VERSION < 50301
-            hsa_ops_properties_t ops_properties;
-            ops_properties.table        = table;
-            ops_properties.reserved1[0] = reinterpret_cast<void*>(&hsa_activity_callback);
-            ops_properties.reserved1[1] = nullptr;
-            ops_properties.reserved1[2] = nullptr;
-#else
             hsa_ops_properties_t ops_properties{
                 table, reinterpret_cast<void*>(&hsa_activity_callback), nullptr, nullptr
             };
-#endif
+
             roctracer_set_properties(
                 static_cast<activity_domain_t>(ACTIVITY_DOMAIN_HSA_OPS), &ops_properties);
 
@@ -325,16 +289,6 @@ roctracer::shutdown()
                          roctracer_shutdown_routines().size());
     for(auto& itr : roctracer_shutdown_routines())
         itr.second();
-
-#if ROCPROFSYS_HIP_VERSION_MAJOR == 4 && ROCPROFSYS_HIP_VERSION_MINOR >= 4
-    ROCPROFSYS_DEBUG_F("redirecting roctracer warnings\n");
-    // HIP 4.5.0 has an invalid warning
-    redirect _rd{
-        std::cerr, "roctracer_disable_callback(), get_op_end(), invalid domain ID(4)  "
-                   "in: roctracer_disable_callback()roctracer_disable_activity(), "
-                   "get_op_end(), invalid domain ID(4)  in: roctracer_disable_activity()"
-    };
-#endif
 
     if(get_trace_hip_api())
     {

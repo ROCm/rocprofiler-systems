@@ -174,12 +174,6 @@ extern "C"
 
         ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
 
-#if ROCPROFSYS_HIP_VERSION < 50300
-        ROCPROFSYS_VERBOSE_F(1 || rocm::on_load_trace,
-                             "Computing the roctracer clock skew...\n");
-        (void) rocprofsys::get_clock_skew();
-#endif
-
         if(get_use_process_sampling() && get_use_rocm_smi())
         {
             ROCPROFSYS_VERBOSE_F(1 || rocm::on_load_trace,
@@ -199,40 +193,9 @@ extern "C"
         bool _success = true;
         bool _is_empty =
             (config::settings_are_configured() && config::get_rocm_events().empty());
-        if(_force_rocprofiler_init || (get_use_rocprofiler() && !_is_empty))
-        {
-#if ROCPROFSYS_HIP_VERSION < 50500
-            auto _rocprof = dynamic_library{
-                "ROCPROFSYS_ROCPROFILER_LIBRARY",
-                find_library_path(
-                    "librocprofiler64.so", { "ROCPROFSYS_ROCM_PATH", "ROCM_PATH" },
-                    { ROCPROFSYS_DEFAULT_ROCM_PATH },
-                    { "lib", "lib64", "rocprofiler/lib", "rocprofiler/lib64" }),
-                (RTLD_LAZY | RTLD_GLOBAL), false
-            };
-
-            ROCPROFSYS_VERBOSE_F(1 || rocm::on_load_trace,
-                                 "Loading rocprofiler library (%s=%s)...\n",
-                                 _rocprof.envname.c_str(), _rocprof.filename.c_str());
-            _rocprof.open();
-
-            on_load_t _rocprof_load = nullptr;
-            _success = _rocprof.invoke("OnLoad", _rocprof_load, table, runtime_version,
-                                       failed_tool_count, failed_tool_names);
-            ROCPROFSYS_CONDITIONAL_PRINT_F(!_success,
-                                           "Warning! Invoking rocprofiler's OnLoad "
-                                           "failed! ROCPROFSYS_ROCPROFILER_LIBRARY=%s\n",
-                                           _rocprof.filename.c_str());
-            ROCPROFSYS_CI_THROW(!_success,
-                                "Warning! Invoking rocprofiler's OnLoad "
-                                "failed! ROCPROFSYS_ROCPROFILER_LIBRARY=%s\n",
-                                _rocprof.filename.c_str());
-#endif
-        }
-        else
+        if(!_force_rocprofiler_init && (!get_use_rocprofiler() || _is_empty))
         {
             using ::rocprofiler::util::HsaRsrcFactory;
-
             HsaRsrcFactory::Instance().PrintGpuAgents("ROCm");
         }
 

@@ -104,9 +104,7 @@ rsmi_init()
 
     return _rsmi_init;
 }
-#endif
 
-#if ROCPROFSYS_HIP_VERSION >= 60000
 template <typename ArchiveT, typename ArgT,
           std::enable_if_t<!std::is_pointer<ArgT>::value, int> = 0>
 void
@@ -189,7 +187,7 @@ device_prop_serialize(ArchiveT& archive, const char* name, hipDeviceArch_t arg)
 
 #    undef ROCPROFSYS_SERIALIZE_HIP_DEVICE_ARCH
 }
-#endif
+#endif // ROCPROFSYS_USE_ROCM > 0
 }  // namespace
 
 int
@@ -280,69 +278,6 @@ add_hip_device_metadata(ArchiveT& ar)
 
         ar.startNode();
 
-#    if ROCPROFSYS_HIP_VERSION < 60000
-        using intvec_t = std::vector<int>;
-
-#        define ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(NAME)                               \
-            ar(make_nvp(#NAME, _device_prop.NAME));
-
-#        define ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP_ARRAY(NAME, ...)                    \
-            ar(make_nvp(NAME, __VA_ARGS__));
-
-        ar(make_nvp("name", std::string{ _device_prop.name }));
-        ar(make_nvp("driver_version", _driver_version));
-        ar(make_nvp("runtime_version", _runtime_version));
-        ar(make_nvp("capability.major_version", _device_prop.major));
-        ar(make_nvp("capability.minor_version", _device_prop.minor));
-
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(totalGlobalMem)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(totalConstMem)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(clockRate)
-
-#        if ROCPROFSYS_HIP_VERSION >= 50000
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(memoryClockRate)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(memoryBusWidth)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(l2CacheSize)
-#        endif
-
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(sharedMemPerBlock)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(regsPerBlock)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(warpSize)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(multiProcessorCount)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(maxThreadsPerMultiProcessor)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(maxThreadsPerBlock)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP_ARRAY(
-            "maxThreadsDim",
-            intvec_t{ _device_prop.maxThreadsDim[0], _device_prop.maxThreadsDim[1],
-                      _device_prop.maxThreadsDim[2] })
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP_ARRAY(
-            "maxGridSize",
-            intvec_t{ _device_prop.maxGridSize[0], _device_prop.maxGridSize[1],
-                      _device_prop.maxGridSize[2] })
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(memPitch)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(textureAlignment)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(kernelExecTimeoutEnabled)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(integrated)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(canMapHostMemory)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(ECCEnabled)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(cooperativeLaunch)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(cooperativeMultiDeviceLaunch)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(pciDomainID)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(pciBusID)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(pciDeviceID)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(computeMode)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(gcnArch)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(gcnArchName)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(isMultiGpuBoard)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(clockInstructionRate)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(pageableMemoryAccess)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(pageableMemoryAccessUsesHostPageTables)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(directManagedMemAccessFromHost)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(concurrentManagedAccess)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(concurrentKernels)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(maxSharedMemoryPerMultiProcessor)
-        ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(asicRevision)
-#    else
 #        define ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(NAME)                               \
             device_prop_serialize(ar, #NAME, _device_prop.NAME);
 
@@ -451,7 +386,6 @@ add_hip_device_metadata(ArchiveT& ar)
         ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(cooperativeMultiDeviceUnmatchedSharedMem)
         ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(isLargeBar)
         ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(asicRevision)
-#    endif
 
         const auto _compute_mode_descr = std::array<const char*, 6>{
             "Default (multiple host threads can use ::hipSetDevice() with device "

@@ -220,14 +220,14 @@ configure_settings(bool _init)
     tim::manager::add_metadata("ROCPROFSYS_COMPILER_VERSION",
                                ROCPROFSYS_COMPILER_VERSION);
 
-#if ROCPROFSYS_HIP_VERSION > 0
-    tim::manager::add_metadata("ROCPROFSYS_HIP_VERSION", ROCPROFSYS_HIP_VERSION_STRING);
-    tim::manager::add_metadata("ROCPROFSYS_HIP_VERSION_MAJOR",
-                               ROCPROFSYS_HIP_VERSION_MAJOR);
-    tim::manager::add_metadata("ROCPROFSYS_HIP_VERSION_MINOR",
-                               ROCPROFSYS_HIP_VERSION_MINOR);
-    tim::manager::add_metadata("ROCPROFSYS_HIP_VERSION_PATCH",
-                               ROCPROFSYS_HIP_VERSION_PATCH);
+#if ROCPROFSYS_ROCM_VERSION > 0
+    tim::manager::add_metadata("ROCPROFSYS_ROCM_VERSION", ROCPROFSYS_ROCM_VERSION_STRING);
+    tim::manager::add_metadata("ROCPROFSYS_ROCM_VERSION_MAJOR",
+                               ROCPROFSYS_ROCM_VERSION_MAJOR);
+    tim::manager::add_metadata("ROCPROFSYS_ROCM_VERSION_MINOR",
+                               ROCPROFSYS_ROCM_VERSION_MINOR);
+    tim::manager::add_metadata("ROCPROFSYS_ROCM_VERSION_PATCH",
+                               ROCPROFSYS_ROCM_VERSION_PATCH);
 #endif
 
     auto _config = settings::shared_instance();
@@ -1164,7 +1164,7 @@ configure_mode_settings(const std::shared_ptr<settings>& _config)
 
     if(gpu::device_count() == 0)
     {
-#if ROCPROFSYS_HIP_VERSION > 0
+#if ROCPROFSYS_ROCM_VERSION > 0
         ROCPROFSYS_BASIC_VERBOSE(1, "No HIP devices were found: disabling roctracer, "
                                     "rocprofiler, and rocm_smi...\n");
 #endif
@@ -1567,7 +1567,7 @@ print_banner(std::ostream& _os)
                                { "tag", ROCPROFSYS_GIT_DESCRIBE },
                                { "", ROCPROFSYS_LIBRARY_ARCH },
                                { "compiler", ROCPROFSYS_COMPILER_STRING },
-                               { "rocm", ROCPROFSYS_HIP_VERSION_COMPAT_STRING } });
+                               { "rocm", ROCPROFSYS_ROCM_VERSION_COMPAT_STRING } });
 
     // <NAME> <VERSION> (<PROPERTIES>)
     if(!_properties.empty())

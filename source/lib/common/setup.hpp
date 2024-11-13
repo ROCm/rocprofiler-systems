@@ -114,16 +114,8 @@ get_environ(int _verbose, std::string _search_paths = {},
 #endif
 
 #if defined(ROCPROFSYS_USE_ROCPROFILER) && ROCPROFSYS_USE_ROCPROFILER > 0
-#    if ROCPROFSYS_HIP_VERSION >= 50200
-#        define ROCPROFILER_METRICS_DIR "lib/rocprofiler"
-#    else
-#        define ROCPROFILER_METRICS_DIR "rocprofiler/lib"
-#    endif
-#    if ROCPROFSYS_HIP_VERSION <= 50500
-#        define ROCPROFILER_LIBNAME "librocprofiler64.so"
-#    else
-#        define ROCPROFILER_LIBNAME "librocprofiler64.so.1"
-#    endif
+#   define ROCPROFILER_METRICS_DIR "lib/rocprofiler"
+#   define ROCPROFILER_LIBNAME "librocprofiler64.so.1"
 
     _data.emplace_back(env_config{ "HSA_TOOLS_LIB", _omnilib.c_str(), 0 });
     _data.emplace_back(env_config{ "ROCP_TOOL_LIB", _omnilib.c_str(), 0 });

@@ -752,10 +752,6 @@ parse_args(int argc, char** argv, std::vector<char*>& _env,
 
     parser.end_group();
 
-#if ROCPROFSYS_HIP_VERSION > 0 && ROCPROFSYS_HIP_VERSION < 50300
-    update_env(_env, "HSA_ENABLE_INTERRUPT", 0);
-#endif
-
     auto _inpv = std::vector<char*>{};
     auto _outv = std::vector<char*>{};
     bool _hash = false;

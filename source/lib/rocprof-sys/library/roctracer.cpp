@@ -48,10 +48,6 @@
 #include <roctracer_hip.h>
 #include <roctracer_roctx.h>
 
-#if ROCPROFSYS_HIP_VERSION < 50300
-#    include <roctracer_hcc.h>
-#endif
-
 #define AMD_INTERNAL_BUILD 1
 #include <roctracer_hsa.h>
 
@@ -509,11 +505,8 @@ hip_api_callback(uint32_t domain, uint32_t cid, const void* callback_data, void*
         case HIP_API_ID___hipPushCallConfiguration:
         case HIP_API_ID___hipPopCallConfiguration:
         case HIP_API_ID_hipDeviceEnablePeerAccess:
-#if ROCPROFSYS_HIP_VERSION_MAJOR > 4 ||                                                  \
-    (ROCPROFSYS_HIP_VERSION_MAJOR == 4 && ROCPROFSYS_HIP_VERSION_MINOR >= 3)
         case HIP_API_ID_hipImportExternalMemory:
         case HIP_API_ID_hipDestroyExternalMemory:
-#endif
             return;
         default: break;
     }
