@@ -166,7 +166,7 @@ if(ROCPROFSYS_USE_ROCM
     set(ROCPROFSYS_ROCM_VERSION ${ROCmVersion_TRIPLE_VERSION})
 
     if(ROCPROFSYS_ROCM_VERSION_MAJOR GREATER_EQUAL 4 AND ROCPROFSYS_ROCM_VERSION_MINOR
-                                                        GREATER 3)
+                                                         GREATER 3)
         set(roctracer_kfdwrapper_LIBRARY)
     endif()
 

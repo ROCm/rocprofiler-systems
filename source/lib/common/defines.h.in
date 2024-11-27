@@ -63,12 +63,12 @@
     ((10000 * ROCPROFSYS_VERSION_MAJOR) + (100 * ROCPROFSYS_VERSION_MINOR) +             \
      ROCPROFSYS_VERSION_PATCH)
 
-#define ROCPROFSYS_ROCM_VERSION                                                           \
-    ((10000 * ROCPROFSYS_ROCM_VERSION_MAJOR) + (100 * ROCPROFSYS_ROCM_VERSION_MINOR) +     \
+#define ROCPROFSYS_ROCM_VERSION                                                          \
+    ((10000 * ROCPROFSYS_ROCM_VERSION_MAJOR) + (100 * ROCPROFSYS_ROCM_VERSION_MINOR) +   \
      ROCPROFSYS_ROCM_VERSION_PATCH)
 
 #if ROCPROFSYS_ROCM_VERSION_MAJOR > 0
-#    define ROCPROFSYS_ROCM_VERSION_COMPAT_STRING                                         \
+#    define ROCPROFSYS_ROCM_VERSION_COMPAT_STRING                                        \
         "v@ROCPROFSYS_ROCM_VERSION_MAJOR@.@ROCPROFSYS_ROCM_VERSION_MINOR@.x"
 #else
 #    define ROCPROFSYS_ROCM_VERSION_COMPAT_STRING ""
@@ -83,7 +83,7 @@
         {                                                                                \
             { "", ROCPROFSYS_LIBRARY_ARCH }, { "compiler", ROCPROFSYS_COMPILER_STRING }, \
             {                                                                            \
-                "rocm", ROCPROFSYS_ROCM_VERSION_COMPAT_STRING                             \
+                "rocm", ROCPROFSYS_ROCM_VERSION_COMPAT_STRING                            \
             }                                                                            \
         }
 #endif

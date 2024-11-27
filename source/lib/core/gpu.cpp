@@ -187,7 +187,7 @@ device_prop_serialize(ArchiveT& archive, const char* name, hipDeviceArch_t arg)
 
 #    undef ROCPROFSYS_SERIALIZE_HIP_DEVICE_ARCH
 }
-#endif // ROCPROFSYS_USE_ROCM > 0
+#endif  // ROCPROFSYS_USE_ROCM > 0
 }  // namespace
 
 int
@@ -278,8 +278,8 @@ add_hip_device_metadata(ArchiveT& ar)
 
         ar.startNode();
 
-#        define ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(NAME)                               \
-            device_prop_serialize(ar, #NAME, _device_prop.NAME);
+#    define ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(NAME)                                   \
+        device_prop_serialize(ar, #NAME, _device_prop.NAME);
 
         ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(name)
         ROCPROFSYS_SERIALIZE_HIP_DEVICE_PROP(uuid)

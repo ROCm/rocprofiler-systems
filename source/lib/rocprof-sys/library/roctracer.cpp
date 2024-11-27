@@ -506,8 +506,7 @@ hip_api_callback(uint32_t domain, uint32_t cid, const void* callback_data, void*
         case HIP_API_ID___hipPopCallConfiguration:
         case HIP_API_ID_hipDeviceEnablePeerAccess:
         case HIP_API_ID_hipImportExternalMemory:
-        case HIP_API_ID_hipDestroyExternalMemory:
-            return;
+        case HIP_API_ID_hipDestroyExternalMemory: return;
         default: break;
     }
 
