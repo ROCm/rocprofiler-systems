@@ -430,18 +430,9 @@ function(ROCPROFILER_SYSTEMS_ADD_TEST)
     if(TEST_GPU)
         list(APPEND TEST_LABELS "gpu")
 
-        if(NOT "ROCPROFSYS_USE_ROCTRACER=OFF" IN_LIST TEST_ENVIRONMENT)
-            list(APPEND TEST_LABELS "roctracer")
-        endif()
-
         if(NOT "ROCPROFSYS_USE_ROCM=OFF" IN_LIST TEST_ENVIRONMENT)
             list(APPEND TEST_LABELS "rocm-smi")
         endif()
-    endif()
-
-    if("ROCPROFSYS_USE_ROCTRACER=ON" IN_LIST TEST_ENVIRONMENT AND NOT "roctracer" IN_LIST
-                                                                  TEST_ENVIRONMENT)
-        list(APPEND TEST_LABELS "roctracer")
     endif()
 
     if("ROCPROFSYS_USE_ROCM=ON" IN_LIST TEST_ENVIRONMENT AND NOT "rocm-smi" IN_LIST

@@ -90,7 +90,7 @@ if(ROCPROFSYS_USE_ROCPROFILER)
         NUM_PROCS ${NUM_PROCS}
         REWRITE_ARGS -e -v 2 -E uniform_int_distribution
         ENVIRONMENT
-            "${_base_environment};ROCPROFSYS_USE_ROCTRACER=OFF;ROCPROFSYS_ROCM_EVENTS=${ROCPROFSYS_ROCM_EVENTS_TEST}"
+            "${_base_environment};ROCPROFSYS_ROCM_EVENTS=${ROCPROFSYS_ROCM_EVENTS_TEST}"
         REWRITE_RUN_PASS_REGEX
             "rocprof-device-0-GRBM_COUNT.txt(.*)rocprof-device-0-GPUBusy.txt(.*)rocprof-device-0-SQ_WAVES.txt(.*)rocprof-device-0-SQ_INSTS_VALU.txt(.*)rocprof-device-0-VALUInsts.txt(.*)rocprof-device-0-TCC_HIT_sum.txt(.*)rocprof-device-0-TA_TA_BUSY_0.txt(.*)rocprof-device-0-TA_TA_BUSY_11.txt"
         REWRITE_RUN_FAIL_REGEX "roctracer.txt|ROCPROFSYS_ABORT_FAIL_REGEX")

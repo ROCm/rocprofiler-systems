@@ -222,7 +222,7 @@ init_parser(parser_data& _data)
     _data.dl_libpath = get_realpath(get_internal_libpath("librocprof-sys-dl.so").c_str());
     _data.omni_libpath = get_realpath(get_internal_libpath("librocprof-sys.so").c_str());
 
-#if defined(ROCPROFSYS_USE_ROCTRACER) || defined(ROCPROFSYS_USE_ROCPROFILER)
+#if defined(ROCPROFSYS_USE_ROCPROFILER)
     update_env(_data, "HSA_TOOLS_LIB", _data.dl_libpath);
     if(!getenv("HSA_TOOLS_REPORT_LOAD_FAILURE"))
         update_env(_data, "HSA_TOOLS_REPORT_LOAD_FAILURE", "1");
@@ -305,7 +305,7 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
             ? strvec_t{ "hsa-interrupt" }
             : strvec_t{};
 
-#if ROCPROFSYS_USE_ROCTRACER == 0 && ROCPROFSYS_USE_ROCPROFILER == 0
+#if ROCPROFSYS_USE_ROCPROFILER == 0
     _realtime_reqs.clear();
 #endif
 
@@ -583,10 +583,8 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
     _backend_choices.erase("rocm-smi");
 #endif
 
-#if !defined(ROCPROFSYS_USE_ROCTRACER)
     _backend_choices.erase("roctracer");
     _backend_choices.erase("roctx");
-#endif
 
 #if !defined(ROCPROFSYS_USE_ROCPROFILER)
     _backend_choices.erase("rocprofiler");
@@ -605,15 +603,6 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
 
 #if defined(ROCPROFSYS_USE_ROCM)
         update_env(_data, "ROCPROFSYS_USE_ROCM_SMI", false);
-#endif
-
-#if defined(ROCPROFSYS_USE_ROCTRACER)
-        update_env(_data, "ROCPROFSYS_USE_ROCTRACER", false);
-        update_env(_data, "ROCPROFSYS_USE_ROCTX", false);
-        update_env(_data, "ROCPROFSYS_ROCTRACER_HSA_ACTIVITY", false);
-        update_env(_data, "ROCPROFSYS_ROCTRACER_HIP_ACTIVITY", false);
-        _backend_choices.erase("roctracer");
-        _backend_choices.erase("roctx");
 #endif
 
 #if defined(ROCPROFSYS_USE_ROCPROFILER)
@@ -642,9 +631,7 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
                 _update("ROCPROFSYS_USE_OMPT", _v.count("ompt") > 0);
                 _update("ROCPROFSYS_USE_ROCM", _v.count("rocm") > 0);
                 _update("ROCPROFSYS_USE_RCCLP", _v.count("rcclp") > 0);
-                _update("ROCPROFSYS_USE_ROCTX", _v.count("roctx") > 0);
                 _update("ROCPROFSYS_USE_ROCM_SMI", _v.count("rocm-smi") > 0);
-                _update("ROCPROFSYS_USE_ROCTRACER", _v.count("roctracer") > 0);
                 _update("ROCPROFSYS_USE_ROCPROFILER", _v.count("rocprofiler") > 0);
                 _update("ROCPROFSYS_TRACE_THREAD_LOCKS", _v.count("mutex-locks") > 0);
                 _update("ROCPROFSYS_TRACE_THREAD_RW_LOCKS", _v.count("rw-locks") > 0);
@@ -679,16 +666,14 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
                 _update("ROCPROFSYS_USE_OMPT", _v.count("ompt") > 0);
                 _update("ROCPROFSYS_USE_ROCM", _v.count("rocm") > 0);
                 _update("ROCPROFSYS_USE_RCCLP", _v.count("rcclp") > 0);
-                _update("ROCPROFSYS_USE_ROCTX", _v.count("roctx") > 0);
                 _update("ROCPROFSYS_USE_ROCM_SMI", _v.count("rocm-smi") > 0);
-                _update("ROCPROFSYS_USE_ROCTRACER", _v.count("roctracer") > 0);
                 _update("ROCPROFSYS_USE_ROCPROFILER", _v.count("rocprofiler") > 0);
                 _update("ROCPROFSYS_TRACE_THREAD_LOCKS", _v.count("mutex-locks") > 0);
                 _update("ROCPROFSYS_TRACE_THREAD_RW_LOCKS", _v.count("rw-locks") > 0);
                 _update("ROCPROFSYS_TRACE_THREAD_SPIN_LOCKS", _v.count("spin-locks") > 0);
 
                 if(_v.count("all") > 0 ||
-                   (_v.count("roctracer") > 0 && _v.count("rocprofiler") > 0))
+                   (_v.count("rocprofiler") > 0))
                 {
                     remove_env(_data, "HSA_TOOLS_LIB");
                     remove_env(_data, "HSA_TOOLS_REPORT_LOAD_FAILURE");

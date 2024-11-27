@@ -294,10 +294,6 @@ configure_settings(bool _init)
                               "Enable causal profiling analysis", false, "backend",
                               "causal", "analysis");
 
-    ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_USE_ROCTRACER",
-                              "Enable ROCm API and kernel tracing", true, "backend",
-                              "roctracer", "rocm");
-
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_USE_ROCPROFILER",
                               "Enable ROCm hardware counters", true, "backend",
                               "rocprofiler", "rocm");
@@ -306,11 +302,6 @@ configure_settings(bool _init)
         bool, "ROCPROFSYS_USE_ROCM_SMI",
         "Enable sampling GPU power, temp, utilization, and memory usage", true, "backend",
         "rocm_smi", "rocm", "process_sampling");
-
-    ROCPROFSYS_CONFIG_SETTING(
-        bool, "ROCPROFSYS_USE_ROCTX",
-        "Enable ROCtx API. Warning! Out-of-order ranges may corrupt perfetto flamegraph",
-        false, "backend", "roctracer", "rocm", "roctx");
 
     ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_USE_SAMPLING",
                               "Enable statistical sampling of call-stack", false,
@@ -706,7 +697,7 @@ configure_settings(bool _init)
 
     ROCPROFSYS_CONFIG_SETTING(
         bool, "ROCPROFSYS_PERFETTO_COMPACT_ROCTRACER_ANNOTATIONS",
-        "When PERFETTO_ANNOTATIONS, USE_ROCTRACER, and ROCTRACER_HIP_API are all "
+        "When PERFETTO_ANNOTATIONS, and ROCTRACER_HIP_API are all "
         "enabled, enabling this option will result in the arg information for HIP API "
         "calls to all be within one annotation (e.g., args=\"stream=0x0, dst=0x1F, "
         "sizeBytes=64, src=0x08, kind=1\"). When disabled, each parameter will be an "
@@ -1140,7 +1131,6 @@ configure_mode_settings(const std::shared_ptr<settings>& _config)
         _set("ROCPROFSYS_PROFILE", false);
         _set("ROCPROFSYS_USE_CAUSAL", false);
         _set("ROCPROFSYS_USE_ROCM_SMI", false);
-        _set("ROCPROFSYS_USE_ROCTRACER", false);
         _set("ROCPROFSYS_USE_ROCPROFILER", false);
         _set("ROCPROFSYS_USE_KOKKOSP", false);
         _set("ROCPROFSYS_USE_RCCLP", false);
@@ -1169,7 +1159,6 @@ configure_mode_settings(const std::shared_ptr<settings>& _config)
                                     "rocprofiler, and rocm_smi...\n");
 #endif
         _set("ROCPROFSYS_USE_ROCPROFILER", false);
-        _set("ROCPROFSYS_USE_ROCTRACER", false);
         _set("ROCPROFSYS_USE_ROCM_SMI", false);
     }
 
@@ -1203,7 +1192,6 @@ configure_mode_settings(const std::shared_ptr<settings>& _config)
         _set("ROCPROFSYS_PROFILE", false);
         _set("ROCPROFSYS_USE_CAUSAL", false);
         _set("ROCPROFSYS_USE_ROCM_SMI", false);
-        _set("ROCPROFSYS_USE_ROCTRACER", false);
         _set("ROCPROFSYS_USE_ROCPROFILER", false);
         _set("ROCPROFSYS_USE_KOKKOSP", false);
         _set("ROCPROFSYS_USE_RCCLP", false);
@@ -1389,14 +1377,7 @@ configure_disabled_settings(const std::shared_ptr<settings>& _config)
     _handle_use_option("ROCPROFSYS_USE_OMPT", "ompt");
     _handle_use_option("ROCPROFSYS_USE_RCCLP", "rcclp");
     _handle_use_option("ROCPROFSYS_USE_ROCM_SMI", "rocm_smi");
-    _handle_use_option("ROCPROFSYS_USE_ROCTRACER", "roctracer");
     _handle_use_option("ROCPROFSYS_USE_ROCPROFILER", "rocprofiler");
-
-#if !defined(ROCPROFSYS_USE_ROCTRACER) || ROCPROFSYS_USE_ROCTRACER == 0
-    _config->find("ROCPROFSYS_USE_ROCTRACER")->second->set_hidden(true);
-    for(const auto& itr : _config->disable_category("roctracer"))
-        _config->find(itr)->second->set_hidden(true);
-#endif
 
 #if !defined(ROCPROFSYS_USE_ROCPROFILER) || ROCPROFSYS_USE_ROCPROFILER == 0
     _config->find("ROCPROFSYS_USE_ROCPROFILER")->second->set_hidden(true);
@@ -1870,23 +1851,13 @@ get_use_causal()
 bool
 get_use_roctracer()
 {
-#if defined(ROCPROFSYS_USE_ROCTRACER) && ROCPROFSYS_USE_ROCTRACER > 0
-    static auto _v = get_config()->find("ROCPROFSYS_USE_ROCTRACER");
-    return static_cast<tim::tsettings<bool>&>(*_v->second).get();
-#else
     return false;
-#endif
 }
 
 bool
 get_perfetto_roctracer_per_stream()
 {
-#if defined(ROCPROFSYS_USE_ROCTRACER) && ROCPROFSYS_USE_ROCTRACER > 0
-    static auto _v = get_config()->find("ROCPROFSYS_PERFETTO_ROCTRACER_PER_STREAM");
-    return static_cast<tim::tsettings<bool>&>(*_v->second).get();
-#else
     return false;
-#endif
 }
 
 bool
@@ -1914,12 +1885,7 @@ get_use_rocm_smi()
 bool
 get_use_roctx()
 {
-#if defined(ROCPROFSYS_USE_ROCTRACER) && ROCPROFSYS_USE_ROCTRACER > 0
-    static auto _v = get_config()->find("ROCPROFSYS_USE_ROCTX");
-    return static_cast<tim::tsettings<bool>&>(*_v->second).get();
-#else
     return false;
-#endif
 }
 
 bool&

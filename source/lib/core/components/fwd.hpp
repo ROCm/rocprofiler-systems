@@ -96,9 +96,7 @@ struct functors;
 }  // namespace component
 }  // namespace rocprofsys
 
-#if !defined(ROCPROFSYS_USE_ROCTRACER)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::roctracer, false_type)
-#endif
 
 #if !defined(ROCPROFSYS_USE_ROCPROFILER)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::rocprofiler, false_type)

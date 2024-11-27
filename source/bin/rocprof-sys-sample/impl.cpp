@@ -44,10 +44,6 @@
 #include <unistd.h>
 #include <vector>
 
-#if !defined(ROCPROFSYS_USE_ROCTRACER)
-#    define ROCPROFSYS_USE_ROCTRACER 0
-#endif
-
 #if !defined(ROCPROFSYS_USE_ROCPROFILER)
 #    define ROCPROFSYS_USE_ROCPROFILER 0
 #endif
@@ -140,7 +136,7 @@ get_initial_environment()
 
     update_env(_env, "ROCPROFSYS_USE_SAMPLING", (_mode != "causal"));
 
-#if defined(ROCPROFSYS_USE_ROCTRACER) || defined(ROCPROFSYS_USE_ROCPROFILER)
+#if defined(ROCPROFSYS_USE_ROCPROFILER)
     update_env(_env, "HSA_TOOLS_LIB", _dl_libpath);
     if(!getenv("HSA_TOOLS_REPORT_LOAD_FAILURE"))
         update_env(_env, "HSA_TOOLS_REPORT_LOAD_FAILURE", "1");
@@ -361,7 +357,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
                               ? std::vector<std::string>{ "hsa-interrupt" }
                               : std::vector<std::string>{};
 
-#if ROCPROFSYS_USE_ROCTRACER == 0 && ROCPROFSYS_USE_ROCPROFILER == 0
+#if ROCPROFSYS_USE_ROCPROFILER == 0
     _realtime_reqs.clear();
 #endif
 
@@ -763,11 +759,6 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
     _backend_choices.erase("rocm-smi");
 #endif
 
-#if !defined(ROCPROFSYS_USE_ROCTRACER)
-    _backend_choices.erase("roctracer");
-    _backend_choices.erase("roctx");
-#endif
-
 #if !defined(ROCPROFSYS_USE_ROCPROFILER)
     _backend_choices.erase("rocprofiler");
 #endif
@@ -786,9 +777,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
             _update("ROCPROFSYS_USE_MPIP", _v.count("mpip") > 0);
             _update("ROCPROFSYS_USE_OMPT", _v.count("ompt") > 0);
             _update("ROCPROFSYS_USE_RCCLP", _v.count("rcclp") > 0);
-            _update("ROCPROFSYS_USE_ROCTX", _v.count("roctx") > 0);
             _update("ROCPROFSYS_USE_ROCM_SMI", _v.count("rocm-smi") > 0);
-            _update("ROCPROFSYS_USE_ROCTRACER", _v.count("roctracer") > 0);
             _update("ROCPROFSYS_USE_ROCPROFILER", _v.count("rocprofiler") > 0);
             _update("ROCPROFSYS_TRACE_THREAD_LOCKS", _v.count("mutex-locks") > 0);
             _update("ROCPROFSYS_TRACE_THREAD_RW_LOCKS", _v.count("rw-locks") > 0);
@@ -812,16 +801,14 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
             _update("ROCPROFSYS_USE_MPIP", _v.count("mpip") > 0);
             _update("ROCPROFSYS_USE_OMPT", _v.count("ompt") > 0);
             _update("ROCPROFSYS_USE_RCCLP", _v.count("rcclp") > 0);
-            _update("ROCPROFSYS_USE_ROCTX", _v.count("roctx") > 0);
             _update("ROCPROFSYS_USE_ROCM_SMI", _v.count("rocm-smi") > 0);
-            _update("ROCPROFSYS_USE_ROCTRACER", _v.count("roctracer") > 0);
             _update("ROCPROFSYS_USE_ROCPROFILER", _v.count("rocprofiler") > 0);
             _update("ROCPROFSYS_TRACE_THREAD_LOCKS", _v.count("mutex-locks") > 0);
             _update("ROCPROFSYS_TRACE_THREAD_RW_LOCKS", _v.count("rw-locks") > 0);
             _update("ROCPROFSYS_TRACE_THREAD_SPIN_LOCKS", _v.count("spin-locks") > 0);
 
             if(_v.count("all") > 0 ||
-               (_v.count("roctracer") > 0 && _v.count("rocprofiler") > 0))
+               (_v.count("rocprofiler") > 0))
             {
                 remove_env(_env, "HSA_TOOLS_LIB");
                 remove_env(_env, "HSA_TOOLS_REPORT_LOAD_FAILURE");

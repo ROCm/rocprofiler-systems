@@ -43,7 +43,7 @@
 // must be included after hip_runtime_api.h
 #    include <hip/hip_deprecated.h>
 // must be included after hip_runtime_api.h
-#    include <hip_ostream_ops.h>
+#    include <roctracer/hip_ostream_ops.h>
 // must be included after hip_runtime_api.h
 #    include <hip/amd_detail/hip_prof_str.h>
 

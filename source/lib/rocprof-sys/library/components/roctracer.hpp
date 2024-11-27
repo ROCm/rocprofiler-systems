@@ -73,7 +73,6 @@ struct roctracer
     [[nodiscard]] static scope::transient_destructor protect_flush_activity();
 };
 
-#if !defined(ROCPROFSYS_USE_ROCTRACER)
 inline void
 roctracer::setup(void*, bool)
 {}
@@ -91,27 +90,13 @@ roctracer::is_setup()
 {
     return false;
 }
-#endif
 }  // namespace component
 }  // namespace rocprofsys
 
-#if !defined(ROCPROFSYS_USE_ROCTRACER)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::roctracer_data, false_type)
-#endif
 
 TIMEMORY_SET_COMPONENT_API(rocprofsys::component::roctracer_data, project::timemory,
                            category::timing, os::supports_unix)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_timing_category, component::roctracer_data, true_type)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(uses_timing_units, component::roctracer_data, true_type)
 
-#if defined(ROCPROFSYS_USE_ROCTRACER) && ROCPROFSYS_USE_ROCTRACER > 0
-#    if !defined(ROCPROFSYS_EXTERN_COMPONENTS) ||                                        \
-        (defined(ROCPROFSYS_EXTERN_COMPONENTS) && ROCPROFSYS_EXTERN_COMPONENTS > 0)
-
-#        include <timemory/operations.hpp>
-
-ROCPROFSYS_DECLARE_EXTERN_COMPONENT(roctracer, false, void)
-ROCPROFSYS_DECLARE_EXTERN_COMPONENT(roctracer_data, true, double)
-
-#    endif
-#endif

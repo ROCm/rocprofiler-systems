@@ -360,11 +360,6 @@ struct ROCPROFSYS_INTERNAL_API indirect
         ROCPROFSYS_DLSYM(kokkosp_dual_view_modify_f, m_omnihandle,
                          "kokkosp_dual_view_modify");
 
-#if ROCPROFSYS_USE_ROCTRACER > 0
-        ROCPROFSYS_DLSYM(hsa_on_load_f, m_omnihandle, "OnLoad");
-        ROCPROFSYS_DLSYM(hsa_on_unload_f, m_omnihandle, "OnUnload");
-#endif
-
 #if ROCPROFSYS_USE_ROCPROFILER > 0
         ROCPROFSYS_DLSYM(rocp_on_load_tool_prop_f, m_omnihandle, "OnLoadToolProp");
         ROCPROFSYS_DLSYM(rocp_on_unload_tool_f, m_omnihandle, "OnUnloadTool");
@@ -459,12 +454,6 @@ public:
     void (*kokkosp_profile_event_f)(const char*)                              = nullptr;
     void (*kokkosp_dual_view_sync_f)(const char*, const void* const, bool)    = nullptr;
     void (*kokkosp_dual_view_modify_f)(const char*, const void* const, bool)  = nullptr;
-
-    // HSA functions
-#if ROCPROFSYS_USE_ROCTRACER > 0
-    bool (*hsa_on_load_f)(HsaApiTable*, uint64_t, uint64_t, const char* const*) = nullptr;
-    void (*hsa_on_unload_f)()                                                   = nullptr;
-#endif
 
     // ROCP functions
 #if ROCPROFSYS_USE_ROCPROFILER > 0
@@ -1066,23 +1055,6 @@ extern "C"
         return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_dual_view_modify_f, label,
                                     data, is_device);
     }
-
-    //----------------------------------------------------------------------------------//
-    //
-    //      HSA
-    //
-    //----------------------------------------------------------------------------------//
-
-#if ROCPROFSYS_USE_ROCTRACER > 0
-    bool OnLoad(HsaApiTable* table, uint64_t runtime_version, uint64_t failed_tool_count,
-                const char* const* failed_tool_names)
-    {
-        return ROCPROFSYS_DL_INVOKE(get_indirect().hsa_on_load_f, table, runtime_version,
-                                    failed_tool_count, failed_tool_names);
-    }
-
-    void OnUnload() { return ROCPROFSYS_DL_INVOKE(get_indirect().hsa_on_unload_f); }
-#endif
 
     //----------------------------------------------------------------------------------//
     //

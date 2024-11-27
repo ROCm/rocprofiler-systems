@@ -109,9 +109,6 @@ get_environ(int _verbose, std::string _search_paths = {},
     _omnilib    = common::path::find_path(_omnilib, _verbose, _search_paths);
     _omnilib_dl = common::path::find_path(_omnilib_dl, _verbose, _search_paths);
 
-#if defined(ROCPROFSYS_USE_ROCTRACER) && ROCPROFSYS_USE_ROCTRACER > 0
-    _data.emplace_back(env_config{ "HSA_TOOLS_LIB", _omnilib.c_str(), 0 });
-#endif
 
 #if defined(ROCPROFSYS_USE_ROCPROFILER) && ROCPROFSYS_USE_ROCPROFILER > 0
 #    define ROCPROFILER_METRICS_DIR "lib/rocprofiler"

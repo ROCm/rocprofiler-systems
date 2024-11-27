@@ -820,11 +820,6 @@ parse_args(int argc, char** argv, std::vector<char*>& _env,
         add_default_env(_env, "ROCPROFSYS_USE_MPIP", true);
 #endif
 
-#if defined(ROCPROFSYS_USE_ROCTRACER) && ROCPROFSYS_USE_ROCTRACER > 0
-        add_default_env(_env, "ROCPROFSYS_ROCTRACER_HIP_API", true);
-        add_default_env(_env, "ROCPROFSYS_ROCTRACER_HSA_API", true);
-#endif
-
 #if defined(ROCPROFSYS_USE_RCCL) && ROCPROFSYS_USE_RCCL > 0
         add_default_env(_env, "ROCPROFSYS_USE_RCCLP", true);
 #endif
