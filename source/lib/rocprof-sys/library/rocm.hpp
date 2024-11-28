@@ -24,10 +24,6 @@
 
 #include "core/defines.hpp"
 
-#if defined(ROCPROFSYS_USE_ROCPROFILER) && ROCPROFSYS_USE_ROCPROFILER > 0
-#    include <rocprofiler.h>
-#endif
-
 #include <cstdint>
 #include <mutex>
 
@@ -50,9 +46,4 @@ extern "C"
     bool OnLoad(HsaApiTable* table, uint64_t runtime_version, uint64_t failed_tool_count,
                 const char* const* failed_tool_names) ROCPROFSYS_PUBLIC_API;
     void OnUnload() ROCPROFSYS_PUBLIC_API;
-
-#if defined(ROCPROFSYS_USE_ROCPROFILER) && ROCPROFSYS_USE_ROCPROFILER > 0
-    void OnLoadToolProp(rocprofiler_settings_t* settings) ROCPROFSYS_PUBLIC_API;
-    void OnUnloadTool() ROCPROFSYS_PUBLIC_API;
-#endif
 }

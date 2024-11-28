@@ -179,8 +179,6 @@ rocprofiler_systems_add_option(ROCPROFSYS_USE_MPI "Enable MPI support" OFF)
 rocprofiler_systems_add_option(ROCPROFSYS_USE_ROCM "Enable ROCm support" ON)
 rocprofiler_systems_add_option(ROCPROFSYS_USE_PAPI "Enable HW counter support via PAPI"
                                ON)
-rocprofiler_systems_add_option(ROCPROFSYS_USE_ROCPROFILER "Enable rocprofiler support"
-                               ${ROCPROFSYS_USE_ROCM})
 rocprofiler_systems_add_option(ROCPROFSYS_USE_RCCL "Enable RCCL support"
                                ${ROCPROFSYS_USE_ROCM})
 rocprofiler_systems_add_option(
@@ -213,16 +211,10 @@ elseif("$ENV{ROCPROFSYS_CI}")
 endif()
 
 if(NOT ROCPROFSYS_USE_ROCM)
-    set(ROCPROFSYS_USE_ROCPROFILER
-        OFF
-        CACHE BOOL "Disabled via ROCPROFSYS_USE_ROCM=OFF" FORCE)
     set(ROCPROFSYS_USE_RCCL
         OFF
         CACHE BOOL "Disabled via ROCPROFSYS_USE_ROCM=OFF" FORCE)
-elseif(
-    ROCPROFSYS_USE_ROCM
-    AND NOT ROCPROFSYS_USE_ROCPROFILER
-    AND NOT ROCPROFSYS_USE_RCCL)
+elseif(ROCPROFSYS_USE_ROCM AND NOT ROCPROFSYS_USE_RCCL)
     rocprofiler_systems_message(
         AUTHOR_WARNING
         "Setting ROCPROFSYS_USE_ROCM=OFF because roctracer, rocprofiler, and rccl options are disabled"
@@ -365,13 +357,8 @@ endif()
 #
 # ------------------------------------------------------------------------------#
 
-if(NOT ROCPROFSYS_USE_ROCPROFILER)
-    set(ROCPROFSYS_HSA_ENV "# ")
-endif()
-
-if(NOT ROCPROFSYS_USE_ROCPROFILER)
-    set(ROCPROFSYS_ROCP_ENV "# ")
-endif()
+set(ROCPROFSYS_HSA_ENV "# ")
+set(ROCPROFSYS_ROCP_ENV "# ")
 
 configure_file(
     ${PROJECT_SOURCE_DIR}/LICENSE

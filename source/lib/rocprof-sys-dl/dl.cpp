@@ -360,11 +360,6 @@ struct ROCPROFSYS_INTERNAL_API indirect
         ROCPROFSYS_DLSYM(kokkosp_dual_view_modify_f, m_omnihandle,
                          "kokkosp_dual_view_modify");
 
-#if ROCPROFSYS_USE_ROCPROFILER > 0
-        ROCPROFSYS_DLSYM(rocp_on_load_tool_prop_f, m_omnihandle, "OnLoadToolProp");
-        ROCPROFSYS_DLSYM(rocp_on_unload_tool_f, m_omnihandle, "OnUnloadTool");
-#endif
-
 #if ROCPROFSYS_USE_OMPT == 0
         _warn_verbose = 5;
 #else
@@ -454,12 +449,6 @@ public:
     void (*kokkosp_profile_event_f)(const char*)                              = nullptr;
     void (*kokkosp_dual_view_sync_f)(const char*, const void* const, bool)    = nullptr;
     void (*kokkosp_dual_view_modify_f)(const char*, const void* const, bool)  = nullptr;
-
-    // ROCP functions
-#if ROCPROFSYS_USE_ROCPROFILER > 0
-    void (*rocp_on_load_tool_prop_f)(void* settings) = nullptr;
-    void (*rocp_on_unload_tool_f)()                  = nullptr;
-#endif
 
     // OpenMP functions
 #if defined(ROCPROFSYS_USE_OMPT) && ROCPROFSYS_USE_OMPT > 0
@@ -1055,31 +1044,6 @@ extern "C"
         return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_dual_view_modify_f, label,
                                     data, is_device);
     }
-
-    //----------------------------------------------------------------------------------//
-    //
-    //      ROCP
-    //
-    //----------------------------------------------------------------------------------//
-
-#if ROCPROFSYS_USE_ROCPROFILER > 0
-    void OnLoadToolProp(void* settings)
-    {
-        ROCPROFSYS_DL_LOG(
-            -16,
-            "invoking %s(rocprofiler_settings_t*) within librocprof-sys-dl.so "
-            "will cause a silent failure for rocprofiler. ROCP_TOOL_LIB "
-            "should be set to librocprof-sys.so\n",
-            __FUNCTION__);
-        abort();
-        return ROCPROFSYS_DL_INVOKE(get_indirect().rocp_on_load_tool_prop_f, settings);
-    }
-
-    void OnUnloadTool()
-    {
-        return ROCPROFSYS_DL_INVOKE(get_indirect().rocp_on_unload_tool_f);
-    }
-#endif
 
     //----------------------------------------------------------------------------------//
     //

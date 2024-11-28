@@ -12,15 +12,7 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.20)
     cmake_policy(SET CMP0115 NEW)
 endif()
 
-if(ROCPROFSYS_USE_ROCPROFILER
-   AND rocprofiler_LIBRARY_DIR
-   AND ROCmVersion_TRIPLE_VERSION VERSION_LESS 5.2.0
-   AND NOT CMAKE_INSTALL_RPATH_USE_LINK_PATH)
-    set(ROCPROFSYS_LIB_INSTALL_RPATH
-        "\$ORIGIN:\$ORIGIN/${PROJECT_NAME}:${rocprofiler_LIBRARY_DIR}")
-else()
-    set(ROCPROFSYS_LIB_INSTALL_RPATH "\$ORIGIN:\$ORIGIN/${PROJECT_NAME}")
-endif()
+set(ROCPROFSYS_LIB_INSTALL_RPATH "\$ORIGIN:\$ORIGIN/${PROJECT_NAME}")
 
 # ------------------------------------------------------------------------------#
 #

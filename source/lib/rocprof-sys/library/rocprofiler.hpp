@@ -68,7 +68,6 @@ post_process();
 std::vector<component::rocm_info_entry>
 rocm_metrics();
 
-#if !defined(ROCPROFSYS_USE_ROCPROFILER) || ROCPROFSYS_USE_ROCPROFILER == 0
 inline void
 post_process()
 {}
@@ -82,7 +81,6 @@ rocm_metrics()
 {
     return std::vector<component::rocm_info_entry>{};
 }
-#endif
 
 }  // namespace rocprofiler
 }  // namespace rocprofsys

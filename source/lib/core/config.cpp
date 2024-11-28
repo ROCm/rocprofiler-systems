@@ -294,10 +294,6 @@ configure_settings(bool _init)
                               "Enable causal profiling analysis", false, "backend",
                               "causal", "analysis");
 
-    ROCPROFSYS_CONFIG_SETTING(bool, "ROCPROFSYS_USE_ROCPROFILER",
-                              "Enable ROCm hardware counters", true, "backend",
-                              "rocprofiler", "rocm");
-
     ROCPROFSYS_CONFIG_SETTING(
         bool, "ROCPROFSYS_USE_ROCM_SMI",
         "Enable sampling GPU power, temp, utilization, and memory usage", true, "backend",
@@ -1131,7 +1127,6 @@ configure_mode_settings(const std::shared_ptr<settings>& _config)
         _set("ROCPROFSYS_PROFILE", false);
         _set("ROCPROFSYS_USE_CAUSAL", false);
         _set("ROCPROFSYS_USE_ROCM_SMI", false);
-        _set("ROCPROFSYS_USE_ROCPROFILER", false);
         _set("ROCPROFSYS_USE_KOKKOSP", false);
         _set("ROCPROFSYS_USE_RCCLP", false);
         _set("ROCPROFSYS_USE_OMPT", false);
@@ -1158,7 +1153,6 @@ configure_mode_settings(const std::shared_ptr<settings>& _config)
         ROCPROFSYS_BASIC_VERBOSE(1, "No HIP devices were found: disabling roctracer, "
                                     "rocprofiler, and rocm_smi...\n");
 #endif
-        _set("ROCPROFSYS_USE_ROCPROFILER", false);
         _set("ROCPROFSYS_USE_ROCM_SMI", false);
     }
 
@@ -1192,7 +1186,6 @@ configure_mode_settings(const std::shared_ptr<settings>& _config)
         _set("ROCPROFSYS_PROFILE", false);
         _set("ROCPROFSYS_USE_CAUSAL", false);
         _set("ROCPROFSYS_USE_ROCM_SMI", false);
-        _set("ROCPROFSYS_USE_ROCPROFILER", false);
         _set("ROCPROFSYS_USE_KOKKOSP", false);
         _set("ROCPROFSYS_USE_RCCLP", false);
         _set("ROCPROFSYS_USE_OMPT", false);
@@ -1377,13 +1370,6 @@ configure_disabled_settings(const std::shared_ptr<settings>& _config)
     _handle_use_option("ROCPROFSYS_USE_OMPT", "ompt");
     _handle_use_option("ROCPROFSYS_USE_RCCLP", "rcclp");
     _handle_use_option("ROCPROFSYS_USE_ROCM_SMI", "rocm_smi");
-    _handle_use_option("ROCPROFSYS_USE_ROCPROFILER", "rocprofiler");
-
-#if !defined(ROCPROFSYS_USE_ROCPROFILER) || ROCPROFSYS_USE_ROCPROFILER == 0
-    _config->find("ROCPROFSYS_USE_ROCPROFILER")->second->set_hidden(true);
-    for(const auto& itr : _config->disable_category("rocprofiler"))
-        _config->find(itr)->second->set_hidden(true);
-#endif
 
 #if !defined(ROCPROFSYS_USE_ROCM) || ROCPROFSYS_USE_ROCM == 0
     _config->find("ROCPROFSYS_USE_ROCM_SMI")->second->set_hidden(true);
@@ -1863,12 +1849,7 @@ get_perfetto_roctracer_per_stream()
 bool
 get_use_rocprofiler()
 {
-#if defined(ROCPROFSYS_USE_ROCPROFILER) && ROCPROFSYS_USE_ROCPROFILER > 0
-    static auto _v = get_config()->find("ROCPROFSYS_USE_ROCPROFILER");
-    return static_cast<tim::tsettings<bool>&>(*_v->second).get();
-#else
     return false;
-#endif
 }
 
 bool

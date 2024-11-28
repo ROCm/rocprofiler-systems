@@ -75,6 +75,13 @@ hip_activity_callback(const char* begin, const char* end, void*);
 bool&
 roctracer_is_init();
 
+inline bool&
+roctracer_is_init()
+{
+    static bool _instance = false;
+    return _instance;
+}
+
 bool&
 roctracer_is_setup();
 

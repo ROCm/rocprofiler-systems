@@ -37,11 +37,6 @@ set(component_headers
 target_sources(rocprofiler-systems-object-library PRIVATE ${component_sources}
                                                           ${component_headers})
 
-if(ROCPROFSYS_USE_ROCPROFILER)
-    target_sources(rocprofiler-systems-object-library
-                   PRIVATE ${CMAKE_CURRENT_LIST_DIR}/rocprofiler.cpp)
-endif()
-
 if(ROCPROFSYS_USE_RCCL)
     target_sources(rocprofiler-systems-object-library
                    PRIVATE ${CMAKE_CURRENT_LIST_DIR}/rcclp.cpp)

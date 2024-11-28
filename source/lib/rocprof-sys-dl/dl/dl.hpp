@@ -53,10 +53,6 @@
 #    define ROCPROFSYS_USE_OMPT 0
 #endif
 
-#if !defined(ROCPROFSYS_USE_ROCPROFILER)
-#    define ROCPROFSYS_USE_ROCPROFILER 0
-#endif
-
 //--------------------------------------------------------------------------------------//
 //
 //      rocprof-sys symbols
@@ -173,12 +169,6 @@ extern "C"
                                               const char*) ROCPROFSYS_PUBLIC_API;
 #    endif
 
-
-#    if ROCPROFSYS_USE_ROCPROFILER > 0
-    // ROCP
-    void OnLoadToolProp(void* settings) ROCPROFSYS_PUBLIC_API;
-    void OnUnloadTool() ROCPROFSYS_PUBLIC_API;
-#    endif
 #endif
 }
 

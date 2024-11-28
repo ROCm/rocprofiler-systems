@@ -46,10 +46,6 @@
 #include <mutex>
 #include <tuple>
 
-#if defined(ROCPROFSYS_USE_ROCPROFILER) && ROCPROFSYS_USE_ROCPROFILER > 0
-#    include <rocprofiler.h>
-#endif
-
 using namespace rocprofsys;
 
 namespace rocprofsys
@@ -62,94 +58,9 @@ bool       on_load_trace = (get_env<int>("ROCP_ONLOAD_TRACE", 0) > 0);
 }  // namespace rocm
 }  // namespace rocprofsys
 
-#if defined(ROCPROFSYS_USE_ROCPROFILER) && ROCPROFSYS_USE_ROCPROFILER > 0
-std::ostream&
-operator<<(std::ostream& _os, const rocprofiler_settings_t& _v)
-{
-#    define ROCPROF_SETTING_FIELD_STR(NAME) JOIN('=', #    NAME, _v.NAME)
-
-    _os << JOIN(
-        ", ", ROCPROF_SETTING_FIELD_STR(intercept_mode),
-        ROCPROF_SETTING_FIELD_STR(code_obj_tracking),
-        ROCPROF_SETTING_FIELD_STR(memcopy_tracking),
-        ROCPROF_SETTING_FIELD_STR(trace_size), ROCPROF_SETTING_FIELD_STR(trace_local),
-        ROCPROF_SETTING_FIELD_STR(timeout), ROCPROF_SETTING_FIELD_STR(timestamp_on),
-        ROCPROF_SETTING_FIELD_STR(hsa_intercepting),
-        ROCPROF_SETTING_FIELD_STR(k_concurrent), ROCPROF_SETTING_FIELD_STR(opt_mode),
-        ROCPROF_SETTING_FIELD_STR(obj_dumping));
-    return _os;
-}
-#endif
-
 // HSA-runtime tool on-load method
 extern "C"
 {
-#if defined(ROCPROFSYS_USE_ROCPROFILER) && ROCPROFSYS_USE_ROCPROFILER > 0
-    void OnUnloadTool()
-    {
-        ROCPROFSYS_BASIC_VERBOSE_F(2 || rocm::on_load_trace, "Unloading...\n");
-
-        rocm::lock_t _lk{ rocm::rocm_mutex, std::defer_lock };
-        if(!_lk.owns_lock()) _lk.lock();
-
-        if(!rocm::is_loaded)
-        {
-            ROCPROFSYS_BASIC_VERBOSE_F(1 || rocm::on_load_trace,
-                                       "rocprofiler is not loaded\n");
-            return;
-        }
-        rocm::is_loaded = false;
-
-        _lk.unlock();
-
-        // stop_top_level_timer_if_necessary();
-        // Final resources cleanup
-        rocprofsys::rocprofiler::rocm_cleanup();
-    }
-
-    void OnLoadToolProp(rocprofiler_settings_t* settings)
-    {
-        using ::rocprofiler::util::HsaRsrcFactory;
-
-        if(!config::get_use_rocprofiler() || config::get_rocm_events().empty()) return;
-
-        ROCPROFSYS_BASIC_VERBOSE_F(2 || rocm::on_load_trace, "Loading...\n");
-
-        rocm::lock_t _lk{ rocm::rocm_mutex, std::defer_lock };
-        if(!_lk.owns_lock()) _lk.lock();
-
-        if(rocm::is_loaded)
-        {
-            ROCPROFSYS_BASIC_VERBOSE_F(1 || rocm::on_load_trace,
-                                       "rocprofiler is already loaded\n");
-            return;
-        }
-        rocm::is_loaded = true;
-
-        _lk.unlock();
-
-        // Enable timestamping
-        settings->timestamp_on     = 1;
-        settings->intercept_mode   = 1;
-        settings->hsa_intercepting = 1;
-        settings->k_concurrent     = 0;
-        settings->obj_dumping      = 0;
-        // settings->code_obj_tracking = 0;
-        // settings->memcopy_tracking  = 0;
-        // settings->trace_local       = 1;
-        // settings->opt_mode          = 1;
-        // settings->trace_size        = 0;
-        // settings->timeout           = 0;
-
-        ROCPROFSYS_BASIC_VERBOSE_F(1 || rocm::on_load_trace, "rocprofiler settings: %s\n",
-                                   JOIN("", *settings).c_str());
-
-        // Initialize profiling
-        rocprofsys::rocprofiler::rocm_initialize();
-        HsaRsrcFactory::Instance().PrintGpuAgents("ROCm");
-    }
-#endif
-
     bool OnLoad(HsaApiTable* table, uint64_t runtime_version, uint64_t failed_tool_count,
                 const char* const* failed_tool_names)
     {
@@ -183,12 +94,7 @@ extern "C"
 
         comp::roctracer::setup(static_cast<void*>(table), rocm::on_load_trace);
 
-#if defined(ROCPROFSYS_USE_ROCPROFILER) && ROCPROFSYS_USE_ROCPROFILER > 0
-        bool _force_rocprofiler_init =
-            tim::get_env("ROCPROFSYS_FORCE_ROCPROFILER_INIT", false, false);
-#else
         bool _force_rocprofiler_init = false;
-#endif
 
         bool _success = true;
         bool _is_empty =

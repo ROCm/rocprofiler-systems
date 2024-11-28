@@ -128,7 +128,7 @@ endforeach()
 #
 # ----------------------------------------------------------------------------------------#
 
-if(ROCPROFSYS_USE_ROCM OR ROCPROFSYS_USE_ROCPROFILER)
+if(ROCPROFSYS_USE_ROCM)
     find_package(ROCmVersion)
 
     if(NOT ROCmVersion_FOUND)
@@ -195,19 +195,6 @@ if(ROCPROFSYS_USE_ROCM)
 
     find_package(rocm-smi ${rocprofiler_systems_FIND_QUIETLY} REQUIRED)
     target_link_libraries(rocprofiler-systems-rocm INTERFACE rocm-smi::rocm-smi)
-endif()
-
-# ----------------------------------------------------------------------------------------#
-#
-# rocprofiler
-#
-# ----------------------------------------------------------------------------------------#
-if(ROCPROFSYS_USE_ROCPROFILER)
-    find_package(rocprofiler ${rocprofiler_systems_FIND_QUIETLY} REQUIRED)
-    rocprofiler_systems_target_compile_definitions(rocprofiler-systems-rocprofiler
-                                                   INTERFACE ROCPROFSYS_USE_ROCPROFILER)
-    target_link_libraries(rocprofiler-systems-rocprofiler
-                          INTERFACE rocprofiler::rocprofiler)
 endif()
 
 # ----------------------------------------------------------------------------------------#

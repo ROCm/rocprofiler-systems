@@ -440,11 +440,6 @@ function(ROCPROFILER_SYSTEMS_ADD_TEST)
         list(APPEND TEST_LABELS "rocm-smi")
     endif()
 
-    if("ROCPROFSYS_USE_ROCPROFILER=ON" IN_LIST TEST_ENVIRONMENT
-       AND NOT "rocprofiler" IN_LIST TEST_ENVIRONMENT)
-        list(APPEND TEST_LABELS "rocprofiler")
-    endif()
-
     if(TARGET ${TEST_TARGET})
         if(DEFINED TEST_MPI
            AND ${TEST_MPI}

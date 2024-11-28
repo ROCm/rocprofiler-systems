@@ -131,7 +131,6 @@ struct rocprofiler
     [[nodiscard]] static scope::transient_destructor protect_flush_activity();
 };
 
-#if !defined(ROCPROFSYS_USE_ROCPROFILER)
 inline void
 rocprofiler::setup()
 {}
@@ -145,7 +144,6 @@ rocprofiler::is_setup()
 {
     return false;
 }
-#endif
 }  // namespace component
 }  // namespace rocprofsys
 
@@ -215,9 +213,7 @@ struct get_storage<component::rocm_data_tracker>
 }  // namespace operation
 }  // namespace tim
 
-#if !defined(ROCPROFSYS_USE_ROCPROFILER)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::rocprofiler_data, false_type)
-#endif
 
 TIMEMORY_SET_COMPONENT_API(component::rocprofiler_data, project::timemory,
                            category::timing, os::supports_unix)

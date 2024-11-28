@@ -99,4 +99,3 @@ TIMEMORY_SET_COMPONENT_API(rocprofsys::component::roctracer_data, project::timem
                            category::timing, os::supports_unix)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_timing_category, component::roctracer_data, true_type)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(uses_timing_units, component::roctracer_data, true_type)
-
