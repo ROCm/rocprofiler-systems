@@ -49,8 +49,6 @@ rocprofiler_systems_add_interface_library(rocprofiler-systems-compile-definition
 # libraries with relevant compile definitions
 set(ROCPROFSYS_EXTENSION_LIBRARIES
     rocprofiler-systems::rocprofiler-systems-rocm
-    rocprofiler-systems::rocprofiler-systems-roctracer
-    rocprofiler-systems::rocprofiler-systems-rocprofiler
     rocprofiler-systems::rocprofiler-systems-rccl
     rocprofiler-systems::rocprofiler-systems-bfd
     rocprofiler-systems::rocprofiler-systems-mpi
@@ -124,7 +122,7 @@ endforeach()
 
 # ----------------------------------------------------------------------------------------#
 #
-# hip version
+# ROCm Version
 #
 # ----------------------------------------------------------------------------------------#
 
@@ -183,18 +181,22 @@ endif()
 
 # ----------------------------------------------------------------------------------------#
 #
-# HIP
+# ROCm
 #
 # ----------------------------------------------------------------------------------------#
 
 if(ROCPROFSYS_USE_ROCM)
-    find_package(hip ${rocprofiler_systems_FIND_QUIETLY} REQUIRED)
+    find_package(rocprofiler-sdk ${rocprofiler_systems_FIND_QUIETLY} REQUIRED)
     rocprofiler_systems_target_compile_definitions(rocprofiler-systems-rocm
                                                    INTERFACE ROCPROFSYS_USE_ROCM)
-    target_link_libraries(rocprofiler-systems-rocm INTERFACE hip::host)
+    target_link_libraries(rocprofiler-systems-rocm
+                          INTERFACE rocprofiler-sdk::rocprofiler-sdk)
 
     find_package(rocm-smi ${rocprofiler_systems_FIND_QUIETLY} REQUIRED)
     target_link_libraries(rocprofiler-systems-rocm INTERFACE rocm-smi::rocm-smi)
+
+    # find_package(amd-smi ${rocprofiler_systems_FIND_QUIETLY} REQUIRED)
+    # target_link_libraries(rocprofiler-systems-rocm INTERFACE amd-smi::amd-smi)
 endif()
 
 # ----------------------------------------------------------------------------------------#

@@ -289,13 +289,6 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
 %{INDENT}%    0     avoid triggering the bug, potentially at the cost of reduced performance
 %{INDENT}%    1     do not modify how ROCm is notified about kernel completion)";
 
-    auto _realtime_reqs =
-        (tim::get_env("HSA_ENABLE_INTERRUPT", std::string{}, false).empty())
-            ? strvec_t{ "hsa-interrupt" }
-            : strvec_t{};
-
-    _realtime_reqs.clear();
-
     const auto* _trace_policy_desc =
         R"(Policy for new data when the buffer size limit is reached:
     %{INDENT}%- discard     : new data is ignored
@@ -566,20 +559,21 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
     _backend_choices.erase("rcclp");
 #endif
 
-#if !defined(ROCPROFSYS_USE_ROCM_SMI)
+#if !defined(ROCPROFSYS_USE_ROCM)
+    _backend_choices.erase("amd-smi");
     _backend_choices.erase("rocm-smi");
+    _backend_choices.erase("rocprofiler-sdk");
+    _backend_choices.erase("rocm");
 #endif
-
-    _backend_choices.erase("roctracer");
-    _backend_choices.erase("roctx");
-    _backend_choices.erase("rocprofiler");
 
     if(gpu::device_count() == 0)
     {
+        // remove GPU-specific backends
         _backend_choices.erase("rcclp");
+        _backend_choices.erase("amd-smi");
         _backend_choices.erase("rocm-smi");
-        _backend_choices.erase("roctracer");
-        _backend_choices.erase("rocprofiler");
+        _backend_choices.erase("rocprofiler-sdk");
+        _backend_choices.erase("rocm");
 
 #if defined(ROCPROFSYS_USE_RCCL)
         update_env(_data, "ROCPROFSYS_USE_RCCLP", false);
@@ -587,6 +581,7 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
 
 #if defined(ROCPROFSYS_USE_ROCM)
         update_env(_data, "ROCPROFSYS_USE_ROCM_SMI", false);
+        update_env(_data, "ROCPROFSYS_USE_ROCM", false);
 #endif
     }
 
@@ -650,17 +645,11 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
                 _update("ROCPROFSYS_TRACE_THREAD_RW_LOCKS", _v.count("rw-locks") > 0);
                 _update("ROCPROFSYS_TRACE_THREAD_SPIN_LOCKS", _v.count("spin-locks") > 0);
 
-                if(_v.count("all") > 0 || (_v.count("rocprofiler") > 0))
-                {
-                    remove_env(_data, "HSA_TOOLS_LIB");
-                    remove_env(_data, "HSA_TOOLS_REPORT_LOAD_FAILURE");
-                }
-
-                if(_v.count("all") > 0 || _v.count("rocprofiler") > 0)
-                {
-                    remove_env(_data, "ROCP_TOOL_LIB");
-                    remove_env(_data, "ROCP_HSA_INTERCEPT");
-                }
+                // if(_v.count("all") > 0 || _v.count("rocprofiler") > 0)
+                // {
+                //     remove_env(_data, "ROCP_TOOL_LIB");
+                //     remove_env(_data, "ROCP_HSA_INTERCEPT");
+                // }
 
                 if(_v.count("all") > 0 || _v.count("ompt") > 0)
                     remove_env(_data, "OMP_TOOL_LIBRARIES");
@@ -1090,7 +1079,6 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
         _parser.add_argument({ "--sample-realtime" }, _realtime_desc)
             .min_count(0)
             .dtype("[freq] [delay] [tids...]")
-            .required(std::move(_realtime_reqs))
             .action([&](parser_t& p) {
                 auto _v = p.get<std::deque<std::string>>("sample-realtime");
                 update_env(_data, "ROCPROFSYS_SAMPLING_REALTIME", true);

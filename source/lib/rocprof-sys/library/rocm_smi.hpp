@@ -128,7 +128,8 @@ private:
     static bool                          shutdown();
 };
 
-#if !defined(ROCPROFSYS_USE_ROCM)
+#if !defined(ROCPROFSYS_USE_ROCM) || ROCPROFSYS_USE_ROCM == 0
+
 inline void
 setup()
 {}

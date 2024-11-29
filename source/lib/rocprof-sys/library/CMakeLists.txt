@@ -23,8 +23,7 @@ set(library_headers
     ${CMAKE_CURRENT_LIST_DIR}/rcclp.hpp
     ${CMAKE_CURRENT_LIST_DIR}/rocm.hpp
     ${CMAKE_CURRENT_LIST_DIR}/rocm_smi.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/rocprofiler.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/roctracer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/rocprofiler-sdk.hpp
     ${CMAKE_CURRENT_LIST_DIR}/runtime.hpp
     ${CMAKE_CURRENT_LIST_DIR}/sampling.hpp
     ${CMAKE_CURRENT_LIST_DIR}/thread_data.hpp
@@ -41,14 +40,17 @@ if(ROCPROFSYS_USE_RCCL)
 endif()
 
 if(ROCPROFSYS_USE_ROCM)
-    target_sources(rocprofiler-systems-object-library
-                   PRIVATE ${CMAKE_CURRENT_LIST_DIR}/rocm_smi.cpp)
+    target_sources(
+        rocprofiler-systems-object-library
+        PRIVATE ${CMAKE_CURRENT_LIST_DIR}/rocm.cpp
+                ${CMAKE_CURRENT_LIST_DIR}/rocprofiler-sdk.cpp
+                ${CMAKE_CURRENT_LIST_DIR}/rocm_smi.cpp)
+    add_subdirectory(rocprofiler-sdk)
 endif()
 
 add_subdirectory(causal)
 add_subdirectory(components)
 add_subdirectory(coverage)
-add_subdirectory(rocm)
 add_subdirectory(tracing)
 
 set(ndebug_sources

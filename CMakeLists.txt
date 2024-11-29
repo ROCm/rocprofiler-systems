@@ -214,12 +214,6 @@ if(NOT ROCPROFSYS_USE_ROCM)
     set(ROCPROFSYS_USE_RCCL
         OFF
         CACHE BOOL "Disabled via ROCPROFSYS_USE_ROCM=OFF" FORCE)
-elseif(ROCPROFSYS_USE_ROCM AND NOT ROCPROFSYS_USE_RCCL)
-    rocprofiler_systems_message(
-        AUTHOR_WARNING
-        "Setting ROCPROFSYS_USE_ROCM=OFF because roctracer, rocprofiler, and rccl options are disabled"
-        )
-    set(ROCPROFSYS_USE_ROCM OFF)
 endif()
 
 if(ROCPROFSYS_BUILD_TESTING)
@@ -356,9 +350,6 @@ endif()
 # miscellaneous installs
 #
 # ------------------------------------------------------------------------------#
-
-set(ROCPROFSYS_HSA_ENV "# ")
-set(ROCPROFSYS_ROCP_ENV "# ")
 
 configure_file(
     ${PROJECT_SOURCE_DIR}/LICENSE

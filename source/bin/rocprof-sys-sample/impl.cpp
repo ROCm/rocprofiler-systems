@@ -338,12 +338,6 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
 %{INDENT}%    0     avoid triggering the bug, potentially at the cost of reduced performance
 %{INDENT}%    1     do not modify how ROCm is notified about kernel completion)";
 
-    auto _realtime_reqs = (get_env("HSA_ENABLE_INTERRUPT", std::string{}, false).empty())
-                              ? std::vector<std::string>{ "hsa-interrupt" }
-                              : std::vector<std::string>{};
-
-    _realtime_reqs.clear();
-
     const auto* _trace_policy_desc =
         R"(Policy for new data when the buffer size limit is reached:
     %{INDENT}%- discard     : new data is ignored
@@ -699,7 +693,6 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
 
     parser.add_argument({ "--realtime" }, _realtime_desc)
         .min_count(0)
-        .required(std::move(_realtime_reqs))
         .action([&](parser_t& p) {
             auto _v = p.get<std::deque<std::string>>("realtime");
             update_env(_env, "ROCPROFSYS_SAMPLING_REALTIME", true);
@@ -720,10 +713,20 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
             }
         });
 
-    std::set<std::string> _backend_choices = { "all",         "kokkosp",     "mpip",
-                                               "ompt",        "rcclp",       "rocm-smi",
-                                               "roctracer",   "rocprofiler", "roctx",
-                                               "mutex-locks", "spin-locks",  "rw-locks" };
+    std::set<std::string> _backend_choices = { "all",
+                                               "kokkosp",
+                                               "mpip",
+                                               "ompt",
+                                               "rcclp",
+                                               "rocm-smi",
+                                               "roctracer",
+                                               "rocprofiler",
+                                               "roctx",
+                                               "mutex-locks",
+                                               "spin-locks",
+                                               "rw-locks",
+                                               "rocprofiler-sdk",
+                                               "rocm" };
 
 #if !defined(ROCPROFSYS_USE_MPI) && !defined(ROCPROFSYS_USE_MPI_HEADERS)
     _backend_choices.erase("mpip");
@@ -740,9 +743,8 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
 #if !defined(ROCPROFSYS_USE_ROCM)
     _backend_choices.erase("rocm");
     _backend_choices.erase("rocm-smi");
+    _backend_choices.erase("rocprofiler-sdk");
 #endif
-
-    _backend_choices.erase("rocprofiler");
 
     parser.start_group("BACKEND OPTIONS",
                        "These options control region information captured "
@@ -757,6 +759,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
             _update("ROCPROFSYS_USE_KOKKOSP", _v.count("kokkosp") > 0);
             _update("ROCPROFSYS_USE_MPIP", _v.count("mpip") > 0);
             _update("ROCPROFSYS_USE_OMPT", _v.count("ompt") > 0);
+            _update("ROCPROFSYS_USE_ROCM", _v.count("rocm") > 0);
             _update("ROCPROFSYS_USE_RCCLP", _v.count("rcclp") > 0);
             _update("ROCPROFSYS_USE_ROCM_SMI", _v.count("rocm-smi") > 0);
             _update("ROCPROFSYS_TRACE_THREAD_LOCKS", _v.count("mutex-locks") > 0);
@@ -780,23 +783,18 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
             _update("ROCPROFSYS_USE_KOKKOSP", _v.count("kokkosp") > 0);
             _update("ROCPROFSYS_USE_MPIP", _v.count("mpip") > 0);
             _update("ROCPROFSYS_USE_OMPT", _v.count("ompt") > 0);
+            _update("ROCPROFSYS_USE_ROCM", _v.count("rocm") > 0);
             _update("ROCPROFSYS_USE_RCCLP", _v.count("rcclp") > 0);
             _update("ROCPROFSYS_USE_ROCM_SMI", _v.count("rocm-smi") > 0);
             _update("ROCPROFSYS_TRACE_THREAD_LOCKS", _v.count("mutex-locks") > 0);
             _update("ROCPROFSYS_TRACE_THREAD_RW_LOCKS", _v.count("rw-locks") > 0);
             _update("ROCPROFSYS_TRACE_THREAD_SPIN_LOCKS", _v.count("spin-locks") > 0);
 
-            if(_v.count("all") > 0 || (_v.count("rocprofiler") > 0))
-            {
-                remove_env(_env, "HSA_TOOLS_LIB");
-                remove_env(_env, "HSA_TOOLS_REPORT_LOAD_FAILURE");
-            }
-
-            if(_v.count("all") > 0 || _v.count("rocprofiler") > 0)
-            {
-                remove_env(_env, "ROCP_TOOL_LIB");
-                remove_env(_env, "ROCP_HSA_INTERCEPT");
-            }
+            // if(_v.count("all") > 0 || _v.count("rocprofiler") > 0)
+            // {
+            //     remove_env(_env, "ROCP_TOOL_LIB");
+            //     remove_env(_env, "ROCP_HSA_INTERCEPT");
+            // }
 
             if(_v.count("all") > 0 || _v.count("ompt") > 0)
                 remove_env(_env, "OMP_TOOL_LIBRARIES");

@@ -254,7 +254,7 @@ if(ROCPROFSYS_USE_ROCM AND (NOT DEFINED ROCPROFSYS_CI_GPU OR ROCPROFSYS_CI_GPU))
     endif()
 endif()
 
-set(LULESH_USE_GPU ${LULESH_USE_HIP})
+set(LULESH_USE_GPU ${LULESH_USE_ROCM})
 if(LULESH_USE_CUDA)
     set(LULESH_USE_GPU ON)
 endif()
@@ -314,8 +314,6 @@ ROCPROFSYS_SAMPLING_FREQ          = 300
 ROCPROFSYS_SAMPLING_DELAY         = 0.05
 ROCPROFSYS_SAMPLING_CPUS          = 0-${NUM_SAMPLING_PROCS}
 ROCPROFSYS_SAMPLING_GPUS          = $env:HIP_VISIBLE_DEVICES
-ROCPROFSYS_ROCTRACER_HSA_API      = ON
-ROCPROFSYS_ROCTRACER_HSA_ACTIVITY = ON
 
 # test-specific values
 ${_FILE_CONTENTS}
@@ -431,12 +429,21 @@ function(ROCPROFILER_SYSTEMS_ADD_TEST)
         list(APPEND TEST_LABELS "gpu")
 
         if(NOT "ROCPROFSYS_USE_ROCM=OFF" IN_LIST TEST_ENVIRONMENT)
+            list(APPEND TEST_LABELS "rocm")
+        endif()
+
+        if(NOT "ROCPROFSYS_USE_ROCM=OFF" IN_LIST TEST_ENVIRONMENT)
             list(APPEND TEST_LABELS "rocm-smi")
         endif()
     endif()
 
-    if("ROCPROFSYS_USE_ROCM=ON" IN_LIST TEST_ENVIRONMENT AND NOT "rocm-smi" IN_LIST
+    if("ROCPROFSYS_USE_ROCM=ON" IN_LIST TEST_ENVIRONMENT AND NOT "rocm" IN_LIST
                                                              TEST_ENVIRONMENT)
+        list(APPEND TEST_LABELS "rocm")
+    endif()
+
+    if("ROCPROFSYS_USE_ROCM_SMI=ON" IN_LIST TEST_ENVIRONMENT AND NOT "rocm-smi" IN_LIST
+                                                                 TEST_ENVIRONMENT)
         list(APPEND TEST_LABELS "rocm-smi")
     endif()
 

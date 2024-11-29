@@ -54,6 +54,14 @@
 #include <thread>
 #include <unistd.h>
 
+#if !defined(ROCPROFSYS_USE_ROCM)
+#    define ROCPROFSYS_USE_ROCM 0
+#endif
+
+#if ROCPROFSYS_USE_ROCM > 0
+#    include <rocprofiler-sdk/registration.h>
+#endif
+
 //--------------------------------------------------------------------------------------//
 
 #define ROCPROFSYS_DLSYM(VARNAME, HANDLE, FUNCNAME)                                      \
@@ -360,6 +368,10 @@ struct ROCPROFSYS_INTERNAL_API indirect
         ROCPROFSYS_DLSYM(kokkosp_dual_view_modify_f, m_omnihandle,
                          "kokkosp_dual_view_modify");
 
+#if ROCPROFSYS_USE_ROCM > 0
+        ROCPROFSYS_DLSYM(rocprofiler_configure_f, m_omnihandle, "rocprofiler_configure");
+#endif
+
 #if ROCPROFSYS_USE_OMPT == 0
         _warn_verbose = 5;
 #else
@@ -449,6 +461,11 @@ public:
     void (*kokkosp_profile_event_f)(const char*)                              = nullptr;
     void (*kokkosp_dual_view_sync_f)(const char*, const void* const, bool)    = nullptr;
     void (*kokkosp_dual_view_modify_f)(const char*, const void* const, bool)  = nullptr;
+
+#if ROCPROFSYS_USE_ROCM > 0
+    rocprofiler_tool_configure_result_t* (*rocprofiler_configure_f)(
+        uint32_t, const char*, uint32_t, rocprofiler_client_id_t*) = nullptr;
+#endif
 
     // OpenMP functions
 #if defined(ROCPROFSYS_USE_OMPT) && ROCPROFSYS_USE_OMPT > 0
@@ -622,13 +639,18 @@ extern "C"
 
         bool _invoked = false;
         ROCPROFSYS_DL_INVOKE_STATUS(_invoked, get_indirect().rocprofsys_init_f, a, b, c);
+
         if(_invoked)
         {
             dl::get_active()           = true;
             dl::get_inited()           = true;
             dl::_rocprofsys_dl_verbose = dl::get_rocprofsys_dl_env();
-            if(dl::get_instrumented() < dl::InstrumentMode::PythonProfile)
+
+            if(dl::get_instrumented() > dl::InstrumentMode::None &&
+               dl::get_instrumented() < dl::InstrumentMode::PythonProfile)
+            {
                 dl::rocprofsys_postinit((c) ? std::string{ c } : std::string{});
+            }
         }
     }
 
@@ -1047,6 +1069,22 @@ extern "C"
 
     //----------------------------------------------------------------------------------//
     //
+    //      ROCm
+    //
+    //----------------------------------------------------------------------------------//
+
+#if ROCPROFSYS_USE_ROCM > 0
+    rocprofiler_tool_configure_result_t* rocprofiler_configure(
+        uint32_t version, const char* runtime_version, uint32_t priority,
+        rocprofiler_client_id_t* client_id)
+    {
+        return ROCPROFSYS_DL_INVOKE(get_indirect().rocprofiler_configure_f, version,
+                                    runtime_version, priority, client_id);
+    }
+#endif
+
+    //----------------------------------------------------------------------------------//
+    //
     //      OMPT
     //
     //----------------------------------------------------------------------------------//
@@ -1166,7 +1204,8 @@ rocprofsys_postinit(std::string _exe)
     switch(get_instrumented())
     {
         case InstrumentMode::None:
-        case InstrumentMode::BinaryRewrite:
+        case InstrumentMode::BinaryRewrite: rocprofsys_init_tooling(); break;
+
         case InstrumentMode::ProcessCreate:
         case InstrumentMode::ProcessAttach:
         {
@@ -1329,21 +1368,29 @@ verify_instrumented_preloaded()
 
 bool        _handle_preload = rocprofsys_preload();
 main_func_t main_real       = nullptr;
+main_func_t init_real       = nullptr;
 }  // namespace
 }  // namespace dl
 }  // namespace rocprofsys
 
 extern "C"
 {
+    int  rocprofsys_main_init(int argc, char** argv, char** envp) ROCPROFSYS_INTERNAL_API;
     int  rocprofsys_main(int argc, char** argv, char** envp) ROCPROFSYS_INTERNAL_API;
     void rocprofsys_set_main(main_func_t) ROCPROFSYS_INTERNAL_API;
+    void rocprofsys_set_main_init(main_func_t) ROCPROFSYS_INTERNAL_API;
 
     void rocprofsys_set_main(main_func_t _main_real)
     {
         ::rocprofsys::dl::main_real = _main_real;
     }
 
-    int rocprofsys_main(int argc, char** argv, char** envp)
+    void rocprofsys_set_main_init(main_func_t _init_real)
+    {
+        ::rocprofsys::dl::init_real = _init_real;
+    }
+
+    int rocprofsys_main_init(int argc, char** argv, char** envp)
     {
         ROCPROFSYS_DL_LOG(0, "%s\n", __FUNCTION__);
         using ::rocprofsys::common::get_env;
@@ -1354,35 +1401,62 @@ extern "C"
         if(_reentry > 0) return -1;
         _reentry = 1;
 
-        if(!::rocprofsys::dl::main_real)
-            throw std::runtime_error("[rocprof-sys][dl] Unsuccessful wrapping of main: "
-                                     "nullptr to real main function");
+        int ret = 0;
 
-        if(envp)
+        if(::rocprofsys::dl::init_real)
         {
-            size_t _idx = 0;
-            while(envp[_idx] != nullptr)
+            if(envp)
             {
-                auto _env_v = std::string_view{ envp[_idx++] };
-                if(_env_v.find("ROCPROFSYS") != 0 &&
-                   _env_v.find("librocprof-sys") == std::string_view::npos)
-                    continue;
-                auto _pos = _env_v.find('=');
-                if(_pos < _env_v.length())
+                size_t _idx = 0;
+                while(envp[_idx] != nullptr)
                 {
-                    auto _var = std::string{ _env_v }.substr(0, _pos);
-                    auto _val = std::string{ _env_v }.substr(_pos + 1);
-                    ROCPROFSYS_DL_LOG(1, "%s(%s, %s)\n", "rocprofsys_set_env",
-                                      _var.c_str(), _val.c_str());
-                    setenv(_var.c_str(), _val.c_str(), 0);
+                    auto _env_v = std::string_view{ envp[_idx++] };
+                    if(_env_v.find("ROCPROFSYS") != 0 &&
+                       _env_v.find("librocprof-sys") == std::string_view::npos)
+                        continue;
+                    auto _pos = _env_v.find('=');
+                    if(_pos < _env_v.length())
+                    {
+                        auto _var = std::string{ _env_v }.substr(0, _pos);
+                        auto _val = std::string{ _env_v }.substr(_pos + 1);
+                        ROCPROFSYS_DL_LOG(1, "%s(%s, %s)\n", "rocprofsys_set_env",
+                                          _var.c_str(), _val.c_str());
+                        setenv(_var.c_str(), _val.c_str(), 0);
+                    }
                 }
             }
+
+            ret = (*::rocprofsys::dl::init_real)(argc, argv, envp);
+        }
+        else
+        {
+            ROCPROFSYS_DL_LOG(
+                0, "%s\n",
+                "Unsuccessful wrapping of init: nullptr to real init function");
         }
 
         auto _mode = get_env("ROCPROFSYS_MODE", get_default_mode());
         rocprofsys_init(_mode.c_str(),
                         dl::get_instrumented() == dl::InstrumentMode::BinaryRewrite,
                         argv[0]);
+
+        return ret;
+    }
+
+    int rocprofsys_main(int argc, char** argv, char** envp)
+    {
+        ROCPROFSYS_DL_LOG(0, "%s\n", __FUNCTION__);
+
+        // prevent re-entry
+        static int _reentry = 0;
+        if(_reentry > 0) return -1;
+        _reentry = 1;
+
+        if(!::rocprofsys::dl::main_real)
+            throw std::runtime_error("[rocprof-sys][dl] Unsuccessful wrapping of main: "
+                                     "nullptr to real main function");
+
+        rocprofsys_push_trace(basename(argv[0]));
 
         int ret = (*::rocprofsys::dl::main_real)(argc, argv, envp);
 
@@ -1391,4 +1465,4 @@ extern "C"
 
         return ret;
     }
-}
+}  // extern "C"
