@@ -326,7 +326,7 @@ get_internal_basic_libs_impl()
                                             "libroctracer64.so",
                                             "librocprofiler64.so",
                                             "libpapi.so",
-                                            "libpfm.so"
+                                            "libpfm.so",
                                             "librocprofiler-register.so",
                                             "librocprofiler-sdk.so",
                                             "librocprofiler-sdk-roctx.so",
