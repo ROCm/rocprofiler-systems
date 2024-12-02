@@ -1,0 +1,27 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "ci",
+      "displayName": "official CI build",
+      "description": "Official CI build parameters",
+      "cacheVariables": {
+        "CMAKE_INSTALL_PREFIX": "/opt/rocprofiler-systems",
+        "ROCPROFSYS_USE_HIP": "ON",
+        "ROCPROFSYS_USE_ROCM_SMI": "ON",
+        "ROCPROFSYS_USE_ROCTRACER": "ON",
+        "ROCPROFSYS_USE_PYTHON": "ON",
+        "ROCPROFSYS_USE_OMPT": "ON",
+        "ROCPROFSYS_USE_MPI_HEADERS": "ON",
+        "ROCPROFSYS_BUILD_PAPI": "ON",
+        "ROCPROFSYS_BUILD_LIBUNWIND": "ON",
+        "ROCPROFSYS_BUILD_DYNINST": "ON",
+        "DYNINST_BUILD_TBB": "ON",
+        "DYNINST_BUILD_BOOST": "ON",
+        "DYNINST_BUILD_ELFUTILS": "ON",
+        "DYNINST_BUILD_LIBIBERTY": "ON",
+        "ROCPROFSYS_BUILD_TESTING": "ON"
+      }
+    }
+  ]
+}
