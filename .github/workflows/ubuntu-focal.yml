@@ -243,9 +243,9 @@ jobs:
       fail-fast: false
       matrix:
         compiler: ['g++']
-        rocm-version: ['6.2']
+        rocm-version: ['6.2', 'latest']
         mpi-headers: ['ON']
-        build-jobs: ['3']
+        build-jobs: ['2']
         ctest-exclude: ['-LE "transpose"']
 
     env:
@@ -265,7 +265,7 @@ jobs:
         max_attempts: 5
         command: |
           apt-get update &&
-          apt-get install -y software-properties-common wget gnupg2 &&
+          apt-get install -y gnupg2 software-properties-common wget &&
           wget -q -O - https://repo.radeon.com/rocm/rocm.gpg.key | apt-key add - &&
           echo "deb [arch=amd64] https://repo.radeon.com/rocm/apt/${{ matrix.rocm-version }}/ ubuntu main" | tee /etc/apt/sources.list.d/rocm.list &&
           apt-get update &&
