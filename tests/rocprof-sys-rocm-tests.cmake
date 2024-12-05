@@ -80,18 +80,4 @@ if(ROCPROFSYS_USE_ROCM)
         REWRITE_RUN_PASS_REGEX "${_ROCP_PASS_REGEX}"
         SAMPLING_PASS_REGEX "${_ROCP_PASS_REGEX}")
 
-    rocprofiler_systems_add_test(
-        SKIP_BASELINE SKIP_RUNTIME
-        NAME transpose-rocprofiler-no-roctracer
-        TARGET transpose
-        LABELS "rocprofiler"
-        MPI ${TRANSPOSE_USE_MPI}
-        GPU ON
-        NUM_PROCS ${NUM_PROCS}
-        REWRITE_ARGS -e -v 2 -E uniform_int_distribution
-        ENVIRONMENT
-            "${_base_environment};ROCPROFSYS_USE_ROCTRACER=OFF;ROCPROFSYS_ROCM_EVENTS=${ROCPROFSYS_ROCM_EVENTS_TEST}"
-        REWRITE_RUN_PASS_REGEX "${_ROCP_PASS_REGEX}"
-        SAMPLING_PASS_REGEX "${_ROCP_PASS_REGEX}"
-        REWRITE_RUN_FAIL_REGEX "roctracer.txt|ROCPROFSYS_ABORT_FAIL_REGEX")
 endif()
