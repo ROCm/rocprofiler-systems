@@ -57,6 +57,34 @@ dimensions_info_callback(rocprofiler_counter_id_t /*id*/,
     return ROCPROFILER_STATUS_SUCCESS;
 }
 
+rocprofiler_status_t
+counters_supported_callback(rocprofiler_agent_id_t    agent_id,
+                                    rocprofiler_counter_id_t* counters,
+                                    size_t                    num_counters,
+                                    void*                     user_data)
+{
+    using value_type = typename agent_counter_info_map_t::mapped_type;
+
+    auto* data_v = static_cast<agent_counter_info_map_t*>(user_data);
+    data_v->emplace(agent_id, value_type{});
+    for(size_t i = 0; i < num_counters; ++i)
+    {
+        auto _info     = rocprofiler_counter_info_v0_t{};
+        auto _dim_info = std::vector<rocprofiler_record_dimension_info_t>{};
+
+        ROCPROFILER_CALL(rocprofiler_query_counter_info(
+            counters[i], ROCPROFILER_COUNTER_INFO_VERSION_0, &_info));
+
+        // populate local vector
+        ROCPROFILER_CALL(rocprofiler_iterate_counter_dimensions(
+            counters[i], dimensions_info_callback, &_dim_info));
+
+        if(!_info.is_constant)
+            data_v->at(agent_id).emplace_back(agent_id, _info, std::move(_dim_info));
+    }
+    return ROCPROFILER_STATUS_SUCCESS;
+}
+
 agent_counter_info_map_t
 get_agent_counter_info(const tool_agent_vec_t& _agents)
 {
@@ -66,29 +94,7 @@ get_agent_counter_info(const tool_agent_vec_t& _agents)
     {
         ROCPROFILER_CALL(rocprofiler_iterate_agent_supported_counters(
             itr.agent->id,
-            [](rocprofiler_agent_id_t id, rocprofiler_counter_id_t* counters,
-               size_t num_counters, void* user_data) {
-                using value_type = typename agent_counter_info_map_t::mapped_type;
-
-                auto* data_v = static_cast<agent_counter_info_map_t*>(user_data);
-                data_v->emplace(id, value_type{});
-                for(size_t i = 0; i < num_counters; ++i)
-                {
-                    auto _info     = rocprofiler_counter_info_v0_t{};
-                    auto _dim_info = std::vector<rocprofiler_record_dimension_info_t>{};
-
-                    ROCPROFILER_CALL(rocprofiler_query_counter_info(
-                        counters[i], ROCPROFILER_COUNTER_INFO_VERSION_0, &_info));
-
-                    // populate local vector
-                    ROCPROFILER_CALL(rocprofiler_iterate_counter_dimensions(
-                        counters[i], dimensions_info_callback, &_dim_info));
-
-                    if(!_info.is_constant)
-                        data_v->at(id).emplace_back(id, _info, std::move(_dim_info));
-                }
-                return ROCPROFILER_STATUS_SUCCESS;
-            },
+            counters_supported_callback,
             &_data));
 
         std::sort(_data.at(itr.agent->id).begin(), _data.at(itr.agent->id).end(),
