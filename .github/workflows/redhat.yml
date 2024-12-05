@@ -47,7 +47,7 @@ jobs:
       matrix:
         compiler: ['g++']
         os-release: [ '8.10', '9.2', '9.4' ]
-        rocm-version: [ '0.0', '6.2', 'latest' ]
+        rocm-version: [ '0.0', '6.2', '6.3' ]
         build-type: ['Release']
 
     steps:
