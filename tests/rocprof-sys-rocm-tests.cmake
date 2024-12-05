@@ -4,8 +4,7 @@
 #
 # -------------------------------------------------------------------------------------- #
 
-set(ROCPROFSYS_ROCM_EVENTS_TEST
-    "GRBM_COUNT,SQ_WAVES,SQ_INSTS_VALU,TA_TA_BUSY:device=0")
+set(ROCPROFSYS_ROCM_EVENTS_TEST "GRBM_COUNT,SQ_WAVES,SQ_INSTS_VALU,TA_TA_BUSY:device=0")
 
 rocprofiler_systems_add_test(
     NAME transpose

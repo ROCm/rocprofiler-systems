@@ -23,7 +23,8 @@
 #include "library/rocprofiler-sdk/fwd.hpp"
 #include "core/debug.hpp"
 #include "core/state.hpp"
-#include "timemory/utility/join.hpp"
+
+#include <timemory/utility/join.hpp>
 
 #include <exception>
 #include <rocprofiler-sdk/agent.h>
