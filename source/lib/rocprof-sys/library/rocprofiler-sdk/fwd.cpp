@@ -59,9 +59,8 @@ dimensions_info_callback(rocprofiler_counter_id_t /*id*/,
 
 rocprofiler_status_t
 counters_supported_callback(rocprofiler_agent_id_t    agent_id,
-                                    rocprofiler_counter_id_t* counters,
-                                    size_t                    num_counters,
-                                    void*                     user_data)
+                            rocprofiler_counter_id_t* counters, size_t num_counters,
+                            void* user_data)
 {
     using value_type = typename agent_counter_info_map_t::mapped_type;
 
@@ -93,9 +92,7 @@ get_agent_counter_info(const tool_agent_vec_t& _agents)
     for(auto itr : _agents)
     {
         ROCPROFILER_CALL(rocprofiler_iterate_agent_supported_counters(
-            itr.agent->id,
-            counters_supported_callback,
-            &_data));
+            itr.agent->id, counters_supported_callback, &_data));
 
         std::sort(_data.at(itr.agent->id).begin(), _data.at(itr.agent->id).end(),
                   [](const auto& lhs, const auto& rhs) {
