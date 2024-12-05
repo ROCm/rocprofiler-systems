@@ -241,7 +241,7 @@ Installing ROCm Systems Profiler
 -----------------------------------
 
 ROCm Systems Profiler has CMake configuration options for MPI support (``ROCPROFSYS_USE_MPI`` or
-``ROCPROFSYS_USE_MPI_HEADERS``), HIP kernel tracing (``ROCPROFSYS_USE_ROCTRACER``),
+``ROCPROFSYS_USE_MPI_HEADERS``),
 ROCm tracing and sampling (``ROCPROFSYS_USE_ROCM``), OpenMP-Tools (``ROCPROFSYS_USE_OMPT``),
 hardware counters via PAPI (``ROCPROFSYS_USE_PAPI``), among other features.
 Various additional features can be enabled via the
@@ -256,21 +256,20 @@ in `the Perfetto UI <https://ui.perfetto.dev>`_.
 .. code-block:: shell
 
    git clone https://github.com/ROCm/rocprofiler-systems.git rocprof-sys-source
-   cmake                                       \
-       -B rocprof-sys-build                      \
+   cmake                                                 \
+       -B rocprof-sys-build                              \
        -D CMAKE_INSTALL_PREFIX=/opt/rocprofiler-systems  \
-       -D ROCPROFSYS_USE_ROCM=ON                 \
-       -D ROCPROFSYS_USE_ROCTRACER=ON           \
-       -D ROCPROFSYS_USE_PYTHON=ON              \
-       -D ROCPROFSYS_USE_OMPT=ON                \
-       -D ROCPROFSYS_USE_MPI_HEADERS=ON         \
-       -D ROCPROFSYS_BUILD_PAPI=ON              \
-       -D ROCPROFSYS_BUILD_LIBUNWIND=ON         \
-       -D ROCPROFSYS_BUILD_DYNINST=ON           \
-       -D DYNINST_BUILD_TBB=ON                 \
-       -D DYNINST_BUILD_BOOST=ON               \
-       -D DYNINST_BUILD_ELFUTILS=ON            \
-       -D DYNINST_BUILD_LIBIBERTY=ON           \
+       -D ROCPROFSYS_USE_ROCM=ON                         \
+       -D ROCPROFSYS_USE_PYTHON=ON                       \
+       -D ROCPROFSYS_USE_OMPT=ON                         \
+       -D ROCPROFSYS_USE_MPI_HEADERS=ON                  \
+       -D ROCPROFSYS_BUILD_PAPI=ON                       \
+       -D ROCPROFSYS_BUILD_LIBUNWIND=ON                  \
+       -D ROCPROFSYS_BUILD_DYNINST=ON                    \
+       -D DYNINST_BUILD_TBB=ON                           \
+       -D DYNINST_BUILD_BOOST=ON                         \
+       -D DYNINST_BUILD_ELFUTILS=ON                      \
+       -D DYNINST_BUILD_LIBIBERTY=ON                     \
        rocprof-sys-source
    cmake --build rocprof-sys-build --target all --parallel 8
    cmake --build rocprof-sys-build --target install
