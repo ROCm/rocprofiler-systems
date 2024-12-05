@@ -645,12 +645,6 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
                 _update("ROCPROFSYS_TRACE_THREAD_RW_LOCKS", _v.count("rw-locks") > 0);
                 _update("ROCPROFSYS_TRACE_THREAD_SPIN_LOCKS", _v.count("spin-locks") > 0);
 
-                // if(_v.count("all") > 0 || _v.count("rocprofiler") > 0)
-                // {
-                //     remove_env(_data, "ROCP_TOOL_LIB");
-                //     remove_env(_data, "ROCP_HSA_INTERCEPT");
-                // }
-
                 if(_v.count("all") > 0 || _v.count("ompt") > 0)
                     remove_env(_data, "OMP_TOOL_LIBRARIES");
 
