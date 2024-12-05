@@ -33,7 +33,6 @@
 #include "rocprofiler-sdk.hpp"
 #include "utility.hpp"
 
-// #include <asm-generic/errno-base.h>
 #include <timemory/backends/capability.hpp>
 #include <timemory/backends/dmp.hpp>
 #include <timemory/backends/mpi.hpp>
@@ -90,6 +89,14 @@ TIMEMORY_NOINLINE bool&
 _settings_are_configured()
 {
     static bool _v = false;
+    return _v;
+}
+
+auto*&
+get_config_impl()
+{
+    static auto*& _v = common::static_object<std::shared_ptr<settings>>::construct(
+        common::do_not_destroy{}, settings::shared_instance());
     return _v;
 }
 
@@ -240,8 +247,7 @@ configure_settings(bool _init)
                                ROCPROFSYS_ROCM_VERSION_PATCH);
 #endif
 
-    // TODO: Config Groups
-    auto _config = settings::shared_instance();
+    auto _config = *get_config_impl();
 
     // if using timemory, default to perfetto being off
     auto _default_perfetto_v = !tim::get_env<bool>("ROCPROFSYS_PROFILE", false, false);
@@ -1157,6 +1163,7 @@ configure_mode_settings(const std::shared_ptr<settings>& _config)
         _set("ROCPROFSYS_USE_TRACE", false);
         _set("ROCPROFSYS_PROFILE", false);
         _set("ROCPROFSYS_USE_CAUSAL", false);
+        _set("ROCPROFSYS_USE_ROCM", false);
         _set("ROCPROFSYS_USE_ROCM_SMI", false);
         _set("ROCPROFSYS_USE_KOKKOSP", false);
         _set("ROCPROFSYS_USE_RCCLP", false);
