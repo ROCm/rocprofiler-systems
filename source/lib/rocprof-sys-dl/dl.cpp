@@ -647,7 +647,7 @@ extern "C"
             dl::get_inited()           = true;
             dl::_rocprofsys_dl_verbose = dl::get_rocprofsys_dl_env();
 
-            if(dl::get_instrumented() > dl::InstrumentMode::None &&
+            if(dl::get_instrumented() >= dl::InstrumentMode::None &&
                dl::get_instrumented() < dl::InstrumentMode::PythonProfile)
             {
                 dl::rocprofsys_postinit((c) ? std::string{ c } : std::string{});
