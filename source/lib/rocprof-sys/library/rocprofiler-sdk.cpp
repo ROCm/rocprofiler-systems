@@ -792,7 +792,7 @@ auto&
 get_counter_dispatch_data()
 {
     static auto _v =
-        container::stable_vector<rocprofiler_profile_counting_dispatch_data_t>{};
+        container::stable_vector<rocprofiler_dispatch_counting_service_data_t>{};
     return _v;
 }
 
@@ -816,7 +816,7 @@ get_counter_storage()
 }
 
 void
-counter_record_callback(rocprofiler_profile_counting_dispatch_data_t dispatch_data,
+counter_record_callback(rocprofiler_dispatch_counting_service_data_t dispatch_data,
                         rocprofiler_record_counter_t* record_data, size_t record_count,
                         rocprofiler_user_data_t /*user_data*/,
                         void* /*callback_data_arg*/)
@@ -883,7 +883,7 @@ counter_record_callback(rocprofiler_profile_counting_dispatch_data_t dispatch_da
 }
 
 void
-counter_dispatch_callback(rocprofiler_profile_counting_dispatch_data_t dispatch_data,
+dispatch_counting_service_callback(rocprofiler_dispatch_counting_service_data_t dispatch_data,
                           rocprofiler_profile_config_id_t*             config,
                           rocprofiler_user_data_t* /*user_data*/, void* callback_data_arg)
 {
@@ -1066,8 +1066,8 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
             _data->counter_ctx, ROCPROFILER_CALLBACK_TRACING_KERNEL_DISPATCH,
             _operations.data(), _operations.size(), tool_tracing_callback, _data));
 
-        ROCPROFILER_CALL(rocprofiler_configure_callback_dispatch_profile_counting_service(
-            _data->counter_ctx, counter_dispatch_callback, _data, counter_record_callback,
+        ROCPROFILER_CALL(rocprofiler_configure_callback_dispatch_counting_service(
+            _data->counter_ctx, dispatch_counting_service_callback, _data, counter_record_callback,
             _data));
 
         // ROCPROFILER_CALL(rocprofiler_create_buffer(
