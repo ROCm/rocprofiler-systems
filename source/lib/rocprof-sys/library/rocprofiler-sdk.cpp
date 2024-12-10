@@ -506,6 +506,7 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
             case ROCPROFILER_CALLBACK_TRACING_SCRATCH_MEMORY:
             case ROCPROFILER_CALLBACK_TRACING_KERNEL_DISPATCH:
             case ROCPROFILER_CALLBACK_TRACING_MEMORY_COPY:
+            case ROCPROFILER_CALLBACK_TRACING_RCCL_API:
             {
                 ROCPROFSYS_CI_ABORT(true, "unhandled callback record kind: %i\n",
                                     record.kind);
@@ -574,6 +575,7 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
             case ROCPROFILER_CALLBACK_TRACING_SCRATCH_MEMORY:
             case ROCPROFILER_CALLBACK_TRACING_KERNEL_DISPATCH:
             case ROCPROFILER_CALLBACK_TRACING_MEMORY_COPY:
+            case ROCPROFILER_CALLBACK_TRACING_RCCL_API:
             {
                 ROCPROFSYS_CI_ABORT(true, "unhandled callback record kind: %i\n",
                                     record.kind);
