@@ -50,19 +50,19 @@ get_callback_domains();
 std::unordered_set<rocprofiler_buffer_tracing_kind_t>
 get_buffered_domains();
 
-std::vector<uint32_t>
+std::vector<int32_t>
 get_operations(rocprofiler_callback_tracing_kind_t kindv);
 
-std::vector<uint32_t>
+std::vector<int32_t>
 get_operations(rocprofiler_buffer_tracing_kind_t kindv);
 
 std::vector<std::string>
 get_rocm_events();
 
-std::unordered_set<uint32_t>
+std::unordered_set<int32_t>
 get_backtrace_operations(rocprofiler_callback_tracing_kind_t kindv);
 
-std::unordered_set<uint32_t>
+std::unordered_set<int32_t>
 get_backtrace_operations(rocprofiler_buffer_tracing_kind_t kindv);
 
 #endif

@@ -112,7 +112,7 @@ auto callback_operation_option_names =
 auto buffered_operation_option_names =
     std::unordered_map<rocprofiler_buffer_tracing_kind_t, operation_options>{};
 
-std::unordered_set<uint32_t>
+std::unordered_set<int32_t>
 get_operations_impl(rocprofiler_callback_tracing_kind_t kindv,
                     const std::string&                  optname = {})
 {
@@ -121,7 +121,7 @@ get_operations_impl(rocprofiler_callback_tracing_kind_t kindv,
 
     if(optname.empty())
     {
-        auto _ret = std::unordered_set<uint32_t>{};
+        auto _ret = std::unordered_set<int32_t>{};
         for(auto iitr : callback_tracing_info[kindv].items())
         {
             if(iitr.second && *iitr.second != "none") _ret.emplace(iitr.first);
@@ -133,9 +133,9 @@ get_operations_impl(rocprofiler_callback_tracing_kind_t kindv,
 
     ROCPROFSYS_CONDITIONAL_ABORT_F(!_val, "no setting %s\n", optname.c_str());
 
-    if(_val->empty()) return std::unordered_set<uint32_t>{};
+    if(_val->empty()) return std::unordered_set<int32_t>{};
 
-    auto _ret = std::unordered_set<uint32_t>{};
+    auto _ret = std::unordered_set<int32_t>{};
     for(const auto& itr : tim::delimit(*_val, " ,;:\n\t"))
     {
         for(auto iitr : callback_tracing_info[kindv].items())
@@ -153,7 +153,7 @@ get_operations_impl(rocprofiler_callback_tracing_kind_t kindv,
     return _ret;
 }
 
-std::unordered_set<uint32_t>
+std::unordered_set<int32_t>
 get_operations_impl(rocprofiler_buffer_tracing_kind_t kindv,
                     const std::string&                optname = {})
 {
@@ -162,7 +162,7 @@ get_operations_impl(rocprofiler_buffer_tracing_kind_t kindv,
 
     if(optname.empty())
     {
-        auto _ret = std::unordered_set<uint32_t>{};
+        auto _ret = std::unordered_set<int32_t>{};
         for(auto iitr : buffered_tracing_info[kindv].items())
         {
             if(iitr.second && *iitr.second != "none") _ret.emplace(iitr.first);
@@ -174,9 +174,9 @@ get_operations_impl(rocprofiler_buffer_tracing_kind_t kindv,
 
     ROCPROFSYS_CONDITIONAL_ABORT_F(!_val, "no setting %s\n", optname.c_str());
 
-    if(_val->empty()) return std::unordered_set<uint32_t>{};
+    if(_val->empty()) return std::unordered_set<int32_t>{};
 
-    auto _ret = std::unordered_set<uint32_t>{};
+    auto _ret = std::unordered_set<int32_t>{};
     for(const auto& itr : tim::delimit(*_val, " ,;:\n\t"))
     {
         for(auto iitr : buffered_tracing_info[kindv].items())
@@ -193,13 +193,13 @@ get_operations_impl(rocprofiler_buffer_tracing_kind_t kindv,
     return _ret;
 }
 
-std::vector<uint32_t>
-get_operations_impl(const std::unordered_set<uint32_t>& _complete,
-                    const std::unordered_set<uint32_t>& _include,
-                    const std::unordered_set<uint32_t>& _exclude)
+std::vector<int32_t>
+get_operations_impl(const std::unordered_set<int32_t>& _complete,
+                    const std::unordered_set<int32_t>& _include,
+                    const std::unordered_set<int32_t>& _exclude)
 {
     auto _convert = [](const auto& _dset) {
-        auto _dret = std::vector<uint32_t>{};
+        auto _dret = std::vector<int32_t>{};
         _dret.reserve(_dset.size());
         for(auto itr : _dset)
             _dret.emplace_back(itr);
@@ -495,7 +495,7 @@ get_rocm_events()
         " ,;\t\n");
 }
 
-std::vector<uint32_t>
+std::vector<int32_t>
 get_operations(rocprofiler_callback_tracing_kind_t kindv)
 {
     ROCPROFSYS_CONDITIONAL_ABORT_F(
@@ -511,7 +511,7 @@ get_operations(rocprofiler_callback_tracing_kind_t kindv)
     return get_operations_impl(_complete, _include, _exclude);
 }
 
-std::vector<uint32_t>
+std::vector<int32_t>
 get_operations(rocprofiler_buffer_tracing_kind_t kindv)
 {
     ROCPROFSYS_CONDITIONAL_ABORT_F(
@@ -527,7 +527,7 @@ get_operations(rocprofiler_buffer_tracing_kind_t kindv)
     return get_operations_impl(_complete, _include, _exclude);
 }
 
-std::unordered_set<uint32_t>
+std::unordered_set<int32_t>
 get_backtrace_operations(rocprofiler_callback_tracing_kind_t kindv)
 {
     ROCPROFSYS_CONDITIONAL_ABORT_F(
@@ -536,14 +536,14 @@ get_backtrace_operations(rocprofiler_callback_tracing_kind_t kindv)
 
     auto _data = get_operations_impl(
         kindv, callback_operation_option_names.at(kindv).operations_annotate_backtrace);
-    auto _ret = std::unordered_set<uint32_t>{};
+    auto _ret = std::unordered_set<int32_t>{};
     _ret.reserve(_data.size());
     for(auto itr : _data)
         _ret.emplace(itr);
     return _ret;
 }
 
-std::unordered_set<uint32_t>
+std::unordered_set<int32_t>
 get_backtrace_operations(rocprofiler_buffer_tracing_kind_t kindv)
 {
     ROCPROFSYS_CONDITIONAL_ABORT_F(
@@ -552,7 +552,7 @@ get_backtrace_operations(rocprofiler_buffer_tracing_kind_t kindv)
 
     auto _data = get_operations_impl(
         kindv, buffered_operation_option_names.at(kindv).operations_annotate_backtrace);
-    auto _ret = std::unordered_set<uint32_t>{};
+    auto _ret = std::unordered_set<int32_t>{};
     _ret.reserve(_data.size());
     for(auto itr : _data)
         _ret.emplace(itr);

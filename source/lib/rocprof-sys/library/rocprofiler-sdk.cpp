@@ -194,8 +194,9 @@ get_kernel_symbol_info(uint64_t _kernel_id)
     return tool_data->get_kernel_symbol_info(_kernel_id);
 }
 
+// Implementation of rocprofiler_callback_tracing_operation_args_cb_t
 int
-save_args(rocprofiler_callback_tracing_kind_t /*kind*/, uint32_t /*operation*/,
+save_args(rocprofiler_callback_tracing_kind_t /*kind*/, int32_t /*operation*/,
           uint32_t /*arg_number*/, const void* const /*arg_value_addr*/,
           int32_t /*arg_indirection_count*/, const char* /*arg_type*/,
           const char* arg_name, const char*        arg_value_str,
@@ -883,9 +884,10 @@ counter_record_callback(rocprofiler_dispatch_counting_service_data_t dispatch_da
 }
 
 void
-dispatch_counting_service_callback(rocprofiler_dispatch_counting_service_data_t dispatch_data,
-                          rocprofiler_profile_config_id_t*             config,
-                          rocprofiler_user_data_t* /*user_data*/, void* callback_data_arg)
+dispatch_counting_service_callback(
+    rocprofiler_dispatch_counting_service_data_t dispatch_data,
+    rocprofiler_profile_config_id_t* config, rocprofiler_user_data_t* /*user_data*/,
+    void*                            callback_data_arg)
 {
     auto* _data = as_client_data(callback_data_arg);
     if(!_data || !config) return;
@@ -1067,8 +1069,8 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
             _operations.data(), _operations.size(), tool_tracing_callback, _data));
 
         ROCPROFILER_CALL(rocprofiler_configure_callback_dispatch_counting_service(
-            _data->counter_ctx, dispatch_counting_service_callback, _data, counter_record_callback,
-            _data));
+            _data->counter_ctx, dispatch_counting_service_callback, _data,
+            counter_record_callback, _data));
 
         // ROCPROFILER_CALL(rocprofiler_create_buffer(
         //     counter_ctx, buffer_size, watermark,
