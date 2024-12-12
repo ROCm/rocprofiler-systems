@@ -107,8 +107,19 @@ query_rocm_gpu_agents()
         }
         return ROCPROFILER_STATUS_SUCCESS;
     };
-    rocprofiler_query_available_agents(ROCPROFILER_AGENT_INFO_VERSION_0, iterator,
-                                       sizeof(rocprofiler_agent_v0_t), &_dev_cnt);
+
+    try
+    {
+        rocprofiler_query_available_agents(ROCPROFILER_AGENT_INFO_VERSION_0, iterator,
+                                           sizeof(rocprofiler_agent_v0_t), &_dev_cnt);
+    } catch(std::exception& _e)
+    {
+        ROCPROFSYS_BASIC_VERBOSE(
+            1, "Exception thrown getting the rocm agents: %s. _dev_cnt=%d\n", _e.what(),
+            _dev_cnt);
+    }
+    // rocprofiler_query_available_agents(ROCPROFILER_AGENT_INFO_VERSION_0, iterator,
+    //                                sizeof(rocprofiler_agent_v0_t), &_dev_cnt);
 #endif
     return _dev_cnt;
 }
