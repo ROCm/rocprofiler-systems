@@ -70,7 +70,7 @@ Other modes of use, such as sampling and causal profiling, are not dependent on 
 might be more portable.
 
 Installing ROCm Systems Profiler from binary distributions
-================================================
+==========================================================
 
 Every ROCm Systems Profiler release provides binary installer scripts of the form:
 
@@ -112,11 +112,11 @@ To install ROCm Systems Profiler using a binary installer script, follow these s
 
       ./rocprofiler-systems-1.0.0-ubuntu-18.04-ROCm-405000-OMPT-PAPI.sh --prefix=/opt/rocprofiler-systems --exclude-subdir
 
-Installing ROCm Systems Profiler from source
-========================================
+Building ROCm Systems Profiler from source
+==========================================
 
 ROCm Systems Profiler needs a GCC compiler with full support for C++17 and CMake v3.16 or higher.
-The Clang compiler may be used in lieu of the GCC compiler if `Dyninst <https://github.com/dyninst/dyninst>`_
+The Clang compiler may be used instead of the GCC compiler if `Dyninst <https://github.com/dyninst/dyninst>`_
 is already installed.
 
 Build requirements
@@ -160,7 +160,6 @@ while Dyninst requires TBB), and the CMake option to build the package alongside
 
 .. csv-table::
    :header: "Third-Party Library", "Minimum Version", "Required By", "CMake Option"
-   :widths: 15, 10, 12, 40
 
    "Dyninst", "12.0", "ROCm Systems Profiler", "``ROCPROFSYS_BUILD_DYNINST`` (default: OFF)"
    "Libunwind", "", "ROCm Systems Profiler", "``ROCPROFSYS_BUILD_LIBUNWIND`` (default: ON)"
@@ -253,6 +252,8 @@ into Perfetto support for ROCm Systems Profiler, for example, ``ROCPROFSYS_USE_P
 is passed along to Perfetto and is displayed when the ``.proto`` file is visualized
 in `the Perfetto UI <https://ui.perfetto.dev>`_.
 
+.. _rocprofsys-use-cmake-options:
+
 .. code-block:: shell
 
    git clone https://github.com/ROCm/rocprofiler-systems.git rocprof-sys-source
@@ -305,6 +306,21 @@ and the MPICH headers and then using
 ROCm Systems Profiler on an application built against OpenMPI causes a segmentation fault.
 This happens because the value of the ``MPI_COMM_WORLD`` is truncated
 during the function wrapping before being passed along to the underlying MPI function.
+
+ROCm Systems Profiler without ROCm
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To build ROCm Systems Profiler for use on systems without a GPU or the ROCm runtime, disable
+HIP support using the CMake configuration option ``ROCPROFSYS_USE_HIP=OFF``.
+
+For example:
+
+.. code-block:: shell
+
+   git clone https://github.com/ROCm/rocprofiler-systems.git rocprof-sys-source
+   cmake -B rocprof-sys-build \
+       -D CMAKE_INSTALL_PREFIX=/opt/rocprofiler-systems  \
+       -D ROCPROFSYS_USE_HIP=OFF
 
 .. _post-installation-steps:
 
