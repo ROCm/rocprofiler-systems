@@ -57,4 +57,6 @@ if(ROCPROFSYS_INSTALL_EXAMPLES)
         COMPONENT rocprofiler-systems-examples)
 endif()
 
-# add_subdirectory(target)
+if(NOT DEFINED ROCPROFSYS_BUILD_OPENMP_TARGET OR ROCPROFSYS_BUILD_OPENMP_TARGET)
+    add_subdirectory(target)
+endif()
