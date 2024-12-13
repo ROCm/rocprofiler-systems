@@ -175,9 +175,9 @@ Optional third-party packages
 * `ROCm <https://rocm.docs.amd.com/projects/install-on-linux/en/latest>`_
 
   * HIP
-  * Roctracer for HIP API and kernel tracing
-  * ROCM-SMI for GPU monitoring
-  * Rocprofiler for GPU hardware counters
+  * ROCTracer for HIP API and kernel tracing
+  * ROCm SMI Lib for GPU monitoring
+  * ROCProfiler for GPU hardware counters
 
 * `PAPI <https://icl.utk.edu/papi/>`_
 * MPI
