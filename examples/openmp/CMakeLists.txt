@@ -57,4 +57,4 @@ if(ROCPROFSYS_INSTALL_EXAMPLES)
         COMPONENT rocprofiler-systems-examples)
 endif()
 
-add_subdirectory(target)
+# add_subdirectory(target)
