@@ -236,8 +236,10 @@ Installing Dyninst via Spack
    spack install --reuse dyninst
    spack load -r dyninst
 
-Installing ROCm Systems Profiler
------------------------------------
+.. _cmake-options:
+
+Building and installing ROCm Systems Profiler
+---------------------------------------------
 
 ROCm Systems Profiler has CMake configuration options for MPI support (``ROCPROFSYS_USE_MPI`` or
 ``ROCPROFSYS_USE_MPI_HEADERS``), HIP kernel tracing (``ROCPROFSYS_USE_ROCTRACER``),
@@ -251,8 +253,6 @@ into Perfetto support for ROCm Systems Profiler, for example, ``ROCPROFSYS_USE_P
 ``TIMEMORY_USE_PAPI=<VAL>``. This means the data that Timemory is able to collect via this package
 is passed along to Perfetto and is displayed when the ``.proto`` file is visualized
 in `the Perfetto UI <https://ui.perfetto.dev>`_.
-
-.. _rocprofsys-use-cmake-options:
 
 .. code-block:: shell
 
@@ -277,6 +277,37 @@ in `the Perfetto UI <https://ui.perfetto.dev>`_.
    cmake --build rocprof-sys-build --target all --parallel 8
    cmake --build rocprof-sys-build --target install
    source /opt/rocprofiler-systems/share/rocprofiler-systems/setup-env.sh
+
+.. _build-script:
+
+Using the build script
+^^^^^^^^^^^^^^^^^^^^^^
+
+This method automates the CMake process with a script that wraps the CMake
+commands and handles build logic, environment variables, and packaging. Run
+``./scripts/build-release.sh`` with your desired options to generate packages.
+
+Use ``./scripts/build-release.sh --help`` for more information.
+
+.. code-block:: shell-session
+
+   ./scripts/build-release.sh --help
+   Options:
+       --core       [+nopython] [+python]                    Core (Use '+nopython' to build w/o python, use '+python' to python build with python)
+       --mpi        [+nopython] [+python]                    MPI (Use '+nopython' to build w/o python, use '+python' to python build with python)
+       --rocm       [+nopython] [+python]                    ROCm (Use '+nopython' to build w/o python, use '+python' to python build with python)
+       --rocm-mpi   [+nopython] [+python]                    ROCm + MPI (Use '+nopython' to build w/o python, use '+python' to python build with python)
+       --mpi-impl   [openmpi|mpich]                          MPI implementation
+
+       --lto                  [on|off]                       Enable LTO (default: off)
+       --strip                [on|off]                       Strip libraries (default: off)
+       --perfetto-tools       [on|off]                       Install perfetto tools (default: on)
+       --static-libgcc        [on|off]                       Build with static libgcc (default: on)
+       --static-libstdcxx     [on|off]                       Build with static libstdc++ (default: on)
+       --hidden-visibility    [on|off]                       Build with hidden visibility (default: on)
+       --max-threads          N                              Max number of threads supported (default: 2048)
+       --parallel             N                              Number of parallel build jobs (default: 12)
+       --generators           [STGZ][DEB][RPM][+others]      CPack generators (default: stgz deb rpm)
 
 .. _mpi-support-rocprof-sys:
 
@@ -310,17 +341,16 @@ during the function wrapping before being passed along to the underlying MPI fun
 ROCm Systems Profiler without ROCm
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-To build ROCm Systems Profiler for use on systems without a GPU or the ROCm runtime, disable
-HIP support using the CMake configuration option ``ROCPROFSYS_USE_HIP=OFF``.
+To build ROCm Systems Profiler for use on systems without a GPU or the ROCm runtime, disable HIP
+support using the CMake configuration option ``ROCPROFSYS_USE_HIP=OFF``. See :ref:`cmake-options`
+for more information.
 
-For example:
+Alternatively, use the provided build script with the appropriate options. See :ref:`build-script`.
+For example, to build without ROCm support and create a STGZ installer, use the following command:
 
 .. code-block:: shell
 
-   git clone https://github.com/ROCm/rocprofiler-systems.git rocprof-sys-source
-   cmake -B rocprof-sys-build \
-       -D CMAKE_INSTALL_PREFIX=/opt/rocprofiler-systems  \
-       -D ROCPROFSYS_USE_HIP=OFF
+   ./scripts/build-release.sh --core +python --generators STGZ
 
 .. _post-installation-steps:
 
@@ -427,3 +457,4 @@ Configuring PAPI to collect hardware counters
 To use PAPI to collect the majority of hardware counters, ensure
 the ``/proc/sys/kernel/perf_event_paranoid`` setting has a value less than or equal to ``2``.
 For more information, see the :ref:`rocprof-sys_papi_events` section.
+
