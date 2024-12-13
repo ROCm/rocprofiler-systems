@@ -186,7 +186,7 @@ Output from the API example program
 
 First, instrument and run the program.
 
-.. code-block:: shell
+.. code-block:: shell-session
 
    $ rocprof-sys-instrument -l --min-instructions=8 -E custom_push_region -o -- ./user-api
    ...
