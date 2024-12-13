@@ -10,7 +10,7 @@ The following example shows how a program can use the ROCm Systems Profiler API
 for run-time analysis.
 
 ROCm Systems Profiler user API example program
-========================================
+==============================================
 
 You can use the ROCm Systems Profiler API to define custom regions to profile and trace.
 The following C++ program demonstrates this technique by calling several functions from the
@@ -157,7 +157,7 @@ ROCm Systems Profiler API, such as ``rocprofsys_user_push_region`` and
    }
 
 Linking the ROCm Systems Profiler libraries to another program
-=======================================================
+==============================================================
 
 To link the ``rocprofiler-systems-user-library`` to another program,
 use the following CMake and ``g++`` directives.

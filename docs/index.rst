@@ -2,9 +2,9 @@
    :description: ROCm Systems Profiler documentation and reference
    :keywords: rocprof-sys, rocprofiler-systems, Omnitrace, ROCm, profiler, tracking, visualization, tool, Instinct, accelerator, AMD
 
-***********************
+***********************************
 ROCm Systems Profiler documentation
-***********************
+***********************************
 
 ROCm Systems Profiler, formerly known as "Omnitrace", is designed for the high-level profiling and comprehensive tracing
 of applications running on the CPU or the CPU and GPU. It supports dynamic binary
