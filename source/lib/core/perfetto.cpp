@@ -28,6 +28,7 @@
 #include "utility.hpp"
 
 #include <chrono>
+#include <filesystem>
 
 namespace rocprofsys
 {
@@ -263,6 +264,17 @@ post_process(tim::manager* _timemory_manager, bool& _perfetto_output_error)
                 _timemory_manager->add_file_output("protobuf", "perfetto", _filename);
         }
         ofs.close();
+
+        if(dmp::rank() == 0){
+            std::filesystem::path file_path(_filename);
+            auto folder_path = file_path.parent_path();
+            // Execute the merge script
+            std::string command = "merge_multiprocess_output.sh '" + std::string(folder_path.c_str()) + "'";
+            int result = system(command.c_str());
+            if (result != 0) {
+                ROCPROFSYS_VERBOSE(0, "Failed to execute merge_multiprocess_output.sh with folder path: %s\n", folder_path.c_str());
+            }
+        }
     }
     else if(dmp::rank() == 0)
     {
