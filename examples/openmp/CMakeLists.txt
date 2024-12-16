@@ -67,9 +67,7 @@ if(ROCPROFSYS_INSTALL_EXAMPLES)
 endif()
 
 if(ROCPROFSYS_DISABLE_EXAMPLES)
-    get_filename_component(_DIR ${CMAKE_CURRENT_LIST_DIR} NAME)
-
-    if(NOT "rocprofiler-systems-openmp-target" IN_LIST ROCPROFSYS_DISABLE_EXAMPLES)
+    if(ROCPROFSYS_DISABLE_EXAMPLES AND NOT "rocprofiler-systems-openmp-target" IN_LIST ROCPROFSYS_DISABLE_EXAMPLES)
         add_subdirectory(target)
     endif()
 else()
