@@ -67,7 +67,7 @@ if(ROCPROFSYS_INSTALL_EXAMPLES)
 endif()
 
 if(ROCPROFSYS_DISABLE_EXAMPLES)
-    if(NOT "rocprofiler-systems-openmp-target" IN_LIST ROCPROFSYS_DISABLE_EXAMPLES)
+    if(NOT "openmp-target" IN_LIST ROCPROFSYS_DISABLE_EXAMPLES)
         add_subdirectory(target)
     endif()
 else()
