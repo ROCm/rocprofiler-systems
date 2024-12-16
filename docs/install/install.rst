@@ -175,9 +175,8 @@ Optional third-party packages
 * `ROCm <https://rocm.docs.amd.com/projects/install-on-linux/en/latest>`_
 
   * HIP
-  * ROCTracer for HIP API and kernel tracing
   * ROCm SMI Lib for GPU monitoring
-  * ROCProfiler for GPU hardware counters
+  * ROCprofiler SDK for GPU hardware counters and ROCm tracing
 
 * `PAPI <https://icl.utk.edu/papi/>`_
 * MPI
@@ -341,8 +340,8 @@ during the function wrapping before being passed along to the underlying MPI fun
 ROCm Systems Profiler without ROCm
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-To build ROCm Systems Profiler for use on systems without a GPU or the ROCm runtime, disable HIP
-support using the CMake configuration option ``ROCPROFSYS_USE_HIP=OFF``. See :ref:`cmake-options`
+To build ROCm Systems Profiler for use on systems without a GPU or the ROCm runtime, disable ROCm
+support using the CMake configuration option ``ROCPROFSYS_USE_ROCM=OFF``. See :ref:`cmake-options`
 for more information.
 
 Alternatively, use the provided build script with the appropriate options. See :ref:`build-script`.
