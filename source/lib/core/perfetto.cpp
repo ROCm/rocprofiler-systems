@@ -281,7 +281,7 @@ post_process(tim::manager* _timemory_manager, bool& _perfetto_output_error)
             if(result != 0)
             {
                 ROCPROFSYS_VERBOSE(0,
-                                   "Failed to execute merge_multiprocess_output.sh with "
+                                   "Failed to execute merge-multiprocess-output.sh with "
                                    "folder path: %s\n",
                                    folder_path);
             }
