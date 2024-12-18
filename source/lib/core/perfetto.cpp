@@ -267,25 +267,20 @@ post_process(tim::manager* _timemory_manager, bool& _perfetto_output_error)
         if(dmp::rank() == 0)
         {
             const char* file_path   = _filename.c_str();
-            char*       folder_path = strdup(file_path);
-            char*       last_slash  = strrchr(folder_path, '/');
-            if(last_slash != nullptr)
-            {
-                *last_slash = '\0';  // Terminate the string at the last slash
-            }
-
+            auto        folder_path = [](std::string_view _v) {
+                return tim::filepath::dirname(std::string(_v));
+            };
             // Execute the merge script
             std::string command =
-                "merge-multiprocess-output.sh '" + std::string(folder_path) + "'";
+                "merge-multiprocess-output.sh '" + folder_path(file_path) + "'";
             int result = system(command.c_str());
             if(result != 0)
             {
                 ROCPROFSYS_VERBOSE(0,
                                    "Failed to execute merge-multiprocess-output.sh with "
                                    "folder path: %s\n",
-                                   folder_path);
+                                   folder_path(file_path).c_str());
             }
-            free(folder_path);
         }
     }
     else if(dmp::rank() == 0)
