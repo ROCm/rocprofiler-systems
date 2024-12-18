@@ -276,7 +276,7 @@ post_process(tim::manager* _timemory_manager, bool& _perfetto_output_error)
 
             // Execute the merge script
             std::string command =
-                "merge_multiprocess_output.sh '" + std::string(folder_path) + "'";
+                "merge-multiprocess-output.sh '" + std::string(folder_path) + "'";
             int result = system(command.c_str());
             if(result != 0)
             {
