@@ -429,7 +429,7 @@ install(
 
 install(
     PROGRAMS
-        ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/bin/merge_multiprocess_output.sh
+        ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/bin/merge-multiprocess-output.sh
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/bin/
     COMPONENT setup)
 
