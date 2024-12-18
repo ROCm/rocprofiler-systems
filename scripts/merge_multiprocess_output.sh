@@ -23,9 +23,15 @@ fi
 
 echo "Merging multiprocess files ..."
 # Check if all .proto files have been fully written or wait
+TIMEOUT=60  # Timeout in seconds
 for file in "${PROTO_FILES[@]}"; do
+  SECONDS=0
   while lsof "$file" > /dev/null 2>&1; do
-    echo "..."
+    if [ $SECONDS -ge $TIMEOUT ]; then
+      echo "Timeout reached while waiting for $file to be released."
+      break
+    fi
+    echo "Waiting for $file to be released..."
     sleep 1
   done
 done
