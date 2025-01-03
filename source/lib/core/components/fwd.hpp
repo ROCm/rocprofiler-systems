@@ -176,20 +176,20 @@ TIMEMORY_METADATA_SPECIALIZATION(rocprofsys::component::sampling_percent,
                                  "Derived from statistical sampling")
 TIMEMORY_METADATA_SPECIALIZATION(rocprofsys::component::sampling_gpu_busy,
                                  "sampling_gpu_busy",
-                                 "GPU Utilization (% busy) via ROCm-SMI",
+                                 "GPU Utilization (% busy) via AMD-SMI",
                                  "Derived from sampling")
 TIMEMORY_METADATA_SPECIALIZATION(rocprofsys::component::sampling_gpu_memory,
                                  "sampling_gpu_memory_usage",
-                                 "GPU Memory Usage via ROCm-SMI", "Derived from sampling")
+                                 "GPU Memory Usage via AMD-SMI", "Derived from sampling")
 TIMEMORY_METADATA_SPECIALIZATION(rocprofsys::component::sampling_gpu_power,
-                                 "sampling_gpu_power", "GPU Power Usage via ROCm-SMI",
+                                 "sampling_gpu_power", "GPU Power Usage via AMD-SMI",
                                  "Derived from sampling")
 TIMEMORY_METADATA_SPECIALIZATION(rocprofsys::component::sampling_gpu_temp,
-                                 "sampling_gpu_temp", "GPU Temperature via ROCm-SMI",
+                                 "sampling_gpu_temp", "GPU Temperature via AMD-SMI",
                                  "Derived from sampling")
 TIMEMORY_METADATA_SPECIALIZATION(rocprofsys::component::sampling_gpu_vcn,
                                  "sampling_gpu_vcn",
-                                 "GPU VCN Utilization (% activity) via ROCm-SMI",
+                                 "GPU VCN Utilization (% activity) via AMD-SMI",
                                  "Derived from sampling")
 
 // statistics type

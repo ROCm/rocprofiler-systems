@@ -34,6 +34,8 @@
 #include "core/state.hpp"
 #include "library/thread_data.hpp"
 
+#include <amd_smi/amdsmi.h>
+
 #include <chrono>
 #include <cstdint>
 #include <deque>
@@ -47,7 +49,7 @@
 
 namespace rocprofsys
 {
-namespace rocm_smi
+namespace amd_smi
 {
 void
 setup();
@@ -65,9 +67,6 @@ void
 post_process();
 
 void set_state(State);
-
-uint32_t
-device_count();
 
 struct settings
 {
@@ -100,13 +99,13 @@ struct data
 
     static void post_process(uint32_t _dev_id);
 
-    uint32_t              m_dev_id      = std::numeric_limits<uint32_t>::max();
-    timestamp_t           m_ts          = 0;
-    busy_perc_t           m_busy_perc   = 0;
-    temp_t                m_temp        = 0;
-    power_t               m_power       = 0;
-    mem_usage_t           m_mem_usage   = 0;
-    std::vector<uint16_t> m_vcn_metrics = {};
+    uint32_t                m_dev_id        = std::numeric_limits<uint32_t>::max();
+    timestamp_t             m_ts            = 0;
+    amdsmi_engine_usage_t   m_busy_perc     = {}; 
+    temp_t                  m_temp          = 0;
+    amdsmi_power_info_t     m_power         = {};
+    mem_usage_t             m_mem_usage     = 0;
+    std::vector<uint16_t>   m_vcn_metrics   = {};
 
     friend std::ostream& operator<<(std::ostream& _os, const data& _v)
     {
@@ -115,11 +114,11 @@ struct data
     }
 
 private:
-    friend void rocprofsys::rocm_smi::setup();
-    friend void rocprofsys::rocm_smi::config();
-    friend void rocprofsys::rocm_smi::sample();
-    friend void rocprofsys::rocm_smi::shutdown();
-    friend void rocprofsys::rocm_smi::post_process();
+    friend void rocprofsys::amd_smi::setup();
+    friend void rocprofsys::amd_smi::config();
+    friend void rocprofsys::amd_smi::sample();
+    friend void rocprofsys::amd_smi::shutdown();
+    friend void rocprofsys::amd_smi::post_process();
 
     static size_t                        device_count;
     static std::set<uint32_t>            device_list;
@@ -154,7 +153,7 @@ post_process()
 
 inline void set_state(State) {}
 #endif
-}  // namespace rocm_smi
+}  // namespace amd_smi
 }  // namespace rocprofsys
 
 #if defined(ROCPROFSYS_USE_ROCM) && ROCPROFSYS_USE_ROCM > 0
