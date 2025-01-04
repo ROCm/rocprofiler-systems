@@ -165,7 +165,15 @@ inline void set_state(State) {}
 #        include <timemory/operations.hpp>
 
 ROCPROFSYS_DECLARE_EXTERN_COMPONENT(
-    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_busy>), true,
+    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_busy_gfx>), true,
+    double)
+
+ROCPROFSYS_DECLARE_EXTERN_COMPONENT(
+    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_busy_umc>), true,
+    double)
+
+ROCPROFSYS_DECLARE_EXTERN_COMPONENT(
+    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_busy_mm>), true,
     double)
 
 ROCPROFSYS_DECLARE_EXTERN_COMPONENT(

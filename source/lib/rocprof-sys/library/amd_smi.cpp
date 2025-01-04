@@ -151,7 +151,6 @@ data::sample(uint32_t _dev_id)
 
     amdsmi_processor_handle sample_handle = gpu::get_handle_from_id(_dev_id);
 
-    // Moving vcn_activity and jpeg_activity into amdsmi_get_gpu_activity is marked as a to-do in amdsmi.
     ROCPROFSYS_AMDSMI_GET(get_settings(m_dev_id).busy, amdsmi_get_gpu_activity, sample_handle,
                         &m_busy_perc);
     ROCPROFSYS_AMDSMI_GET(get_settings(m_dev_id).temp, amdsmi_get_temp_metric, sample_handle,
@@ -261,7 +260,9 @@ data::shutdown()
 void
 data::post_process(uint32_t _dev_id)
 {
-    using component::sampling_gpu_busy;
+    using component::sampling_gpu_busy_gfx;
+    using component::sampling_gpu_busy_umc;
+    using component::sampling_gpu_busy_mm;
     using component::sampling_gpu_memory;
     using component::sampling_gpu_power;
     using component::sampling_gpu_temp;
@@ -282,15 +283,20 @@ data::post_process(uint32_t _dev_id)
     auto _settings = get_settings(_dev_id);
 
     auto _process_perfetto = [&]() {
-        auto _idx = std::array<uint64_t, 5>{};
+        auto _idx = std::array<uint64_t, 7>{};
         {
             _idx.fill(_idx.size());
             uint64_t nidx = 0;
-            if(_settings.busy) _idx.at(0) = nidx++;
-            if(_settings.temp) _idx.at(1) = nidx++;
-            if(_settings.power) _idx.at(2) = nidx++;
-            if(_settings.mem_usage) _idx.at(3) = nidx++;
-            if(_settings.vcn_activity) _idx.at(4) = nidx++;
+            if(_settings.busy)
+            {
+                _idx.at(0) = nidx++;
+                _idx.at(1) = nidx++;
+                _idx.at(2) = nidx++;
+            }
+            if(_settings.temp) _idx.at(3) = nidx++;
+            if(_settings.power) _idx.at(4) = nidx++;
+            if(_settings.mem_usage) _idx.at(5) = nidx++;
+            if(_settings.vcn_activity) _idx.at(6) = nidx++;
         }
 
         for(auto& itr : _amd_smi)
@@ -303,7 +309,12 @@ data::post_process(uint32_t _dev_id)
                     return JOIN(" ", "GPU", _v, JOIN("", '[', _dev_id, ']'), "(S)");
                 };
 
-                if(_settings.busy) counter_track::emplace(_dev_id, addendum("GFX Busy"), "%");
+                if(_settings.busy)
+                {
+                    counter_track::emplace(_dev_id, addendum("GFX Busy"), "%");
+                    counter_track::emplace(_dev_id, addendum("UMC Busy"), "%");
+                    counter_track::emplace(_dev_id, addendum("MM Busy"), "%");
+                }
                 if(_settings.temp)
                     counter_track::emplace(_dev_id, addendum("Temperature"), "deg C");
                 if(_settings.power)
@@ -324,13 +335,21 @@ data::post_process(uint32_t _dev_id)
             if(!_thread_info->is_valid_time(_ts)) continue;
 
             double _gfxbusy = itr.m_busy_perc.gfx_activity;
+            double _umcbusy = itr.m_busy_perc.umc_activity;
+            double _mmbusy = itr.m_busy_perc.mm_activity;
             double _temp  = itr.m_temp;
             double _power = itr.m_power.current_socket_power;
             double _usage = itr.m_mem_usage / static_cast<double>(units::megabyte);
 
             if(_settings.busy)
-                TRACE_COUNTER("device_busy", counter_track::at(_dev_id, _idx.at(0)), _ts,
+            {
+                TRACE_COUNTER("device_busy_gfx", counter_track::at(_dev_id, _idx.at(0)), _ts,
                               _gfxbusy);
+                TRACE_COUNTER("device_busy_umc", counter_track::at(_dev_id, _idx.at(0)), _ts,
+                              _umcbusy);
+                TRACE_COUNTER("device_busy_mm", counter_track::at(_dev_id, _idx.at(0)), _ts,
+                              _mmbusy);
+            }
             if(_settings.temp)
                 TRACE_COUNTER("device_temp", counter_track::at(_dev_id, _idx.at(1)), _ts,
                               _temp);
@@ -506,7 +525,15 @@ device_count()
 }  // namespace rocprofsys
 
 ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(
-    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_busy>), true,
+    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_busy_gfx>), true,
+    double)
+
+ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(
+    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_busy_umc>), true,
+    double)
+
+ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(
+    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_busy_mm>), true,
     double)
 
 ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(
