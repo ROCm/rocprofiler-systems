@@ -324,8 +324,8 @@ data::post_process(uint32_t _dev_id)
             if(!_thread_info->is_valid_time(_ts)) continue;
 
             double _gfxbusy = itr.m_busy_perc.gfx_activity;
-            double _temp  = itr.m_temp / 1.0e3;
-            double _power = itr.m_power.current_socket_power / 1.0e6;
+            double _temp  = itr.m_temp;
+            double _power = itr.m_power.current_socket_power;
             double _usage = itr.m_mem_usage / static_cast<double>(units::megabyte);
 
             if(_settings.busy)
