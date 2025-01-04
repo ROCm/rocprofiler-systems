@@ -345,23 +345,23 @@ data::post_process(uint32_t _dev_id)
             {
                 TRACE_COUNTER("device_busy_gfx", counter_track::at(_dev_id, _idx.at(0)), _ts,
                               _gfxbusy);
-                TRACE_COUNTER("device_busy_umc", counter_track::at(_dev_id, _idx.at(0)), _ts,
+                TRACE_COUNTER("device_busy_umc", counter_track::at(_dev_id, _idx.at(1)), _ts,
                               _umcbusy);
-                TRACE_COUNTER("device_busy_mm", counter_track::at(_dev_id, _idx.at(0)), _ts,
+                TRACE_COUNTER("device_busy_mm", counter_track::at(_dev_id, _idx.at(2)), _ts,
                               _mmbusy);
             }
             if(_settings.temp)
-                TRACE_COUNTER("device_temp", counter_track::at(_dev_id, _idx.at(1)), _ts,
+                TRACE_COUNTER("device_temp", counter_track::at(_dev_id, _idx.at(3)), _ts,
                               _temp);
             if(_settings.power)
-                TRACE_COUNTER("device_power", counter_track::at(_dev_id, _idx.at(2)), _ts,
+                TRACE_COUNTER("device_power", counter_track::at(_dev_id, _idx.at(4)), _ts,
                               _power);
             if(_settings.mem_usage)
                 TRACE_COUNTER("device_memory_usage",
-                              counter_track::at(_dev_id, _idx.at(3)), _ts, _usage);
+                              counter_track::at(_dev_id, _idx.at(5)), _ts, _usage);
             if(_settings.vcn_activity)
             {
-                uint64_t idx = _idx.at(4);
+                uint64_t idx = _idx.at(6);
                 for(const auto& temp : itr.m_vcn_metrics)
                 {
                     TRACE_COUNTER("device_vcn_activity", counter_track::at(_dev_id, idx),
