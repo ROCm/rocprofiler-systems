@@ -367,6 +367,7 @@ setup()
 
     ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
 
+    if (!gpu::initialize_amdsmi()) return;
     data::device_count = gpu::get_processor_count();
 
     auto _devices_v = get_sampling_gpus();

@@ -78,7 +78,9 @@ amdsmi_init()
     auto _amdsmi_init = []() {
         try
         {
-            ROCPROFSYS_AMD_SMI_CALL(::amdsmi_init(0));
+            // Currently, only AMDSMI_INIT_AMD_GPUS is supported
+            ROCPROFSYS_AMD_SMI_CALL(::amdsmi_init(AMDSMI_INIT_AMD_GPUS));
+            get_processor_handles();
         } catch(std::exception& _e)
         {
             ROCPROFSYS_BASIC_VERBOSE(1, "Exception thrown initializing amd-smi: %s\n",
@@ -133,6 +135,16 @@ device_count()
     return _num_devices;
 #else
     return 0;
+#endif
+}
+
+bool
+initialize_amdsmi()
+{
+#if ROCPROFSYS_USE_ROCM > 0
+    return (amdsmi_init()) ? true : false;
+#else
+    return false;
 #endif
 }
 
