@@ -2,11 +2,16 @@ cmake_minimum_required(VERSION 3.18.4 FATAL_ERROR)
 
 project(rocprofiler-systems-videodecode-example LANGUAGES CXX)
 
+# Set AMD Clang as default compiler
+if(NOT DEFINED CMAKE_CXX_COMPILER)
+    set(CMAKE_CXX_COMPILER ${ROCmVersion_DIR}/bin/amdclang++)
+endif()
+
 set(CMAKE_CXX_STANDARD 17)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../../cmake)
 list(APPEND CMAKE_PREFIX_PATH ${ROCmVersion_DIR}/hip ${ROCmVersion_DIR})
-list(APPEND CMAKE_MODULE_PATH  ${ROCmVersion_DIR}/share/rocdecode/cmake)
+list(APPEND CMAKE_MODULE_PATH ${ROCmVersion_DIR}/share/rocdecode/cmake)
 
 set(CMAKE_BUILD_TYPE "RelWithDebInfo")
 string(REPLACE " " ";" _FLAGS "${CMAKE_CXX_FLAGS_DEBUG}")
@@ -64,9 +69,7 @@ else()
     videodecode_message(AUTHOR_WARNING "${PROJECT_NAME} skipped. Missing RocDecode ...")
 endif()
 
-# Find FFMPEG
-# find_package(PkgConfig REQUIRED)
-# pkg_check_modules(FFMPEG REQUIRED libavcodec libavformat libavutil)
+# Find FFMPEG 
 find_package(FFmpeg QUIET)
 if(NOT FFmpeg_FOUND)
     videodecode_message(AUTHOR_WARNING "${PROJECT_NAME} skipped. Missing FFMPEG...")
@@ -96,9 +99,7 @@ set(FFMPEG_INCLUDE_DIRS ${FFMPEG_INCLUDE_DIR})
 
 mark_as_advanced(FFMPEG_INCLUDE_DIR AVCODEC_LIBRARY AVFORMAT_LIBRARY AVUTIL_LIBRARY)
 
-if(hip_FOUND
-   AND FFmpeg_FOUND
-   AND rocDecode_FOUND)
+if(FFMPEG_FOUND AND ROCDECODE_FOUND)
     # HIP
     set(LINK_LIBRARY_LIST ${LINK_LIBRARY_LIST} hip::host)
     # FFMPEG
@@ -126,5 +127,18 @@ if(hip_FOUND
             TARGETS videodecode
             DESTINATION bin
             COMPONENT rocprofiler-systems-examples)
+    endif()
+else()
+    message(
+        "-- ERROR!: videodecode excluded! please install all the dependencies and try again!"
+        )
+    if(NOT FFMPEG_FOUND)
+        message(FATAL_ERROR "-- ERROR!: FFMPEG Not Found! - please install FFMPEG!")
+    endif()
+    if(NOT ROCDECODE_FOUND)
+        message(FATAL_ERROR "-- ERROR!: rocDecode Not Found! - please install rocDecode!")
+    endif()
+    if(NOT Threads_FOUND)
+        message(FATAL_ERROR "-- ERROR!: Threads Not Found! - please insatll Threads!")
     endif()
 endif()
