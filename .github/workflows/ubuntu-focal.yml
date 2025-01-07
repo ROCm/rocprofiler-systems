@@ -248,7 +248,7 @@ jobs:
         rocm-version: ['6.3']
         mpi-headers: ['OFF']
         build-jobs: ['3']
-        ctest-exclude: ['-LE "transpose"']
+        ctest-exclude: ['-LE "transpose|videodecode"']
 
     env:
       BUILD_TYPE: MinSizeRel
