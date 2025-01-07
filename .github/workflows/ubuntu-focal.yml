@@ -272,7 +272,7 @@ jobs:
           echo "deb [arch=amd64] https://repo.radeon.com/rocm/apt/${{ matrix.rocm-version }}/ ubuntu main" | tee /etc/apt/sources.list.d/rocm.list &&
           apt-get update &&
           apt-get install -y autoconf bison build-essential clang curl gettext libfabric-dev libnuma1 libomp-dev libopenmpi-dev libpapi-dev libtool libudev1 m4 openmpi-bin python3-pip rocm-dev texinfo &&
-          apt-get install -y rocdecode rocdecode-dev libavformat-dev libavcodec-dev pkg-config &&
+          apt-get install -y rocdecode rocdecode-dev pkg-config &&
           wget https://commondatastorage.googleapis.com/perfetto-luci-artifacts/v47.0/linux-amd64/trace_processor_shell -P /opt/trace_processor/bin &&
           chmod +x /opt/trace_processor/bin/trace_processor_shell &&
           python3 -m pip install --upgrade pip &&
