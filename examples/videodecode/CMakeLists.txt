@@ -2,6 +2,16 @@ cmake_minimum_required(VERSION 3.18.4 FATAL_ERROR)
 
 project(rocprofiler-systems-videodecode-example LANGUAGES CXX)
 
+# This example requires hip and rocdecode.
+find_package(hip QUIET)
+
+if(NOT hip_FOUND)
+    message(WARNING "hip is not found. Skip videodecode example.")
+    return()
+endif()
+
+message(STATUS "hip found: ${hip_DIR}")
+
 # Set AMD Clang as default compiler
 if(NOT DEFINED CMAKE_CXX_COMPILER)
     set(CMAKE_CXX_COMPILER ${ROCmVersion_DIR}/bin/amdclang++)
@@ -60,8 +70,8 @@ find_library(
     ROCDECODE_LIBRARY
     NAMES rocdecode
     HINTS ${ROCmVersion_DIR}/lib)
-mark_as_advanced(ROCDECODE_INCLUDE_DIR)
-mark_as_advanced(ROCDECODE_LIBRARY)
+
+mark_as_advanced(ROCDECODE_INCLUDE_DIR ROCDECODE_LIBRARY)
 
 if(ROCDECODE_INCLUDE_DIR AND ROCDECODE_LIBRARY)
     set(ROCDECODE_FOUND TRUE)
@@ -69,12 +79,17 @@ else()
     videodecode_message(AUTHOR_WARNING "${PROJECT_NAME} skipped. Missing RocDecode ...")
 endif()
 
-# Find FFMPEG 
-find_package(FFmpeg QUIET)
-if(NOT FFmpeg_FOUND)
+# Find FFMPEG
+find_package(FFmpeg)
+if(NOT FFMPEG_FOUND)
     videodecode_message(AUTHOR_WARNING "${PROJECT_NAME} skipped. Missing FFMPEG...")
     return()
 endif()
+
+message(STATUS "FFMPEG libraries: ${FFMPEG_LIBRARIES}")
+message(STATUS "FFMPEG AVFORMAT version: ${_FFMPEG_AVFORMAT_VERSION}")
+message(STATUS "FFMPEG AVCODEC version: ${_FFMPEG_AVCODEC_VERSION}")
+message(STATUS "FFMPEG AVUTIL version: ${_FFMPEG_AVUTIL_VERSION}")
 
 find_path(
     FFMPEG_INCLUDE_DIR
@@ -102,17 +117,21 @@ mark_as_advanced(FFMPEG_INCLUDE_DIR AVCODEC_LIBRARY AVFORMAT_LIBRARY AVUTIL_LIBR
 if(FFMPEG_FOUND AND ROCDECODE_FOUND)
     # HIP
     set(LINK_LIBRARY_LIST ${LINK_LIBRARY_LIST} hip::host)
+
     # FFMPEG
     include_directories(${FFMPEG_INCLUDE_DIR})
     set(LINK_LIBRARY_LIST ${LINK_LIBRARY_LIST} ${FFMPEG_LIBRARIES})
+
     # filesystem: c++ compilers less than equal to 8.5 need explicit link with stdc++fs
     if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS_EQUAL "8.5")
         set(LINK_LIBRARY_LIST ${LINK_LIBRARY_LIST} stdc++fs)
     endif()
+
     # rocDecode
     include_directories(${ROCDECODE_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/..)
     set(LINK_LIBRARY_LIST ${LINK_LIBRARY_LIST} ${ROCDECODE_LIBRARY})
-    # threads
+
+    # Threads
     set(THREADS_PREFER_PTHREAD_FLAG ON)
     find_package(Threads REQUIRED)
     set(LINK_LIBRARY_LIST ${LINK_LIBRARY_LIST} Threads::Threads)
@@ -121,6 +140,13 @@ if(FFMPEG_FOUND AND ROCDECODE_FOUND)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++17")
     target_link_libraries(videodecode ${LINK_LIBRARY_LIST})
     target_compile_options(videodecode PRIVATE ${_FLAGS})
+
+    # FFMPEG multi-version support
+    if(_FFMPEG_AVCODEC_VERSION VERSION_LESS_EQUAL 58.134.100)
+        target_compile_definitions(videodecode PUBLIC USE_AVCODEC_GREATER_THAN_58_134=0)
+    else()
+        target_compile_definitions(videodecode PUBLIC USE_AVCODEC_GREATER_THAN_58_134=1)
+    endif()
 
     if(ROCPROFSYS_INSTALL_EXAMPLES)
         install(
