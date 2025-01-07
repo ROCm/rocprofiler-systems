@@ -116,13 +116,13 @@ jobs:
         command: |
           wget -q -O - https://repo.radeon.com/rocm/rocm.gpg.key | apt-key add -
           echo "deb [arch=amd64] https://repo.radeon.com/rocm/apt/${{ matrix.rocm-version }}/ jammy main" | tee /etc/apt/sources.list.d/rocm.list
+          echo "deb [arch=amd64] https://repo.radeon.com/amdgpu/${{ matrix.rocm-version }}/ jammy main" | tee /etc/apt/sources.list.d/amdgpu.list
           apt-get update
-          apt-get install -y rocm-dev
+          apt-get install -y rocm-dev rocdecode-dev libavformat-dev libavcodec-dev
           echo "/opt/rocm/bin" >> $GITHUB_PATH
           echo "ROCM_PATH=/opt/rocm" >> $GITHUB_ENV
           echo "LD_LIBRARY_PATH=/opt/rocm/lib:${LD_LIBRARY_PATH}" >> $GITHUB_ENV
           /opt/rocm/bin/hipcc -O3 -c ./examples/transpose/transpose.cpp -o /tmp/transpose.o
-          apt-get install -y rocdecode rocdecode-dev
 
     - name: Test Environment Modules
       timeout-minutes: 15
@@ -182,7 +182,7 @@ jobs:
           -DROCPROFSYS_PYTHON_ENVS="py3.7;py3.8;py3.9;py3.10;py3.11"
           -DROCPROFSYS_STRIP_LIBRARIES=${{ matrix.strip }}
           -DROCPROFSYS_MAX_THREADS=64
-          -DROCPROFSYS_DISABLE_EXAMPLES="transpose;rccl"
+          -DROCPROFSYS_DISABLE_EXAMPLES="transpose;rccl;videodecode"
           -DROCPROFSYS_BUILD_NUMBER=${{ github.run_attempt }}
           -DUSE_CLANG_OMP=OFF
 
