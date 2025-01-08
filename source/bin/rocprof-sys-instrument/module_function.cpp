@@ -572,8 +572,8 @@ module_function::is_routine_constrained() const
         return _report("Skipping", "function-constraint", 2);
     }
 
-    static std::regex exclude("(rocprofsys|rocprof-sys|tim::|MPI_Init|MPI_"
-                              "Finalize|dyninst|DYNINST|tm_clones)",
+    static std::regex exclude("(rocprofsys|rocprof-sys|tim::|MPI_Init|mpi_init_"
+                              "|MPI_Finalize|mpi_finalize_|dyninst|DYNINST|tm_clones)",
                               regex_opts);
     // static std::regex exclude_printf("(|v|f)printf$", regex_opts);
     static std::regex exclude_cxx(

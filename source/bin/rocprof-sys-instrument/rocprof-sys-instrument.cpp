@@ -1689,8 +1689,10 @@ main(int argc, char** argv)
                                          { "rocprofsys_user_stop_thread_trace" });
 #if ROCPROFSYS_USE_MPI > 0 || ROCPROFSYS_USE_MPI_HEADERS > 0
     // if any of the below MPI functions are found, enable MPI support
-    for(const auto* itr : { "MPI_Init", "MPI_Init_thread", "MPI_Finalize",
-                            "MPI_Comm_rank", "MPI_Comm_size" })
+    for(const auto* itr :
+        { "MPI_Init", "MPI_Init_thread", "MPI_Finalize", "MPI_Comm_rank", "MPI_Comm_size",
+          "mpi_init_", "mpi_init_thread_", "mpi_finalize_", "mpi_comm_rank_",
+          "mpi_comm_size_" })
     {
         if(find_function(app_image, itr) != nullptr)
         {
