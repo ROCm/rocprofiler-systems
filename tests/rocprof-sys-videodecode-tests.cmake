@@ -5,30 +5,16 @@
 # -------------------------------------------------------------------------------------- #
 
 rocprofiler_systems_add_test(
-    SKIP_BASELINE SKIP_RUNTIME
+    SKIP_BASELINE SKIP_RUNTIME SKIP_REWRITE
     NAME videodecode
     TARGET videodecode
+    GPU ON
     RUN_ARGS -i ${ROCmVersion_DIR}/share/rocdecode/video/ -t 2
-    REWRITE_ARGS
-        -e
-        -v
-        2
-        -R
-        run
-        --allow-overlapping
-        --print-available
-        functions
-        --print-overlapping
-        functions
-        --print-excluded
-        functions
-        --print-instrumented
-        functions
-        --print-instructions
     LABELS "videodecode")
 
 rocprofiler_systems_add_validation_test(
-    NAME videodecode-perfetto-sampling
+    NAME videodecode-sampling
+    PERFETTO_METRIC "host"
     PERFETTO_FILE "perfetto-trace.proto"
     LABELS "videodecode"
-    ARGS --key-names vaInitialize --key-counts 1)
+    ARGS -l videodecode -c 1 -d 0 --counter-names "GPU VCN Activity")

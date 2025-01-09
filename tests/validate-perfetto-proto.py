@@ -64,7 +64,6 @@ def validate_perfetto(data, labels, counts, depths):
         if _depth != eitr[2]:
             raise RuntimeError(f"Mismatched depth: {_depth} vs. {eitr[2]}")
 
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
@@ -98,6 +97,13 @@ if __name__ == "__main__":
         "--key-counts",
         type=int,
         help="Required number of debug args",
+        default=[],
+        nargs="*",
+    )
+    parser.add_argument(
+        "--counter-names",
+        type=str,
+        help="Require counter name in the traces",
         default=[],
         nargs="*",
     )
@@ -174,6 +180,20 @@ if __name__ == "__main__":
         print(f"Number of entries with {key_name} = {count} (expected: {key_count})")
         if key_count != count:
             ret = 1
+
+    for counter_name in args.counter_names:
+        sum_counter_values =  tp.query(
+            f"""SELECT SUM(counter.value) AS total_value FROM counter_track JOIN counter ON
+              counter.track_id = counter_track.id WHERE counter_track.name LIKE
+              '{counter_name}%'"""
+        )
+        total_value = 0
+        for row in sum_counter_values:
+            total_value = row.total_value if row.total_value is not None else -1
+        print(total_value, counter_name)
+        if total_value < 0:
+            ret = 1
+
 
     if ret == 0:
         print(f"{args.input} validated")
