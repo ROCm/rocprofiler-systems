@@ -3,9 +3,9 @@ cmake_minimum_required(VERSION 3.18.4 FATAL_ERROR)
 project(rocprofiler-systems-videodecode-example LANGUAGES CXX)
 
 # This example requires hip and rocdecode.
-find_package(hip QUIET)
+find_package(HIP QUIET)
 
-if(NOT hip_FOUND)
+if(NOT HIP_FOUND)
     message(WARNING "hip is not found. Skip videodecode example.")
     return()
 endif()
@@ -48,16 +48,9 @@ function(videodecode_message _MSG_TYPE)
     endif()
 endfunction()
 
-find_package(hip QUIET)
-
-if(NOT hip_FOUND)
-    videodecode_message(AUTHOR_WARNING "${PROJECT_NAME} skipped. Missing HIP...")
-    return()
-endif()
-
 # Find RocDecode
 find_package(rocDecode REQUIRED)
-if(NOT rocDecode_FOUND)
+if(NOT ROCDECODE_FOUND)
     videodecode_message(AUTHOR_WARNING "${PROJECT_NAME} skipped. Missing RocDecode...")
     return()
 endif()
@@ -163,8 +156,5 @@ else()
     endif()
     if(NOT ROCDECODE_FOUND)
         message(FATAL_ERROR "-- ERROR!: rocDecode Not Found! - please install rocDecode!")
-    endif()
-    if(NOT Threads_FOUND)
-        message(FATAL_ERROR "-- ERROR!: Threads Not Found! - please insatll Threads!")
     endif()
 endif()
