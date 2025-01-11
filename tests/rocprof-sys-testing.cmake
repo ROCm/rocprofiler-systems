@@ -631,8 +631,8 @@ function(ROCPROFILER_SYSTEMS_ADD_CAUSAL_TEST)
     endif()
 
     if(TARGET ${TEST_TARGET})
-        set(COMMAND_PREFIX $<TARGET_FILE:rocprofiler-systems-causal> --reset -m
-                           ${TEST_CAUSAL_MODE} ${TEST_CAUSAL_ARGS} --)
+        set(COMMAND_PREFIX $<TARGET_FILE:rocprofiler-systems-causal> --reset
+                           --no-defaults -m ${TEST_CAUSAL_MODE} ${TEST_CAUSAL_ARGS} --)
 
         if(NOT TEST_SKIP_BASELINE)
             add_test(
