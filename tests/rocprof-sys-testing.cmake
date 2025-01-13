@@ -111,8 +111,14 @@ set(_timemory_environment
 set(_test_environment ${_base_environment})
 
 set(_causal_environment
-    "${_test_openmp_env}" "${_test_library_path}" "ROCPROFSYS_TIME_OUTPUT=OFF"
-    "ROCPROFSYS_FILE_OUTPUT=ON" "ROCPROFSYS_CAUSAL_RANDOM_SEED=1342342")
+    "${_test_openmp_env}" "${_test_library_path}"
+    "ROCPROFSYS_USE_PID=OFF"
+    "ROCPROFSYS_USE_KOKKOSP=ON"
+    "ROCPROFSYS_USE_OMPT=ON"
+    "ROCPROFSYS_USE_MPIP=ON"
+    "ROCPROFSYS_TIME_OUTPUT=OFF"
+    "ROCPROFSYS_FILE_OUTPUT=ON"
+    "ROCPROFSYS_CAUSAL_RANDOM_SEED=1342342")
 
 set(_python_environment
     "ROCPROFSYS_TRACE=ON"
@@ -619,7 +625,7 @@ function(ROCPROFILER_SYSTEMS_ADD_CAUSAL_TEST)
     endif()
 
     if(NOT TEST_CAUSAL_TIMEOUT)
-        set(TEST_CAUSAL_TIMEOUT 600)
+        set(TEST_CAUSAL_TIMEOUT 800)
     endif()
 
     if(NOT TEST_CAUSAL_VALIDATE_TIMEOUT)
