@@ -44,9 +44,7 @@ rocprofiler_systems_add_test(
     TARGET openmp-target
     GPU ON
     LABELS "openmp;openmp-target"
-    ENVIRONMENT
-        "${_ompt_environment}"
-    )
+    ENVIRONMENT "${_ompt_environment}")
 
 set(_ompt_sampling_environ
     "${_ompt_environment}"
