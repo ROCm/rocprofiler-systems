@@ -81,7 +81,9 @@ if(EXISTS "${ROCmVersion_DIR}/share/rocdecode/video")
     file(COPY ${video_files} DESTINATION ${CMAKE_BINARY_DIR}/videos)
     message(STATUS "Copying video files to ${CMAKE_BINARY_DIR}/videos")
 else()
-    videodecode_message(AUTHOR_WARNING "Source directory ${ROCmVersion_DIR}/share/rocdecode/video does not exist")
+    videodecode_message(
+        AUTHOR_WARNING
+        "Source directory ${ROCmVersion_DIR}/share/rocdecode/video does not exist")
 endif()
 
 # Find FFMPEG
@@ -174,5 +176,3 @@ else()
         message(FATAL_ERROR "-- ERROR!: rocDecode Not Found! - please install rocDecode!")
     endif()
 endif()
-
-
