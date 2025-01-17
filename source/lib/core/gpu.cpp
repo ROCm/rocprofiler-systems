@@ -196,6 +196,7 @@ add_device_metadata()
     });
 }
 
+#if ROCPROFSYS_USE_ROCM > 0
 /*
  * Required amdsmi methods to get processors and handles
  */
@@ -260,6 +261,7 @@ get_handle_from_id(uint32_t dev_id)
 {
     return processors::processors_list[dev_id];
 }
+#endif
 
 }  // namespace gpu
 }  // namespace rocprofsys

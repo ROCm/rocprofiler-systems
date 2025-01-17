@@ -30,6 +30,7 @@ namespace rocprofsys
 {
 namespace gpu
 {
+#if ROCPROFSYS_USE_ROCM > 0
 void
 get_processor_handles();
 
@@ -49,6 +50,7 @@ private:
     friend uint32_t                rocprofsys::gpu::get_processor_count();
     friend amdsmi_processor_handle rocprofsys::gpu::get_handle_from_id(uint32_t dev_id);
 };
+#endif
 
 int
 device_count();

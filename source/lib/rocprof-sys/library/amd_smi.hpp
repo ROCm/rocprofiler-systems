@@ -34,7 +34,9 @@
 #include "core/state.hpp"
 #include "library/thread_data.hpp"
 
-#include <amd_smi/amdsmi.h>
+#if ROCPROFSYS_USE_ROCM > 0
+#    include <amd_smi/amdsmi.h>
+#endif
 
 #include <chrono>
 #include <cstdint>
@@ -85,7 +87,7 @@ struct data
     using promise_t = std::promise<void>;
 
     using timestamp_t = int64_t;
-    using power_t     = uint64_t;
+    using power_t     = uint32_t;
     using busy_perc_t = uint32_t;
     using mem_usage_t = uint64_t;
     using temp_t      = int64_t;
@@ -99,13 +101,13 @@ struct data
 
     static void post_process(uint32_t _dev_id);
 
-    uint32_t              m_dev_id      = std::numeric_limits<uint32_t>::max();
-    timestamp_t           m_ts          = 0;
-    amdsmi_engine_usage_t m_busy_perc   = {};
-    temp_t                m_temp        = 0;
-    amdsmi_power_info_t   m_power       = {};
-    mem_usage_t           m_mem_usage   = 0;
-    std::vector<uint16_t> m_vcn_metrics = {};
+    uint32_t                 m_dev_id      = std::numeric_limits<uint32_t>::max();
+    timestamp_t              m_ts          = 0;
+    std::vector<busy_perc_t> m_busy_perc   = {};
+    temp_t                   m_temp        = 0;
+    std::vector<power_t>     m_power       = {};
+    mem_usage_t              m_mem_usage   = 0;
+    std::vector<uint16_t>    m_vcn_metrics = {};
 
     friend std::ostream& operator<<(std::ostream& _os, const data& _v)
     {
