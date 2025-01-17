@@ -55,7 +55,7 @@ namespace gpu
 namespace
 {
 #if ROCPROFSYS_USE_ROCM > 0
-#    define ROCPROFSYS_AMD_SMI_CALL(ERROR_CODE)                                         \
+#    define ROCPROFSYS_AMD_SMI_CALL(ERROR_CODE)                                          \
         ::rocprofsys::gpu::check_amdsmi_error(ERROR_CODE, __FILE__, __LINE__)
 
 void
@@ -65,9 +65,10 @@ check_amdsmi_error(amdsmi_status_t _code, const char* _file, int _line)
     const char* _msg = nullptr;
     auto        _err = amdsmi_status_code_to_string(_code, &_msg);
     if(_err != AMDSMI_STATUS_SUCCESS)
-        ROCPROFSYS_THROW("amdsmi_status_code_to_string failed. No error message available. "
-                         "Error code %i originated at %s:%i\n",
-                         static_cast<int>(_code), _file, _line);
+        ROCPROFSYS_THROW(
+            "amdsmi_status_code_to_string failed. No error message available. "
+            "Error code %i originated at %s:%i\n",
+            static_cast<int>(_code), _file, _line);
     ROCPROFSYS_THROW("[%s:%i] Error code %i :: %s", _file, _line, static_cast<int>(_code),
                      _msg);
 }
@@ -195,49 +196,58 @@ add_device_metadata()
     });
 }
 
-
 /*
-* Required amdsmi methods to get processors and handles
-*/
+ * Required amdsmi methods to get processors and handles
+ */
 
-uint32_t                                processors::total_processor_count = 0;
-std::vector<amdsmi_processor_handle>    processors::processors_list = {};
+uint32_t                             processors::total_processor_count = 0;
+std::vector<amdsmi_processor_handle> processors::processors_list       = {};
 
-void get_processor_handles()
+void
+get_processor_handles()
 {
-uint32_t socket_count;
-uint32_t processor_count;
+    uint32_t socket_count;
+    uint32_t processor_count;
 
-// Passing nullptr will return us the number of sockets available for read in this system
-auto ret = amdsmi_get_socket_handles(&socket_count, nullptr);
-if (ret != AMDSMI_STATUS_SUCCESS) {
-    return;
-}
-std::vector<amdsmi_socket_handle> sockets(socket_count);
-ret = amdsmi_get_socket_handles(&socket_count, sockets.data());
-for (auto& socket : sockets) {
-    // Passing nullptr will return us the number of processors available for read for this socket
-    ret = amdsmi_get_processor_handles(socket, &processor_count, nullptr);
-    if (ret != AMDSMI_STATUS_SUCCESS) {
-    return;
-    }
-    std::vector<amdsmi_processor_handle> all_processors(processor_count);
-    ret = amdsmi_get_processor_handles(socket, &processor_count, all_processors.data());
-    if (ret != AMDSMI_STATUS_SUCCESS) {
-    return;
-    }
-
-    for (auto& processor : all_processors) {
-    processor_type_t processor_type = {};
-    ret = amdsmi_get_processor_type(processor, &processor_type);
-    if (processor_type != AMDSMI_PROCESSOR_TYPE_AMD_GPU) {
-        ROCPROFSYS_THROW("Not AMD_GPU device type!");
+    // Passing nullptr will return us the number of sockets available for read in this
+    // system
+    auto ret = amdsmi_get_socket_handles(&socket_count, nullptr);
+    if(ret != AMDSMI_STATUS_SUCCESS)
+    {
         return;
     }
-    processors::processors_list.push_back(processor);
+    std::vector<amdsmi_socket_handle> sockets(socket_count);
+    ret = amdsmi_get_socket_handles(&socket_count, sockets.data());
+    for(auto& socket : sockets)
+    {
+        // Passing nullptr will return us the number of processors available for read for
+        // this socket
+        ret = amdsmi_get_processor_handles(socket, &processor_count, nullptr);
+        if(ret != AMDSMI_STATUS_SUCCESS)
+        {
+            return;
+        }
+        std::vector<amdsmi_processor_handle> all_processors(processor_count);
+        ret =
+            amdsmi_get_processor_handles(socket, &processor_count, all_processors.data());
+        if(ret != AMDSMI_STATUS_SUCCESS)
+        {
+            return;
+        }
+
+        for(auto& processor : all_processors)
+        {
+            processor_type_t processor_type = {};
+            ret = amdsmi_get_processor_type(processor, &processor_type);
+            if(processor_type != AMDSMI_PROCESSOR_TYPE_AMD_GPU)
+            {
+                ROCPROFSYS_THROW("Not AMD_GPU device type!");
+                return;
+            }
+            processors::processors_list.push_back(processor);
+        }
     }
-}
-processors::total_processor_count = processors::processors_list.size();
+    processors::total_processor_count = processors::processors_list.size();
 }
 uint32_t
 get_processor_count()

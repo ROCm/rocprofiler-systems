@@ -88,16 +88,16 @@ struct backtrace_gpu_memory
 {};
 struct backtrace_gpu_vcn
 {};
-using sampling_wall_clock = data_tracker<double, backtrace_wall_clock>;
-using sampling_cpu_clock  = data_tracker<double, backtrace_cpu_clock>;
-using sampling_percent    = data_tracker<double, backtrace_fraction>;
-using sampling_gpu_busy_gfx   = data_tracker<double, backtrace_gpu_busy_gfx>;
-using sampling_gpu_busy_umc   = data_tracker<double, backtrace_gpu_busy_umc>;
-using sampling_gpu_busy_mm   = data_tracker<double, backtrace_gpu_busy_mm>;
-using sampling_gpu_temp   = data_tracker<double, backtrace_gpu_temp>;
-using sampling_gpu_power  = data_tracker<double, backtrace_gpu_power>;
-using sampling_gpu_memory = data_tracker<double, backtrace_gpu_memory>;
-using sampling_gpu_vcn    = data_tracker<double, backtrace_gpu_vcn>;
+using sampling_wall_clock   = data_tracker<double, backtrace_wall_clock>;
+using sampling_cpu_clock    = data_tracker<double, backtrace_cpu_clock>;
+using sampling_percent      = data_tracker<double, backtrace_fraction>;
+using sampling_gpu_busy_gfx = data_tracker<double, backtrace_gpu_busy_gfx>;
+using sampling_gpu_busy_umc = data_tracker<double, backtrace_gpu_busy_umc>;
+using sampling_gpu_busy_mm  = data_tracker<double, backtrace_gpu_busy_mm>;
+using sampling_gpu_temp     = data_tracker<double, backtrace_gpu_temp>;
+using sampling_gpu_power    = data_tracker<double, backtrace_gpu_power>;
+using sampling_gpu_memory   = data_tracker<double, backtrace_gpu_memory>;
+using sampling_gpu_vcn      = data_tracker<double, backtrace_gpu_vcn>;
 
 template <typename ApiT, typename StartFuncT = default_functor_t,
           typename StopFuncT = default_functor_t>
@@ -126,9 +126,12 @@ ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::sampling_percent, fals
 #endif
 
 #if !defined(TIMEMORY_USE_LIBUNWIND) || !defined(ROCPROFSYS_USE_ROCM)
-ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::sampling_gpu_busy_gfx, false_type)
-ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::sampling_gpu_busy_umc, false_type)
-ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::sampling_gpu_busy_mm, false_type)
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::sampling_gpu_busy_gfx,
+                                 false_type)
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::sampling_gpu_busy_umc,
+                                 false_type)
+ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::sampling_gpu_busy_mm,
+                                 false_type)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::sampling_gpu_temp, false_type)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::sampling_gpu_power, false_type)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::sampling_gpu_memory, false_type)
@@ -150,15 +153,18 @@ TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_cpu_clock, project::r
 TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_percent, project::rocprofsys,
                            category::timing, os::supports_unix, category::sampling,
                            category::interrupt_sampling)
-TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_gpu_busy_gfx, project::rocprofsys,
-                           tpls::rocm, device::gpu, os::supports_linux,
-                           category::sampling, category::process_sampling)
-TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_gpu_busy_umc, project::rocprofsys,
-                           tpls::rocm, device::gpu, os::supports_linux,
-                           category::sampling, category::process_sampling)
-TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_gpu_busy_mm, project::rocprofsys,
-                           tpls::rocm, device::gpu, os::supports_linux,
-                           category::sampling, category::process_sampling)
+TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_gpu_busy_gfx,
+                           project::rocprofsys, tpls::rocm, device::gpu,
+                           os::supports_linux, category::sampling,
+                           category::process_sampling)
+TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_gpu_busy_umc,
+                           project::rocprofsys, tpls::rocm, device::gpu,
+                           os::supports_linux, category::sampling,
+                           category::process_sampling)
+TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_gpu_busy_mm,
+                           project::rocprofsys, tpls::rocm, device::gpu,
+                           os::supports_linux, category::sampling,
+                           category::process_sampling)
 TIMEMORY_SET_COMPONENT_API(rocprofsys::component::sampling_gpu_memory,
                            project::rocprofsys, tpls::rocm, device::gpu,
                            os::supports_linux, category::memory, category::sampling,

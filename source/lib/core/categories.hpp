@@ -165,14 +165,14 @@ using name = perfetto_category<Tp...>;
         ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_page_migration),                     \
         ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_counter_collection),                 \
         ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_marker_api),                         \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::amd_smi),                                \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::amd_smi_gfxbusy),                           \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::amd_smi_umcbusy),                           \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::amd_smi_mmbusy),                           \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::amd_smi_temp),                           \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::amd_smi_power),                          \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::amd_smi_memory_usage),                   \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::amd_smi_vcn_activity),                   \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::amd_smi),                                 \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::amd_smi_gfxbusy),                         \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::amd_smi_umcbusy),                         \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::amd_smi_mmbusy),                          \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::amd_smi_temp),                            \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::amd_smi_power),                           \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::amd_smi_memory_usage),                    \
+        ROCPROFSYS_PERFETTO_CATEGORY(category::amd_smi_vcn_activity),                    \
         ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_rccl),                               \
         ROCPROFSYS_PERFETTO_CATEGORY(category::pthread),                                 \
         ROCPROFSYS_PERFETTO_CATEGORY(category::kokkos),                                  \

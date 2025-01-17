@@ -443,7 +443,7 @@ function(ROCPROFILER_SYSTEMS_ADD_TEST)
     endif()
 
     if("ROCPROFSYS_USE_AMD_SMI=ON" IN_LIST TEST_ENVIRONMENT AND NOT "amd-smi" IN_LIST
-                                                                 TEST_ENVIRONMENT)
+                                                                TEST_ENVIRONMENT)
         list(APPEND TEST_LABELS "amd-smi")
     endif()
 

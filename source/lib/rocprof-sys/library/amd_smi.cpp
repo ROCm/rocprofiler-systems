@@ -57,7 +57,7 @@
 #include <sys/resource.h>
 #include <thread>
 
-#define ROCPROFSYS_AMD_SMI_CALL(...)                                                    \
+#define ROCPROFSYS_AMD_SMI_CALL(...)                                                     \
     ::rocprofsys::amd_smi::check_error(__FILE__, __LINE__, __VA_ARGS__)
 
 namespace rocprofsys
@@ -97,9 +97,10 @@ check_error(const char* _file, int _line, amdsmi_status_t _code, bool* _option =
     const char* _msg = nullptr;
     auto        _err = amdsmi_status_code_to_string(_code, &_msg);
     if(_err != AMDSMI_STATUS_SUCCESS)
-        ROCPROFSYS_THROW("amdsmi_status_code_to_string failed. No error message available. "
-                         "Error code %i originated at %s:%i\n",
-                         static_cast<int>(_code), _file, _line);
+        ROCPROFSYS_THROW(
+            "amdsmi_status_code_to_string failed. No error message available. "
+            "Error code %i originated at %s:%i\n",
+            static_cast<int>(_code), _file, _line);
     ROCPROFSYS_THROW("[%s:%i] Error code %i :: %s", _file, _line, static_cast<int>(_code),
                      _msg);
 }
@@ -134,16 +135,16 @@ data::sample(uint32_t _dev_id)
     m_dev_id = _dev_id;
     m_ts     = _ts;
 
-#define ROCPROFSYS_AMDSMI_GET(OPTION, FUNCTION, ...)                                       \
+#define ROCPROFSYS_AMDSMI_GET(OPTION, FUNCTION, ...)                                     \
     if(OPTION)                                                                           \
     {                                                                                    \
         try                                                                              \
         {                                                                                \
-            ROCPROFSYS_AMD_SMI_CALL(FUNCTION(__VA_ARGS__), &OPTION);                    \
+            ROCPROFSYS_AMD_SMI_CALL(FUNCTION(__VA_ARGS__), &OPTION);                     \
         } catch(std::runtime_error & _e)                                                 \
         {                                                                                \
             ROCPROFSYS_VERBOSE_F(                                                        \
-                0, "[%s] Exception: %s. Disabling future samples from amd-smi...\n",    \
+                0, "[%s] Exception: %s. Disabling future samples from amd-smi...\n",     \
                 #FUNCTION, _e.what());                                                   \
             get_state().store(State::Disabled);                                          \
         }                                                                                \
@@ -151,16 +152,17 @@ data::sample(uint32_t _dev_id)
 
     amdsmi_processor_handle sample_handle = gpu::get_handle_from_id(_dev_id);
 
-    ROCPROFSYS_AMDSMI_GET(get_settings(m_dev_id).busy, amdsmi_get_gpu_activity, sample_handle,
-                        &m_busy_perc);
-    ROCPROFSYS_AMDSMI_GET(get_settings(m_dev_id).temp, amdsmi_get_temp_metric, sample_handle,
-                        AMDSMI_TEMPERATURE_TYPE_JUNCTION, AMDSMI_TEMP_CURRENT, &m_temp);
-    ROCPROFSYS_AMDSMI_GET(get_settings(m_dev_id).power, amdsmi_get_power_info, sample_handle,
-                        &m_power)
+    ROCPROFSYS_AMDSMI_GET(get_settings(m_dev_id).busy, amdsmi_get_gpu_activity,
+                          sample_handle, &m_busy_perc);
+    ROCPROFSYS_AMDSMI_GET(get_settings(m_dev_id).temp, amdsmi_get_temp_metric,
+                          sample_handle, AMDSMI_TEMPERATURE_TYPE_JUNCTION,
+                          AMDSMI_TEMP_CURRENT, &m_temp);
+    ROCPROFSYS_AMDSMI_GET(get_settings(m_dev_id).power, amdsmi_get_power_info,
+                          sample_handle, &m_power)
     ROCPROFSYS_AMDSMI_GET(get_settings(m_dev_id).mem_usage, amdsmi_get_gpu_memory_usage,
-                        sample_handle, AMDSMI_MEM_TYPE_VRAM, &m_mem_usage);
+                          sample_handle, AMDSMI_MEM_TYPE_VRAM, &m_mem_usage);
     ROCPROFSYS_AMDSMI_GET(get_settings(m_dev_id).vcn_activity,
-                        amdsmi_get_gpu_metrics_info, sample_handle, &_gpu_metrics);
+                          amdsmi_get_gpu_metrics_info, sample_handle, &_gpu_metrics);
 
     for(const auto& activity : _gpu_metrics.vcn_activity)
     {
@@ -174,8 +176,11 @@ void
 data::print(std::ostream& _os) const
 {
     std::stringstream _ss{};
-    _ss << "device: " << m_dev_id << ", gpu busy: = " << m_busy_perc.gfx_activity << "%, mm busy: = " << m_busy_perc.mm_activity << "%, umc busy: = " << m_busy_perc.umc_activity << "%, temp = " << m_temp
-        << ", current power = " << m_power.current_socket_power << ", memory usage = " << m_mem_usage;
+    _ss << "device: " << m_dev_id << ", gpu busy: = " << m_busy_perc.gfx_activity
+        << "%, mm busy: = " << m_busy_perc.mm_activity
+        << "%, umc busy: = " << m_busy_perc.umc_activity << "%, temp = " << m_temp
+        << ", current power = " << m_power.current_socket_power
+        << ", memory usage = " << m_mem_usage;
     _os << _ss.str();
 }
 
@@ -261,8 +266,8 @@ void
 data::post_process(uint32_t _dev_id)
 {
     using component::sampling_gpu_busy_gfx;
-    using component::sampling_gpu_busy_umc;
     using component::sampling_gpu_busy_mm;
+    using component::sampling_gpu_busy_umc;
     using component::sampling_gpu_memory;
     using component::sampling_gpu_power;
     using component::sampling_gpu_temp;
@@ -270,8 +275,8 @@ data::post_process(uint32_t _dev_id)
 
     if(device_count < _dev_id) return;
 
-    auto&       _amd_smi_v = sampler_instances::get()->at(_dev_id);
-    auto        _amd_smi   = (_amd_smi_v) ? *_amd_smi_v : std::deque<amd_smi::data>{};
+    auto&       _amd_smi_v   = sampler_instances::get()->at(_dev_id);
+    auto        _amd_smi     = (_amd_smi_v) ? *_amd_smi_v : std::deque<amd_smi::data>{};
     const auto& _thread_info = thread_info::get(0, InternalTID);
 
     ROCPROFSYS_VERBOSE(1, "Post-processing %zu amd-smi samples from device %u\n",
@@ -336,19 +341,19 @@ data::post_process(uint32_t _dev_id)
 
             double _gfxbusy = itr.m_busy_perc.gfx_activity;
             double _umcbusy = itr.m_busy_perc.umc_activity;
-            double _mmbusy = itr.m_busy_perc.mm_activity;
-            double _temp  = itr.m_temp;
-            double _power = itr.m_power.current_socket_power;
-            double _usage = itr.m_mem_usage / static_cast<double>(units::megabyte);
+            double _mmbusy  = itr.m_busy_perc.mm_activity;
+            double _temp    = itr.m_temp;
+            double _power   = itr.m_power.current_socket_power;
+            double _usage   = itr.m_mem_usage / static_cast<double>(units::megabyte);
 
             if(_settings.busy)
             {
-                TRACE_COUNTER("device_busy_gfx", counter_track::at(_dev_id, _idx.at(0)), _ts,
-                              _gfxbusy);
-                TRACE_COUNTER("device_busy_umc", counter_track::at(_dev_id, _idx.at(1)), _ts,
-                              _umcbusy);
-                TRACE_COUNTER("device_busy_mm", counter_track::at(_dev_id, _idx.at(2)), _ts,
-                              _mmbusy);
+                TRACE_COUNTER("device_busy_gfx", counter_track::at(_dev_id, _idx.at(0)),
+                              _ts, _gfxbusy);
+                TRACE_COUNTER("device_busy_umc", counter_track::at(_dev_id, _idx.at(1)),
+                              _ts, _umcbusy);
+                TRACE_COUNTER("device_busy_mm", counter_track::at(_dev_id, _idx.at(2)),
+                              _ts, _mmbusy);
             }
             if(_settings.temp)
                 TRACE_COUNTER("device_temp", counter_track::at(_dev_id, _idx.at(3)), _ts,
@@ -386,7 +391,7 @@ setup()
 
     ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
 
-    if (!gpu::initialize_amdsmi()) return;
+    if(!gpu::initialize_amdsmi()) return;
     data::device_count = gpu::get_processor_count();
 
     auto _devices_v = get_sampling_gpus();
@@ -447,7 +452,8 @@ setup()
         for(auto itr : _devices)
         {
             uint16_t dev_id = 0;
-            ROCPROFSYS_AMD_SMI_CALL(amdsmi_get_gpu_id(gpu::get_handle_from_id(itr), &dev_id));
+            ROCPROFSYS_AMD_SMI_CALL(
+                amdsmi_get_gpu_id(gpu::get_handle_from_id(itr), &dev_id));
             // dev_id holds the device ID of device i, upon a successful call
 
             if(_metrics && !_metrics->empty())
@@ -525,16 +531,16 @@ device_count()
 }  // namespace rocprofsys
 
 ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(
-    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_busy_gfx>), true,
-    double)
+    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_busy_gfx>),
+    true, double)
 
 ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(
-    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_busy_umc>), true,
-    double)
+    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_busy_umc>),
+    true, double)
 
 ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(
-    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_busy_mm>), true,
-    double)
+    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_busy_mm>),
+    true, double)
 
 ROCPROFSYS_INSTANTIATE_EXTERN_COMPONENT(
     TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_temp>), true,

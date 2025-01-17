@@ -99,13 +99,13 @@ struct data
 
     static void post_process(uint32_t _dev_id);
 
-    uint32_t                m_dev_id        = std::numeric_limits<uint32_t>::max();
-    timestamp_t             m_ts            = 0;
-    amdsmi_engine_usage_t   m_busy_perc     = {}; 
-    temp_t                  m_temp          = 0;
-    amdsmi_power_info_t     m_power         = {};
-    mem_usage_t             m_mem_usage     = 0;
-    std::vector<uint16_t>   m_vcn_metrics   = {};
+    uint32_t              m_dev_id      = std::numeric_limits<uint32_t>::max();
+    timestamp_t           m_ts          = 0;
+    amdsmi_engine_usage_t m_busy_perc   = {};
+    temp_t                m_temp        = 0;
+    amdsmi_power_info_t   m_power       = {};
+    mem_usage_t           m_mem_usage   = 0;
+    std::vector<uint16_t> m_vcn_metrics = {};
 
     friend std::ostream& operator<<(std::ostream& _os, const data& _v)
     {
@@ -165,16 +165,16 @@ inline void set_state(State) {}
 #        include <timemory/operations.hpp>
 
 ROCPROFSYS_DECLARE_EXTERN_COMPONENT(
-    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_busy_gfx>), true,
-    double)
+    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_busy_gfx>),
+    true, double)
 
 ROCPROFSYS_DECLARE_EXTERN_COMPONENT(
-    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_busy_umc>), true,
-    double)
+    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_busy_umc>),
+    true, double)
 
 ROCPROFSYS_DECLARE_EXTERN_COMPONENT(
-    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_busy_mm>), true,
-    double)
+    TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_busy_mm>),
+    true, double)
 
 ROCPROFSYS_DECLARE_EXTERN_COMPONENT(
     TIMEMORY_ESC(data_tracker<double, rocprofsys::component::backtrace_gpu_temp>), true,

@@ -544,7 +544,7 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
     }
 
     strset_t _backend_choices = { "all",   "kokkosp",     "mpip",       "ompt",
-                                  "rcclp", "amd-smi",    "roctracer",  "rocprofiler",
+                                  "rcclp", "amd-smi",     "roctracer",  "rocprofiler",
                                   "roctx", "mutex-locks", "spin-locks", "rw-locks" };
 
 #if !defined(ROCPROFSYS_USE_MPI) && !defined(ROCPROFSYS_USE_MPI_HEADERS)

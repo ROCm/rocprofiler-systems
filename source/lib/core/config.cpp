@@ -480,8 +480,8 @@ configure_settings(bool _init)
 
     ROCPROFSYS_CONFIG_SETTING(std::string, "ROCPROFSYS_AMD_SMI_DEVICES",
                               "[DEPRECATED] Renamed to ROCPROFSYS_SAMPLING_GPUS",
-                              std::string{ "all" }, "amd_smi", "rocm",
-                              "process_sampling", "deprecated", "advanced");
+                              std::string{ "all" }, "amd_smi", "rocm", "process_sampling",
+                              "deprecated", "advanced");
 
     ROCPROFSYS_CONFIG_SETTING(
         std::string, "ROCPROFSYS_SAMPLING_GPUS",
