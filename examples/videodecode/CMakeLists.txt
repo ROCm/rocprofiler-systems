@@ -72,6 +72,7 @@ else()
     videodecode_message(AUTHOR_WARNING "${PROJECT_NAME} skipped. Missing RocDecode ...")
 endif()
 
+# Copy video files to build directory
 if(EXISTS "${ROCmVersion_DIR}/share/rocdecode/video")
     if(NOT EXISTS "${CMAKE_BINARY_DIR}/videos")
         file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/videos")
@@ -79,7 +80,6 @@ if(EXISTS "${ROCmVersion_DIR}/share/rocdecode/video")
 
     file(GLOB_RECURSE video_files "${ROCmVersion_DIR}/share/rocdecode/video/*H26*.mp4")
     file(COPY ${video_files} DESTINATION ${CMAKE_BINARY_DIR}/videos)
-    message(STATUS "Copying video files to ${CMAKE_BINARY_DIR}/videos")
 else()
     videodecode_message(
         AUTHOR_WARNING
@@ -161,7 +161,7 @@ if(FFMPEG_FOUND AND ROCDECODE_FOUND)
             DESTINATION bin
             COMPONENT rocprofiler-systems-examples)
         install(
-            FILES ${PROJECT_BINARY_DIR}/videos
+            FILES ${CMAKE_BINARY_DIR}/videos
             DESTINATION share/rocprofiler-systems/tests/videos
             COMPONENT rocprofiler-systems-examples)
     endif()
