@@ -360,6 +360,7 @@ get_callback_domains()
             ROCPROFILER_CALLBACK_TRACING_HIP_COMPILER_API,
             ROCPROFILER_CALLBACK_TRACING_MARKER_CORE_API,
             ROCPROFILER_CALLBACK_TRACING_CODE_OBJECT,
+            ROCPROFILER_CALLBACK_TRACING_RCCL_API,
 #    if(ROCPROFILER_VERSION_MAJOR == 0 && ROCPROFILER_VERSION_MINOR >= 6) ||             \
         ROCPROFILER_VERSION_MAJOR >= 1
             ROCPROFILER_CALLBACK_TRACING_ROCDECODE_API,
@@ -413,6 +414,11 @@ get_callback_domains()
             _data.emplace(ROCPROFILER_CALLBACK_TRACING_ROCDECODE_API);
         }
 #    endif
+        else if(itr == "rccl_api")
+        {
+            _data.emplace(ROCPROFILER_CALLBACK_TRACING_RCCL_API);
+            printf("[DFG] %s Enabling RCCL API.\n", __FUNCTION__);
+        }
         else
         {
             for(size_t idx = 0; idx < callback_tracing_info.size(); ++idx)

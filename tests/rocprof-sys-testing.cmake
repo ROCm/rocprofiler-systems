@@ -144,9 +144,10 @@ set(_rccl_environment
     "ROCPROFSYS_PROFILE=ON"
     "ROCPROFSYS_USE_SAMPLING=OFF"
     "ROCPROFSYS_USE_PROCESS_SAMPLING=ON"
-    "ROCPROFSYS_USE_RCCLP=ON"
+    "ROCPROFSYS_USE_RCCLP=OFF"
     "ROCPROFSYS_TIME_OUTPUT=OFF"
     "ROCPROFSYS_USE_PID=OFF"
+    "ROCPROFSYS_ROCM_DOMAINS=hip_runtime_api,kernel_dispatch,memory_copy,rccl_api"
     "${_test_openmp_env}"
     "${_test_library_path}")
 
