@@ -186,8 +186,7 @@ rocprofiler_systems_add_option(ROCPROFSYS_USE_ROCPROFILER "Enable rocprofiler su
 rocprofiler_systems_add_option(
     ROCPROFSYS_USE_ROCM_SMI "Enable rocm-smi support for power/temp/etc. sampling"
     ${ROCPROFSYS_USE_HIP})
-rocprofiler_systems_add_option(ROCPROFSYS_USE_RCCL "Enable RCCL support"
-                               ${ROCPROFSYS_USE_HIP})
+rocprofiler_systems_add_option(ROCPROFSYS_USE_RCCL "Enable RCCL support" OFF)
 rocprofiler_systems_add_option(
     ROCPROFSYS_USE_MPI_HEADERS
     "Enable wrapping MPI functions w/o enabling MPI dependency" ON)
