@@ -148,55 +148,6 @@ struct comm_data : base<comm_data, void>
                       MPI_Datatype recvtype, MPI_Comm);
 #endif
 
-#if defined(ROCPROFSYS_USE_RCCL)
-    static auto rccl_type_size(ncclDataType_t datatype)
-    {
-        switch(datatype)
-        {
-            case ncclInt8:
-            case ncclUint8: return 1;
-            case ncclFloat16: return 2;
-            case ncclInt32:
-            case ncclUint32:
-            case ncclFloat32: return 4;
-            case ncclInt64:
-            case ncclUint64:
-            case ncclFloat64: return 8;
-            default: return 0;
-        };
-    }
-
-    // ncclReduce
-    static void audit(const gotcha_data& _data, audit::incoming, const void*, const void*,
-                      size_t count, ncclDataType_t datatype, ncclRedOp_t, int root,
-                      ncclComm_t, hipStream_t);
-
-    // ncclSend
-    // ncclGather
-    // ncclBcast
-    // ncclRecv
-    static void audit(const gotcha_data& _data, audit::incoming, const void*,
-                      size_t count, ncclDataType_t datatype, int peer, ncclComm_t,
-                      hipStream_t);
-
-    // ncclBroadcast
-    static void audit(const gotcha_data& _data, audit::incoming, const void*, const void*,
-                      size_t count, ncclDataType_t datatype, int root, ncclComm_t,
-                      hipStream_t);
-
-    // ncclAllReduce
-    // ncclReduceScatter
-    static void audit(const gotcha_data& _data, audit::incoming, const void*, const void*,
-                      size_t count, ncclDataType_t datatype, ncclRedOp_t, ncclComm_t,
-                      hipStream_t);
-
-    // ncclAllGather
-    // ncclAlltoAll
-    static void audit(const gotcha_data& _data, audit::incoming, const void*, const void*,
-                      size_t count, ncclDataType_t datatype, ncclComm_t, hipStream_t);
-
-#endif
-
 private:
     static auto& add(tracker_t& _t, data_type value)
     {

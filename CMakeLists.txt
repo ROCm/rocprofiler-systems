@@ -16,6 +16,7 @@ if(NOT UNIX OR APPLE)
         )
 endif()
 
+# Read the version from the VERSION file
 file(READ "${CMAKE_CURRENT_SOURCE_DIR}/VERSION" FULL_VERSION_STRING LIMIT_COUNT 1)
 string(REGEX REPLACE "(\n|\r)" "" FULL_VERSION_STRING "${FULL_VERSION_STRING}")
 string(REGEX REPLACE "([0-9]+)\.([0-9]+)\.([0-9]+)(.*)" "\\1.\\2.\\3" ROCPROFSYS_VERSION
@@ -27,8 +28,8 @@ project(
     VERSION ${ROCPROFSYS_VERSION}
     DESCRIPTION "CPU/GPU Application tracing with static/dynamic binary instrumentation"
     HOMEPAGE_URL "https://github.com/ROCm/rocprofiler-systems")
-set(PROJECT_NAME_UNDERSCORED "rocprofiler_systems")
 
+set(PROJECT_NAME_UNDERSCORED "rocprofiler_systems")
 set(BINARY_NAME_PREFIX "rocprof-sys")
 
 find_package(Git)
@@ -179,8 +180,6 @@ rocprofiler_systems_add_option(ROCPROFSYS_USE_MPI "Enable MPI support" OFF)
 rocprofiler_systems_add_option(ROCPROFSYS_USE_ROCM "Enable ROCm support" ON)
 rocprofiler_systems_add_option(ROCPROFSYS_USE_PAPI "Enable HW counter support via PAPI"
                                ON)
-rocprofiler_systems_add_option(ROCPROFSYS_USE_RCCL "Enable RCCL support"
-                               OFF)
 rocprofiler_systems_add_option(
     ROCPROFSYS_USE_MPI_HEADERS
     "Enable wrapping MPI functions w/o enabling MPI dependency" ON)
@@ -208,12 +207,6 @@ elseif("$ENV{ROCPROFSYS_CI}")
             STATUS
             "Ignoring values of ROCPROFSYS_PYTHON_ENVS and/or ROCPROFSYS_PYTHON_PREFIX")
     endif()
-endif()
-
-if(NOT ROCPROFSYS_USE_ROCM)
-    set(ROCPROFSYS_USE_RCCL
-        OFF
-        CACHE BOOL "Disabled via ROCPROFSYS_USE_ROCM=OFF" FORCE)
 endif()
 
 if(ROCPROFSYS_BUILD_TESTING)

@@ -190,19 +190,6 @@ endif()
 
 # ----------------------------------------------------------------------------------------#
 #
-# RCCL
-#
-# ----------------------------------------------------------------------------------------#
-
-if(ROCPROFSYS_USE_RCCL)
-    find_package(RCCL-Headers ${rocprofiler_systems_FIND_QUIETLY} REQUIRED)
-    target_link_libraries(rocprofiler-systems-rccl INTERFACE roc::rccl-headers)
-    rocprofiler_systems_target_compile_definitions(rocprofiler-systems-rccl
-                                                   INTERFACE ROCPROFSYS_USE_RCCL)
-endif()
-
-# ----------------------------------------------------------------------------------------#
-#
 # MPI
 #
 # ----------------------------------------------------------------------------------------#

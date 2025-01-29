@@ -576,10 +576,6 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
         _backend_choices.erase("rocprofiler-sdk");
         _backend_choices.erase("rocm");
 
-#if defined(ROCPROFSYS_USE_RCCL)
-        update_env(_data, "ROCPROFSYS_USE_RCCLP", false);
-#endif
-
 #if defined(ROCPROFSYS_USE_ROCM)
         update_env(_data, "ROCPROFSYS_USE_ROCM_SMI", false);
         update_env(_data, "ROCPROFSYS_USE_ROCM", false);

@@ -510,7 +510,8 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
             {
                 tool_tracing_callback_start(category::rocm_rccl_api{}, record, user_data,
                                             ts);
-                printf("[DFG] %s tool_tracing_callback_start.\n", __FUNCTION__);
+                printf("[DFG] %s RCCL_API tool_tracing_callback_start - operation: %d.\n",
+                        __FUNCTION__, record.operation);
                 break;
             }
             case ROCPROFILER_CALLBACK_TRACING_NONE:
@@ -595,7 +596,8 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
             {
                 tool_tracing_callback_stop(category::rocm_rccl_api{}, record, user_data,
                                             ts, _bt_data);
-                printf("[DFG] %s tool_tracing_callback_stop.\n", __FUNCTION__);
+                printf("[DFG] %s RCCL_API tool_tracing_callback_stop - operation: %d.\n",
+                        __FUNCTION__, record.operation);
                 break;
             }
             case ROCPROFILER_CALLBACK_TRACING_NONE:
