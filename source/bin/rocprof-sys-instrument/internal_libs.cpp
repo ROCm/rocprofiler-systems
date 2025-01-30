@@ -320,7 +320,7 @@ get_internal_basic_libs_impl()
                                             "libunwind-setjmp.so",
                                             "libunwind.so",
                                             "libunwind-x86_64.so",
-                                            "libamd_smi.so",
+                                            "librocm_smi64.so",
                                             "libroctx64.so",
                                             "librocmtools.so",
                                             "libroctracer64.so",
