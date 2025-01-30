@@ -478,7 +478,6 @@ configure_settings(bool _init)
         "'none' suppresses all CPU frequency sampling",
         std::string{}, "process_sampling");
 
-                              "[DEPRECATED] Renamed to ROCPROFSYS_SAMPLING_GPUS",
     ROCPROFSYS_CONFIG_SETTING(
         std::string, "ROCPROFSYS_SAMPLING_GPUS",
         "Devices to query when ROCPROFSYS_USE_AMD_SMI=ON. Values should be separated by "
