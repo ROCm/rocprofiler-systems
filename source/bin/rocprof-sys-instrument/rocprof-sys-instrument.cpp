@@ -844,9 +844,10 @@ main(int argc, char** argv)
         .add_argument(
             { "--linkage" },
             join("", "Only instrument functions with specified linkage (default: ",
-                 join(array_config{ ", ", "", "" }, default_enabled_linkage), ")"))
+                 join(array_config{ ", ", "", "" }, _get_strvec(default_enabled_linkage)),
+                 ")"))
         .min_count(1)
-        .choices(available_linkage)
+        .choices(_get_strvec(available_linkage))
         .set_default(_get_strvec(default_enabled_linkage))
         .action([](parser_t& p) {
             auto selected_linkage = p.get<std::set<std::string>>("linkage");
@@ -863,9 +864,11 @@ main(int argc, char** argv)
         .add_argument(
             { "--visibility" },
             join("", "Only instrument functions with specified visibility (default: ",
-                 join(array_config{ ", ", "", "" }, default_enabled_visibility), ")"))
+                 join(array_config{ ", ", "", "" },
+                      _get_strvec(default_enabled_visibility)),
+                 ")"))
         .min_count(1)
-        .choices(available_visibility)
+        .choices(_get_strvec(available_visibility))
         .set_default(_get_strvec(default_enabled_visibility))
         .action([](parser_t& p) {
             auto selected_visibility = p.get<std::set<std::string>>("visibility");
