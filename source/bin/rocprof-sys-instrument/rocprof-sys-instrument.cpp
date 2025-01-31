@@ -849,8 +849,13 @@ main(int argc, char** argv)
         .choices(available_linkage)
         .set_default(_get_strvec(default_enabled_linkage))
         .action([](parser_t& p) {
-            for(const auto& itr : p.get<std::set<std::string>>("linkage"))
-                enabled_linkage.emplace(from_string<symbol_linkage_t>(itr));
+            auto selected_linkage = p.get<std::set<std::string>>("linkage");
+            if(!selected_linkage.empty())
+            {
+                enabled_linkage.clear();
+                for(const auto& itr : selected_linkage)
+                    enabled_linkage.emplace(from_string<symbol_linkage_t>(itr));
+            }
         });
 
     enabled_visibility = default_enabled_visibility;
@@ -863,8 +868,13 @@ main(int argc, char** argv)
         .choices(available_visibility)
         .set_default(_get_strvec(default_enabled_visibility))
         .action([](parser_t& p) {
-            for(const auto& itr : p.get<std::set<std::string>>("visibility"))
-                enabled_visibility.emplace(from_string<symbol_visibility_t>(itr));
+            auto selected_visibility = p.get<std::set<std::string>>("visibility");
+            if(!selected_visibility.empty())
+            {
+                enabled_visibility.clear();
+                for(const auto& itr : selected_visibility)
+                    enabled_visibility.emplace(from_string<symbol_visibility_t>(itr));
+            }
         });
 
     parser.add_argument({ "" }, "");
