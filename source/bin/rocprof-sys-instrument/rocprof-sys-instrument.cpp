@@ -143,11 +143,13 @@ regexvec_t       file_internal_include         = {};
 regexvec_t       instruction_exclude           = {};
 CodeCoverageMode coverage_mode                 = CODECOV_NONE;
 
-symtab_data_s                 symtab_data        = {};
-std::set<symbol_linkage_t>    enabled_linkage    = {};
-std::set<symbol_visibility_t> enabled_visibility = {};
-const std::set<symbol_linkage_t>    default_enabled_linkage    = { SL_GLOBAL, SL_LOCAL, SL_UNIQUE };
-const std::set<symbol_visibility_t> default_enabled_visibility = { SV_DEFAULT, SV_HIDDEN, SV_INTERNAL,
+symtab_data_s                       symtab_data                = {};
+std::set<symbol_linkage_t>          enabled_linkage            = {};
+std::set<symbol_visibility_t>       enabled_visibility         = {};
+const std::set<symbol_linkage_t>    default_enabled_linkage    = { SL_GLOBAL, SL_LOCAL,
+                                                                   SL_UNIQUE };
+const std::set<symbol_visibility_t> default_enabled_visibility = { SV_DEFAULT, SV_HIDDEN,
+                                                                   SV_INTERNAL,
                                                                    SV_PROTECTED };
 
 std::unique_ptr<std::ofstream> log_ofs = {};
@@ -270,8 +272,8 @@ activate_signal_handlers(const std::vector<sys_signal>& _signals)
         TIMEMORY_PRINTF_FATAL(
             stderr,
             "These were the last %i log entries from rocprof-sys. You can control the "
-            "number of log entries via the '--log <N>' option or ROCPROFSYS_LOG_COUNT "
-            "env variable.\n",
+                   "number of log entries via the '--log <N>' option or ROCPROFSYS_LOG_COUNT "
+                   "env variable.\n",
             num_log_entries);
 
         if(log_ofs) log_ofs->close();
@@ -839,10 +841,10 @@ main(int argc, char** argv)
 
     enabled_linkage = default_enabled_linkage;
     parser
-        .add_argument({ "--linkage" },
-                      join("",
-                           "Only instrument functions with specified linkage (default: ",
-                           join(array_config{ ", ", "", "" }, default_enabled_linkage), ")"))
+        .add_argument(
+            { "--linkage" },
+            join("", "Only instrument functions with specified linkage (default: ",
+                 join(array_config{ ", ", "", "" }, default_enabled_linkage), ")"))
         .min_count(1)
         .choices(available_linkage)
         .set_default(_get_strvec(default_enabled_linkage))
@@ -1688,7 +1690,7 @@ main(int argc, char** argv)
     auto* user_start_func = find_function(app_image, "rocprofsys_user_start_trace",
                                           { "rocprofsys_user_start_thread_trace" });
     auto* user_stop_func  = find_function(app_image, "rocprofsys_user_stop_trace",
-                                         { "rocprofsys_user_stop_thread_trace" });
+                                          { "rocprofsys_user_stop_thread_trace" });
 #if ROCPROFSYS_USE_MPI > 0 || ROCPROFSYS_USE_MPI_HEADERS > 0
     // if any of the below MPI functions are found, enable MPI support
     for(const auto* itr : { "MPI_Init", "MPI_Init_thread", "MPI_Finalize",
