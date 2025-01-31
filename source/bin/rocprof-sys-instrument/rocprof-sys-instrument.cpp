@@ -144,9 +144,11 @@ regexvec_t       instruction_exclude           = {};
 CodeCoverageMode coverage_mode                 = CODECOV_NONE;
 
 symtab_data_s                 symtab_data        = {};
-std::set<symbol_linkage_t>    enabled_linkage    = { SL_GLOBAL, SL_LOCAL, SL_UNIQUE };
-std::set<symbol_visibility_t> enabled_visibility = { SV_DEFAULT, SV_HIDDEN, SV_INTERNAL,
-                                                     SV_PROTECTED };
+std::set<symbol_linkage_t>    enabled_linkage    = {};
+std::set<symbol_visibility_t> enabled_visibility = {};
+const std::set<symbol_linkage_t>    default_enabled_linkage    = { SL_GLOBAL, SL_LOCAL, SL_UNIQUE };
+const std::set<symbol_visibility_t> default_enabled_visibility = { SV_DEFAULT, SV_HIDDEN, SV_INTERNAL,
+                                                                   SV_PROTECTED };
 
 std::unique_ptr<std::ofstream> log_ofs = {};
 
@@ -835,30 +837,30 @@ main(int argc, char** argv)
         return _ret;
     };
 
+    enabled_linkage = default_enabled_linkage;
     parser
         .add_argument({ "--linkage" },
                       join("",
                            "Only instrument functions with specified linkage (default: ",
-                           join(array_config{ ", ", "", "" }, enabled_linkage), ")"))
+                           join(array_config{ ", ", "", "" }, default_enabled_linkage), ")"))
         .min_count(1)
         .choices(available_linkage)
-        .set_default(_get_strvec(enabled_linkage))
+        .set_default(_get_strvec(default_enabled_linkage))
         .action([](parser_t& p) {
-            enabled_linkage.clear();
             for(const auto& itr : p.get<std::set<std::string>>("linkage"))
                 enabled_linkage.emplace(from_string<symbol_linkage_t>(itr));
         });
 
+    enabled_visibility = default_enabled_visibility;
     parser
         .add_argument(
             { "--visibility" },
             join("", "Only instrument functions with specified visibility (default: ",
-                 join(array_config{ ", ", "", "" }, enabled_visibility), ")"))
+                 join(array_config{ ", ", "", "" }, default_enabled_visibility), ")"))
         .min_count(1)
         .choices(available_visibility)
-        .set_default(_get_strvec(enabled_visibility))
+        .set_default(_get_strvec(default_enabled_visibility))
         .action([](parser_t& p) {
-            enabled_visibility.clear();
             for(const auto& itr : p.get<std::set<std::string>>("visibility"))
                 enabled_visibility.emplace(from_string<symbol_visibility_t>(itr));
         });
