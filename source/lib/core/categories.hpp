@@ -131,7 +131,7 @@ ROCPROFSYS_DEFINE_CATEGORY(category, thread_context_switch, ROCPROFSYS_CATEGORY_
 ROCPROFSYS_DEFINE_CATEGORY(category, thread_hardware_counter, ROCPROFSYS_CATEGORY_THREAD_HARDWARE_COUNTER, "thread_hardware_counter", "Hardware counter value on thread (derived from sampling)")
 ROCPROFSYS_DEFINE_CATEGORY(category, kernel_hardware_counter, ROCPROFSYS_CATEGORY_KERNEL_HARDWARE_COUNTER, "kernel_hardware_counter", "Hardware counter value for kernel (deterministic)")
 ROCPROFSYS_DEFINE_CATEGORY(category, numa, ROCPROFSYS_CATEGORY_NUMA, "numa", "Non-unified memory architecture")
-ROCPROFSYS_DEFINE_CATEGORY(category, vaapi, ROCPROFSYS_CATEGORY_VAAPI, "vaapi", "Non-unified memory architecture")
+ROCPROFSYS_DEFINE_CATEGORY(category, vaapi, ROCPROFSYS_CATEGORY_VAAPI, "vaapi", "Video Accelerator API")
 ROCPROFSYS_DEFINE_CATEGORY(category, timer_sampling, ROCPROFSYS_CATEGORY_TIMER_SAMPLING, "timer_sampling", "Sampling based on a timer")
 ROCPROFSYS_DEFINE_CATEGORY(category, overflow_sampling, ROCPROFSYS_CATEGORY_OVERFLOW_SAMPLING, "overflow_sampling", "Sampling based on a counter overflow")
 

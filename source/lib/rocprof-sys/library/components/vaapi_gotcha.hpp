@@ -25,9 +25,21 @@
 #include "core/common.hpp"
 #include "core/defines.hpp"
 #include "core/timemory.hpp"
+
+#if defined(_MSC_VER)
+#    pragma warning(disable : 4200)
+#endif
+#if defined(__GNUC__) || defined(__clang__)
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Wpedantic"
+// Errors due to anonymous struct/union and flexible array member
+#endif
 #include "va/va.h"
 #include "va/va_drm.h"
 #include "va/va_drmcommon.h"
+#if defined(__GNUC__) || defined(__clang__)
+#    pragma GCC diagnostic pop
+#endif
 
 #include <timemory/components/base.hpp>
 #include <timemory/components/gotcha/backends.hpp>

@@ -117,9 +117,6 @@ vaapi_gotcha::start()
         configure();
         get_vaapi_gotcha().start();
     }
-    ROCPROFSYS_BASIC_DEBUG_F(
-        "VA-API::vaapi gotcha is available: % s\n ",
-        trait::as_string<trait::is_available<vaapi_gotcha_t>>().c_str());
 }
 
 void
@@ -153,6 +150,7 @@ vaapi_gotcha::audit(const gotcha_data& _data, audit::incoming, VADisplay dpy,
                     VAProfile profile, VAEntrypoint entrypoint,
                     VAConfigAttrib* attrib_list, int num_attribs, VAConfigID* config_id)
 {
+    (void) attrib_list;  // unused
     category_region<category::vaapi>::start(
         std::string_view{ _data.tool_id }, "dpy", dpy, "profile", profile, "entrypoint",
         entrypoint, "num_attribs", num_attribs, "config_id", config_id);
@@ -179,6 +177,7 @@ vaapi_gotcha::audit(const gotcha_data& _data, audit::incoming, VADisplay dpy,
                     VASurfaceID* surfaces, unsigned int num_surfaces,
                     VASurfaceAttrib* attrib_list, unsigned int num_attribs)
 {
+    (void) attrib_list;  // unused
     category_region<category::vaapi>::start(std::string_view{ _data.tool_id }, "dpy", dpy,
                                             "format", format, "width", width, "height",
                                             height, "surfaces", surfaces, "num_surfaces",
@@ -216,6 +215,7 @@ void
 vaapi_gotcha::audit(const gotcha_data& _data, audit::incoming, VADisplay dpy,
                     VASurfaceID* surfaces, int num_surfaces)
 {
+    (void) surfaces;  // unused
     category_region<category::vaapi>::start(std::string_view{ _data.tool_id }, "dpy", dpy,
                                             "num_surfaces", num_surfaces);
 }
@@ -237,6 +237,7 @@ vaapi_gotcha::audit(const gotcha_data& _data, audit::incoming, VADisplay dpy,
                     VAProfile profile, VAEntrypoint entrypoint,
                     VAConfigAttrib* attrib_list, int num_attribs)
 {
+    (void) attrib_list;  // unused
     category_region<category::vaapi>::start(std::string_view{ _data.tool_id }, "dpy", dpy,
                                             "profile", profile, "entrypoint", entrypoint,
                                             "num_attribs", num_attribs);
@@ -269,8 +270,9 @@ vaapi_gotcha::audit(const gotcha_data& _data, audit::incoming, VADisplay dpy,
                     VAConfigID config, VASurfaceAttrib* attrib_list,
                     unsigned int* num_attribs)
 {
+    (void) attrib_list;  // unused
     category_region<category::vaapi>::start(std::string_view{ _data.tool_id }, "dpy", dpy,
-                                            "config", config, "attrib_list", num_attribs);
+                                            "config", config, "num_attribs", num_attribs);
 }
 
 // vaQuerySurfaceStatus
@@ -288,6 +290,7 @@ void
 vaapi_gotcha::audit(const gotcha_data& _data, audit::incoming, VADisplay dpy,
                     VAContextID context, VABufferID* buffers, int num_buffers)
 {
+    (void) buffers;  // unused
     category_region<category::vaapi>::start(std::string_view{ _data.tool_id }, "dpy", dpy,
                                             "context", context, "num_buffers",
                                             num_buffers);
