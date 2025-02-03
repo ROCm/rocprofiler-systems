@@ -37,7 +37,6 @@
 #include "core/gpu.hpp"
 #include "core/locking.hpp"
 #include "core/perfetto_fwd.hpp"
-#include "core/rocprofiler-sdk.hpp"
 #include "core/timemory.hpp"
 #include "core/utility.hpp"
 #include "library/causal/data.hpp"
@@ -488,7 +487,7 @@ rocprofsys_init_tooling_hidden()
     // start these gotchas once settings have been initialized
     if(get_init_bundle()) get_init_bundle()->start();
 
-    if(rocprofiler_sdk::is_vaapi_tracing_enabled())
+    if(get_use_vaapi_tracing())
     {
         ROCPROFSYS_VERBOSE_F(1, "Setting up VA-API traces...\n");
         component::vaapi_gotcha::start();
@@ -770,7 +769,7 @@ rocprofsys_finalize_hidden(void)
     fini_bundle_t _finalization{};
     _finalization.start();
 
-    if(rocprofiler_sdk::is_vaapi_tracing_enabled())
+    if(get_use_vaapi_tracing())
     {
         ROCPROFSYS_VERBOSE_F(1, "Shutting down VA-API tracing...\n");
         component::vaapi_gotcha::shutdown();

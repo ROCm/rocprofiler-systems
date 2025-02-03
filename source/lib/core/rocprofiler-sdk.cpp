@@ -218,8 +218,6 @@ get_operations_impl(const std::unordered_set<int32_t>& _complete,
 
 }  // namespace
 
-bool vaapi_tracing_enabled = false;
-
 void
 config_settings(const std::shared_ptr<settings>& _config)
 {
@@ -348,31 +346,24 @@ config_settings(const std::shared_ptr<settings>& _config)
         _add_operation_settings(itr.name, itr, buffered_operation_option_names);
 }
 
-// Check if VAAPI tracing is enabled
-bool
-is_vaapi_tracing_enabled()
-{
-    auto _domains =
-        tim::delimit(config::get_setting_value<std::string>("ROCPROFSYS_ROCM_DOMAINS")
-                         .value_or(std::string{}),
-                     " ,;:\t\n");
-    return std::find(_domains.begin(), _domains.end(), "rocdecode_api") != _domains.end();
-}
-
 std::unordered_set<rocprofiler_callback_tracing_kind_t>
 get_callback_domains()
 {
     const auto callback_tracing_info = rocprofiler::sdk::get_callback_tracing_names();
-    const auto supported = std::unordered_set<rocprofiler_callback_tracing_kind_t>{
+    const auto supported = std::unordered_set<rocprofiler_callback_tracing_kind_t>
+    {
         ROCPROFILER_CALLBACK_TRACING_HSA_CORE_API,
-        ROCPROFILER_CALLBACK_TRACING_HSA_AMD_EXT_API,
-        ROCPROFILER_CALLBACK_TRACING_HSA_IMAGE_EXT_API,
-        ROCPROFILER_CALLBACK_TRACING_HSA_FINALIZE_EXT_API,
-        ROCPROFILER_CALLBACK_TRACING_HIP_RUNTIME_API,
-        ROCPROFILER_CALLBACK_TRACING_HIP_COMPILER_API,
-        ROCPROFILER_CALLBACK_TRACING_MARKER_CORE_API,
-        ROCPROFILER_CALLBACK_TRACING_CODE_OBJECT,
-        ROCPROFILER_CALLBACK_TRACING_ROCDECODE_API,
+            ROCPROFILER_CALLBACK_TRACING_HSA_AMD_EXT_API,
+            ROCPROFILER_CALLBACK_TRACING_HSA_IMAGE_EXT_API,
+            ROCPROFILER_CALLBACK_TRACING_HSA_FINALIZE_EXT_API,
+            ROCPROFILER_CALLBACK_TRACING_HIP_RUNTIME_API,
+            ROCPROFILER_CALLBACK_TRACING_HIP_COMPILER_API,
+            ROCPROFILER_CALLBACK_TRACING_MARKER_CORE_API,
+            ROCPROFILER_CALLBACK_TRACING_CODE_OBJECT,
+#    if(ROCPROFILER_VERSION_MAJOR == 0 && ROCPROFILER_VERSION_MINOR >= 6) ||             \
+        ROCPROFILER_VERSION_MAJOR >= 1
+            ROCPROFILER_CALLBACK_TRACING_ROCDECODE_API,
+#    endif
     };
 
     auto _data = std::unordered_set<rocprofiler_callback_tracing_kind_t>{};
@@ -415,10 +406,13 @@ get_callback_domains()
         {
             _data.emplace(ROCPROFILER_CALLBACK_TRACING_MARKER_CORE_API);
         }
+#    if(ROCPROFILER_VERSION_MAJOR == 0 && ROCPROFILER_VERSION_MINOR >= 6) ||             \
+        ROCPROFILER_VERSION_MAJOR >= 1
         else if(itr == "rocdecode_api")
         {
             _data.emplace(ROCPROFILER_CALLBACK_TRACING_ROCDECODE_API);
         }
+#    endif
         else
         {
             for(size_t idx = 0; idx < callback_tracing_info.size(); ++idx)
@@ -486,10 +480,6 @@ get_buffered_domains()
         else if(itr == "marker_api" || itr == "roctx")
         {
             _data.emplace(ROCPROFILER_BUFFER_TRACING_MARKER_CORE_API);
-        }
-        else if(itr == "rocdecode_api")
-        {
-            _data.emplace(ROCPROFILER_BUFFER_TRACING_ROCDECODE_API);
         }
         else
         {
@@ -592,6 +582,7 @@ namespace rocprofiler_sdk
 void
 config_settings(const std::shared_ptr<settings>&)
 {}
+
 }  // namespace rocprofiler_sdk
 }  // namespace rocprofsys
 

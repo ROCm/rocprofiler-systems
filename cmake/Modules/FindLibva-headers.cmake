@@ -16,12 +16,6 @@ find_path(
     PATHS /opt/amdgpu/include
     NO_DEFAULT_PATH)
 
-if(NOT LIBVA_HEADERS_INCLUDE_DIR)
-    set(LIBVA_HEADERS_INCLUDE_DIR
-        "${LIBVA_HEADERS_INCLUDE_DIR_INTERNAL}"
-        CACHE PATH "Path internal to VA API headers")
-endif()
-
 if(NOT EXISTS "${LIBVA_HEADERS_INCLUDE_DIR}")
     rocprofiler_systems_message(
         AUTHOR_WARNING

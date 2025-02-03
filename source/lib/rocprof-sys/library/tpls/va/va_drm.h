@@ -27,7 +27,7 @@
 #ifndef VA_DRM_H
 #define VA_DRM_H
 
-#include "va.h"
+#include <va/va.h>
 
 /**
  * \file va_drm.h
