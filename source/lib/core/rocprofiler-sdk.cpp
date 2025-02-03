@@ -218,6 +218,8 @@ get_operations_impl(const std::unordered_set<int32_t>& _complete,
 
 }  // namespace
 
+bool vaapi_tracing_enabled = false;
+
 void
 config_settings(const std::shared_ptr<settings>& _config)
 {
@@ -346,6 +348,17 @@ config_settings(const std::shared_ptr<settings>& _config)
         _add_operation_settings(itr.name, itr, buffered_operation_option_names);
 }
 
+// Check if VAAPI tracing is enabled
+bool
+is_vaapi_tracing_enabled()
+{
+    auto _domains =
+        tim::delimit(config::get_setting_value<std::string>("ROCPROFSYS_ROCM_DOMAINS")
+                         .value_or(std::string{}),
+                     " ,;:\t\n");
+    return std::find(_domains.begin(), _domains.end(), "rocdecode_api") != _domains.end();
+}
+
 std::unordered_set<rocprofiler_callback_tracing_kind_t>
 get_callback_domains()
 {
@@ -359,6 +372,7 @@ get_callback_domains()
         ROCPROFILER_CALLBACK_TRACING_HIP_COMPILER_API,
         ROCPROFILER_CALLBACK_TRACING_MARKER_CORE_API,
         ROCPROFILER_CALLBACK_TRACING_CODE_OBJECT,
+        ROCPROFILER_CALLBACK_TRACING_ROCDECODE_API,
     };
 
     auto _data = std::unordered_set<rocprofiler_callback_tracing_kind_t>{};
@@ -393,13 +407,17 @@ get_callback_domains()
         }
         else if(itr == "hip_api")
         {
-            for(auto eitr : { ROCPROFILER_CALLBACK_TRACING_HIP_COMPILER_API,
+            for(auto eitr : { ROCPROFILER_CALLBACK_TRACING_HIP_RUNTIME_API,
                               ROCPROFILER_CALLBACK_TRACING_HIP_COMPILER_API })
                 _data.emplace(eitr);
         }
         else if(itr == "marker_api" || itr == "roctx")
         {
             _data.emplace(ROCPROFILER_CALLBACK_TRACING_MARKER_CORE_API);
+        }
+        else if(itr == "rocdecode_api")
+        {
+            _data.emplace(ROCPROFILER_CALLBACK_TRACING_ROCDECODE_API);
         }
         else
         {
@@ -462,12 +480,16 @@ get_buffered_domains()
         else if(itr == "hip_api")
         {
             for(auto eitr : { ROCPROFILER_BUFFER_TRACING_HIP_COMPILER_API,
-                              ROCPROFILER_BUFFER_TRACING_HIP_COMPILER_API })
+                              ROCPROFILER_BUFFER_TRACING_HIP_RUNTIME_API })
                 _data.emplace(eitr);
         }
         else if(itr == "marker_api" || itr == "roctx")
         {
             _data.emplace(ROCPROFILER_BUFFER_TRACING_MARKER_CORE_API);
+        }
+        else if(itr == "rocdecode_api")
+        {
+            _data.emplace(ROCPROFILER_BUFFER_TRACING_ROCDECODE_API);
         }
         else
         {

@@ -42,6 +42,9 @@ namespace rocprofiler_sdk
 void
 config_settings(const std::shared_ptr<settings>&);
 
+bool
+is_vaapi_tracing_enabled();
+
 #if defined(ROCPROFSYS_USE_ROCM)
 
 std::unordered_set<rocprofiler_callback_tracing_kind_t>
