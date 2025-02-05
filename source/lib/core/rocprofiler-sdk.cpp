@@ -417,7 +417,6 @@ get_callback_domains()
         else if(itr == "rccl_api")
         {
             _data.emplace(ROCPROFILER_CALLBACK_TRACING_RCCL_API);
-            printf("[DFG] %s Enabling RCCL API.\n", __FUNCTION__);
         }
         else
         {
