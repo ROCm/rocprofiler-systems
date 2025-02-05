@@ -593,7 +593,7 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
             case ROCPROFILER_CALLBACK_TRACING_RCCL_API:
             {
                 tool_tracing_callback_stop(category::rocm_rccl_api{}, record, user_data,
-                                            ts, _bt_data);
+                                           ts, _bt_data);
                 break;
             }
             case ROCPROFILER_CALLBACK_TRACING_NONE:
