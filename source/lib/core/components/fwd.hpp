@@ -39,7 +39,6 @@
 
 #include <type_traits>
 
-ROCPROFSYS_DECLARE_COMPONENT(rcclp_handle)
 ROCPROFSYS_DECLARE_COMPONENT(comm_data)
 
 ROCPROFSYS_COMPONENT_ALIAS(comm_data_tracker_t,
@@ -96,11 +95,6 @@ template <typename ApiT, typename StartFuncT = default_functor_t,
 struct functors;
 }  // namespace component
 }  // namespace rocprofsys
-
-#if !defined(ROCPROFSYS_USE_RCCL)
-ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, category::rocm_rccl, false_type)
-ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::rcclp_handle, false_type)
-#endif
 
 #if !defined(ROCPROFSYS_USE_RCCL) && !defined(ROCPROFSYS_USE_MPI)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::comm_data_tracker_t, false_type)

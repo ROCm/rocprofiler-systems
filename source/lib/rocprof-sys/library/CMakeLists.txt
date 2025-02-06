@@ -20,7 +20,6 @@ set(library_headers
     ${CMAKE_CURRENT_LIST_DIR}/process_sampler.hpp
     ${CMAKE_CURRENT_LIST_DIR}/perf.hpp
     ${CMAKE_CURRENT_LIST_DIR}/ptl.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/rcclp.hpp
     ${CMAKE_CURRENT_LIST_DIR}/rocm.hpp
     ${CMAKE_CURRENT_LIST_DIR}/rocm_smi.hpp
     ${CMAKE_CURRENT_LIST_DIR}/rocprofiler-sdk.hpp
@@ -51,7 +50,6 @@ add_subdirectory(tracing)
 set(ndebug_sources
     ${CMAKE_CURRENT_LIST_DIR}/components/mpi_gotcha.cpp
     ${CMAKE_CURRENT_LIST_DIR}/components/backtrace_metrics.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/rcclp.cpp
     ${CMAKE_CURRENT_LIST_DIR}/kokkosp.cpp
     ${CMAKE_CURRENT_LIST_DIR}/rocm_smi.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ompt.cpp)

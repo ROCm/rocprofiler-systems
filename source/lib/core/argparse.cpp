@@ -544,7 +544,7 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
     }
 
     strset_t _backend_choices = {
-        "all",      "kokkosp",         "mpip",        "ompt",       "rcclp",
+        "all",      "kokkosp",         "mpip",        "ompt",
         "rocm-smi", "rocprofiler-sdk", "mutex-locks", "spin-locks", "rw-locks"
     };
 
@@ -554,10 +554,6 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
 
 #if !defined(ROCPROFSYS_USE_OMPT)
     _backend_choices.erase("ompt");
-#endif
-
-#if !defined(ROCPROFSYS_USE_RCCL)
-    _backend_choices.erase("rcclp");
 #endif
 
 #if !defined(ROCPROFSYS_USE_ROCM)
@@ -570,7 +566,6 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
     if(gpu::device_count() == 0)
     {
         // remove GPU-specific backends
-        _backend_choices.erase("rcclp");
         _backend_choices.erase("amd-smi");
         _backend_choices.erase("rocm-smi");
         _backend_choices.erase("rocprofiler-sdk");
@@ -602,7 +597,6 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
                 _update("ROCPROFSYS_USE_MPIP", _v.count("mpip") > 0);
                 _update("ROCPROFSYS_USE_OMPT", _v.count("ompt") > 0);
                 _update("ROCPROFSYS_USE_ROCM", _v.count("rocm") > 0);
-                _update("ROCPROFSYS_USE_RCCLP", _v.count("rcclp") > 0);
                 _update("ROCPROFSYS_USE_ROCM_SMI", _v.count("rocm-smi") > 0);
                 _update("ROCPROFSYS_TRACE_THREAD_LOCKS", _v.count("mutex-locks") > 0);
                 _update("ROCPROFSYS_TRACE_THREAD_RW_LOCKS", _v.count("rw-locks") > 0);
@@ -636,7 +630,6 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
                 _update("ROCPROFSYS_USE_MPIP", _v.count("mpip") > 0);
                 _update("ROCPROFSYS_USE_OMPT", _v.count("ompt") > 0);
                 _update("ROCPROFSYS_USE_ROCM", _v.count("rocm") > 0);
-                _update("ROCPROFSYS_USE_RCCLP", _v.count("rcclp") > 0);
                 _update("ROCPROFSYS_USE_ROCM_SMI", _v.count("rocm-smi") > 0);
                 _update("ROCPROFSYS_TRACE_THREAD_LOCKS", _v.count("mutex-locks") > 0);
                 _update("ROCPROFSYS_TRACE_THREAD_RW_LOCKS", _v.count("rw-locks") > 0);

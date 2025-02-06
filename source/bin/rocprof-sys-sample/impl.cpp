@@ -715,7 +715,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
 
     std::set<std::string> _backend_choices = {
         "all",      "kokkosp",         "mpip",        "ompt",
-        "rcclp",    "rocm-smi",        "mutex-locks", "spin-locks",
+        "rocm-smi", "mutex-locks",     "spin-locks",
         "rw-locks", "rocprofiler-sdk", "rocm"
     };
 
@@ -725,10 +725,6 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
 
 #if !defined(ROCPROFSYS_USE_OMPT)
     _backend_choices.erase("ompt");
-#endif
-
-#if !defined(ROCPROFSYS_USE_RCCL)
-    _backend_choices.erase("rcclp");
 #endif
 
 #if !defined(ROCPROFSYS_USE_ROCM)
@@ -751,7 +747,6 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
             _update("ROCPROFSYS_USE_MPIP", _v.count("mpip") > 0);
             _update("ROCPROFSYS_USE_OMPT", _v.count("ompt") > 0);
             _update("ROCPROFSYS_USE_ROCM", _v.count("rocm") > 0);
-            _update("ROCPROFSYS_USE_RCCLP", _v.count("rcclp") > 0);
             _update("ROCPROFSYS_USE_ROCM_SMI", _v.count("rocm-smi") > 0);
             _update("ROCPROFSYS_TRACE_THREAD_LOCKS", _v.count("mutex-locks") > 0);
             _update("ROCPROFSYS_TRACE_THREAD_RW_LOCKS", _v.count("rw-locks") > 0);
@@ -775,7 +770,6 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
             _update("ROCPROFSYS_USE_MPIP", _v.count("mpip") > 0);
             _update("ROCPROFSYS_USE_OMPT", _v.count("ompt") > 0);
             _update("ROCPROFSYS_USE_ROCM", _v.count("rocm") > 0);
-            _update("ROCPROFSYS_USE_RCCLP", _v.count("rcclp") > 0);
             _update("ROCPROFSYS_USE_ROCM_SMI", _v.count("rocm-smi") > 0);
             _update("ROCPROFSYS_TRACE_THREAD_LOCKS", _v.count("mutex-locks") > 0);
             _update("ROCPROFSYS_TRACE_THREAD_RW_LOCKS", _v.count("rw-locks") > 0);
