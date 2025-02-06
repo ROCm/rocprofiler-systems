@@ -180,13 +180,6 @@ extern "C"
         (void) rocprofsys::get_clock_skew();
 #endif
 
-        if(get_use_process_sampling() && get_use_rocm_smi())
-        {
-            ROCPROFSYS_VERBOSE_F(1 || rocm::on_load_trace,
-                                 "Setting rocm_smi state to active...\n");
-            rocm_smi::set_state(State::Active);
-        }
-
         comp::roctracer::setup(static_cast<void*>(table), rocm::on_load_trace);
 
 #if defined(ROCPROFSYS_USE_ROCPROFILER) && ROCPROFSYS_USE_ROCPROFILER > 0

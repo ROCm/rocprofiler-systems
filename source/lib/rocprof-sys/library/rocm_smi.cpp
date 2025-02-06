@@ -227,7 +227,7 @@ bool
 data::setup()
 {
     perfetto_counter_track<data>::init();
-    rocm_smi::set_state(State::PreInit);
+    rocm_smi::set_state(State::Active);
     return true;
 }
 
