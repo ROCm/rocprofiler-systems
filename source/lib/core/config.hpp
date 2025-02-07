@@ -237,9 +237,6 @@ get_use_code_coverage();
 bool
 get_sampling_keep_internal();
 
-bool
-get_use_rcclp();
-
 size_t
 get_perfetto_shmem_size_hint();
 

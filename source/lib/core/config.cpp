@@ -1901,12 +1901,6 @@ get_use_code_coverage()
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
-bool
-get_use_rcclp()
-{
-    return false;
-}
-
 size_t
 get_num_threads_hint()
 {
