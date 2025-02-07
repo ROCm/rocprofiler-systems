@@ -17,9 +17,6 @@ rocprofiler_systems_add_interface_library(
     "Provides flags and libraries for Dyninst (dynamic instrumentation)")
 rocprofiler_systems_add_interface_library(rocprofiler-systems-rocm
                                           "Provides flags and libraries for ROCm")
-rocprofiler_systems_add_interface_library(
-    rocprofiler-systems-rccl
-    "Provides flags for ROCm Communication Collectives Library (RCCL)")
 rocprofiler_systems_add_interface_library(rocprofiler-systems-mpi
                                           "Provides MPI or MPI headers")
 rocprofiler_systems_add_interface_library(rocprofiler-systems-libva
@@ -47,7 +44,6 @@ rocprofiler_systems_add_interface_library(rocprofiler-systems-compile-definition
 # libraries with relevant compile definitions
 set(ROCPROFSYS_EXTENSION_LIBRARIES
     rocprofiler-systems::rocprofiler-systems-rocm
-    rocprofiler-systems::rocprofiler-systems-rccl
     rocprofiler-systems::rocprofiler-systems-bfd
     rocprofiler-systems::rocprofiler-systems-mpi
     rocprofiler-systems::rocprofiler-systems-ptl
