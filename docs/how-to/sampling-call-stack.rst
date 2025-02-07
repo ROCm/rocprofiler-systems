@@ -213,9 +213,9 @@ View the help menu of ``rocprof-sys-sample`` with the ``-h`` / ``--help`` option
 
       [BACKEND OPTIONS]  These options control region information captured w/o sampling or instrumentation
 
-      -I, --include [ all | kokkosp | mpip | mutex-locks | ompt | rcclp | rocm-smi | rocprofiler-sdk | rw-locks | spin-locks ]
+      -I, --include [ all | kokkosp | mpip | mutex-locks | ompt | rocm-smi | rocprofiler-sdk | rw-locks | spin-locks ]
                                     Include data from these backends (count: unlimited)
-      -E, --exclude [ all | kokkosp | mpip | mutex-locks | ompt | rcclp | rocm-smi | rocprofiler-sdk | rw-locks | spin-locks ]
+      -E, --exclude [ all | kokkosp | mpip | mutex-locks | ompt | rocm-smi | rocprofiler-sdk | rw-locks | spin-locks ]
                                     Exclude data from these backends (count: unlimited)
 
       [HARDWARE COUNTER OPTIONS] See also: rocprof-sys-avail -H
@@ -292,7 +292,6 @@ The following snippets show how ``rocprof-sys-sample`` runs with various environ
       ROCPROFSYS_USE_OMPT=true
       ROCPROFSYS_TRACE=true
       ROCPROFSYS_USE_PROCESS_SAMPLING=true
-      ROCPROFSYS_USE_RCCLP=true
       ROCPROFSYS_USE_ROCM_SMI=true
       ROCPROFSYS_USE_ROCM=true
       ROCPROFSYS_USE_SAMPLING=true
@@ -322,7 +321,6 @@ The following snippets show how ``rocprof-sys-sample`` runs with various environ
       ROCPROFSYS_USE_OMPT=false
       ROCPROFSYS_TRACE=true
       ROCPROFSYS_USE_PROCESS_SAMPLING=true
-      ROCPROFSYS_USE_RCCLP=false
       ROCPROFSYS_USE_ROCM_SMI=false
       ROCPROFSYS_USE_ROCM=false
       ROCPROFSYS_USE_SAMPLING=true
@@ -353,7 +351,6 @@ Here is the full output from the previous
    ROCPROFSYS_USE_MPIP=false
    ROCPROFSYS_USE_OMPT=false
    ROCPROFSYS_USE_PROCESS_SAMPLING=true
-   ROCPROFSYS_USE_RCCLP=false
    ROCPROFSYS_USE_ROCM_SMI=false
    ROCPROFSYS_USE_ROCM=false
    ROCPROFSYS_USE_SAMPLING=true
