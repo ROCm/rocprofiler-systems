@@ -16,14 +16,7 @@ rocprofiler_systems_add_test(
 
 rocprofiler_systems_add_validation_test(
     NAME videodecode-sampling
-    PERFETTO_METRIC "host"
-    PERFETTO_FILE "perfetto-trace.proto"
-    LABELS "videodecode"
-    ARGS -l videodecode -c 1 -d 0 --counter-names "GPU VCN Activity")
-
-rocprofiler_systems_add_validation_test(
-    NAME videodecode-sampling
     PERFETTO_METRIC "rocm_rocdecode_api"
     PERFETTO_FILE "perfetto-trace.proto"
     LABELS "videodecode"
-    ARGS -l rocDecCreateVideoParser -c 2 -d 1 RECHECK 1)
+    ARGS -l rocDecCreateVideoParser -c 2 -d 1 --counter-names "GPU VCN Activity")

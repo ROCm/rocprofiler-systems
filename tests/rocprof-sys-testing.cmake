@@ -928,7 +928,7 @@ function(ROCPROFILER_SYSTEMS_ADD_VALIDATION_TEST)
     cmake_parse_arguments(
         TEST
         ""
-        "NAME;TIMEOUT;TIMEMORY_METRIC;TIMEMORY_FILE;PERFETTO_METRIC;PERFETTO_FILE;RECHECK"
+        "NAME;TIMEOUT;TIMEMORY_METRIC;TIMEMORY_FILE;PERFETTO_METRIC;PERFETTO_FILE"
         "ENVIRONMENT;LABELS;PROPERTIES;PASS_REGEX;FAIL_REGEX;SKIP_REGEX;DEPENDS;ARGS"
         ${ARGN})
 
@@ -976,7 +976,7 @@ function(ROCPROFILER_SYSTEMS_ADD_VALIDATION_TEST)
 
     if(ROCPROFSYS_VALIDATION_PYTHON_PERFETTO EQUAL 0 AND TEST_PERFETTO_FILE)
         add_test(
-            NAME validate-${TEST_NAME}${TEST_RECHECK}-perfetto
+            NAME validate-${TEST_NAME}-perfetto
             COMMAND
                 ${ROCPROFSYS_VALIDATION_PYTHON}
                 ${CMAKE_CURRENT_LIST_DIR}/validate-perfetto-proto.py -m
@@ -988,8 +988,7 @@ function(ROCPROFILER_SYSTEMS_ADD_VALIDATION_TEST)
 
     list(APPEND TEST_ENVIRONMENT "ROCPROFSYS_CI_TIMEOUT=${TEST_TIMEOUT}")
 
-    foreach(_TEST validate-${TEST_NAME}-timemory
-                  validate-${TEST_NAME}${TEST_RECHECK}-perfetto)
+    foreach(_TEST validate-${TEST_NAME}-timemory validate-${TEST_NAME}-perfetto)
 
         if(NOT TEST "${_TEST}")
             continue()
