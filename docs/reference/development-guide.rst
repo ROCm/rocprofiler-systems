@@ -301,7 +301,7 @@ Collected data is generally handled in one of the three following ways:
 In general, only instrumentation for relatively simple data is directly passed to
 Perfetto and/or Timemory during runtime.
 For example, the callbacks from binary instrumentation, user API instrumentation,
-and roctracer directly invoke
+and rocprofiler-sdk directly invoke
 calls to Perfetto or Timemory's storage model. Otherwise, the data is stored
 by ROCm Systems Profiler in the thread-data model
 which is more persistent than simply using ``thread_local`` static data, which gets deleted
@@ -356,15 +356,15 @@ lowers the sampling frequency for the real-time sampler
 to 10 interrupts per second of real-time.
 
 The ROCm Systems Profiler-specific implementation can be found in
-`source/lib/rocprof-sys/library/sampling.cpp <https://github.com/ROCm/rocprofiler-systems/blob/main/source/lib/rocprof-sys/library/sampling.cpp>`_.
-Within `sampling.cpp <https://github.com/ROCm/rocprofiler-systems/blob/main/source/lib/rocprof-sys/library/sampling.cpp>`_,
+`source/lib/rocprof-sys/library/sampling.cpp <https://github.com/ROCm/rocprofiler-systems/blob/amd-mainline/source/lib/rocprof-sys/library/sampling.cpp>`_.
+Within `sampling.cpp <https://github.com/ROCm/rocprofiler-systems/blob/amd-mainline/source/lib/rocprof-sys/library/sampling.cpp>`_,
 there is a bundle of three sampling components:
 
-* `backtrace_timestamp <https://github.com/ROCm/rocprofiler-systems/blob/main/source/lib/rocprof-sys/library/components/backtrace_timestamp.hpp>`_ simply
+* `backtrace_timestamp <https://github.com/ROCm/rocprofiler-systems/blob/amd-mainline/source/lib/rocprof-sys/library/components/backtrace_timestamp.hpp>`_ simply
   records the wall-clock time of the sample.
-* `backtrace <https://github.com/ROCm/rocprofiler-systems/blob/main/source/lib/rocprof-sys/library/components/backtrace.hpp>`_
+* `backtrace <https://github.com/ROCm/rocprofiler-systems/blob/amd-mainline/source/lib/rocprof-sys/library/components/backtrace.hpp>`_
   records the call-stack via libunwind.
-* `backtrace_metrics <https://github.com/ROCm/rocprofiler-systems/blob/main/source/lib/rocprof-sys/library/components/backtrace_metrics.hpp>`_
+* `backtrace_metrics <https://github.com/ROCm/rocprofiler-systems/blob/amd-mainline/source/lib/rocprof-sys/library/components/backtrace_metrics.hpp>`_
   records the sample metrics, such as peak RSS and the hardware counters.
 
 These three components are bundled together in
@@ -387,7 +387,7 @@ Time-window constraint model
 ========================================
 
 With the recent introduction of tracing delay and duration, the
-`constraint namespace <https://github.com/ROCm/rocprofiler-systems/blob/main/source/lib/core/constraint.hpp>`_
+`constraint namespace <https://github.com/ROCm/rocprofiler-systems/blob/amd-mainline/source/lib/core/constraint.hpp>`_
 was introduced to improve the management of delays and duration limits for
 data collection. The ``spec`` class accepts a clock identifier, a delay value, a duration value, and an
 integer indicating how many times to repeat the delay and duration cycle. It is therefore

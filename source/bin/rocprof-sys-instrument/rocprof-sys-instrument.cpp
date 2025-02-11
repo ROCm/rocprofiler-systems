@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+// Copyright (c) 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -360,8 +360,8 @@ main(int argc, char** argv)
                itr, std::regex{
                         "lib(dyninstAPI|stackwalk|pcontrol|patchAPI|parseAPI|"
                         "instructionAPI|symtabAPI|dynDwarf|common|dynElf|tbb|tbbmalloc|"
-                        "tbbmalloc_proxy|gotcha|libunwind|roctracer64|hsa-runtime|amdhip|"
-                        "amd_comgr|rocm_smi64|rocprofiler64|rocprofiler-register|"
+                        "tbbmalloc_proxy|gotcha|libunwind|hsa-runtime|amdhip|"
+                        "amd_comgr|rocm_smi64|rocprofiler-register|"
                         "rocprofiler-sdk|rocprofiler-sdk-roctx|amd_smi)\\.(so|a)" }))
         {
             if(!find(filepath::dirname(itr), lib_search_paths))

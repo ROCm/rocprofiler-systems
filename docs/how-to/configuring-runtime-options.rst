@@ -43,6 +43,17 @@ and tweak the default sampling values.
    ROCPROFSYS_SAMPLING_CPUS        = all
    ROCPROFSYS_SAMPLING_GPUS        = $env:HIP_VISIBLE_DEVICES
 
+Use the configuration file
+-----------------------------------
+
+Tell rocprof-systems to use the modified settings by creating the environment variable ``ROCPROFSYS_CONFIG_FILE``
+
+.. code-block:: shell
+
+   export ROCPROFSYS_CONFIG_FILE=~/.rocprof-sys.cfg
+
+See :ref:`creating a configuration file<creating-a-configuration-file>` for more details.
+
 Exploring runtime settings
 -----------------------------------
 
@@ -457,7 +468,6 @@ Viewing components
    | written_bytes                     | Number of bytes sent to the storage layer.   |
    | written_char                      | Number of bytes which this task has cause... |
    | rocprof-sys                       | Invokes instrumentation functions rocprof... |
-   | roctracer                         | High-precision ROCm API and kernel tracing.  |
    | sampling_wall_clock               | Wall-clock timing. Derived from statistic... |
    | sampling_cpu_clock                | CPU-clock timing. Derived from statistica... |
    | sampling_percent                  | Fraction of wall-clock time spent in func... |
@@ -1190,6 +1200,8 @@ Viewing hardware counters
    | ALUStalledByLDS:device=0              | The percentage of GPUTime ALU unit... |
    | LDSBankConflict:device=0              | The percentage of GPUTime LDS is s... |
    |---------------------------------------|---------------------------------------|
+
+.. _creating-a-configuration-file:
 
 Creating a configuration file
 ========================================

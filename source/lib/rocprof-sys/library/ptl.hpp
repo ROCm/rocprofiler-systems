@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+// Copyright (c) 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -56,16 +56,5 @@ PTL::TaskGroup<void>&
 get_task_group(int64_t _tid = utility::get_thread_index());
 }
 
-//--------------------------------------------------------------------------------------//
-//
-//      roctracer
-//
-//--------------------------------------------------------------------------------------//
-
-namespace roctracer
-{
-PTL::TaskGroup<void>&
-get_task_group(int64_t _tid = utility::get_thread_index());
-}  // namespace roctracer
 }  // namespace tasking
 }  // namespace rocprofsys

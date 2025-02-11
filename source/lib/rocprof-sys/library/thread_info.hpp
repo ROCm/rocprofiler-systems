@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+// Copyright (c) 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -39,7 +39,7 @@ namespace rocprofsys
 //  InternalTID:  zero-based, process-local thread-ID from atomic increment
 //                from user-created threads and rocprof-sys-created threads.
 //                This value may vary based on threads created by different
-//                backends, e.g., roctracer will create threads
+//                backends.
 //
 //  SystemTID:    system thread-ID. Should be same value as what is seen
 //                in debugger, etc.

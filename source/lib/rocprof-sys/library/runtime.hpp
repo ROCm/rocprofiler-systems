@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+// Copyright (c) 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,7 @@
 #include "library/components/mpi_gotcha.hpp"
 #include "library/components/numa_gotcha.hpp"
 #include "library/components/pthread_gotcha.hpp"
+#include "library/components/vaapi_gotcha.hpp"
 #include "library/thread_data.hpp"
 
 #include <timemory/backends/threading.hpp>
