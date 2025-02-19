@@ -30,9 +30,9 @@ be the same size.
 
 .. note::
 
-   Support for AI / ML workloads is still limited. If the workload is forking, then data from the child processes
-   is not captured. See `rocprofV3 <https://rocm.docs.amd.com/projects/rocprofiler-sdk/en/latest/how-to/using-rocprofv3.html#using-rocprofv3>`_
-   for other profiling options.
+   ROCm Systems Profiler has limited support for Artificial Intelligence (AI) and Machine Learning (ML) workloads.
+   Data from child threads is not captured. For other profiling options,
+   see `rocprofV3 <https://rocm.docs.amd.com/projects/rocprofiler-sdk/en/latest/how-to/using-rocprofv3.html#using-rocprofv3>`_.
 
 Getting started
 ========================================
