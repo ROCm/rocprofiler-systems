@@ -151,8 +151,8 @@ void
 delay::postblock(int64_t _preblock_global_delay_value)
 {
     auto& local = get_local();
-    if (local != -1) // If get_local() returned -1, that means "dummy data" and
-                     // we don't touch it.
+    if(local != -1) // If get_local() returned -1, that means "dummy data" and
+                    // we don't touch it.
     {
         local += (get_global() - _preblock_global_delay_value);
     }
@@ -176,9 +176,9 @@ delay::get_global()
 int64_t&
 delay::get_local(int64_t _tid)
 {
-    static int64_t delayDataNull = -1; // -1 means "no value"
-    auto&                    _data     = get_delay_data();
-    static thread_local auto _thr_init = []() {
+    static int64_t           delayDataNull = -1; // -1 means "no value"
+    auto&                    _data         = get_delay_data();
+    static thread_local auto _thr_init     = []() {
         using thread_data_t = thread_data<identity<int64_t>, delay>;
         thread_data_t::construct(construct_on_thread{ threading::get_id() },
                                  get_global().load());
@@ -187,7 +187,7 @@ delay::get_local(int64_t _tid)
 
     // If _data is nullptr, we have to return reference to dummy data, or
     // else we will crash.
-    if (_data == nullptr)
+    if(_data == nullptr)
     {
         return delayDataNull;
     }
