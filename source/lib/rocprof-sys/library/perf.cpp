@@ -654,7 +654,7 @@ get_instances()
 std::unique_ptr<perf_event>&
 get_instance(int64_t _tid)
 {
-    static auto nullInstance = std::unique_ptr<perf_event>{nullptr};
+    static auto nullInstance = std::unique_ptr<perf_event>{ nullptr };
     auto&       _data        = get_instances();
 
     // If get_instances() returned an empty object, we have to return a reference to a
