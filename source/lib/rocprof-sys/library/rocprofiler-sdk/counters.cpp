@@ -126,6 +126,8 @@ counter_storage::operator()(const counter_event& _event, timing_interval _timing
 void
 counter_storage::write() const
 {
+    if(!trait::runtime_enabled<counter_data_tracker>::get()) return;
+
     operation::set_storage<counter_data_tracker>{}(storage.get());
     counter_data_tracker::label()       = metric_name;
     counter_data_tracker::description() = metric_description;
