@@ -541,12 +541,6 @@ rocprofsys_init_tooling_hidden()
         ompt::setup();
     }
 
-    if(get_use_rcclp())
-    {
-        ROCPROFSYS_VERBOSE_F(1, "Setting up RCCLP...\n");
-        rcclp::setup();
-    }
-
     if(get_use_perfetto())
     {
         ROCPROFSYS_VERBOSE_F(1, "Starting Perfetto...\n");
@@ -637,6 +631,12 @@ rocprofsys_init_hidden(const char* _mode, bool _is_binary_rewrite, const char* _
 
     tim::set_env("ROCPROFSYS_MODE", _mode, 0);
     config::is_binary_rewrite() = _is_binary_rewrite;
+
+    if(get_use_rcclp())
+    {
+        ROCPROFSYS_VERBOSE_F(1, "Setting up RCCLP...\n");
+        rcclp::setup();
+    }
 
     if(_set_mpi_called)
     {
