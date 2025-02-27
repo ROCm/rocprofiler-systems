@@ -405,6 +405,9 @@ rocprofsys_init_library_hidden()
 
 //======================================================================================//
 
+// This flag will be set if we are configured to use RCCL.
+static bool use_rcclp = false;
+
 extern "C" bool
 rocprofsys_init_tooling_hidden()
 {
@@ -535,6 +538,16 @@ rocprofsys_init_tooling_hidden()
         }
     }
 
+    // Check if we should set up RCCL, but don't set it up here.
+    // If we called rcclp::setup() here, the thread would hang because it
+    // is in the call stack of hip::GetHipCompilerDispatchTable().
+    // But we have to call get_use_rcclp() here, because the configuration
+    // has to be in the right state (State::Init).
+    if(get_use_rcclp())
+    {
+        use_rcclp = true;
+    }
+
     if(get_use_ompt())
     {
         ROCPROFSYS_VERBOSE_F(1, "Setting up OMPT...\n");
@@ -632,7 +645,8 @@ rocprofsys_init_hidden(const char* _mode, bool _is_binary_rewrite, const char* _
     tim::set_env("ROCPROFSYS_MODE", _mode, 0);
     config::is_binary_rewrite() = _is_binary_rewrite;
 
-    if(get_use_rcclp())
+    // If we have detected that RCCL should be used, setup now.
+    if(use_rcclp)
     {
         ROCPROFSYS_VERBOSE_F(1, "Setting up RCCLP...\n");
         rcclp::setup();
