@@ -146,9 +146,8 @@ foreach(_VERSION ${ROCPROFSYS_PYTHON_VERSIONS})
     endif()
 
     function(ROCPROFILER_SYSTEMS_ADD_PYTHON_VALIDATION_TEST)
-        cmake_parse_arguments(
-            TEST "" "NAME;TIMEMORY_METRIC;TIMEMORY_FILE;PERFETTO_FILE"
-            "ARGS;PERFETTO_METRIC" ${ARGN})
+        cmake_parse_arguments(TEST "" "NAME;TIMEMORY_METRIC;TIMEMORY_FILE;PERFETTO_FILE"
+                              "ARGS;PERFETTO_METRIC" ${ARGN})
 
         rocprofiler_systems_add_python_test(
             NAME ${TEST_NAME}-validate-timemory
@@ -207,9 +206,7 @@ foreach(_VERSION ${ROCPROFSYS_PYTHON_VERSIONS})
         2
         3)
 
-    set(python_source_categories
-        python
-        user)
+    set(python_source_categories python user)
 
     rocprofiler_systems_add_python_validation_test(
         NAME python-source
