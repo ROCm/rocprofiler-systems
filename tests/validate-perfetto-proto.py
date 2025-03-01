@@ -164,6 +164,7 @@ if __name__ == "__main__":
 
     # demo display of data
     if args.print:
+        print(f"Printing Perfetto Data {args.categories}")
         for itr in perfetto_data:
             n = 0 if itr["depth"] < 2 else itr["depth"] - 1
             lbl = "{}{}{}".format(
