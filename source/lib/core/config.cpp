@@ -419,7 +419,7 @@ configure_settings(bool _init)
 
     ROCPROFSYS_CONFIG_SETTING(
         double, "ROCPROFSYS_SAMPLING_FREQ",
-        "Number of software interrupts per second when OMNITTRACE_USE_SAMPLING=ON", 300.0,
+        "Number of software interrupts per second when ROCPROFSYS_USE_SAMPLING=ON", 300.0,
         "sampling", "process_sampling");
 
     ROCPROFSYS_CONFIG_SETTING(double, "ROCPROFSYS_SAMPLING_CPUTIME_FREQ",
@@ -462,7 +462,7 @@ configure_settings(bool _init)
 
     ROCPROFSYS_CONFIG_SETTING(
         double, "ROCPROFSYS_PROCESS_SAMPLING_FREQ",
-        "Number of measurements per second when OMNITTRACE_USE_PROCESS_SAMPLING=ON. If "
+        "Number of measurements per second when ROCPROFSYS_USE_PROCESS_SAMPLING=ON. If "
         "set to zero, uses ROCPROFSYS_SAMPLING_FREQ value",
         0.0, "process_sampling");
 
