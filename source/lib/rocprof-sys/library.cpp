@@ -414,7 +414,7 @@ bool rccl_initialized = false;
 static void
 rccl_setup(bool postinit)
 {
-    if (postinit && (get_state() >= State::Init) && !rccl_initialized && get_use_rcclp())
+    if(postinit && (get_state() >= State::Init) && !rccl_initialized && get_use_rcclp())
     {
         ROCPROFSYS_VERBOSE_F(1, "Setting up RCCLP...\n");
         rcclp::setup();
