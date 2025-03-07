@@ -403,19 +403,42 @@ rocprofsys_init_library_hidden()
     ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(_debug_init, "\n");
 }
 
+// Flag used to avoid initializing RCCL more than once
+bool rccl_initialized = false;
+
+// Initialize RCCL if:
+// - postinit=true - so the code doesn't hang at the initialization stage
+// - get_state() >= State::Init - so the code doesn't throw an exception
+// - rccl_initialized=false - so we don't try to initialize RCCL more than once
+// - get_use_rcclp()=true - only if the environment is configured to use RCCL
+static void
+rccl_setup(bool postinit)
+{
+    if (postinit && (get_state() >= State::Init) && !rccl_initialized && get_use_rcclp())
+    {
+        ROCPROFSYS_VERBOSE_F(1, "Setting up RCCLP...\n");
+        rcclp::setup();
+        rccl_initialized = true;
+    }
+}
+
+static void
+rocprofsys_init_library_hidden_with_rccl(bool postinit)
+{
+    rocprofsys_init_library_hidden();
+    rccl_setup(postinit);
+}
+
 //======================================================================================//
 
-// This flag will be set if we are configured to use RCCL.
-static bool use_rcclp = false;
-
 extern "C" bool
-rocprofsys_init_tooling_hidden()
+rocprofsys_init_tooling_hidden(bool postinit)
 {
     if(get_env("ROCPROFSYS_MONOCHROME", false, false)) tim::log::monochrome() = true;
 
     if(!tim::get_env("ROCPROFSYS_INIT_TOOLING", true))
     {
-        rocprofsys_init_library_hidden();
+        rocprofsys_init_library_hidden_with_rccl(postinit);
         return false;
     }
 
@@ -425,7 +448,11 @@ rocprofsys_init_tooling_hidden()
     ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(_debug_init, "State is %s...\n",
                                          std::to_string(get_state()).c_str());
 
-    if(get_state() != State::PreInit || get_state() == State::Init || _once) return false;
+    if(get_state() != State::PreInit || get_state() == State::Init || _once)
+    {
+        rccl_setup(postinit);
+        return false;
+    }
     _once = true;
 
     ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
@@ -446,7 +473,15 @@ rocprofsys_init_tooling_hidden()
     ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(_debug_init,
                                          "Calling rocprofsys_init_library()...\n");
 
+#if 0
     rocprofsys_init_library_hidden();
+    if(postinit && get_use_rcclp())
+    {
+        ROCPROFSYS_VERBOSE_F(1, "Setting up RCCLP...\n");
+        rcclp::setup();
+    }
+#endif
+    rocprofsys_init_library_hidden_with_rccl(postinit);
 
     ROCPROFSYS_DEBUG_F("\n");
 
@@ -536,16 +571,6 @@ rocprofsys_init_tooling_hidden()
         {
             tim::trait::runtime_enabled<project::rocprofsys>::set(false);
         }
-    }
-
-    // Check if we should set up RCCL, but don't set it up here.
-    // If we called rcclp::setup() here, the thread would hang because it
-    // is in the call stack of hip::GetHipCompilerDispatchTable().
-    // But we have to call get_use_rcclp() here, because the configuration
-    // has to be in the right state (State::Init).
-    if(get_use_rcclp())
-    {
-        use_rcclp = true;
     }
 
     if(get_use_ompt())
@@ -644,13 +669,6 @@ rocprofsys_init_hidden(const char* _mode, bool _is_binary_rewrite, const char* _
 
     tim::set_env("ROCPROFSYS_MODE", _mode, 0);
     config::is_binary_rewrite() = _is_binary_rewrite;
-
-    // If we have detected that RCCL should be used, setup now.
-    if(use_rcclp)
-    {
-        ROCPROFSYS_VERBOSE_F(1, "Setting up RCCLP...\n");
-        rcclp::setup();
-    }
 
     if(_set_mpi_called)
     {
