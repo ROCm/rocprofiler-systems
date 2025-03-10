@@ -406,7 +406,7 @@ rocprofsys_init_library_hidden()
 // Initialize RCCL if:
 // - postinit=true - so the code doesn't hang at the initialization stage
 // - get_state() >= State::Init - so the code doesn't throw an exception
-// - rccl_initialized=false - so we don't try to initialize RCCL more than once
+// - rccl_initialized=false - so we don't try to initialize RCCL twice
 // - get_use_rcclp()=true - only if the environment is configured to use RCCL
 static void
 rccl_setup(bool postinit)
