@@ -403,7 +403,7 @@ rocprofsys_init_library_hidden()
     ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(_debug_init, "\n");
 }
 
-// Flag used to avoid initializing RCCL more than once
+// Flag used to avoid initializing RCCL twice
 bool rccl_initialized = false;
 
 // Initialize RCCL if:
