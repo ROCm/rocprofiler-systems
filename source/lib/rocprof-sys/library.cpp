@@ -403,9 +403,6 @@ rocprofsys_init_library_hidden()
     ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(_debug_init, "\n");
 }
 
-// Flag used to avoid initializing RCCL twice
-bool rccl_initialized = false;
-
 // Initialize RCCL if:
 // - postinit=true - so the code doesn't hang at the initialization stage
 // - get_state() >= State::Init - so the code doesn't throw an exception
@@ -414,6 +411,9 @@ bool rccl_initialized = false;
 static void
 rccl_setup(bool postinit)
 {
+    // Flag used to avoid initializing RCCL twice
+    static bool rccl_initialized = false;
+
     if(postinit && (get_state() >= State::Init) && !rccl_initialized && get_use_rcclp())
     {
         ROCPROFSYS_VERBOSE_F(1, "Setting up RCCLP...\n");
