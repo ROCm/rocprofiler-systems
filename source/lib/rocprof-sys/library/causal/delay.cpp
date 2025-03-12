@@ -182,15 +182,16 @@ delay::get_global()
     return _v;
 }
 
-static void thr_init()
+static void
+thr_init()
 {
-    static thread_local auto _thr_init     = []() {
+    static thread_local auto _thr_init = []() {
         using thread_data_t = thread_data<identity<int64_t>, delay>;
         thread_data_t::construct(construct_on_thread{ threading::get_id() },
                                  delay::get_global().load());
         return true;
     }();
-    (void)_thr_init; // To make compiler happy.
+    (void) _thr_init;  // To make compiler happy.
 }
 
 std::optional<int64_t*>
