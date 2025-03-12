@@ -105,6 +105,9 @@ delay::setup()
 void
 delay::process()
 {
+    auto local = get_local_maybe();
+    if(!local) return;
+
     if(causal::experiment::is_active())
     {
         if(get_global() < get_local())
@@ -130,6 +133,9 @@ delay::process()
 void
 delay::credit()
 {
+    auto local = get_local_maybe();
+    if(!local) return;
+
     auto _diff = get_global() - get_local();
     if(_diff > 0)
     {
@@ -140,6 +146,9 @@ delay::credit()
 void
 delay::preblock()
 {
+    auto local = get_local_maybe();
+    if(!local) return;
+
     auto _diff = get_global() - get_local();
     if(_diff > 0)
     {
@@ -150,11 +159,11 @@ delay::preblock()
 void
 delay::postblock(int64_t _preblock_global_delay_value)
 {
-    auto& local = get_local();
-    if(local != -1)  // If get_local() returned -1, that means "dummy data" and
+    auto local = get_local_maybe();
+    if(local)  // If get_local() returned -1, that means "dummy data" and
                      // we don't touch it.
     {
-        local += (get_global() - _preblock_global_delay_value);
+        *local += (get_global() - _preblock_global_delay_value);
     }
 }
 
@@ -173,27 +182,39 @@ delay::get_global()
     return _v;
 }
 
-int64_t&
-delay::get_local(int64_t _tid)
+static void thr_init()
 {
-    static int64_t           delayDataNull = -1;  // -1 means "no value"
-    auto&                    _data         = get_delay_data();
     static thread_local auto _thr_init     = []() {
-        using thread_data_t = thread_data<identity<int64_t>, delay>;
-        thread_data_t::construct(construct_on_thread{ threading::get_id() },
-                                 get_global().load());
-        return true;
-    }();
+                using thread_data_t = thread_data<identity<int64_t>, delay>;
+                thread_data_t::construct(construct_on_thread{ threading::get_id() },
+                                        delay::get_global().load());
+                return true;
+            }();
+    (void)_thr_init; // To make compiler happy.
+}
+
+std::optional<int64_t*>
+delay::get_local_maybe(int64_t _tid)
+{
+    thr_init();
+    auto&                    _data         = get_delay_data();
 
     // If _data is nullptr, we have to return reference to dummy data, or
     // else we will crash.
     if(_data == nullptr)
     {
-        return delayDataNull;
+        return std::optional<int64_t*>(std::nullopt);
     }
 
+    return std::optional<int64_t*>(&_data->at(_tid));
+}
+
+int64_t&
+delay::get_local(int64_t _tid)
+{
+    thr_init();
+    auto&  _data = get_delay_data();
     return _data->at(_tid);
-    (void) _thr_init;
 }
 
 uint64_t

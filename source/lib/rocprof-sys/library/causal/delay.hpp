@@ -34,6 +34,9 @@
 #include <atomic>
 #include <cstdint>
 
+// aleks
+#include <memory>
+
 namespace rocprofsys
 {
 namespace causal
@@ -51,8 +54,9 @@ struct delay : comp::empty_base
     static void    postblock(int64_t);
     static int64_t sync();
 
-    static std::atomic<int64_t>& get_global();
-    static int64_t&              get_local(int64_t _tid = threading::get_id());
+    static std::atomic<int64_t>&   get_global();
+    static int64_t&                get_local(int64_t _tid = threading::get_id());
+    static std::optional<int64_t*> get_local_maybe(int64_t _tid = threading::get_id());
 
     static int64_t  get(int64_t _tid = threading::get_id());
     static uint64_t compute_total_delay(uint64_t);
