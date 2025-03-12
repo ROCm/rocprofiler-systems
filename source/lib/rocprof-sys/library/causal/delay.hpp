@@ -34,9 +34,6 @@
 #include <atomic>
 #include <cstdint>
 
-// aleks
-#include <memory>
-
 namespace rocprofsys
 {
 namespace causal
