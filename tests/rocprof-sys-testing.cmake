@@ -282,6 +282,31 @@ endmacro()
 
 # -------------------------------------------------------------------------------------- #
 
+# Define the function to check for a specific GPU
+function(check_gpu gpu_name return_var)
+    # Run the rocminfo command and capture the output
+    execute_process(
+        COMMAND rocminfo | grep ${gpu_name}
+        OUTPUT_VARIABLE ROCMINFO_OUTPUT
+        RESULT_VARIABLE ROCMINFO_RESULT
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+    # Check if the specified GPU is present
+    if(ROCMINFO_RESULT EQUAL 0)
+        message(STATUS "${gpu_name} GPU detected")
+        set(${return_var}
+            TRUE
+            PARENT_SCOPE)
+    else()
+        message(STATUS "${gpu_name} GPU not detected")
+        set(${return_var}
+            FALSE
+            PARENT_SCOPE)
+    endif()
+endfunction()
+
+# -------------------------------------------------------------------------------------- #
+
 function(ROCPROFILER_SYSTEMS_WRITE_TEST_CONFIG _FILE _ENV)
     set(_ENV_ONLY
         "ROCPROFSYS_(CI|CI_TIMEOUT|MODE|USE_MPIP|DEBUG_[A-Z_]+|FORCE_ROCPROFILER_INIT|DEFAULT_MIN_INSTRUCTIONS|MONOCHROME|VERBOSE)="
@@ -929,7 +954,7 @@ function(ROCPROFILER_SYSTEMS_ADD_VALIDATION_TEST)
         TEST
         ""
         "NAME;TIMEOUT;TIMEMORY_METRIC;TIMEMORY_FILE;PERFETTO_METRIC;PERFETTO_FILE"
-        "ENVIRONMENT;LABELS;PROPERTIES;PASS_REGEX;FAIL_REGEX;SKIP_REGEX;DEPENDS;ARGS"
+        "ENVIRONMENT;LABELS;PROPERTIES;PASS_REGEX;FAIL_REGEX;SKIP_REGEX;DEPENDS;EXIST_FILES;ARGS"
         ${ARGN})
 
     if(NOT TEST "${TEST_NAME}")
@@ -962,6 +987,14 @@ function(ROCPROFILER_SYSTEMS_ADD_VALIDATION_TEST)
             "rocprof-sys-tests-output/${TEST_NAME}/(${TEST_TIMEMORY_FILE}|${TEST_PERFETTO_FILE}) validated"
             )
     endif()
+
+    foreach(_FILE ${TEST_EXIST_FILES})
+        add_test(
+            NAME validate-${TEST_NAME}-${_FILE}-exists
+            COMMAND test -e
+                    ${PROJECT_BINARY_DIR}/rocprof-sys-tests-output/${TEST_NAME}/${_FILE}
+            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+    endforeach()
 
     if(TEST_TIMEMORY_FILE)
         add_test(

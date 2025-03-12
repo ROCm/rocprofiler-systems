@@ -104,6 +104,12 @@ counter_storage::counter_storage(const client_data* _tool_data, uint64_t _devid,
     storage_name = JOIN('-', "rocprof", "device", device_id, _metric_name);
     storage = std::make_unique<counter_storage_type>(tim::standalone_storage{}, index,
                                                      storage_name);
+    tim::manager::instance()->add_cleanup(
+        storage_name + "cleanup", [storage_ptr = storage.get(), metric_name = metric_name,
+                                   metric_description = metric_description]() {
+            if(storage_ptr)
+                counter_storage::write(storage_ptr, metric_name, metric_description);
+        });
     {
         constexpr auto _unit = ::perfetto::CounterTrack::Unit::UNIT_COUNT;
         track_name = JOIN(" ", "GPU", _metric_name, JOIN("", '[', device_id, ']'));
@@ -124,9 +130,18 @@ counter_storage::operator()(const counter_event& _event, timing_interval _timing
 }
 
 void
-counter_storage::write() const
+counter_storage::write(counter_storage_type* storage, std::string metric_name,
+                       std::string metric_description)
 {
-    operation::set_storage<counter_data_tracker>{}(storage.get());
+    if(!trait::runtime_enabled<counter_data_tracker>::get())
+    {
+        ROCPROFSYS_WARNING_F(
+            1, "%s counter_data_tracker is disabled. Can't write storage.\n",
+            metric_name.c_str());
+        return;
+    }
+
+    operation::set_storage<counter_data_tracker>{}(storage);
     counter_data_tracker::label()       = metric_name;
     counter_data_tracker::description() = metric_description;
     storage->write();
