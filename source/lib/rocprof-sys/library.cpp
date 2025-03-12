@@ -473,14 +473,6 @@ rocprofsys_init_tooling_hidden(bool postinit)
     ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(_debug_init,
                                          "Calling rocprofsys_init_library()...\n");
 
-#if 0
-    rocprofsys_init_library_hidden();
-    if(postinit && get_use_rcclp())
-    {
-        ROCPROFSYS_VERBOSE_F(1, "Setting up RCCLP...\n");
-        rcclp::setup();
-    }
-#endif
     rocprofsys_init_library_hidden_with_rccl(postinit);
 
     ROCPROFSYS_DEBUG_F("\n");
