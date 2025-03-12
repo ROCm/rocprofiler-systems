@@ -161,7 +161,7 @@ delay::postblock(int64_t _preblock_global_delay_value)
 {
     auto local = get_local_maybe();
     if(local)  // If get_local() returned -1, that means "dummy data" and
-                     // we don't touch it.
+               // we don't touch it.
     {
         *local += (get_global() - _preblock_global_delay_value);
     }
@@ -185,11 +185,11 @@ delay::get_global()
 static void thr_init()
 {
     static thread_local auto _thr_init     = []() {
-                using thread_data_t = thread_data<identity<int64_t>, delay>;
-                thread_data_t::construct(construct_on_thread{ threading::get_id() },
-                                        delay::get_global().load());
-                return true;
-            }();
+        using thread_data_t = thread_data<identity<int64_t>, delay>;
+        thread_data_t::construct(construct_on_thread{ threading::get_id() },
+                                 delay::get_global().load());
+        return true;
+    }();
     (void)_thr_init; // To make compiler happy.
 }
 
@@ -197,7 +197,7 @@ std::optional<int64_t*>
 delay::get_local_maybe(int64_t _tid)
 {
     thr_init();
-    auto&                    _data         = get_delay_data();
+    auto& _data = get_delay_data();
 
     // If _data is nullptr, we have to return reference to dummy data, or
     // else we will crash.
@@ -213,7 +213,7 @@ int64_t&
 delay::get_local(int64_t _tid)
 {
     thr_init();
-    auto&  _data = get_delay_data();
+    auto& _data = get_delay_data();
     return _data->at(_tid);
 }
 
