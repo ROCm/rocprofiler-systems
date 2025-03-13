@@ -162,7 +162,7 @@ delay::postblock(int64_t _preblock_global_delay_value)
     auto optlocal = get_local_maybe();
     if(optlocal)  // If plocal is std::nullopt, we have no data.
     {
-        auto plocal = optlocal.value();
+        auto  plocal = optlocal.value();
         auto& local = *plocal;
         local += (get_global() - _preblock_global_delay_value);
     }
