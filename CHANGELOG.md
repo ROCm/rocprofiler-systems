@@ -2,6 +2,28 @@
 
 Full documentation for ROCm Systems Profiler is available at [https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/](https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/).
 
+## ROCm Systems Profiler 1.0.0 for ROCm 6.4
+
+### Added 
+
+- Support for VA-API and rocDecode tracing
+
+### Resolved issues
+
+- Fix hardware counter summary files not being generated after profiling
+
+- Fix an application crash when collecting performance counters with rocprofiler
+
+- Fix hang in config file generation
+
+- Fix segmentation fault while running rocprof-sys-instrument
+
+## ROCm Systems Profiler 0.1.2 for ROCm 6.3.3
+
+### Resolved issues
+
+- Fix missing GPU sampling when HIP is not in use
+
 ## ROCm Systems Profiler 0.1.1 for ROCm 6.3.2
 
 ### Resolved issues
