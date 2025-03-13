@@ -105,8 +105,8 @@ delay::setup()
 void
 delay::process()
 {
-    auto local = get_local_maybe();
-    if(!local) return;
+    auto optlocal = get_local_maybe();
+    if(!optlocal) return;
 
     if(causal::experiment::is_active())
     {
@@ -133,8 +133,8 @@ delay::process()
 void
 delay::credit()
 {
-    auto local = get_local_maybe();
-    if(!local) return;
+    auto optlocal = get_local_maybe();
+    if(!optlocal) return;
 
     auto _diff = get_global() - get_local();
     if(_diff > 0)
@@ -146,8 +146,8 @@ delay::credit()
 void
 delay::preblock()
 {
-    auto local = get_local_maybe();
-    if(!local) return;
+    auto optlocal = get_local_maybe();
+    if(!optlocal) return;
 
     auto _diff = get_global() - get_local();
     if(_diff > 0)
@@ -159,11 +159,12 @@ delay::preblock()
 void
 delay::postblock(int64_t _preblock_global_delay_value)
 {
-    auto local = get_local_maybe();
-    if(local)  // If get_local() returned -1, that means "dummy data" and
-               // we don't touch it.
+    auto optlocal = get_local_maybe();
+    if(optlocal)  // If plocal is std::nullopt, we have no data.
     {
-        *local += (get_global() - _preblock_global_delay_value);
+        auto plocal = optlocal.value();
+        auto& local = *plocal;
+        local += (get_global() - _preblock_global_delay_value);
     }
 }
 
@@ -215,6 +216,10 @@ delay::get_local(int64_t _tid)
 {
     thr_init();
     auto& _data = get_delay_data();
+    if(_data == nullptr)
+    {
+        throw "No data: get_delay_data() returned nullptr";
+    }
     return _data->at(_tid);
 }
 
