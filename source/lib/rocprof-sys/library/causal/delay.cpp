@@ -105,8 +105,7 @@ delay::setup()
 void
 delay::process()
 {
-    auto optlocal = get_local_maybe();
-    if(!optlocal) return;
+    if(!is_local_available()) return;
 
     if(causal::experiment::is_active())
     {
@@ -133,8 +132,7 @@ delay::process()
 void
 delay::credit()
 {
-    auto optlocal = get_local_maybe();
-    if(!optlocal) return;
+    if(!is_local_available()) return;
 
     auto _diff = get_global() - get_local();
     if(_diff > 0)
@@ -146,8 +144,7 @@ delay::credit()
 void
 delay::preblock()
 {
-    auto optlocal = get_local_maybe();
-    if(!optlocal) return;
+    if(!is_local_available()) return;
 
     auto _diff = get_global() - get_local();
     if(_diff > 0)
@@ -159,13 +156,8 @@ delay::preblock()
 void
 delay::postblock(int64_t _preblock_global_delay_value)
 {
-    auto optlocal = get_local_maybe();
-    if(optlocal)  // If plocal is std::nullopt, we have no data.
-    {
-        auto  plocal = optlocal.value();
-        auto& local  = *plocal;
-        local += (get_global() - _preblock_global_delay_value);
-    }
+    if(!is_local_available()) return;
+    get_local() += (get_global() - _preblock_global_delay_value);
 }
 
 int64_t
@@ -195,20 +187,12 @@ thr_init()
     (void) _thr_init;  // To make compiler happy.
 }
 
-std::optional<int64_t*>
-delay::get_local_maybe(int64_t _tid)
+bool
+delay::is_local_available()
 {
     thr_init();
     auto& _data = get_delay_data();
-
-    // If _data is nullptr, we have to return reference to dummy data, or
-    // else we will crash.
-    if(_data == nullptr)
-    {
-        return std::optional<int64_t*>(std::nullopt);
-    }
-
-    return std::optional<int64_t*>(&_data->at(_tid));
+    return _data != nullptr;
 }
 
 int64_t&
@@ -218,7 +202,7 @@ delay::get_local(int64_t _tid)
     auto& _data = get_delay_data();
     if(_data == nullptr)
     {
-        throw "No data: get_delay_data() returned nullptr";
+        throw std::runtime_error("No data: get_delay_data() returned nullptr");
     }
     return _data->at(_tid);
 }
