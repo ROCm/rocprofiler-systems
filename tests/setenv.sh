@@ -10,6 +10,7 @@ export NIC_NAME=$(ip route get 11.11.11.11 |awk -- '{print $5}')
 # write the result to prog.cfg.
 sed -e "s/@NIC@/$NIC_NAME/g" prog.cfg.in > prog.cfg
 
+# Set up the environment.
 export LD_LIBRARY_PATH=/opt/rocprofiler-systems/lib
 export ROCPROFSYS_CI=ON
 export ROCPROFSYS_OUTPUT_PATH=rocprofsys-tests-output
