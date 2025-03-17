@@ -8,6 +8,10 @@ Full documentation for ROCm Systems Profiler is available at [https://rocm.docs.
 
 - Support for VA-API and rocDecode tracing.
 
+### Changed
+
+- Backend refactored to use rocprofiler-sdk rather than rocprofiler and roctracer.
+
 ### Resolved issues
 
 - Fixed hardware counter summary files not being generated after profiling.
