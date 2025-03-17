@@ -19,13 +19,16 @@
 import sys
 from perfetto.trace_processor import TraceProcessor
 
+
 def Usage(prog):
-    print(f"""
+    print(
+        f"""
 {prog}
 Check if a .proto file has a track with NIC traffic
 Usage: {prog} <NIC-name> <proto-file>
 """
     )
+
 
 def main():
     # Read NIC name and .proto file from the command line.
@@ -46,9 +49,9 @@ def main():
         count = count + 1
     if count > 0:
         # Found a track.
-        sys.exit(0) # Return success.
+        sys.exit(0)  # Return success.
     # Didn't find a track.
-    sys.exit(1) # Return failure.
+    sys.exit(1)  # Return failure.
 
 if __name__ == "__main__":
     main()
