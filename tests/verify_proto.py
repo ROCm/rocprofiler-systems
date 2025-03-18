@@ -35,14 +35,21 @@ def main():
     argv = sys.argv
     if len(argv) < 3:
         Usage(argv[0])
-        sys.exit(0)
+        sys.exit(1)
     nic = argv[1]
     proto_file = argv[2]
-
     # Instantiate a trace processor.
-    tp = TraceProcessor(trace=proto_file)
+    try:
+        tp = TraceProcessor(trace=proto_file)
+    except Exception as ex:
+        print(f"Reading {proto_file} failed: {ex}")
+        sys.exit(1)
     # Find all records in track table that have the name field that contains the NIC name.
-    qr = tp.query(f"SELECT * FROM track WHERE name LIKE '%{nic}%'")
+    try:
+        qr = tp.query(f"SELECT * FROM track WHERE name LIKE '%{nic}%'")
+    except Exception as ex:
+        print(f"Query failed: {ex}")
+        sys.exit(1)
     # Count the rows and check if there is at least one.
     count = 0
     for row in qr:
