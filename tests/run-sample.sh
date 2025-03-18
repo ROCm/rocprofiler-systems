@@ -15,6 +15,8 @@ export ROCPROF_SYS_SAMPLE_PATH=$1
 # Create tmp directory.
 mkdir -p tmp
 
+echo 2 | sudo tee /proc/sys/kernel/perf_event_paranoid
+
 # Run the command that generates a .proto file.
 $ROCPROF_SYS_SAMPLE_PATH -PTHD -- wget https://github.com/ROCm/rocprofiler-systems/releases/download/rocm-6.3.1/rocprofiler-systems-0.1.0-ubuntu-20.04-ROCm-60200-PAPI-OMPT-Python3.sh \
     -O tmp/somefile.sh
