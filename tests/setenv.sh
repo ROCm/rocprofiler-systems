@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 
-# Get the name of the NIC connected to the default gateway.
-# Look the route to the non-existent IP 11.11.11.11.
-# (It doesn't matter whether the IP exists or not.)
-# Set NIC_NAME environment variable to the primary NIC.
-export NIC_NAME=$(ip route get 11.11.11.11 |awk -- '{print $5}')
+# Use lo as the NIC name, because every Linux system should have it.
+export NIC_NAME=lo
 
 # Substitute the @NIC@ with $NIC_NAME in prog.cfg.in and
 # write the result to prog.cfg.
