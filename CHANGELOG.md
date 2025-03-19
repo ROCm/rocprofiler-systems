@@ -11,10 +11,10 @@ Full documentation for ROCm Systems Profiler is available at [https://rocm.docs.
 ### Resolved issues
 
 - Fixed application hang when enabling the RCCL backend
-  
+
 ## ROCm Systems Profiler 1.0.0 for ROCm 6.4
 
-### Added 
+### Added
 
 - Support for VA-API and rocDecode tracing.
 
