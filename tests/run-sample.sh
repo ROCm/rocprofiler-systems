@@ -16,7 +16,7 @@ export PROTO_FILE=perfetto-trace.proto
 # Get full path to rocprof-sys-sample from the command line argument.
 export ROCPROF_SYS_SAMPLE_PATH=$1
 
-# Create tmp directory.
+# Create temporary directory where we will write the output of wget.
 mkdir -p tmp
 
 # Run the command that generates a .proto file.
@@ -26,7 +26,7 @@ $ROCPROF_SYS_SAMPLE_PATH -PTHD -- wget https://github.com/ROCm/rocprofiler-syste
 # Copy the .proto file to the current directory.
 cp rocprofsys-tests-output/prog/*.proto $PROTO_FILE
 
-# Remove unneeded file(s).
+# Clean up.
 rm -rf tmp/*.sh
 
 # Verify that the .proto file contains NIC tracks.
