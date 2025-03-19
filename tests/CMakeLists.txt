@@ -30,5 +30,4 @@ if(ROCPROFSYS_BUILD_NIC_PERFORMANCE_TEST)
     include(${CMAKE_CURRENT_LIST_DIR}/rocprof-sys-nic-perf.cmake)
 endif()
 
-
 add_subdirectory(source)
