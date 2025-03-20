@@ -8,7 +8,6 @@ export NIC_NAME=lo
 sed -e "s/@NIC@/$NIC_NAME/g" prog.cfg.in > prog.cfg
 
 # Set up the environment.
-export LD_LIBRARY_PATH=/opt/rocprofiler-systems/lib
 export ROCPROFSYS_CI=ON
 export ROCPROFSYS_OUTPUT_PATH=rocprofsys-tests-output
 export ROCPROFSYS_CI_TIMEOUT=120
