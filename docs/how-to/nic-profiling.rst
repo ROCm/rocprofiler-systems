@@ -101,10 +101,10 @@ An example omnitrace-instrument command is:
 
 .. code-block:: shell
 
-  rocprof-sys-instrument -o prog.inst  \
+  rocprof-sys-instrument -o foo.inst  \
     --log-file mylog.log --verbose --debug \
     "--print-instrumented" "functions" "-e" "-v" "2" "--caller-include" \
-    "inner" "-i" "4096" "--" ./prog
+    "inner" "-i" "4096" "--" ./foo
 
 This command generates an instrumented binary ``prog.inst``. Then we can run
 it with the following command:
