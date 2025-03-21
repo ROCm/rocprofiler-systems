@@ -95,7 +95,7 @@ Specify the configuration file by setting ``ROCPROFSYS_CONFIG_FILE``:
 
   ROCPROFSYS_CONFIG_FILE=/path/to/prog.cfg
 
-These settings are for the ROCm Systems Profiler configuration file, output path and output prefix.
+This setting defines the location of the ROCm Systems Profiler configuration file.
 
 An example omnitrace-instrument command is:
 
