@@ -97,6 +97,7 @@ Specify the configuration file by setting ``ROCPROFSYS_CONFIG_FILE``:
 
 This setting defines the location of the ROCm Systems Profiler configuration file.
 
+
 An example omnitrace-instrument command is:
 
 .. code-block:: shell
