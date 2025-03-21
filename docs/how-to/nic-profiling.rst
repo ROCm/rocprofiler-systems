@@ -106,7 +106,7 @@ An example omnitrace-instrument command is:
     "--print-instrumented" "functions" "-e" "-v" "2" "--caller-include" \
     "inner" "-i" "4096" "--" ./foo
 
-This command generates an instrumented binary ``prog.inst``. Then we can run
+This command generates an instrumented binary ``foo.inst``. Then, we can run
 it with the following command:
 
 .. code-block:: shell
