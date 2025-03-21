@@ -27,6 +27,7 @@ polymorphism
 POSIX
 ppc
 proc
+proto
 Pthreads
 rocDecode
 ROCprofiler

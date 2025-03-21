@@ -1,6 +1,6 @@
 .. meta::
    :description: ROCm Systems Profiler network performance profiling
-   :keywords: rocprof-sys, rocprofiler-systems, Omnitrace, ROCm, tips, how to, profiler, tracking, NIC, network, AMD
+   :keywords: rocprof-sys, rocprofiler-systems, ROCm, tips, how to, profiler, tracking, NIC, network, AMD
 
 ********************************************
 Network Performance Profiling
@@ -85,7 +85,7 @@ Here is an example of a complete configuration file, ``rocprofsys.cfg``:
   ROCPROFSYS_FILE_OUTPUT=ON
   ROCPROFSYS_TIMEMORY_COMPONENTS=wall_clock papi_array network_stats
   ROCPROFSYS_USE_PID=OFF
-  ROCPROFSYS_OUTPUT_PREFIX=prog/
+  ROCPROFSYS_OUTPUT_PREFIX=foo/
   ROCPROFSYS_NETWORK_INTERFACE=enp7s0
   ROCPROFSYS_PAPI_EVENTS = net:::enp7s0:tx:byte net:::enp7s0:rx:byte net:::enp7s0:rx:packet net:::enp7s0:tx:packet
 
@@ -93,12 +93,14 @@ Specify the configuration file by setting ``ROCPROFSYS_CONFIG_FILE``:
 
 .. code-block:: shell
 
-  ROCPROFSYS_CONFIG_FILE=/path/to/prog.cfg
+  ROCPROFSYS_CONFIG_FILE=/path/to/rocprofsys.cfg
 
 This setting defines the location of the ROCm Systems Profiler configuration file.
 
+Instrumenting and running a program
+===================================
 
-An example omnitrace-instrument command is:
+An example rocprof-sys-instrument command is:
 
 .. code-block:: shell
 
