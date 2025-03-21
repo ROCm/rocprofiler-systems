@@ -67,7 +67,7 @@ Let's look at what these settings mean:
 * Network Interface: ``enp7s0``
 * Events for network device ``enp7s0`` to be sampled: Bytes transmitted, Bytes received, Packet transmitted, Packets received
 
-Here is a complete prog.cfg configuration file:
+Here is an example of a complete configuration file, ``rocprofsys.cfg``:
 
 .. code-block:: shell
 
