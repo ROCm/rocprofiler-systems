@@ -93,7 +93,7 @@ In order to build and run a trace, some environment variables need to be set. He
 
 .. code-block:: shell
 
-  ROCPROFSYS_CONFIG_FILE=/path/to/prog.cfg
+  ROCPROFSYS_CONFIG_FILE=/path/to/rocprofsys.cfg
   ROCPROFSYS_OUTPUT_PATH=rocprofsys-tests-output
   ROCPROFSYS_OUTPUT_PREFIX=/path/to/proto
 
