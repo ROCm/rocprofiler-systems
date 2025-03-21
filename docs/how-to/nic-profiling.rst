@@ -89,17 +89,15 @@ Here is an example of a complete configuration file, ``rocprofsys.cfg``:
   ROCPROFSYS_NETWORK_INTERFACE=enp7s0
   ROCPROFSYS_PAPI_EVENTS = net:::enp7s0:tx:byte net:::enp7s0:rx:byte net:::enp7s0:rx:packet net:::enp7s0:tx:packet
 
-In order to build and run a trace, some environment variables need to be set. Here is an example setting:
+Specify the configuration file by setting ``ROCPROFSYS_CONFIG_FILE``:
 
 .. code-block:: shell
 
-  ROCPROFSYS_CONFIG_FILE=/path/to/rocprofsys.cfg
-  ROCPROFSYS_OUTPUT_PATH=rocprofsys-tests-output
-  ROCPROFSYS_OUTPUT_PREFIX=/path/to/proto
+  ROCPROFSYS_CONFIG_FILE=/path/to/prog.cfg
 
 These settings are for the ROCm Systems Profiler configuration file, output path and output prefix.
 
-An example rocprof-sys-instrument command is:
+An example omnitrace-instrument command is:
 
 .. code-block:: shell
 
