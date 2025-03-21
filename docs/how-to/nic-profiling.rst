@@ -111,7 +111,7 @@ it with the following command:
 
 .. code-block:: shell
 
-  rocprof-sys-run -- ./prog.inst
+  rocprof-sys-run -- ./foo.inst
 
 We can view the generated .proto file in the browser, by opening
 `Perfetto UI page <https://ui.perfetto.dev/>`_. Open that page, click on
