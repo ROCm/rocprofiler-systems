@@ -99,7 +99,7 @@ In order to build and run a trace, some environment variables need to be set. He
 
 These settings are for the ROCm Systems Profiler configuration file, output path and output prefix.
 
-An example omnitrace-instrument command is:
+An example rocprof-sys-instrument command is:
 
 .. code-block:: shell
 
