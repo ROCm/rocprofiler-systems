@@ -62,10 +62,10 @@ An example of parameter settings can look like this:
 
 Let's look at what these settings mean:
 
-* sampling frequency: 10 per second
-* timemory configuration: wall_clock, papi_array, network_stats
-* network interface: ``enp7s0``
-* PAPI events: ``net:::enp7s0:tx:byte net:::enp7s0:rx:byte net:::enp7s0:tx:packet net:::enp7s0:rx:packet``
+* Sampling Frequency: 10 samples per second
+* Using Timemory to output summaries for the:wall_clock, papi_array, and network_stats components
+* Network Interface: ``enp7s0``
+* Events for network device ``enp7s0`` to be sampled: Bytes transmitted, Bytes received, Packet transmitted, Packets received
 
 Here is a complete prog.cfg configuration file:
 
