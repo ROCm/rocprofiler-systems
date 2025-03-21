@@ -6,6 +6,7 @@ CrayPAT
 dl
 durations
 Dyninst
+enp
 Kokkos
 KokkosP
 librocprof
