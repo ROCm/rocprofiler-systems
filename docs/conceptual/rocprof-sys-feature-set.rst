@@ -54,7 +54,7 @@ GPU metrics
 * HSA operation tracing
 * rocDecode API tracing
 * rocJPEG API tracing
-* System-level sampling (via rocm-smi)
+* System-level sampling (via amd-smi)
 
   * Memory usage
   * Power usage
