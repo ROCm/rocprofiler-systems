@@ -97,6 +97,13 @@ Specify the configuration file by setting ``ROCPROFSYS_CONFIG_FILE``:
 
 This setting defines the location of the ROCm Systems Profiler configuration file.
 
+.. note::
+
+   In order to collect network counters via PAPI, ensure the
+   `/proc/sys/kernel/perf_event_paranoid` has a value <= 2. See
+   `ROCPROFSYS_PAPI_EVENTS <./configuring-runtime-options.html#rocprofsys-papi-events>`_
+   for details.
+
 Instrumenting and running a program
 ===================================
 
