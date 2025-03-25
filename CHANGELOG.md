@@ -8,6 +8,10 @@ Full documentation for ROCm Systems Profiler is available at [https://rocm.docs.
 
 - How-to document for network performance profiling for standard Network Interface Cards (NICs).
 
+### Changed
+
+- Replaced ROCm-SMI backend with AMD-SMI backend for collecting GPU metrics.
+
 ### Resolved issues
 
 - Fixed a build issue with Dyninst on GCC 13.

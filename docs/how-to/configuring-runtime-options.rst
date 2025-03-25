@@ -220,20 +220,20 @@ The following example:
 Exploring GPU Metrics
 ---------------------
 
-ROCm Systems Profiler supports GPU metrics collection, sampling, and API tracing via `ROCprofiler-SDK <https://rocm.docs.amd.com/projects/rocprofiler-sdk/en/latest/index.html>`_ and `ROCm-SMI <https://rocm.docs.amd.com/projects/rocm_smi_lib/en/latest/>`_.
+ROCm Systems Profiler supports GPU metrics collection, sampling, and API tracing via `ROCprofiler-SDK <https://rocm.docs.amd.com/projects/rocprofiler-sdk/en/latest/index.html>`_ and `AMD-SMI <https://rocm.docs.amd.com/projects/amdsmi/en/latest/>`_.
 ROCprofiler-SDK supports application tracing to provide a big picture of the GPU application execution and kernel profiling to provide low-level hardware details from the performance counters.
-The ROCm-SMI library offers a unified tool for managing, monitoring, and retrieving information about the system's drivers and GPUs.
+The AMD-SMI library offers a unified tool for managing, monitoring, and retrieving information about the system's drivers and GPUs.
 
-Sampling GPU metrics like utilization, temperature, power consumption, memory usage, etc., can be configured with ``ROCPROFSYS_ROCM_SMI_METRICS``. 
-The ``ROCPROFSYS_USE_ROCM_SMI`` setting should be enabled for GPU metric collection.
+Sampling GPU metrics like utilization, temperature, power consumption, memory usage, etc., can be configured with ``ROCPROFSYS_AMD_SMI_METRICS``.
+The ``ROCPROFSYS_USE_AMD_SMI`` setting should be enabled for GPU metric collection.
 
 For example, the following is a valid configuration:
 
 .. code-block:: shell
 
-   ROCPROFSYS_ROCM_SMI_METRICS=busy,temp,power,vcn_activity,mem_usage
+   ROCPROFSYS_AMD_SMI_METRICS=busy,temp,power,vcn_activity,mem_usage
 
-Supported values for ``ROCPROFSYS_ROCM_SMI_METRICS`` are: ``busy``, ``temp``, ``power``, ``vcn_activity``, ``mem_usage``, ``jpeg_activity``.
+Supported values for ``ROCPROFSYS_AMD_SMI_METRICS`` are: ``busy``, ``temp``, ``power``, ``vcn_activity``, ``mem_usage``, ``jpeg_activity``.
 
 API tracing is configured with the ``ROCPROFSYS_ROCM_DOMAINS`` setting. The domains are used to filter the events that are captured during profiling.
 Supported values for this setting are those supported by ROCprofiler-SDK, which are returned by the API ``get_callback_tracing_names()`` and ``get_buffer_tracing_names()``. See the `ROCprofiler-SDK developer API documentation <https://rocm.docs.amd.com/projects/rocprofiler-sdk/en/latest/_doxygen/html/namespacerocprofiler_1_1sdk.html>`_ to learn more about ROCprofiler-SDK APIs.
@@ -278,7 +278,7 @@ Generating a default configuration file
    ROCPROFSYS_USE_SAMPLING                             = false
    ROCPROFSYS_USE_PROCESS_SAMPLING                     = true
    ROCPROFSYS_USE_ROCM                                 = true
-   ROCPROFSYS_USE_ROCM_SMI                             = true
+   ROCPROFSYS_USE_AMD_SMI                              = true
    ROCPROFSYS_USE_KOKKOSP                              = false
    ROCPROFSYS_USE_CODE_COVERAGE                        = false
    ROCPROFSYS_USE_PID                                  = true
@@ -433,7 +433,7 @@ Viewing the setting descriptions
    | ROCPROFSYS_USE_OMPT                      | Enable support for OpenMP-Tools         |
    | ROCPROFSYS_TRACE                         | Enable perfetto backend                 |
    | ROCPROFSYS_USE_PID                       | Enable tagging filenames with proces... |
-   | ROCPROFSYS_USE_ROCM_SMI                  | Enable sampling GPU power, temp, uti... |
+   | ROCPROFSYS_USE_AMD_SMI                   | Enable sampling GPU power, temp, uti... |
    | ROCPROFSYS_USE_ROCM                      | Enable ROCM tracing                     |
    | ROCPROFSYS_USE_SAMPLING                  | Enable statistical sampling of call-... |
    | ROCPROFSYS_USE_PROCESS_SAMPLING          | Enable a background thread which sam... |
@@ -509,12 +509,12 @@ Viewing components
    | sampling_wall_clock               | Wall-clock timing. Derived from statistic... |
    | sampling_cpu_clock                | CPU-clock timing. Derived from statistica... |
    | sampling_percent                  | Fraction of wall-clock time spent in func... |
-   | sampling_gpu_power                | GPU Power Usage via ROCm-SMI. Derived fro... |
-   | sampling_gpu_temp                 | GPU Temperature via ROCm-SMI. Derived fro... |
-   | sampling_gpu_busy                 | GPU Utilization (% busy) via ROCm-SMI. De... |
-   | sampling_gpu_vcn                  | GPU VCN Utilization (% activity) via ROCm... |
-   | sampling_gpu_jpeg                 | GPU JPEG Utilization (% activity) via ROCm.. |
-   | sampling_gpu_memory_usage         | GPU Memory Usage via ROCm-SMI. Derived fr... |
+   | sampling_gpu_power                | GPU Power Usage via AMD-SMI. Derived from... |
+   | sampling_gpu_temp                 | GPU Temperature via AMD-SMI. Derived from... |
+   | sampling_gpu_busy                 | GPU Utilization (% busy) via AMD-SMI. Der... |
+   | sampling_gpu_vcn                  | GPU VCN Utilization (% activity) via AMD ... |
+   | sampling_gpu_jpeg                 | GPU JPEG Utilization (% activity) via AMD... |
+   | sampling_gpu_memory_usage         | GPU Memory Usage via AMD-SMI. Derived fro... |
    |-----------------------------------|----------------------------------------------|
 
 Viewing hardware counters
