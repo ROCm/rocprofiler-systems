@@ -446,7 +446,13 @@ setup()
 
     ROCPROFSYS_SCOPED_SAMPLING_ON_CHILD_THREADS(false);
 
-    if(!gpu::initialize_amdsmi()) return;
+    if(!gpu::initialize_amdsmi())
+    {
+        ROCPROFSYS_WARNING_F(0,
+                             "AMD SMI is not available. Disabling AMD SMI sampling...");
+        return;
+    }
+
     data::device_count = gpu::get_processor_count();
 
     auto _devices_v = get_sampling_gpus();
