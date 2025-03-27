@@ -160,10 +160,10 @@ data::sample(uint32_t _dev_id)
 #if(AMDSMI_LIB_VERSION_MAJOR == 2 && AMDSMI_LIB_VERSION_MINOR == 0) ||                   \
     (AMDSMI_LIB_VERSION_MAJOR == 25 && AMDSMI_LIB_VERSION_MINOR == 2)
     ROCPROFSYS_AMDSMI_GET(get_settings(m_dev_id).power, amdsmi_get_power_info,
-                        sample_handle, 0, &m_power)
+                          sample_handle, 0, &m_power)
 #else
     ROCPROFSYS_AMDSMI_GET(get_settings(m_dev_id).power, amdsmi_get_power_info,
-                        sample_handle, &m_power)
+                          sample_handle, &m_power)
 #endif
     ROCPROFSYS_AMDSMI_GET(get_settings(m_dev_id).mem_usage, amdsmi_get_gpu_memory_usage,
                           sample_handle, AMDSMI_MEM_TYPE_VRAM, &m_mem_usage);
