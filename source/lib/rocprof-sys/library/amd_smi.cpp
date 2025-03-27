@@ -243,6 +243,8 @@ config()
 void
 sample()
 {
+    auto_lock_t _lk{ type_mutex<category::amd_smi>() };
+
     for(auto itr : data::device_list)
     {
         if(amd_smi::get_state() != State::Active) continue;
@@ -278,7 +280,6 @@ data::setup()
 bool
 data::shutdown()
 {
-    ROCPROFSYS_VERBOSE(1, "Shutting down amd-smi...\n");
     amd_smi::set_state(State::Finalized);
     return true;
 }
@@ -589,6 +590,7 @@ shutdown()
     auto_lock_t _lk{ type_mutex<category::amd_smi>() };
 
     if(!is_initialized()) return;
+    ROCPROFSYS_VERBOSE_F(1, "Shutting down amd-smi...\n");
 
     try
     {
