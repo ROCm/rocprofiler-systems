@@ -8,6 +8,8 @@ Full documentation for ROCm Systems Profiler is available at [https://rocm.docs.
 
 - Support for VA-API and rocDecode tracing.
 
+- Aggregation MPI data collected across distributed nodes and ranks. The data is concatenated into a single proto file.
+
 ### Changed
 
 - Backend refactored to use rocprofiler-sdk rather than rocprofiler and roctracer.
