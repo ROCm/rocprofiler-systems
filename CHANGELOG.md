@@ -2,6 +2,40 @@
 
 Full documentation for ROCm Systems Profiler is available at [https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/](https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/).
 
+## ROCm Systems Profiler 1.0.0 for ROCm 6.4
+
+### Added
+
+- Support for VA-API and rocDecode tracing.
+
+- Aggregation MPI data collected across distributed nodes and ranks. The data is concatenated into a single proto file.
+
+### Changed
+
+- Backend refactored to use rocprofiler-sdk rather than rocprofiler and roctracer.
+
+### Resolved issues
+
+- Fixed hardware counter summary files not being generated after profiling.
+
+- Fixed an application crash when collecting performance counters with rocprofiler.
+
+- Fixed interruption in config file generation.
+
+- Fixed segmentation fault while running rocprof-sys-instrument.
+
+- Fixed a soft hang when running rocprof-sys-causal.
+
+- Fixed a hang seen when sampling multi-gpu python workloads.
+
+- Fixed a hang seen when using the `-I all` option with rocprof-sys-sample.
+
+## ROCm Systems Profiler 0.1.2 for ROCm 6.3.3
+
+### Resolved issues
+
+- Fixed an error that prevented GPU hardware activity from being presented in certain workloads.
+
 ## ROCm Systems Profiler 0.1.1 for ROCm 6.3.2
 
 ### Resolved issues
@@ -37,4 +71,4 @@ Full documentation for ROCm Systems Profiler is available at [https://rocm.docs.
 - Perfetto can no longer open Omnitrace proto files. Loading the Perfetto trace output `.proto` file in `ui.perfetto.dev` can
   result in a dialog with the message, "Oops, something went wrong! Please file a bug." The information in the dialog will
   refer to an "Unknown field type." The workaround is to open the files with the previous version of the Perfetto UI found
-  at https://ui.perfetto.dev/v46.0-35b3d9845/#!/.
+  at <https://ui.perfetto.dev/v46.0-35b3d9845/#!/>.
