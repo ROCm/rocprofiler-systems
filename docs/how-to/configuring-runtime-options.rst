@@ -222,7 +222,7 @@ Exploring GPU Metrics
 
 ROCm Systems Profiler supports GPU metrics collection, sampling, and API tracing via `ROCprofiler-SDK <https://rocm.docs.amd.com/projects/rocprofiler-sdk/en/latest/index.html>`_ and `AMD-SMI <https://rocm.docs.amd.com/projects/amdsmi/en/latest/>`_.
 ROCprofiler-SDK supports application tracing to provide a big picture of the GPU application execution and kernel profiling to provide low-level hardware details from the performance counters.
-The ROCm-SMI library offers a unified tool for managing, monitoring, and retrieving information about the system's drivers and GPUs.
+The AMD-SMI library offers a unified tool for managing, monitoring, and retrieving information about the system's drivers and GPUs.
 
 Sampling GPU metrics like utilization, temperature, power consumption, memory usage, etc., can be configured with ``ROCPROFSYS_AMD_SMI_METRICS``.
 The ``ROCPROFSYS_USE_AMD_SMI`` setting should be enabled for GPU metric collection.
