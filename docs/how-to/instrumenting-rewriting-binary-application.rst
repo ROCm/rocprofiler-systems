@@ -246,7 +246,7 @@ view the help menu.
                                  libprofiler.so
                                  libpthread.so.0
                                  libresolv.so.2
-                                 libamd_smi64.so
+                                 librocm_smi64.so
                                  librocprofiler-sdk.so
                                  librt.so.1
                                  libstdc++.so.6

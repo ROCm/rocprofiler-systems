@@ -208,7 +208,7 @@ bool
 get_use_rocm() ROCPROFSYS_HOT;
 
 bool
-get_use_amd_smi() ROCPROFSYS_HOT;
+get_use_rocm_smi() ROCPROFSYS_HOT;
 
 bool&
 get_use_sampling() ROCPROFSYS_HOT;
