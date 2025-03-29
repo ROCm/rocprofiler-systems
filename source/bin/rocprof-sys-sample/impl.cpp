@@ -751,7 +751,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
             _update("ROCPROFSYS_USE_MPIP", _v.count("mpip") > 0);
             _update("ROCPROFSYS_USE_OMPT", _v.count("ompt") > 0);
             _update("ROCPROFSYS_USE_ROCM", _v.count("rocm") > 0);
-            _update("ROCPROFSYS_USE_RCCLP", _v.count("rcclp") > 0);
+            _update("ROCPROFSYS_USE_RCCL", _v.count("rcclp") > 0);
             _update("ROCPROFSYS_USE_ROCM_SMI", _v.count("rocm-smi") > 0);
             _update("ROCPROFSYS_TRACE_THREAD_LOCKS", _v.count("mutex-locks") > 0);
             _update("ROCPROFSYS_TRACE_THREAD_RW_LOCKS", _v.count("rw-locks") > 0);
@@ -775,7 +775,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
             _update("ROCPROFSYS_USE_MPIP", _v.count("mpip") > 0);
             _update("ROCPROFSYS_USE_OMPT", _v.count("ompt") > 0);
             _update("ROCPROFSYS_USE_ROCM", _v.count("rocm") > 0);
-            _update("ROCPROFSYS_USE_RCCLP", _v.count("rcclp") > 0);
+            _update("ROCPROFSYS_USE_RCCL", _v.count("rcclp") > 0);
             _update("ROCPROFSYS_USE_ROCM_SMI", _v.count("rocm-smi") > 0);
             _update("ROCPROFSYS_TRACE_THREAD_LOCKS", _v.count("mutex-locks") > 0);
             _update("ROCPROFSYS_TRACE_THREAD_RW_LOCKS", _v.count("rw-locks") > 0);

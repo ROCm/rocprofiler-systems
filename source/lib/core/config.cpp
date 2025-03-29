@@ -349,7 +349,7 @@ configure_settings(bool _init)
                               "parallelism");
 
     ROCPROFSYS_CONFIG_SETTING(
-        bool, "ROCPROFSYS_USE_RCCLP",
+        bool, "ROCPROFSYS_USE_RCCL",
         "Enable support for ROCm Communication Collectives Library (RCCL) Performance",
         false, "rocm", "rccl", "backend");
 
@@ -1106,7 +1106,7 @@ configure_mode_settings(const std::shared_ptr<settings>& _config)
         _set("ROCPROFSYS_USE_CAUSAL", false);
         _set("ROCPROFSYS_USE_ROCM_SMI", false);
         _set("ROCPROFSYS_USE_KOKKOSP", false);
-        _set("ROCPROFSYS_USE_RCCLP", false);
+        _set("ROCPROFSYS_USE_RCCL", false);
         _set("ROCPROFSYS_USE_OMPT", false);
         _set("ROCPROFSYS_USE_SAMPLING", false);
         _set("ROCPROFSYS_USE_PROCESS_SAMPLING", false);
@@ -1167,7 +1167,7 @@ configure_mode_settings(const std::shared_ptr<settings>& _config)
         _set("ROCPROFSYS_USE_ROCM", false);
         _set("ROCPROFSYS_USE_ROCM_SMI", false);
         _set("ROCPROFSYS_USE_KOKKOSP", false);
-        _set("ROCPROFSYS_USE_RCCLP", false);
+        _set("ROCPROFSYS_USE_RCCL", false);
         _set("ROCPROFSYS_USE_OMPT", false);
         _set("ROCPROFSYS_USE_SAMPLING", false);
         _set("ROCPROFSYS_USE_PROCESS_SAMPLING", false);
@@ -1348,7 +1348,7 @@ configure_disabled_settings(const std::shared_ptr<settings>& _config)
     _handle_use_option("ROCPROFSYS_USE_TRACE", "perfetto");
     _handle_use_option("ROCPROFSYS_PROFILE", "timemory");
     _handle_use_option("ROCPROFSYS_USE_OMPT", "ompt");
-    _handle_use_option("ROCPROFSYS_USE_RCCLP", "rcclp");
+    _handle_use_option("ROCPROFSYS_USE_RCCL", "rcclp");
     _handle_use_option("ROCPROFSYS_USE_ROCM_SMI", "rocm_smi");
     _handle_use_option("ROCPROFSYS_USE_ROCM", "rocm");
 
@@ -1914,7 +1914,7 @@ get_use_code_coverage()
 bool
 get_use_rcclp()
 {
-    static auto _v = get_config()->find("ROCPROFSYS_USE_RCCLP");
+    static auto _v = get_config()->find("ROCPROFSYS_USE_RCCL");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
