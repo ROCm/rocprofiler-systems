@@ -60,7 +60,7 @@ A sample configuration parameter settings looks like:
   ROCPROFSYS_NETWORK_INTERFACE=enp7s0
   ROCPROFSYS_PAPI_EVENTS=net:::enp7s0:tx:byte net:::enp7s0:rx:byte net:::enp7s0:rx:packet net:::enp7s0:tx:packet
 
-Let's look at what these settings mean, in order:
+Details of the configuration parameter settings configured in the example are:
 
 * Sampling Frequency: 10 samples per second
 * Using Timemory to output summaries for the:wall_clock, papi_array, and network_stats components
