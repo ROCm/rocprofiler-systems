@@ -3,7 +3,7 @@
    :keywords: rocprof-sys, rocprofiler-systems, ROCm, tips, how to, profiler, tracking, NIC, network, AMD
 
 ********************************************
-Network Performance Profiling
+Network performance profiling
 ********************************************
 
 `ROCm Systems Profiler <https://github.com/ROCm/rocprofiler-systems>`_ supports network profiling.
