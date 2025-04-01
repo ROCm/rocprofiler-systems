@@ -124,7 +124,7 @@ it with the following command:
   rocprof-sys-run -- ./foo.inst
 
 To view the generated ``.proto`` file in the browser, open the
-`Perfetto UI page <https://ui.perfetto.dev/>`_. Open that page, click on
+`Perfetto UI page <https://ui.perfetto.dev/>`_. Then, click on
 ``Open trace file`` and select the .proto file. In the browser it looks
 like this:
 
