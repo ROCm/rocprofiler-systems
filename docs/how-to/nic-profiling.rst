@@ -116,7 +116,7 @@ An example rocprof-sys-instrument command is:
     "--print-instrumented" "functions" "-e" "-v" "2" "--caller-include" \
     "inner" "-i" "4096" "--" ./foo
 
-This command generates an instrumented binary ``foo.inst``. Then, we can run
+This command generates an instrumented binary ``foo.inst``. Then, run
 it with the following command:
 
 .. code-block:: shell
