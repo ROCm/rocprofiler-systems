@@ -101,7 +101,7 @@ This setting defines the location of the ROCm Systems Profiler configuration fil
 
    In order to collect network counters via PAPI, ensure the
    `/proc/sys/kernel/perf_event_paranoid` has a value <= 2. See
-   :ref:`rocprofsys_papi_events`
+   :ref:`rocprof-sys_papi_events`
    for details.
 
 Instrumenting and running a program
