@@ -50,7 +50,7 @@ NIC enp7s0 should be configured as follows:
 Configuration
 =============
 
-An example of parameter settings can look like this:
+A sample configuration parameter settings looks like:
 
 .. code-block:: shell
 
