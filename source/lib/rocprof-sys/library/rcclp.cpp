@@ -41,6 +41,7 @@
 namespace
 {
 uint64_t global_id = std::numeric_limits<uint64_t>::max();
+rocprofsys::dynamic_library* _librccl = nullptr;
 }
 
 namespace rocprofsys
@@ -57,7 +58,7 @@ setup()
     configure();
 
     // make sure the symbols are loaded to be wrapped
-    dynamic_library _librccl{
+    dynamic_library* _librccl = new dynamic_library{
         "ROCPROFSYS_RCCL_LIBRARY", "librccl.so", RTLD_NOW | RTLD_GLOBAL, true, true, true
     };
 
@@ -82,6 +83,9 @@ shutdown()
 {
     if(global_id < std::numeric_limits<uint64_t>::max())
         component::deactivate_rcclp(global_id);
+
+    delete _librccl;
+    _librccl = nullptr;
 }
 }  // namespace rcclp
 }  // namespace rocprofsys

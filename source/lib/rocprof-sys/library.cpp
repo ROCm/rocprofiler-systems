@@ -416,6 +416,9 @@ rocprofsys_init_tooling_hidden()
         return false;
     }
 
+    // Temporary fix for libelf mismatch
+    dlopen("libelf.so", RTLD_LAZY | RTLD_GLOBAL);
+
     static bool _once       = false;
     static auto _debug_init = get_debug_init();
 
