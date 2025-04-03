@@ -15,6 +15,7 @@ on:
       - '.github/workflows/formatting.yml'
       - '.github/workflows/weekly-mainline-sync.yml'
       - 'docker/**'
+      - .wordlist.txt
   pull_request:
     branches: [ amd-mainline, amd-staging, release/** ]
     paths-ignore:
@@ -28,6 +29,7 @@ on:
       - '.github/workflows/formatting.yml'
       - '.github/workflows/weekly-mainline-sync.yml'
       - 'docker/**'
+      - .wordlist.txt
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -39,7 +41,7 @@ env:
 
 jobs:
   ubuntu-jammy-external:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     container:
       image: dgaliffiamd/rocprofiler-systems:ci-base-ubuntu-22.04
     strategy:
@@ -190,7 +192,7 @@ jobs:
           -DROCPROFSYS_BUILD_NUMBER=${{ github.run_attempt }}
           -DUSE_CLANG_OMP=OFF
           --
-          -LE "transpose|rccl|videodecode"
+          -LE "transpose|rccl|videodecode|jpegdecode"
 
     - name: Install
       timeout-minutes: 10

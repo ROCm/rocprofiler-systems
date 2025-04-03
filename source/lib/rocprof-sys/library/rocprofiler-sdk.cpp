@@ -30,8 +30,8 @@
 #include "core/perfetto.hpp"
 #include "core/rocprofiler-sdk.hpp"
 #include "core/state.hpp"
+#include "library/amd_smi.hpp"
 #include "library/components/category_region.hpp"
-#include "library/rocm_smi.hpp"
 #include "library/rocprofiler-sdk/counters.hpp"
 #include "library/rocprofiler-sdk/fwd.hpp"
 #include "library/thread_info.hpp"
@@ -133,6 +133,7 @@ create_agent_profile(rocprofiler_agent_id_t          agent_id,
 
             ROCPROFSYS_PRINT_F("tool agent device id=%lu, name=%s, device_id=%lu\n",
                                tool_agent_v->device_id, name_v.c_str(), dev_id_v);
+
             // skip this counter if the counter is for a specific device id (which
             // doesn't this agent's device id)
             if(dev_id_v != tool_agent_v->device_id)
@@ -142,13 +143,23 @@ create_agent_profile(rocprofiler_agent_id_t          agent_id,
             }
         }
 
+        // Removes any numeric index enclosed in square brackets at the end of the string.
+        // For example, "example[123]" will be converted to "example".
         auto _old_name_v = name_v;
         name_v =
             std::regex_replace(name_v, std::regex{ "^(.*)(\\[)([0-9]+)(\\])$" }, "$1");
+
         if(name_v != _old_name_v)
+        {
             ROCPROFSYS_PRINT_F("tool agent device id=%lu, old_name=%s, name=%s\n",
                                tool_agent_v->device_id, _old_name_v.c_str(),
                                name_v.c_str());
+        }
+        else if(name_v == itr)
+        {
+            ROCPROFSYS_PRINT_F("tool agent device id=%lu, name=%s\n",
+                               tool_agent_v->device_id, name_v.c_str());
+        }
 
         // search the gpu agent counter info for a counter with a matching name
         for(const auto& citr : data->agent_counter_info.at(agent_id))
@@ -497,11 +508,17 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
                                             user_data, ts);
                 break;
             }
-#if(ROCPROFILER_VERSION_MAJOR == 0 && ROCPROFILER_VERSION_MINOR >= 6) ||                 \
+#if(ROCPROFILER_VERSION_MAJOR == 0 && ROCPROFILER_VERSION_MINOR >= 7) ||                 \
     ROCPROFILER_VERSION_MAJOR >= 1
             case ROCPROFILER_CALLBACK_TRACING_ROCDECODE_API:
             {
                 tool_tracing_callback_start(category::rocm_rocdecode_api{}, record,
+                                            user_data, ts);
+                break;
+            }
+            case ROCPROFILER_CALLBACK_TRACING_ROCJPEG_API:
+            {
+                tool_tracing_callback_start(category::rocm_rocjpeg_api{}, record,
                                             user_data, ts);
                 break;
             }
@@ -576,11 +593,17 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
                                            ts, _bt_data);
                 break;
             }
-#if(ROCPROFILER_VERSION_MAJOR == 0 && ROCPROFILER_VERSION_MINOR >= 6) ||                 \
+#if(ROCPROFILER_VERSION_MAJOR == 0 && ROCPROFILER_VERSION_MINOR >= 7) ||                 \
     ROCPROFILER_VERSION_MAJOR >= 1
             case ROCPROFILER_CALLBACK_TRACING_ROCDECODE_API:
             {
                 tool_tracing_callback_stop(category::rocm_rocdecode_api{}, record,
+                                           user_data, ts, _bt_data);
+                break;
+            }
+            case ROCPROFILER_CALLBACK_TRACING_ROCJPEG_API:
+            {
+                tool_tracing_callback_stop(category::rocm_rocjpeg_api{}, record,
                                            user_data, ts, _bt_data);
                 break;
             }
@@ -1016,9 +1039,10 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
                 ROCPROFILER_CALLBACK_TRACING_HSA_FINALIZE_EXT_API,
                 ROCPROFILER_CALLBACK_TRACING_HIP_RUNTIME_API,
                 ROCPROFILER_CALLBACK_TRACING_HIP_COMPILER_API,
-#if(ROCPROFILER_VERSION_MAJOR == 0 && ROCPROFILER_VERSION_MINOR >= 6) ||                 \
+#if(ROCPROFILER_VERSION_MAJOR == 0 && ROCPROFILER_VERSION_MINOR >= 7) ||                 \
     ROCPROFILER_VERSION_MAJOR >= 1
                 ROCPROFILER_CALLBACK_TRACING_ROCDECODE_API,
+                ROCPROFILER_CALLBACK_TRACING_ROCJPEG_API,
 #endif
                 ROCPROFILER_CALLBACK_TRACING_MARKER_CORE_API
         })
@@ -1140,10 +1164,10 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
 
     gpu::add_device_metadata();
 
-    if(config::get_use_process_sampling() && config::get_use_rocm_smi())
+    if(config::get_use_process_sampling() && config::get_use_amd_smi())
     {
-        ROCPROFSYS_VERBOSE_F(1, "Setting rocm_smi state to active...\n");
-        rocm_smi::set_state(State::Active);
+        ROCPROFSYS_VERBOSE_F(1, "Setting amd_smi state to active...\n");
+        amd_smi::set_state(State::Active);
     }
 
     start();
@@ -1161,27 +1185,11 @@ tool_fini(void* callback_data)
     flush();
     stop();
 
-    if(config::get_use_process_sampling() && config::get_use_rocm_smi())
-        rocm_smi::shutdown();
+    if(config::get_use_process_sampling() && config::get_use_amd_smi())
+        amd_smi::shutdown();
 
     if(get_counter_storage())
     {
-        auto _storages = std::vector<const counter_storage*>{};
-        for(const auto& citr : *get_counter_storage())
-        {
-            for(const auto& itr : citr.second)
-                _storages.emplace_back(&itr.second);
-        }
-
-        std::sort(_storages.begin(), _storages.end(),
-                  [](const counter_storage* lhs, const counter_storage* rhs) {
-                      return *lhs < *rhs;
-                  });
-
-        for(const auto* itr : _storages)
-            itr->write();
-        _storages.clear();
-
         get_counter_storage()->clear();
         delete get_counter_storage();
         get_counter_storage() = nullptr;
@@ -1288,6 +1296,11 @@ rocprofiler_configure(uint32_t version, const char* runtime_version, uint32_t pr
     if(!rocprofsys::config::settings_are_configured() &&
        rocprofsys::get_state() < rocprofsys::State::Active)
         rocprofsys_init_tooling_hidden();
+
+    if(!rocprofsys::config::get_use_rocm())
+    {
+        return nullptr;
+    }
 
     // set the client name
     id->name = "rocprofsys";

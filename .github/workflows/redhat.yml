@@ -15,6 +15,7 @@ on:
       - '.github/workflows/formatting.yml'
       - '.github/workflows/weekly-mainline-sync.yml'
       - 'docker/**'
+      - .wordlist.txt
   pull_request:
     branches: [ amd-mainline, amd-staging, release/** ]
     paths-ignore:
@@ -28,6 +29,7 @@ on:
       - '.github/workflows/formatting.yml'
       - '.github/workflows/weekly-mainline-sync.yml'
       - 'docker/**'
+      - .wordlist.txt
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -121,7 +123,7 @@ jobs:
           -DROCPROFSYS_DISABLE_EXAMPLES="transpose;rccl"
           -DROCPROFSYS_BUILD_NUMBER=${{ github.run_attempt }}
           --
-          -LE "transpose|rccl|videodecode"
+          -LE "transpose|rccl|videodecode|jpegdecode"
 
     - name: Install
       timeout-minutes: 10

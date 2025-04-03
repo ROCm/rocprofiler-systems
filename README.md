@@ -7,6 +7,9 @@
 [![Installer Packaging (CPack)](https://github.com/ROCm/rocprofiler-systems/actions/workflows/cpack.yml/badge.svg)](https://github.com/ROCm/rocprofiler-systems/actions/workflows/cpack.yml)
 [![Documentation](https://github.com/ROCm/rocprofiler-systems/actions/workflows/docs.yml/badge.svg)](https://github.com/ROCm/rocprofiler-systems/actions/workflows/docs.yml)
 
+> [!NOTE]
+> If you are using a version of ROCm prior to ROCm 6.3.1 and are experiencing problems viewing your trace in the latest version of [Perfetto](http://ui.perfetto.dev), then try using [Perfetto UI v46.0](https://ui.perfetto.dev/v46.0-35b3d9845/#!/).
+
 ## Overview
 
 ROCm Systems Profiler (rocprofiler-systems), formerly Omnitrace, is a comprehensive profiling and tracing tool for parallel applications written in C, C++, Fortran, HIP, OpenCL, and Python which execute on the CPU or CPU+GPU.
@@ -59,11 +62,15 @@ The documentation source files reside in the [`/docs`](/docs) folder of this rep
 - HIP kernel tracing
 - HSA API tracing
 - HSA operation tracing
-- System-level sampling (via rocm-smi)
+- rocDecode API tracing
+- rocJPEG API tracing
+- System-level sampling (via AMD-SMI)
   - Memory usage
   - Power usage
   - Temperature
   - Utilization
+  - VCN Utilization
+  - JPEG Utilization
 
 ### CPU Metrics
 

@@ -15,6 +15,7 @@ on:
       - '.github/workflows/formatting.yml'
       - '.github/workflows/weekly-mainline-sync.yml'
       - 'docker/**'
+      - .wordlist.txt
   pull_request:
     branches: [ amd-mainline, amd-staging, release/** ]
     paths-ignore:
@@ -28,6 +29,7 @@ on:
       - '.github/workflows/formatting.yml'
       - '.github/workflows/weekly-mainline-sync.yml'
       - 'docker/**'
+      - .wordlist.txt
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -39,7 +41,7 @@ env:
 
 jobs:
   opensuse:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     container:
       image: dgaliffiamd/rocprofiler-systems:ci-base-opensuse-${{ matrix.os-release }}
     strategy:
@@ -102,7 +104,7 @@ jobs:
           -DROCPROFSYS_PYTHON_ENVS="py3.6;py3.7;py3.8;py3.9;py3.10;py3.11"
           -DROCPROFSYS_CI_MPI_RUN_AS_ROOT=ON
           -DROCPROFSYS_MAX_THREADS=64
-          -DROCPROFSYS_DISABLE_EXAMPLES="transpose;rccl;videodecode"
+          -DROCPROFSYS_DISABLE_EXAMPLES="transpose;rccl;videodecode;jpegdecode"
           -DROCPROFSYS_BUILD_NUMBER=${{ github.run_attempt }}
 
     - name: Install

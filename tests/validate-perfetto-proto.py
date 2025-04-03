@@ -10,7 +10,7 @@ def load_trace(inp, max_tries=5, retry_wait=1, bin_path=None):
     """Occasionally connecting to the trace processor fails with HTTP errors
     so this function tries to reduce spurious test failures"""
 
-    n = 0
+    tries = 0
     tp = None
 
     # Check if bin_path is set and if it exists
@@ -31,18 +31,37 @@ def load_trace(inp, max_tries=5, retry_wait=1, bin_path=None):
             sys.stderr.write(f"{ex}\n")
             sys.stderr.flush()
 
-            if n >= max_tries:
+            if tries >= max_tries:
                 raise
             else:
                 import time
 
                 time.sleep(retry_wait)
         finally:
-            n += 1
+            tries += 1
     return tp
 
 
-def validate_perfetto(data, labels, counts, depths):
+def validate_perfetto(data, labels, counts, depths, useSubstringForLabels=False):
+    """
+    Validates the given perfetto data against expected labels, counts, and depths.
+
+    Args:
+        data (list of dict): A list of dictionaries where each dictionary contains
+            'label' (str), 'count' (int), and 'depth' (int) keys.
+        labels (list of str): A list of expected labels.
+        counts (list of int): A list of expected counts corresponding to the labels.
+        depths (list of int): A list of expected depths corresponding to the labels.
+        useSubstringForLabels (bool): If True, checks if the label in data contains
+            the expected label as a substring. If False, checks for exact matches.
+    Raises:
+        RuntimeError: If any of the labels, counts, or depths in the data do not match
+            the expected values.
+    """
+
+    if not data and labels:
+        raise RuntimeError("Data is empty but labels are not")
+
     expected = []
     for litr, citr, ditr in zip(labels, counts, depths):
         entry = []
@@ -57,8 +76,15 @@ def validate_perfetto(data, labels, counts, depths):
         _count = ditr["count"]
         _depth = ditr["depth"]
 
-        if _label != eitr[0]:
-            raise RuntimeError(f"Mismatched prefix: {_label} vs. {eitr[0]}")
+        if useSubstringForLabels:
+            if eitr[0] not in _label:
+                raise RuntimeError(
+                    f"Mismatched prefix: {_label} does not contain {eitr[0]}"
+                )
+        else:
+            if _label != eitr[0]:
+                raise RuntimeError(f"Mismatched prefix: {_label} vs. {eitr[0]}")
+
         if _count != eitr[1]:
             raise RuntimeError(f"Mismatched count: {_count} vs. {eitr[1]}")
         if _depth != eitr[2]:
@@ -69,13 +95,26 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
-        "-l", "--labels", nargs="+", type=str, help="Expected labels", default=[]
+        "-l",
+        "--labels",
+        nargs="+",
+        type=str,
+        help="Expected labels. Not to be used with '-s'",
+        default=[],
     )
     parser.add_argument(
         "-c", "--counts", nargs="+", type=int, help="Expected counts", default=[]
     )
     parser.add_argument(
         "-d", "--depths", nargs="+", type=int, help="Expected depths", default=[]
+    )
+    parser.add_argument(
+        "-s",
+        "--label-substrings",
+        nargs="+",
+        type=str,
+        help="Expected labels substrings. Not to be used with '-l'",
+        default=[],
     )
     parser.add_argument(
         "-m", "--categories", nargs="+", help="Perfetto categories", default=[]
@@ -111,7 +150,15 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if len(args.labels) != len(args.counts) or len(args.labels) != len(args.depths):
+    # check for mutually exclusive arguments
+    if args.labels and args.label_substrings:
+        raise RuntimeError(
+            "Cannot specify both expected labels and expected label substrings"
+        )
+
+    labels = args.labels if args.labels else args.label_substrings
+
+    if len(labels) != len(args.counts) or len(labels) != len(args.depths):
         raise RuntimeError(
             "The same number of labels, counts, and depths must be specified"
         )
@@ -146,6 +193,7 @@ if __name__ == "__main__":
 
     # demo display of data
     if args.print:
+        print(f"Printing Perfetto Data {args.categories}")
         for itr in perfetto_data:
             n = 0 if itr["depth"] < 2 else itr["depth"] - 1
             lbl = "{}{}{}".format(
@@ -157,13 +205,14 @@ if __name__ == "__main__":
     try:
         validate_perfetto(
             perfetto_data,
-            args.labels,
+            labels,
             args.counts,
             args.depths,
+            useSubstringForLabels=args.label_substrings is not None,
         )
 
     except RuntimeError as e:
-        print(f"{e}")
+        print(f"Fail: {e}")
         ret = 1
 
     for key_name, key_count in zip(args.key_names, args.key_counts):
@@ -186,12 +235,18 @@ if __name__ == "__main__":
         sum_counter_values = tp.query(
             f"""SELECT SUM(counter.value) AS total_value FROM counter_track JOIN counter ON
               counter.track_id = counter_track.id WHERE counter_track.name LIKE
-              '{counter_name}%'"""
+              '%{counter_name}%'"""
         )
         total_value = 0
+
         for row in sum_counter_values:
             total_value = row.total_value if row.total_value is not None else -1
+
+        if args.print:
+            print(f"Total value of {counter_name} is {total_value}")
+
         if total_value <= 0:
+            print(f"Fail: Counter {counter_name} is not found in the traces")
             ret = 1
 
     if ret == 0:
