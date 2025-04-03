@@ -404,42 +404,16 @@ rocprofsys_init_library_hidden()
     ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(_debug_init, "\n");
 }
 
-// Initialize RCCL if:
-// - postinit=true - so the code doesn't hang at the initialization stage
-// - get_state() >= State::Init - so the code doesn't throw an exception
-// - rccl_initialized=false - so we don't try to initialize RCCL twice
-// - get_use_rcclp()=true - only if the environment is configured to use RCCL
-static void
-rccl_setup(bool postinit)
-{
-    // Flag used to avoid initializing RCCL twice
-    static bool rccl_initialized = false;
-
-    if(postinit && (get_state() >= State::Init) && !rccl_initialized && get_use_rcclp())
-    {
-        ROCPROFSYS_VERBOSE_F(1, "Setting up RCCLP...\n");
-        rcclp::setup();
-        rccl_initialized = true;
-    }
-}
-
-static void
-rocprofsys_init_library_hidden_with_rccl(bool postinit)
-{
-    rocprofsys_init_library_hidden();
-    rccl_setup(postinit);
-}
-
 //======================================================================================//
 
 extern "C" bool
-rocprofsys_init_tooling_hidden(bool postinit)
+rocprofsys_init_tooling_hidden()
 {
     if(get_env("ROCPROFSYS_MONOCHROME", false, false)) tim::log::monochrome() = true;
 
     if(!tim::get_env("ROCPROFSYS_INIT_TOOLING", true))
     {
-        rocprofsys_init_library_hidden_with_rccl(postinit);
+        rocprofsys_init_library_hidden();
         return false;
     }
 
@@ -456,11 +430,7 @@ rocprofsys_init_tooling_hidden(bool postinit)
     ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(_debug_init, "State is %s...\n",
                                          std::to_string(get_state()).c_str());
 
-    if(get_state() != State::PreInit || get_state() == State::Init || _once)
-    {
-        rccl_setup(postinit);
-        return false;
-    }
+    if(get_state() != State::PreInit || get_state() == State::Init || _once) return false;
     _once = true;
 
     ROCPROFSYS_SCOPED_THREAD_STATE(ThreadState::Internal);
@@ -481,7 +451,7 @@ rocprofsys_init_tooling_hidden(bool postinit)
     ROCPROFSYS_CONDITIONAL_BASIC_PRINT_F(_debug_init,
                                          "Calling rocprofsys_init_library()...\n");
 
-    rocprofsys_init_library_hidden_with_rccl(postinit);
+    rocprofsys_init_library_hidden();
 
     ROCPROFSYS_DEBUG_F("\n");
 
@@ -577,6 +547,12 @@ rocprofsys_init_tooling_hidden(bool postinit)
     {
         ROCPROFSYS_VERBOSE_F(1, "Setting up OMPT...\n");
         ompt::setup();
+    }
+
+    if(get_use_rcclp())
+    {
+        ROCPROFSYS_VERBOSE_F(1, "Setting up RCCLP...\n");
+        rcclp::setup();
     }
 
     if(get_use_perfetto())
