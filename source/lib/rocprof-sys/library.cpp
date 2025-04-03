@@ -549,6 +549,17 @@ rocprofsys_init_tooling_hidden()
         ompt::setup();
     }
 
+#if defined(ROCPROFSYS_USE_ROCM) && ROCPROFSYS_USE_ROCM > 0
+    // Force rocprofiler_configure if it hasn't been called through __hip_module_ctor.
+    // rocprofiler_configure needs to be called before rcclp::setup to decide
+    // whether we want to use gotcha wrappers for rccl or rocpofiler based tracing.
+    if(get_use_rocm())
+    {
+        ROCPROFSYS_VERBOSE_F(1, "Setting up ROCm...\n");
+        rocprofiler_sdk::setup();
+    }
+#endif
+
     if(get_use_rcclp())
     {
         ROCPROFSYS_VERBOSE_F(1, "Setting up RCCLP...\n");
