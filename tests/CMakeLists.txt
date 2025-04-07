@@ -24,10 +24,6 @@ include(${CMAKE_CURRENT_LIST_DIR}/rocprof-sys-annotate-tests.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/rocprof-sys-causal-tests.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/rocprof-sys-python-tests.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/rocprof-sys-decode-tests.cmake)
-
-# Include NIC performance test.
-if(ROCPROFSYS_BUILD_NIC_PERFORMANCE_TEST)
-    include(${CMAKE_CURRENT_LIST_DIR}/rocprof-sys-nic-perf.cmake)
-endif()
+include(${CMAKE_CURRENT_LIST_DIR}/rocprof-sys-nic-perf.cmake)
 
 add_subdirectory(source)
