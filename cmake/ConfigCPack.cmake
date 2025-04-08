@@ -122,6 +122,14 @@ set(ROCPROFSYS_PACKAGE_FILE_NAME
     )
 rocprofiler_systems_add_feature(ROCPROFSYS_PACKAGE_FILE_NAME "CPack filename")
 
+if(ROCM_DEP_ROCMCORE OR ROCPROFILER_DEP_ROCMCORE)
+    set(_DEBIAN_PACKAGE_DEPENDS "rocm-core")
+    set(_RPM_PACKAGE_REQUIRES "rocm-core")
+else()
+    set(_DEBIAN_PACKAGE_DEPENDS "")
+    set(_RPM_PACKAGE_REQUIRES "")
+endif()
+
 # -------------------------------------------------------------------------------------- #
 #
 # Debian package specific variables
@@ -135,7 +143,6 @@ string(REGEX REPLACE "([a-zA-Z])-([0-9])" "\\1\\2" CPACK_DEBIAN_PACKAGE_RELEASE
                      "${CPACK_DEBIAN_PACKAGE_RELEASE}")
 string(REPLACE "-" "~" CPACK_DEBIAN_PACKAGE_RELEASE "${CPACK_DEBIAN_PACKAGE_RELEASE}")
 
-set(_DEBIAN_PACKAGE_DEPENDS "")
 if(DYNINST_USE_OpenMP)
     list(APPEND _DEBIAN_PACKAGE_DEPENDS libgomp1)
 endif()
