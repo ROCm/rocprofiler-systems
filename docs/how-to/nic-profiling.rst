@@ -41,7 +41,6 @@ that NIC looks like this:
   |-------------------------------|---------|-----------|-------------------------------|
 
 To track bytes and packets sent and received by the NIC ``enp7s0``, the configuration parameters should be configured as the following example:
-NIC enp7s0 should be configured as follows:
 
 .. code-block:: shell
 
