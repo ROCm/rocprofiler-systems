@@ -230,9 +230,9 @@ set(CPACK_RPM_PACKAGE_PROVIDES
 
 if(ROCPROFSYS_USE_MPI)
     if("${ROCPROFSYS_MPI_IMPL}" STREQUAL "openmpi")
-        list(APPEND _DEBIAN_PACKAGE_DEPENDS "libopenmpi-devel")
+        list(APPEND _RPM_PACKAGE_REQUIRES "libopenmpi-devel")
     elseif("${ROCPROFSYS_MPI_IMPL}" STREQUAL "mpich")
-        list(APPEND _DEBIAN_PACKAGE_DEPENDS "libmpich-devel")
+        list(APPEND _RPM_PACKAGE_REQUIRES "libmpich-devel")
     endif()
 endif()
 
@@ -247,7 +247,9 @@ if(ROCPROFSYS_USE_ROCM)
 endif()
 
 string(REPLACE ";" ", " _RPM_PACKAGE_REQUIRES "${_RPM_PACKAGE_REQUIRES}")
-set(CPACK_RPM_PACKAGE_REQUIRES ${_RPM_PACKAGE_REQUIRES})
+set(CPACK_RPM_PACKAGE_REQUIRES
+    ${_RPM_PACKAGE_REQUIRES}
+    CACHE STRING "RPM package requires" FORCE)
 set(CPACK_RPM_PACKAGE_LICENSE "MIT")
 set(CPACK_RPM_FILE_NAME "RPM-DEFAULT")
 set(CPACK_RPM_PACKAGE_RELEASE_DIST ON)
@@ -293,7 +295,6 @@ rocprofiler_systems_add_feature(CPACK_DEBIAN_PACKAGE_SHLIBDEPS
 
 rocprofiler_systems_add_feature(CPACK_RPM_FILE_NAME "RPM file name")
 rocprofiler_systems_add_feature(CPACK_RPM_PACKAGE_RELEASE "RPM package release version")
-rocprofiler_systems_add_feature(CPACK_RPM_PACKAGE_REQUIRES "RPM package dependencies")
 rocprofiler_systems_add_feature(CPACK_RPM_PACKAGE_AUTOREQPROV
                                 "RPM package auto generate requires and provides")
 rocprofiler_systems_add_feature(CPACK_RPM_PACKAGE_REQUIRES "RPM package requires")
