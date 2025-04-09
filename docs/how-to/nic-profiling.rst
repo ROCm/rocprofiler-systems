@@ -88,7 +88,7 @@ The configuration parameter settings can be saved in a configuration file. Here 
   ROCPROFSYS_NETWORK_INTERFACE=enp7s0
   ROCPROFSYS_PAPI_EVENTS = net:::enp7s0:tx:byte net:::enp7s0:rx:byte net:::enp7s0:rx:packet net:::enp7s0:tx:packet
 
-Specify the configuration file by setting ``ROCPROFSYS_CONFIG_FILE``:
+To specify the configuration file, use the ``ROCPROFSYS_CONFIG_FILE`` setting:
 
 .. code-block:: shell
 
