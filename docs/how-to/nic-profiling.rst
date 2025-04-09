@@ -15,7 +15,6 @@ All network events that can be traced on the system can be listed by running the
     rocprof-sys-avail -H -r net
 
 For example, if the system's NIC is enp7s0, then the output of this command looks like:
-that NIC looks like this:
 
 .. code-block:: shell
 
