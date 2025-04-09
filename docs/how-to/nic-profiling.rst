@@ -64,7 +64,7 @@ Details of the configuration parameter settings configured in the example are:
 * **Sampling Frequency**: 10 samples per second
 * **TIMEMORY**:  Outputs the summaries for the ``wall_clock``, ``papi_array``, and ``network_stats`` components.
 * **Network Interface**: ``enp7s0`` is the predictable network interface device name.
-* Events for network device ``enp7s0`` to be sampled: Bytes transmitted, Bytes received, Packet transmitted, Packets received
+* **Events for the network device to be sampled**: Bytes transmitted, bytes received, packets transmitted, and packets received.
 
 Here is an example of a complete configuration file, ``rocprofsys.cfg``:
 
