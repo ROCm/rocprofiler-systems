@@ -61,7 +61,7 @@ A sample configuration parameter settings looks like:
 
 Details of the configuration parameter settings configured in the example are:
 
-* Sampling Frequency: 10 samples per second
+* **Sampling Frequency**: 10 samples per second
 * Using Timemory to output summaries for the:wall_clock, papi_array, and network_stats components
 * Network Interface: ``enp7s0``
 * Events for network device ``enp7s0`` to be sampled: Bytes transmitted, Bytes received, Packet transmitted, Packets received
