@@ -77,7 +77,7 @@ jobs:
             static-libgcc: 'OFF'
             static-libstdcxx: 'OFF'
             build-dyninst: 'OFF'
-            rocm-version: '6.3'
+            rocm-version: '6.4'
 
     env:
       OMPI_ALLOW_RUN_AS_ROOT: 1
