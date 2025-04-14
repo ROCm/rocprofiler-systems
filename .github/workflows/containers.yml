@@ -118,9 +118,6 @@ jobs:
           - os-distro: "opensuse"
             os-version: "15.5"
             rocm-version: "6.3"
-          - os-distro: "opensuse"
-            os-version: "15.5"
-            rocm-version: "6.4"
           # opensuse 15.6
           - os-distro: "opensuse"
             os-version: "15.6"
