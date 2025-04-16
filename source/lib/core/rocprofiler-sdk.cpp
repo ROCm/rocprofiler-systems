@@ -320,7 +320,7 @@ config_settings(const std::shared_ptr<settings>& _config)
 
     ROCPROFSYS_CONFIG_SETTING(std::string, "ROCPROFSYS_ROCM_DOMAINS", _domain_description,
                               std::string{ "hip_runtime_api,marker_api,kernel_dispatch,"
-                                           "memory_copy,scratch_memory,page_migration" },
+                                           "memory_copy,scratch_memory,page_migration,ompt" },
                               "rocm", "rocprofiler-sdk")
         ->set_choices(_domain_choices);
 
@@ -364,6 +364,7 @@ get_callback_domains()
             ROCPROFILER_CALLBACK_TRACING_ROCDECODE_API,
             ROCPROFILER_CALLBACK_TRACING_ROCJPEG_API,
 #    endif
+            ROCPROFILER_CALLBACK_TRACING_OMPT
     };
 
     auto _data = std::unordered_set<rocprofiler_callback_tracing_kind_t>{};
@@ -405,6 +406,9 @@ get_callback_domains()
         else if(itr == "marker_api" || itr == "roctx")
         {
             _data.emplace(ROCPROFILER_CALLBACK_TRACING_MARKER_CORE_API);
+        }
+        else if (itr == "ompt") {
+            _data.emplace(ROCPROFILER_CALLBACK_TRACING_OMPT);
         }
         else
         {

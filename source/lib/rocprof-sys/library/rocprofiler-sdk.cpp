@@ -481,6 +481,35 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
     auto ts = rocprofiler_timestamp_t{};
     ROCPROFILER_CALL(rocprofiler_get_timestamp(&ts));
 
+    auto phase_to_string = [](rocprofiler_callback_phase_t phase) {
+        switch(phase)
+        {
+            case ROCPROFILER_CALLBACK_PHASE_NONE:
+            {
+                return "none";
+            }
+            case ROCPROFILER_CALLBACK_PHASE_ENTER:
+            {
+                return "start";
+            }
+            case ROCPROFILER_CALLBACK_PHASE_EXIT:
+            {
+                return "end";
+            }
+            case ROCPROFILER_CALLBACK_PHASE_LAST:
+            {
+                return "last";
+            }
+            default:
+            {
+                return "unknown";
+            }
+        }
+    };
+
+    auto _name = tool_data->callback_tracing_info.at(record.kind, record.operation);
+    std::cout << "tool_tracing_callback > kind: " << record.kind << ", name: " << _name << ", operation: " << record.operation << ", phase: " << phase_to_string(record.phase) << std::endl;
+
     if(record.phase == ROCPROFILER_CALLBACK_PHASE_ENTER)
     {
         user_data->value = ts;
@@ -522,6 +551,12 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
                 break;
             }
 #endif
+            case ROCPROFILER_CALLBACK_TRACING_OMPT:
+            {
+                tool_tracing_callback_start(category::rocm_ompt_api{}, record,
+                    user_data, ts);
+                break;
+            }
             case ROCPROFILER_CALLBACK_TRACING_NONE:
             case ROCPROFILER_CALLBACK_TRACING_LAST:
             case ROCPROFILER_CALLBACK_TRACING_MARKER_CONTROL_API:
@@ -606,6 +641,12 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
                 break;
             }
 #endif
+            case ROCPROFILER_CALLBACK_TRACING_OMPT:
+            {
+                tool_tracing_callback_stop(category::rocm_ompt_api{}, record,
+                    user_data, ts, _bt_data);
+                break;
+            }
             case ROCPROFILER_CALLBACK_TRACING_NONE:
             case ROCPROFILER_CALLBACK_TRACING_LAST:
             case ROCPROFILER_CALLBACK_TRACING_MARKER_CONTROL_API:
@@ -624,17 +665,30 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
     }
     else if(record.phase == ROCPROFILER_CALLBACK_PHASE_NONE)
     {
-        if(record.kind == ROCPROFILER_CALLBACK_TRACING_KERNEL_DISPATCH &&
-           record.operation == ROCPROFILER_KERNEL_DISPATCH_COMPLETE)
-        {
-            auto* _data =
-                static_cast<rocprofiler_callback_tracing_kernel_dispatch_data_t*>(
-                    record.payload);
+        switch (record.kind) {
+            case ROCPROFILER_CALLBACK_TRACING_OMPT:
+            {
+                printf("OPMT callback - ROCPROFILER_CALLBACK_PHASE_NONE \n");
 
-            // save for post-processing
-            get_kernel_dispatch_timestamps().emplace(
-                _data->dispatch_info.dispatch_id,
-                timing_interval{ _data->start_timestamp, _data->end_timestamp });
+            } break;
+            case ROCPROFILER_CALLBACK_TRACING_KERNEL_DISPATCH:
+            {
+                if(record.operation == ROCPROFILER_KERNEL_DISPATCH_COMPLETE)
+                {
+                    auto* _data =
+                        static_cast<rocprofiler_callback_tracing_kernel_dispatch_data_t*>(
+                            record.payload);
+
+                    // save for post-processing
+                    get_kernel_dispatch_timestamps().emplace(
+                        _data->dispatch_info.dispatch_id,
+                        timing_interval{ _data->start_timestamp, _data->end_timestamp });
+                }  
+            } break;
+            default:
+            {
+                ROCPROFSYS_WARNING(0, "unhandled callback record kind: %i\n", record.kind);
+            } break;
         }
     }
     else
@@ -1041,7 +1095,8 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
                 ROCPROFILER_CALLBACK_TRACING_ROCDECODE_API,
                 ROCPROFILER_CALLBACK_TRACING_ROCJPEG_API,
 #endif
-                ROCPROFILER_CALLBACK_TRACING_MARKER_CORE_API
+                ROCPROFILER_CALLBACK_TRACING_MARKER_CORE_API,
+                ROCPROFILER_CALLBACK_TRACING_OMPT
         })
     {
         if(_callback_domains.count(itr) > 0)
@@ -1215,8 +1270,9 @@ void
 shutdown()
 {
     // shutdown
-    if(tool_data && tool_data->client_id && tool_data->client_fini)
-        tool_data->client_fini(*tool_data->client_id);
+    // TODO -> looks like client_fini is not working properly for the OMPT - we are receiving OMPT callbacks afther this fini call, and that leads to a crash
+    // if(tool_data && tool_data->client_id && tool_data->client_fini)
+    //      tool_data->client_fini(*tool_data->client_id);
 }
 
 void
