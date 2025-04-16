@@ -464,7 +464,7 @@ configure_settings(bool _init)
                               "Enable tracking for CPU frequency, memory usage, virtual "
                               "memory usage, peak memory, context switches, page faults, "
                               "user time, and kernel time",
-                              true, "process_sampling");
+                              false, "process_sampling");
 
     ROCPROFSYS_CONFIG_SETTING(
         double, "ROCPROFSYS_PROCESS_SAMPLING_FREQ",
