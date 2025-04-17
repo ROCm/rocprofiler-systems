@@ -10,6 +10,7 @@
 [submodule "external/dyninst"]
 	path = external/dyninst
 	url = https://github.com/ROCm/dyninst.git
+	branch = rocprofiler-systems_dyn_update
 [submodule "external/PTL"]
 	path = external/PTL
 	url = https://github.com/jrmadsen/PTL.git
