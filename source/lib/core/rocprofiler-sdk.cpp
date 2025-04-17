@@ -407,9 +407,6 @@ get_callback_domains()
         {
             _data.emplace(ROCPROFILER_CALLBACK_TRACING_MARKER_CORE_API);
         }
-        else if (itr == "ompt") {
-            _data.emplace(ROCPROFILER_CALLBACK_TRACING_OMPT);
-        }
         else
         {
             for(size_t idx = 0; idx < callback_tracing_info.size(); ++idx)
