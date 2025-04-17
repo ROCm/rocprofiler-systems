@@ -219,7 +219,8 @@ string(REPLACE ";" ", " CPACK_RPM_PACKAGE_PROVIDES "${_RPM_PACKAGE_PROVIDES}")
 set(CPACK_RPM_PACKAGE_PROVIDES
     "${CPACK_RPM_PACKAGE_PROVIDES}"
     CACHE STRING "RPM package provides" FORCE)
-
+# Prevent the modification of python interpreter directives
+set(CPACK_RPM_SPEC_MORE_DEFINE "%undefine __brp_mangle_shebangs")
 set(CPACK_RPM_PACKAGE_LICENSE "MIT")
 set(CPACK_RPM_FILE_NAME "RPM-DEFAULT")
 set(CPACK_RPM_PACKAGE_RELEASE_DIST ON)
