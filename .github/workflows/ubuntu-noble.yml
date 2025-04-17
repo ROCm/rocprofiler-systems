@@ -51,7 +51,7 @@ jobs:
         build-type: ['Release', 'Debug']
         strip: ['OFF']
         build-dyninst: ['OFF']
-        rocm-version: ['0.0', '6.4']
+        rocm-version: ['0.0','6.3','6.4']
 
     env:
       ROCPROFSYS_CI: 'ON'
