@@ -302,6 +302,15 @@ if(ROCPROFSYS_BUILD_DYNINST)
         PIC VARIABLES CMAKE_POSITION_INDEPENDENT_CODE CMAKE_INSTALL_RPATH
                       CMAKE_BUILD_RPATH CMAKE_INSTALL_RPATH_USE_LINK_PATH)
 
+    # Create namespaced aliases for Dyninst components
+    foreach(_LIB common dyninstAPI parseAPI instructionAPI symtabAPI stackwalk dynDwarf dynElf patchAPI pcontrol)
+    if(TARGET ${_LIB})
+        if(NOT TARGET Dyninst::${_LIB})
+            add_library(Dyninst::${_LIB} ALIAS ${_LIB})
+        endif()
+    endif()
+    endforeach()
+    
     add_library(Dyninst::Dyninst INTERFACE IMPORTED)
     foreach(_LIB common dyninstAPI parseAPI instructionAPI symtabAPI stackwalk)
         target_link_libraries(Dyninst::Dyninst INTERFACE Dyninst::${_LIB})
