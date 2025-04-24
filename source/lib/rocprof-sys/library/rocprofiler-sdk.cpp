@@ -508,14 +508,15 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
                                             user_data, ts);
                 break;
             }
-#if(ROCPROFILER_VERSION_MAJOR == 0 && ROCPROFILER_VERSION_MINOR >= 7) ||                 \
-    ROCPROFILER_VERSION_MAJOR >= 1
+#if(ROCPROFILER_VERSION >= 600)
             case ROCPROFILER_CALLBACK_TRACING_ROCDECODE_API:
             {
                 tool_tracing_callback_start(category::rocm_rocdecode_api{}, record,
                                             user_data, ts);
                 break;
             }
+#endif
+#if(ROCPROFILER_VERSION >= 700)
             case ROCPROFILER_CALLBACK_TRACING_ROCJPEG_API:
             {
                 tool_tracing_callback_start(category::rocm_rocjpeg_api{}, record,
@@ -532,6 +533,11 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
             case ROCPROFILER_CALLBACK_TRACING_KERNEL_DISPATCH:
             case ROCPROFILER_CALLBACK_TRACING_MEMORY_COPY:
             case ROCPROFILER_CALLBACK_TRACING_RCCL_API:
+#if(ROCPROFILER_VERSION >= 600)
+            case ROCPROFILER_CALLBACK_TRACING_OMPT:
+            case ROCPROFILER_CALLBACK_TRACING_MEMORY_ALLOCATION:
+            case ROCPROFILER_CALLBACK_TRACING_RUNTIME_INITIALIZATION:
+#endif
             {
                 ROCPROFSYS_CI_ABORT(true, "unhandled callback record kind: %i\n",
                                     record.kind);
@@ -593,14 +599,15 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
                                            ts, _bt_data);
                 break;
             }
-#if(ROCPROFILER_VERSION_MAJOR == 0 && ROCPROFILER_VERSION_MINOR >= 7) ||                 \
-    ROCPROFILER_VERSION_MAJOR >= 1
+#if(ROCPROFILER_VERSION >= 600)
             case ROCPROFILER_CALLBACK_TRACING_ROCDECODE_API:
             {
                 tool_tracing_callback_stop(category::rocm_rocdecode_api{}, record,
                                            user_data, ts, _bt_data);
                 break;
             }
+#endif
+#if(ROCPROFILER_VERSION >= 700)
             case ROCPROFILER_CALLBACK_TRACING_ROCJPEG_API:
             {
                 tool_tracing_callback_stop(category::rocm_rocjpeg_api{}, record,
@@ -617,6 +624,11 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
             case ROCPROFILER_CALLBACK_TRACING_KERNEL_DISPATCH:
             case ROCPROFILER_CALLBACK_TRACING_MEMORY_COPY:
             case ROCPROFILER_CALLBACK_TRACING_RCCL_API:
+#if(ROCPROFILER_VERSION >= 600)
+            case ROCPROFILER_CALLBACK_TRACING_OMPT:
+            case ROCPROFILER_CALLBACK_TRACING_MEMORY_ALLOCATION:
+            case ROCPROFILER_CALLBACK_TRACING_RUNTIME_INITIALIZATION:
+#endif
             {
                 ROCPROFSYS_CI_ABORT(true, "unhandled callback record kind: %i\n",
                                     record.kind);
@@ -1039,8 +1051,7 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
                 ROCPROFILER_CALLBACK_TRACING_HSA_FINALIZE_EXT_API,
                 ROCPROFILER_CALLBACK_TRACING_HIP_RUNTIME_API,
                 ROCPROFILER_CALLBACK_TRACING_HIP_COMPILER_API,
-#if(ROCPROFILER_VERSION_MAJOR == 0 && ROCPROFILER_VERSION_MINOR >= 7) ||                 \
-    ROCPROFILER_VERSION_MAJOR >= 1
+#if(ROCPROFILER_VERSION >= 700)
                 ROCPROFILER_CALLBACK_TRACING_ROCDECODE_API,
                 ROCPROFILER_CALLBACK_TRACING_ROCJPEG_API,
 #endif
@@ -1290,12 +1301,14 @@ rocprofiler_configure(uint32_t version, const char* runtime_version, uint32_t pr
         _first = false;
     }
 
-    if(!tim::get_env("ROCPROFSYS_INIT_TOOLING", true)) return nullptr;
-    if(!tim::settings::enabled()) return nullptr;
+    // If ROCPROFSYS_PRELOAD or ROCPROFSYS_INIT_TOOLING is not set,
+    // the tooling will not be initialized so we cannot enable
+    // profiling with rocprofiler
+    if(!tim::get_env("ROCPROFSYS_PRELOAD", true) ||
+       !tim::get_env("ROCPROFSYS_INIT_TOOLING", true))
+        return nullptr;
 
-    if(!rocprofsys::config::settings_are_configured() &&
-       rocprofsys::get_state() < rocprofsys::State::Active)
-        rocprofsys_init_tooling_hidden();
+    if(!tim::settings::enabled()) return nullptr;
 
     if(!rocprofsys::config::get_use_rocm())
     {
