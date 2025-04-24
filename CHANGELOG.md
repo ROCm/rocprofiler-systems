@@ -14,7 +14,7 @@ Full documentation for ROCm Systems Profiler is available at [https://rocm.docs.
 
 ### Resolved issues
 
-- Fixed an issue where enabling the RCCL backend caused application to stop responding.
+- Fixed an issue where enabling the RCCL backend caused the application to stop responding.
 
 ## ROCm Systems Profiler 1.0.0 for ROCm 6.4.1
 
