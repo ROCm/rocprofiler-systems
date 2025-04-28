@@ -268,15 +268,23 @@ post_process(tim::manager* _timemory_manager, bool& _perfetto_output_error)
         {
             auto _output_folder = filepath::dirname(_filename);
             auto _cwd           = filepath::get_cwd();
-            auto _script_path =
-                rocprofsys::common::join("/", _cwd, "share", "rocprofiler-systems", "bin",
-                                         "merge-multiprocess-output.sh");
+            auto _exe           = std::string_view{ realpath("/proc/self/exe", nullptr) };
+            auto _script_path   = std::string{ "merge-multiprocess-output.sh" };
+
+            auto _script_dir = get_env("ROCPROFSYS_SHARE_PATH", std::string{}, false);
+            if(!_script_dir.empty())
+            {
+                _script_path = rocprofsys::common::join("/", _script_dir, _script_path);
+            }
+
             auto _command = _script_path + " '" + _output_folder + "'";
 
-            std::cout << "Executing merge-multiprocess-output.sh with folder path: "
-                      << _output_folder << std::endl;
-            std::cout << "Script path: " << _script_path << std::endl;
-            std::cout << "Command: " << _command << std::endl;
+            std::cout << std::endl;
+            std::cout << "_cwd: " << _cwd << std::endl;
+            std::cout << "_exe path: " << _exe << std::endl;
+            std::cout << "_script_dir: " << _script_dir << std::endl;
+            std::cout << "perfetto output folder: " << _output_folder << std::endl;
+            std::cout << "Executing: " << _command << std::endl;
 
             // Test that the script exists
             if(!filepath::exists(_script_path))
@@ -288,15 +296,11 @@ post_process(tim::manager* _timemory_manager, bool& _perfetto_output_error)
             int result = system(_command.c_str());
             if(result != 0)
             {
-                ROCPROFSYS_VERBOSE(0,
-                                   "Failed to execute merge-multiprocess-output.sh with "
-                                   "folder path: %s\n",
-                                   _output_folder.c_str());
+                ROCPROFSYS_VERBOSE(0, "Failed to execute: %s.\n", _command.c_str());
             }
             else
             {
-                ROCPROFSYS_VERBOSE(
-                    0, "Successfully executed merge-multiprocess-output.sh.\n");
+                ROCPROFSYS_VERBOSE(0, "Successfully executed %s.\n", _command.c_str());
             }
         }
     }
