@@ -248,13 +248,13 @@ target_link_libraries(rocprofiler-systems-elfutils INTERFACE ${ElfUtils_LIBRARIE
 # Dyninst
 #
 # ----------------------------------------------------------------------------------------#
-
+include(DyninstExternals)
 if(ROCPROFSYS_BUILD_DYNINST)
     rocprofiler_systems_checkout_git_submodule(
         RELATIVE_PATH external/dyninst
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        REPO_URL https://github.com/jrmadsen/dyninst.git
-        REPO_BRANCH omnitrace)
+        REPO_URL https://github.com/ROCm/dyninst.git
+        REPO_BRANCH dyninst_13)
 
     set(DYNINST_OPTION_PREFIX ON)
     set(DYNINST_BUILD_DOCS OFF)
@@ -326,6 +326,25 @@ if(ROCPROFSYS_BUILD_DYNINST)
                 COMPONENT dyninst
                 PUBLIC_HEADER
                     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/dyninst)
+        endif()
+    endforeach()
+
+    foreach(
+        _LIB
+        common
+        dynDwarf
+        dynElf
+        dyninstAPI
+        instructionAPI
+        parseAPI
+        patchAPI
+        pcontrol
+        stackwalk
+        symtabAPI)
+        if(TARGET ${_LIB})
+        if(NOT TARGET Dyninst::${_LIB})
+                add_library(Dyninst::${_LIB} ALIAS ${_LIB})
+            endif()
         endif()
     endforeach()
 
