@@ -263,52 +263,53 @@ post_process(tim::manager* _timemory_manager, bool& _perfetto_output_error)
                 _timemory_manager->add_file_output("protobuf", "perfetto", _filename);
         }
         ofs.close();
-
-        if(dmp::rank() == 0)
-        {
-            auto _output_folder = filepath::dirname(_filename);
-            auto _cwd           = filepath::get_cwd();
-            auto _exe           = std::string_view{ realpath("/proc/self/exe", nullptr) };
-            auto _script_path   = std::string{ "rocprof-sys-merge-output.sh" };
-
-            auto _script_dir = get_env("ROCPROFSYS_SHARE_PATH", std::string{}, false);
-            if(!_script_dir.empty())
-            {
-                _script_path = rocprofsys::common::join("/", _script_dir, _script_path);
-            }
-
-            auto _command = _script_path + " '" + _output_folder + "'";
-
-            std::cout << std::endl;
-            std::cout << "_cwd: " << _cwd << std::endl;
-            std::cout << "_exe path: " << _exe << std::endl;
-            std::cout << "_script_dir: " << _script_dir << std::endl;
-            std::cout << "perfetto output folder: " << _output_folder << std::endl;
-            std::cout << "Executing: " << _command << std::endl;
-
-            // Test that the script exists
-            if(!filepath::exists(_script_path))
-            {
-                ROCPROFSYS_VERBOSE(0, "Script not found: %s\n", _script_path.c_str());
-            }
-
-            // Execute the merge script
-            int result = system(_command.c_str());
-            if(result != 0)
-            {
-                ROCPROFSYS_VERBOSE(0, "Failed to execute: %s.\n", _command.c_str());
-            }
-            else
-            {
-                ROCPROFSYS_VERBOSE(0, "Successfully executed %s.\n", _command.c_str());
-            }
-        }
     }
     else if(dmp::rank() == 0)
     {
         ROCPROFSYS_VERBOSE(
             0, "perfetto trace data is empty. File '%s' will not be written...\n",
             _filename.c_str());
+    }
+
+    // Merge the output files, if rank 0
+    if (dmp::rank() == 0)
+    {
+        auto _output_folder = filepath::dirname(_filename);
+        auto _script_path   = std::string{ "rocprof-sys-merge-output.sh" };
+        auto _script_dir    = get_env("ROCPROFSYS_SHARE_PATH", std::string{}, false);
+
+        if(!_script_dir.empty())
+        {
+            _script_path = rocprofsys::common::join("/", _script_dir, _script_path);
+        }
+
+        std::cout << std::endl;
+        std::cout << "_output_folder: " << _output_folder << std::endl;
+        std::cout << "_script_path: " << _script_path << std::endl;
+        std::cout << "_script_dir: " << _script_dir << std::endl;
+        std::cout << std::endl;
+
+        // Test that the script exists
+        if(!filepath::exists(_script_path))
+        {
+            ROCPROFSYS_VERBOSE(0, "Script not found: %s\n", _script_path.c_str());
+        }
+        else
+        {
+            auto _command = _script_path + " '" + _output_folder + "'";
+
+            // Execute the merge script
+            int result = system(_command.c_str());
+
+            if(result != 0)
+            {
+                ROCPROFSYS_VERBOSE(0, "Failed to execute: %s\n", _command.c_str());
+            }
+            else
+            {
+                ROCPROFSYS_VERBOSE(0, "Successfully executed: %s\n", _command.c_str());
+            }
+        }
     }
 
     auto& _tmp_file = get_perfetto_tmp_file();
