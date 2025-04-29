@@ -31,7 +31,6 @@ endif()
 set(TPL_STAGING_PREFIX "${PROJECT_BINARY_DIR}/tpls" 
     CACHE PATH "Third-party library build-tree install prefix")
 file(MAKE_DIRECTORY "${TPL_STAGING_PREFIX}")
-file(MAKE_DIRECTORY "${TPL_STAGING_PREFIX}/lib")
 file(MAKE_DIRECTORY "${TPL_STAGING_PREFIX}/include")
 
 
@@ -74,7 +73,7 @@ endif()
 
 # Final dependency check
 if(NOT TARGET external-prebuild)
-    message(WARNING "No dyninst external dependencies found. Build may fail.")
+    message(WARNING "Not all dyninst external dependencies found. Build may fail.")
 endif()
 
 # Create a dummy target to ensure external dependencies are fully built
