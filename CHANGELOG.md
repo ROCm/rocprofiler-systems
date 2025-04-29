@@ -2,11 +2,15 @@
 
 Full documentation for ROCm Systems Profiler is available at [https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/](https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/).
 
-## ROCm Systems Profiler 1.0.0 for ROCm 6.4.1
+## ROCm Systems Profiler 1.0.1 for ROCm 6.4.1
 
-## Added
+### Added
 
 - Added a "how-to" document for network performance profiling for standard Network Interface Cards (NICs).
+
+### Resolved issues
+
+- Fixed a build issue with Dyninst on GCC 13.
 
 ## ROCm Systems Profiler 1.0.0 for ROCm 6.4
 
