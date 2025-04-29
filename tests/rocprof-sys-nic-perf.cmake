@@ -39,8 +39,7 @@ set(_nic_perf_environment
     "ROCPROFSYS_TIMEMORY_COMPONENTS=wall_clock,papi_array,network_stats"
     "ROCPROFSYS_NETWORK_INTERFACE=${_network_interface}"
     "ROCPROFSYS_PAPI_EVENTS=net:::${_network_interface}:tx:byte net:::${_network_interface}:rx:byte net:::${_network_interface}:rx:packet net:::${_network_interface}:tx:packet"
-    "ROCPROFSYS_SAMPLING_DELAY=0.05"
-    )
+    "ROCPROFSYS_SAMPLING_DELAY=0.05")
 
 set(_download_url
     "https://github.com/ROCm/rocprofiler-systems/releases/download/rocm-6.3.1/rocprofiler-systems-0.1.0-ubuntu-20.04-ROCm-60200-PAPI-OMPT-Python3.sh"
