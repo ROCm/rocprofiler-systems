@@ -269,7 +269,7 @@ post_process(tim::manager* _timemory_manager, bool& _perfetto_output_error)
             auto _output_folder = filepath::dirname(_filename);
             auto _cwd           = filepath::get_cwd();
             auto _exe           = std::string_view{ realpath("/proc/self/exe", nullptr) };
-            auto _script_path   = std::string{ "merge-multiprocess-output.sh" };
+            auto _script_path   = std::string{ "rocprof-sys-merge-output.sh" };
 
             auto _script_dir = get_env("ROCPROFSYS_SHARE_PATH", std::string{}, false);
             if(!_script_dir.empty())

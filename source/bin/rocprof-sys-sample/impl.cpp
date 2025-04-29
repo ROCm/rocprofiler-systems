@@ -161,7 +161,7 @@ get_internal_share_path(void)
     if(_pos != std::string_view::npos) _dir = _exe.substr(0, _pos);
 
     auto _script_dir = get_realpath(
-        rocprofsys::common::join("/", _dir, "..", "share", "rocprofiler-systems", "bin"));
+        rocprofsys::common::join("/", _dir, "..", "libexec", "rocprofiler-systems"));
     std::cout << "[DFG] dir: " << _dir << std::endl;
     std::cout << "[DFG] script_dir: " << _script_dir << std::endl;
 
