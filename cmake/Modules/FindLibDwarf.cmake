@@ -24,8 +24,6 @@
 #
 # ===================================================================================
 
-include(DyninstSystemPaths)
-
 # Non-standard subdirectories to search
 set(_path_suffixes libdw libdwarf elfutils)
 

@@ -31,6 +31,10 @@ include_guard(GLOBAL)
 # always provide Dyninst::ElfUtils even if it is a dummy
 ROCPROFILER_SYSTEMS_ADD_INTERFACE_LIBRARY(ElfUtils "ElfUtils interface library")
 
+if(NOT BUILD_ELFUTILS)
+    find_package(Elfutils)
+endif()
+
 if(LibElf_FOUND
    AND LibDwarf_FOUND
    AND NOT ENABLE_DEBUGINFOD)
