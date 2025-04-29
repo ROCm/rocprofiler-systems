@@ -50,7 +50,7 @@ std::string
 get_internal_libpath(const std::string& _lib);
 
 std::string
-get_internal_share_path(void);
+get_internal_script_path(void);
 
 template <typename Tp>
 void

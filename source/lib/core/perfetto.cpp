@@ -272,11 +272,11 @@ post_process(tim::manager* _timemory_manager, bool& _perfetto_output_error)
     }
 
     // Merge the output files, if rank 0
-    if (dmp::rank() == 0)
+    if(dmp::rank() == 0)
     {
         auto _output_folder = filepath::dirname(_filename);
         auto _script_path   = std::string{ "rocprof-sys-merge-output.sh" };
-        auto _script_dir    = get_env("ROCPROFSYS_SHARE_PATH", std::string{}, false);
+        auto _script_dir    = get_env("ROCPROFSYS_SCRIPT_PATH", std::string{}, false);
 
         if(!_script_dir.empty())
         {
