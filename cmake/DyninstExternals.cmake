@@ -105,3 +105,17 @@ if(NOT TARGET Dyninst::LibIberty AND TARGET LibIberty)
     set_target_properties(Dyninst::LibIberty PROPERTIES INTERFACE_LINK_LIBRARIES LibIberty)
     message(STATUS "Created imported target Dyninst::LibIberty linked to LibIberty")
 endif()
+
+# for packaging
+install(
+    DIRECTORY ${TPL_STAGING_PREFIX}/lib/
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}
+    FILES_MATCHING
+    PATTERN "*${CMAKE_SHARED_LIBRARY_SUFFIX}*"
+    PATTERN "*${CMAKE_STATIC_LIBRARY_SUFFIX}*"
+    PATTERN "*.so*"
+    PATTERN "*.a*"
+    PATTERN "*.dylib*"
+    PATTERN "*.dll*"
+    PATTERN "*.lib*"
+)
