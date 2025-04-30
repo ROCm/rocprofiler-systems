@@ -3,29 +3,21 @@ include(MacroUtilities)
 # Set BUILD_BOOST to ON if ROCPROFSYS_BUILD_BOOST is ON
 if(ROCPROFSYS_BUILD_BOOST)
     ROCPROFILER_SYSTEMS_ADD_OPTION(BUILD_BOOST "Enable building Boost internally" ON)
-else()
-    ROCPROFILER_SYSTEMS_ADD_OPTION(BUILD_BOOST "Enable building Boost internally" OFF)
 endif()
 
 # Set BUILD_TBB to ON if ROCPROFSYS_BUILD_TBB is ON
 if(ROCPROFSYS_BUILD_TBB)
     ROCPROFILER_SYSTEMS_ADD_OPTION(BUILD_TBB "Enable building TBB internally" ON)
-else()
-    ROCPROFILER_SYSTEMS_ADD_OPTION(BUILD_TBB "Enable building TBB internally" OFF)
 endif()
 
 # Set BUILD_ELFUTILS to ON if ROCPROFSYS_BUILD_ELFUTILS is ON
 if(ROCPROFSYS_BUILD_ELFUTILS)
     ROCPROFILER_SYSTEMS_ADD_OPTION(BUILD_ELFUTILS "Enable building elfutils internally" ON)
-else()
-    ROCPROFILER_SYSTEMS_ADD_OPTION(BUILD_ELFUTILS "Enable building elfutils internally" OFF)
 endif()
 
 # Set BUILD_LIBIBERTY to ON if ROCPROFSYS_BUILD_LIBIBERTY is ON
 if(ROCPROFSYS_BUILD_LIBIBERTY)
     ROCPROFILER_SYSTEMS_ADD_OPTION(BUILD_LIBIBERTY "Enable building libiberty internally" ON)
-else()
-    ROCPROFILER_SYSTEMS_ADD_OPTION(BUILD_LIBIBERTY "Enable building libiberty internally" OFF)
 endif()
 
 set(TPL_STAGING_PREFIX "${PROJECT_BINARY_DIR}/tpls" 
