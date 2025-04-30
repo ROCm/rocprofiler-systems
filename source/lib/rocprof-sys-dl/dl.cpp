@@ -369,10 +369,6 @@ struct ROCPROFSYS_INTERNAL_API indirect
         ROCPROFSYS_DLSYM(kokkosp_dual_view_modify_f, m_omnihandle,
                          "kokkosp_dual_view_modify");
 
-#if ROCPROFSYS_USE_ROCM > 0
-        ROCPROFSYS_DLSYM(rocprofiler_configure_f, m_omnihandle, "rocprofiler_configure");
-#endif
-
 #if ROCPROFSYS_USE_OMPT == 0
         _warn_verbose = 5;
 #else
@@ -462,11 +458,6 @@ public:
     void (*kokkosp_profile_event_f)(const char*)                              = nullptr;
     void (*kokkosp_dual_view_sync_f)(const char*, const void* const, bool)    = nullptr;
     void (*kokkosp_dual_view_modify_f)(const char*, const void* const, bool)  = nullptr;
-
-#if ROCPROFSYS_USE_ROCM > 0
-    rocprofiler_tool_configure_result_t* (*rocprofiler_configure_f)(
-        uint32_t, const char*, uint32_t, rocprofiler_client_id_t*) = nullptr;
-#endif
 
     // OpenMP functions
 #if defined(ROCPROFSYS_USE_OMPT) && ROCPROFSYS_USE_OMPT > 0
@@ -1067,22 +1058,6 @@ extern "C"
         return ROCPROFSYS_DL_INVOKE(get_indirect().kokkosp_dual_view_modify_f, label,
                                     data, is_device);
     }
-
-    //----------------------------------------------------------------------------------//
-    //
-    //      ROCm
-    //
-    //----------------------------------------------------------------------------------//
-
-#if ROCPROFSYS_USE_ROCM > 0
-    rocprofiler_tool_configure_result_t* rocprofiler_configure(
-        uint32_t version, const char* runtime_version, uint32_t priority,
-        rocprofiler_client_id_t* client_id)
-    {
-        return ROCPROFSYS_DL_INVOKE(get_indirect().rocprofiler_configure_f, version,
-                                    runtime_version, priority, client_id);
-    }
-#endif
 
     //----------------------------------------------------------------------------------//
     //

@@ -70,6 +70,10 @@
 #include <unordered_map>
 #include <vector>
 
+extern "C" rocprofiler_tool_configure_result_t*
+rocprofiler_configure_(uint32_t version, const char* runtime_version, uint32_t priority,
+                      rocprofiler_client_id_t* id);
+
 namespace rocprofsys
 {
 namespace rocprofiler_sdk
@@ -1221,7 +1225,7 @@ setup()
     if(int status = 0;
        rocprofiler_is_initialized(&status) == ROCPROFILER_STATUS_SUCCESS && status == 0)
     {
-        ROCPROFILER_CALL(rocprofiler_force_configure(&rocprofiler_configure));
+        ROCPROFILER_CALL(rocprofiler_force_configure(&rocprofiler_configure_));
     }
 }
 
@@ -1291,7 +1295,7 @@ get_rocm_events_info()
 }  // namespace rocprofsys
 
 extern "C" rocprofiler_tool_configure_result_t*
-rocprofiler_configure(uint32_t version, const char* runtime_version, uint32_t priority,
+rocprofiler_configure_(uint32_t version, const char* runtime_version, uint32_t priority,
                       rocprofiler_client_id_t* id)
 {
     // only activate once

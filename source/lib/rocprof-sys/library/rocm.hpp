@@ -64,7 +64,7 @@ extern "C"
                                                   uint32_t    priority,
                                                   rocprofiler_client_id_t* client_id);
 
-    rocprofiler_tool_configure_result_t* rocprofiler_configure(
+    rocprofiler_tool_configure_result_t* rocprofiler_configure_(
         uint32_t version, const char* runtime_version, uint32_t priority,
         rocprofiler_client_id_t* client_id) ROCPROFSYS_PUBLIC_API;
 }
