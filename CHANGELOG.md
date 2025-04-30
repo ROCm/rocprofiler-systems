@@ -6,39 +6,37 @@ Full documentation for ROCm Systems Profiler is available at [https://rocm.docs.
 
 ### Added
 
-- Added a "how-to" document for network performance profiling for standard Network Interface Cards (NICs).
+- How-to document for network performance profiling for standard Network Interface Cards (NICs).
 
 ### Resolved issues
 
 - Fixed a build issue with Dyninst on GCC 13.
 
-## ROCm Systems Profiler 1.0.0 for ROCm 6.4
+## ROCm Systems Profiler 1.0.0 for ROCm 6.4.0
 
 ### Added
 
 - Support for VA-API and rocDecode tracing.
 
-- Aggregation MPI data collected across distributed nodes and ranks. The data is concatenated into a single proto file.
+- Aggregation of MPI data collected across distributed nodes and ranks. The data is concatenated into a single proto file.
 
 ### Changed
 
-- Backend refactored to use rocprofiler-sdk rather than rocprofiler and roctracer.
+- Backend refactored to use ROCprofiler-SDK rather than ROCProfiler and ROCTracer.
 
 ### Resolved issues
 
 - Fixed hardware counter summary files not being generated after profiling.
 
-- Fixed an application crash when collecting performance counters with rocprofiler.
+- Fixed an application crash when collecting performance counters with ROCProfiler.
 
 - Fixed interruption in config file generation.
 
-- Fixed segmentation fault while running rocprof-sys-instrument.
+- Fixed segmentation fault while running `rocprof-sys-instrument`.
 
-- Fixed a soft hang when running rocprof-sys-causal.
+- Fixed an issue where running `rocprof-sys-causal` or using the `-I all` option with `rocprof-sys-sample` caused the system to become non-responsive.
 
-- Fixed a hang seen when sampling multi-gpu python workloads.
-
-- Fixed a hang seen when using the `-I all` option with rocprof-sys-sample.
+- Fixed an issue where sampling multi-GPU Python workloads caused the system to stop responding.
 
 ## ROCm Systems Profiler 0.1.2 for ROCm 6.3.3
 
