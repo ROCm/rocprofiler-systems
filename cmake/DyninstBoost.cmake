@@ -65,7 +65,7 @@ set(Boost_MIN_VERSION
 
 # Enforce minimum version
 if(${Boost_MIN_VERSION} VERSION_LESS ${_boost_min_version})
-    dyninst_message(
+    ROCPROFILER_SYSTEMS_MESSAGE(
         FATAL_ERROR
         "Requested Boost-${Boost_MIN_VERSION} is less than minimum supported version (${_boost_min_version})"
         )
@@ -104,7 +104,7 @@ set(Boost_NO_SYSTEM_PATHS
 
 # A sanity check This must be done _before_ the cache variables are set
 if(PATH_BOOST AND Boost_ROOT_DIR)
-    dyninst_message(
+    ROCPROFILER_SYSTEMS_MESSAGE(
         FATAL_ERROR
         "PATH_BOOST AND Boost_ROOT_DIR both specified. Please provide only one")
 endif()
@@ -179,10 +179,10 @@ if(Boost_FOUND AND NOT BUILD_BOOST)
         ${Boost_INCLUDE_DIR}
         CACHE PATH "Boost include directory" FORCE)
 elseif(NOT Boost_FOUND AND STERILE_BUILD)
-    dyninst_message(FATAL_ERROR
+    ROCPROFILER_SYSTEMS_MESSAGE(FATAL_ERROR
                     "Boost not found and cannot be downloaded because build is sterile.")
 elseif(NOT BUILD_BOOST)
-    dyninst_message(
+    ROCPROFILER_SYSTEMS_MESSAGE(
         FATAL_ERROR
         "Boost was not found. Either configure cmake to find Boost properly or set BUILD_BOOST=ON to download and build"
         )
