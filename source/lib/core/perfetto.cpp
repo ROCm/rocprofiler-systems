@@ -283,12 +283,6 @@ post_process(tim::manager* _timemory_manager, bool& _perfetto_output_error)
             _script_path = rocprofsys::common::join("/", _script_dir, _script_path);
         }
 
-        std::cout << std::endl;
-        std::cout << "_output_folder: " << _output_folder << std::endl;
-        std::cout << "_script_path: " << _script_path << std::endl;
-        std::cout << "_script_dir: " << _script_dir << std::endl;
-        std::cout << std::endl;
-
         // Test that the script exists
         if(!filepath::exists(_script_path))
         {
