@@ -58,13 +58,13 @@ setup()
 
     // make sure the symbols are loaded to be wrapped
     dynamic_library _librccl{ "ROCPROFSYS_RCCL_LIBRARY",
-        find_library_path("librccl.so",
-                          { "ROCPROFSYS_ROCM_PATH", "ROCM_PATH" },
-                          { ROCPROFSYS_DEFAULT_ROCM_PATH }),
-        RTLD_NOW | RTLD_GLOBAL,
-        true,
-        true,
-        true };
+                              find_library_path("librccl.so",
+                                                { "ROCPROFSYS_ROCM_PATH", "ROCM_PATH" },
+                                                { ROCPROFSYS_DEFAULT_ROCM_PATH }),
+                              RTLD_NOW | RTLD_GLOBAL,
+                              true,
+                              true,
+                              true };
     auto _use_data = tim::get_env("ROCPROFSYS_RCCLP_COMM_DATA", get_use_timemory());
     if(!get_use_timemory())
     {
