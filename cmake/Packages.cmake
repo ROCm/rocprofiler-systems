@@ -297,7 +297,7 @@ if(ROCPROFSYS_BUILD_DYNINST)
     set(DYNINST_TPL_INSTALL_LIB_DIR
         "${PROJECT_NAME}"
         CACHE PATH "Third-party library install-tree install library prefix" FORCE)
-        
+
     add_subdirectory(external/dyninst EXCLUDE_FROM_ALL)
     rocprofiler_systems_restore_variables(
         PIC VARIABLES CMAKE_POSITION_INDEPENDENT_CODE CMAKE_INSTALL_RPATH
@@ -350,13 +350,9 @@ if(ROCPROFSYS_BUILD_DYNINST)
         endif()
     endforeach()
 
-    # for packaging
-    #install(
-    #    DIRECTORY ${DYNINST_TPL_STAGING_PREFIX}/lib/
-    #    DESTINATION ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}
-    #    COMPONENT dyninst
-    #    FILES_MATCHING
-    #    PATTERN "*${CMAKE_SHARED_LIBRARY_SUFFIX}*")
+    # for packaging install( DIRECTORY ${DYNINST_TPL_STAGING_PREFIX}/lib/ DESTINATION
+    # ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME} COMPONENT dyninst FILES_MATCHING PATTERN
+    # "*${CMAKE_SHARED_LIBRARY_SUFFIX}*")
 
     target_link_libraries(rocprofiler-systems-dyninst INTERFACE Dyninst::Dyninst)
 
