@@ -350,13 +350,17 @@ if(ROCPROFSYS_BUILD_DYNINST)
         endif()
     endforeach()
 
-    # for packaging install( DIRECTORY ${DYNINST_TPL_STAGING_PREFIX}/lib/ DESTINATION
-    # ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME} COMPONENT dyninst FILES_MATCHING PATTERN
-    # "*${CMAKE_SHARED_LIBRARY_SUFFIX}*")
-
     target_link_libraries(rocprofiler-systems-dyninst INTERFACE Dyninst::Dyninst)
 
 else()
+    # Find Boost before finding Dyninst
+    find_package(Boost)
+    if(NOT TARGET Dyninst::Boost_headers)
+        add_library(Dyninst::Boost_headers INTERFACE IMPORTED)
+        target_include_directories(Dyninst::Boost_headers SYSTEM
+                                   INTERFACE ${Boost_INCLUDE_DIRS})
+    endif()
+
     find_package(Dyninst ${rocprofiler_systems_FIND_QUIETLY} REQUIRED
                  COMPONENTS dyninstAPI parseAPI instructionAPI symtabAPI)
 
