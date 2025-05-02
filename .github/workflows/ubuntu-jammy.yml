@@ -126,6 +126,11 @@ jobs:
           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
           -DCMAKE_INSTALL_PREFIX=/opt/rocprofiler-systems-dev
           -DROCPROFSYS_BUILD_TESTING=ON
+          -DROCPROFSYS_BUILD_DYNINST=ON
+          -DROCPROFSYS_BUILD_BOOST=ON
+          -DROCPROFSYS_BUILD_TBB=ON
+          -DROCPROFSYS_BUILD_ELFUTILS=ON
+          -DROCPROFSYS_BUILD_LIBIBERTY=ON
           -DROCPROFSYS_USE_MPI=${{ matrix.mpi }}
           -DROCPROFSYS_USE_ROCM=${{ matrix.rocm }}
           -DROCPROFSYS_USE_OMPT=${{ matrix.ompt }}
