@@ -122,6 +122,8 @@ test-install()
     verbose-run rocprof-sys-avail --help
     verbose-run rocprof-sys-avail --all
     if [ -d "${1}/lib/python/site-packages/rocprofsys" ]; then
+        verbose-run python3 --version
+        verbose-run which python3
         verbose-run rocprof-sys-python --help
     fi
 }
