@@ -34,7 +34,7 @@
 include_guard(GLOBAL)
 
 # always provide Dyninst::TBB even if it is a dummy
-ROCPROFILER_SYSTEMS_ADD_INTERFACE_LIBRARY(TBB "Threading Building Blocks")
+rocprofiler_systems_add_interface_library(TBB "Threading Building Blocks")
 
 if(TBB_FOUND)
     return()
@@ -110,22 +110,22 @@ if(TBB_FOUND)
         ${TBB_LIBRARIES}
         CACHE FILEPATH "TBB library files" FORCE)
 elseif(STERILE_BUILD)
-    ROCPROFILER_SYSTEMS_MESSAGE(FATAL_ERROR
-                    "TBB not found and cannot be downloaded because build is sterile.")
+    rocprofiler_systems_message(
+        FATAL_ERROR "TBB not found and cannot be downloaded because build is sterile.")
 elseif(NOT BUILD_TBB)
-    ROCPROFILER_SYSTEMS_MESSAGE(
+    rocprofiler_systems_message(
         FATAL_ERROR
         "TBB was not found. Either configure cmake to find TBB properly or set BUILD_TBB=ON to download and build"
         )
 else()
     # If we didn't find a suitable version on the system, then download one from the web
-    ROCPROFILER_SYSTEMS_MESSAGE(STATUS "${ThreadingBuildingBlocks_ERROR_REASON}")
-    ROCPROFILER_SYSTEMS_MESSAGE(STATUS
-                    "Attempting to build TBB(${TBB_MIN_VERSION}) as external project")
+    rocprofiler_systems_message(STATUS "${ThreadingBuildingBlocks_ERROR_REASON}")
+    rocprofiler_systems_message(
+        STATUS "Attempting to build TBB(${TBB_MIN_VERSION}) as external project")
 
     if(NOT UNIX)
-        ROCPROFILER_SYSTEMS_MESSAGE(FATAL_ERROR
-                        "Building TBB from source is not supported on this platform")
+        rocprofiler_systems_message(
+            FATAL_ERROR "Building TBB from source is not supported on this platform")
     endif()
 
     set(TBB_ROOT_DIR
@@ -253,7 +253,7 @@ target_compile_definitions(TBB INTERFACE ${TBB_DEFINITIONS})
 target_link_directories(TBB INTERFACE ${TBB_LIBRARY_DIRS})
 target_link_libraries(TBB INTERFACE ${TBB_LIBRARIES})
 
-ROCPROFILER_SYSTEMS_MESSAGE(STATUS "TBB include directory: ${TBB_INCLUDE_DIRS}")
-ROCPROFILER_SYSTEMS_MESSAGE(STATUS "TBB library directory: ${TBB_LIBRARY_DIRS}")
-ROCPROFILER_SYSTEMS_MESSAGE(STATUS "TBB libraries: ${TBB_LIBRARIES}")
-ROCPROFILER_SYSTEMS_MESSAGE(STATUS "TBB definitions: ${TBB_DEFINITIONS}")
+rocprofiler_systems_message(STATUS "TBB include directory: ${TBB_INCLUDE_DIRS}")
+rocprofiler_systems_message(STATUS "TBB library directory: ${TBB_LIBRARY_DIRS}")
+rocprofiler_systems_message(STATUS "TBB libraries: ${TBB_LIBRARIES}")
+rocprofiler_systems_message(STATUS "TBB definitions: ${TBB_DEFINITIONS}")

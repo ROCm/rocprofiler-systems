@@ -2,37 +2,38 @@ include(MacroUtilities)
 
 # Set BUILD_BOOST to ON if ROCPROFSYS_BUILD_BOOST is ON
 if(ROCPROFSYS_BUILD_BOOST)
-    ROCPROFILER_SYSTEMS_ADD_OPTION(BUILD_BOOST "Enable building Boost internally" ON)
+    rocprofiler_systems_add_option(BUILD_BOOST "Enable building Boost internally" ON)
 endif()
 
 # Set BUILD_TBB to ON if ROCPROFSYS_BUILD_TBB is ON
 if(ROCPROFSYS_BUILD_TBB)
-    ROCPROFILER_SYSTEMS_ADD_OPTION(BUILD_TBB "Enable building TBB internally" ON)
+    rocprofiler_systems_add_option(BUILD_TBB "Enable building TBB internally" ON)
 endif()
 
 # Set BUILD_ELFUTILS to ON if ROCPROFSYS_BUILD_ELFUTILS is ON
 if(ROCPROFSYS_BUILD_ELFUTILS)
-    ROCPROFILER_SYSTEMS_ADD_OPTION(BUILD_ELFUTILS "Enable building elfutils internally" ON)
+    rocprofiler_systems_add_option(BUILD_ELFUTILS "Enable building elfutils internally"
+                                   ON)
 endif()
 
 # Set BUILD_LIBIBERTY to ON if ROCPROFSYS_BUILD_LIBIBERTY is ON
 if(ROCPROFSYS_BUILD_LIBIBERTY)
-    ROCPROFILER_SYSTEMS_ADD_OPTION(BUILD_LIBIBERTY "Enable building libiberty internally" ON)
+    rocprofiler_systems_add_option(BUILD_LIBIBERTY "Enable building libiberty internally"
+                                   ON)
 endif()
 
-set(TPL_STAGING_PREFIX "${PROJECT_BINARY_DIR}/tpls" 
+set(TPL_STAGING_PREFIX
+    "${PROJECT_BINARY_DIR}/tpls"
     CACHE PATH "Third-party library build-tree install prefix")
 file(MAKE_DIRECTORY "${TPL_STAGING_PREFIX}")
 file(MAKE_DIRECTORY "${TPL_STAGING_PREFIX}/include")
-
 
 # Add external dependencies to be built
 include(DyninstBoost)
 if(TARGET Boost-External)
     # Make Boost build serially
-    set_target_properties(Boost-External PROPERTIES
-        JOB_POOL_COMPILE external_deps_pool
-        JOB_POOL_LINK external_deps_pool)
+    set_target_properties(Boost-External PROPERTIES JOB_POOL_COMPILE external_deps_pool
+                                                    JOB_POOL_LINK external_deps_pool)
     # Create a prebuild target that depends on Boost
     add_custom_target(external-prebuild)
     add_dependencies(external-prebuild Boost-External)
@@ -41,25 +42,23 @@ endif()
 include(DyninstTBB)
 if(TARGET TBB-External AND TARGET external-prebuild)
     # Make TBB build serially and wait for Boost
-    set_target_properties(TBB-External PROPERTIES
-        JOB_POOL_COMPILE external_deps_pool
-        JOB_POOL_LINK external_deps_pool)
+    set_target_properties(TBB-External PROPERTIES JOB_POOL_COMPILE external_deps_pool
+                                                  JOB_POOL_LINK external_deps_pool)
     add_dependencies(external-prebuild TBB-External)
 endif()
 
 include(DyninstElfUtils)
 if(TARGET ElfUtils-External AND TARGET external-prebuild)
-    set_target_properties(ElfUtils-External PROPERTIES
-        JOB_POOL_COMPILE external_deps_pool
-        JOB_POOL_LINK external_deps_pool)
+    set_target_properties(ElfUtils-External PROPERTIES JOB_POOL_COMPILE external_deps_pool
+                                                       JOB_POOL_LINK external_deps_pool)
     add_dependencies(external-prebuild ElfUtils-External)
 endif()
 
 include(DyninstLibIberty)
 if(TARGET LibIberty-External AND TARGET external-prebuild)
-    set_target_properties(LibIberty-External PROPERTIES
-        JOB_POOL_COMPILE external_deps_pool
-        JOB_POOL_LINK external_deps_pool)
+    set_target_properties(
+        LibIberty-External PROPERTIES JOB_POOL_COMPILE external_deps_pool
+                                      JOB_POOL_LINK external_deps_pool)
     add_dependencies(external-prebuild LibIberty-External)
 endif()
 
@@ -94,7 +93,8 @@ endif()
 
 if(NOT TARGET Dyninst::LibIberty AND TARGET LibIberty)
     add_library(Dyninst::LibIberty INTERFACE IMPORTED)
-    set_target_properties(Dyninst::LibIberty PROPERTIES INTERFACE_LINK_LIBRARIES LibIberty)
+    set_target_properties(Dyninst::LibIberty PROPERTIES INTERFACE_LINK_LIBRARIES
+                                                        LibIberty)
     message(STATUS "Created imported target Dyninst::LibIberty linked to LibIberty")
 endif()
 
@@ -109,5 +109,4 @@ install(
     PATTERN "*.a*"
     PATTERN "*.dylib*"
     PATTERN "*.dll*"
-    PATTERN "*.lib*"
-)
+    PATTERN "*.lib*")

@@ -22,7 +22,7 @@
 include_guard(GLOBAL)
 
 # always provide Dyninst::LibIberty even if it is empty
-ROCPROFILER_SYSTEMS_ADD_INTERFACE_LIBRARY(LibIberty "LibIberty interface library")
+rocprofiler_systems_add_interface_library(LibIberty "LibIberty interface library")
 
 if(NOT UNIX)
     return()
@@ -53,17 +53,18 @@ if(LibIberty_FOUND)
     set(_li_lib_dirs ${LibIberty_LIBRARY_DIRS})
     set(_li_libs ${LibIberty_LIBRARIES})
 elseif(STERILE_BUILD)
-        ROCPROFILER_SYSTEMS_MESSAGE(
+    rocprofiler_systems_message(
         FATAL_ERROR
         "LibIberty not found and cannot be downloaded because build is sterile.")
 elseif(NOT BUILD_LIBIBERTY)
-    ROCPROFILER_SYSTEMS_MESSAGE(
+    rocprofiler_systems_message(
         FATAL_ERROR
         "LibIberty was not found. Either configure cmake to find TBB properly or set BUILD_LIBIBERTY=ON to download and build"
         )
 else()
-    ROCPROFILER_SYSTEMS_MESSAGE(STATUS "${LibIberty_ERROR_REASON}")
-    ROCPROFILER_SYSTEMS_MESSAGE(STATUS "Attempting to build LibIberty as external project")
+    rocprofiler_systems_message(STATUS "${LibIberty_ERROR_REASON}")
+    rocprofiler_systems_message(STATUS
+                                "Attempting to build LibIberty as external project")
 
     set(_li_root ${TPL_STAGING_PREFIX})
     set(_li_inc_dirs
@@ -83,10 +84,9 @@ else()
     externalproject_add(
         LibIberty-External
         PREFIX ${PROJECT_BINARY_DIR}/binutils
-        URL
-          ${DYNINST_BINUTILS_DOWNLOAD_URL}
-          http://ftpmirror.gnu.org/gnu/binutils/binutils-2.42.tar.gz
-          http://mirrors.kernel.org/sourceware/binutils/releases/binutils-2.42.tar.gz
+        URL ${DYNINST_BINUTILS_DOWNLOAD_URL}
+            http://ftpmirror.gnu.org/gnu/binutils/binutils-2.42.tar.gz
+            http://mirrors.kernel.org/sourceware/binutils/releases/binutils-2.42.tar.gz
         BUILD_IN_SOURCE 1
         CONFIGURE_COMMAND
             ${CMAKE_COMMAND} -E env CC=${CMAKE_C_COMPILER} CFLAGS=-fPIC\ -O3
@@ -149,6 +149,6 @@ set(LibIberty_LIBRARIES
 # For backward compatibility only
 set(IBERTY_LIBRARIES ${LibIberty_LIBRARIES})
 
-ROCPROFILER_SYSTEMS_MESSAGE(STATUS "LibIberty include dirs: ${LibIberty_INCLUDE_DIRS}")
-ROCPROFILER_SYSTEMS_MESSAGE(STATUS "LibIberty library dirs: ${LibIberty_LIBRARY_DIRS}")
-ROCPROFILER_SYSTEMS_MESSAGE(STATUS "LibIberty libraries: ${LibIberty_LIBRARIES}")
+rocprofiler_systems_message(STATUS "LibIberty include dirs: ${LibIberty_INCLUDE_DIRS}")
+rocprofiler_systems_message(STATUS "LibIberty library dirs: ${LibIberty_LIBRARY_DIRS}")
+rocprofiler_systems_message(STATUS "LibIberty libraries: ${LibIberty_LIBRARIES}")

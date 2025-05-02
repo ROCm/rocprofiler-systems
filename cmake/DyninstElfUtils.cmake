@@ -29,7 +29,7 @@
 include_guard(GLOBAL)
 
 # always provide Dyninst::ElfUtils even if it is a dummy
-ROCPROFILER_SYSTEMS_ADD_INTERFACE_LIBRARY(ElfUtils "ElfUtils interface library")
+rocprofiler_systems_add_interface_library(ElfUtils "ElfUtils interface library")
 
 if(NOT BUILD_ELFUTILS)
     find_package(Elfutils)
@@ -53,7 +53,7 @@ set(ElfUtils_MIN_VERSION
     ${_min_version}
     CACHE STRING "Minimum acceptable elfutils version")
 if(${ElfUtils_MIN_VERSION} VERSION_LESS ${_min_version})
-    ROCPROFILER_SYSTEMS_MESSAGE(
+    rocprofiler_systems_message(
         FATAL_ERROR
         "Requested version ${ElfUtils_MIN_VERSION} is less than minimum supported version (${_min_version})"
         )
@@ -115,34 +115,37 @@ if(LibElf_FOUND
         set(_eu_libs ${LibElf_LIBRARIES} ${LibDwarf_LIBRARIES})
     endif()
 elseif(NOT (LibElf_FOUND AND LibDwarf_FOUND) AND STERILE_BUILD)
-    ROCPROFILER_SYSTEMS_MESSAGE(
+    rocprofiler_systems_message(
         FATAL_ERROR
         "ElfUtils not found and cannot be downloaded because build is sterile.")
 elseif(NOT BUILD_ELFUTILS)
-    ROCPROFILER_SYSTEMS_MESSAGE(
+    rocprofiler_systems_message(
         FATAL_ERROR
         "ElfUtils was not found. Either configure cmake to find ElfUtils properly or set BUILD_ELFUTILS=ON to download and build"
         )
 else()
     # If we didn't find a suitable version on the system, then download one from the web
-    ROCPROFILER_SYSTEMS_ADD_CACHE_OPTION(ELFUTILS_DOWNLOAD_VERSION "Version of elfutils to download and install" STRING "0.188")
+    rocprofiler_systems_add_cache_option(
+        ELFUTILS_DOWNLOAD_VERSION "Version of elfutils to download and install" STRING
+        "0.188")
 
     # make sure we are not downloading a version less than minimum
     if(${ELFUTILS_DOWNLOAD_VERSION} VERSION_LESS ${ElfUtils_MIN_VERSION})
-        ROCPROFILER_SYSTEMS_MESSAGE(
+        rocprofiler_systems_message(
             FATAL_ERROR
             "elfutils download version is set to ${ELFUTILS_DOWNLOAD_VERSION} but elfutils minimum version is set to ${ElfUtils_MIN_VERSION}"
             )
     endif()
 
-    ROCPROFILER_SYSTEMS_MESSAGE(STATUS "${ElfUtils_ERROR_REASON}")
-    ROCPROFILER_SYSTEMS_MESSAGE(
+    rocprofiler_systems_message(STATUS "${ElfUtils_ERROR_REASON}")
+    rocprofiler_systems_message(
         STATUS
         "Attempting to build elfutils(${ELFUTILS_DOWNLOAD_VERSION}) as external project")
 
     if(NOT (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU") OR NOT (${CMAKE_C_COMPILER_ID}
                                                              STREQUAL "GNU"))
-        ROCPROFILER_SYSTEMS_MESSAGE(FATAL_ERROR "ElfUtils will only build with the GNU compiler")
+        rocprofiler_systems_message(FATAL_ERROR
+                                    "ElfUtils will only build with the GNU compiler")
     endif()
 
     set(_eu_root ${TPL_STAGING_PREFIX})
@@ -209,6 +212,6 @@ target_compile_definitions(ElfUtils INTERFACE ${ElfUtils_DEFINITIONS})
 target_link_directories(ElfUtils INTERFACE ${ElfUtils_LIBRARY_DIRS})
 target_link_libraries(ElfUtils INTERFACE ${ElfUtils_LIBRARIES})
 
-ROCPROFILER_SYSTEMS_MESSAGE(STATUS "ElfUtils includes: ${ElfUtils_INCLUDE_DIRS}")
-ROCPROFILER_SYSTEMS_MESSAGE(STATUS "ElfUtils library dirs: ${ElfUtils_LIBRARY_DIRS}")
-ROCPROFILER_SYSTEMS_MESSAGE(STATUS "ElfUtils libraries: ${ElfUtils_LIBRARIES}")
+rocprofiler_systems_message(STATUS "ElfUtils includes: ${ElfUtils_INCLUDE_DIRS}")
+rocprofiler_systems_message(STATUS "ElfUtils library dirs: ${ElfUtils_LIBRARY_DIRS}")
+rocprofiler_systems_message(STATUS "ElfUtils libraries: ${ElfUtils_LIBRARIES}")

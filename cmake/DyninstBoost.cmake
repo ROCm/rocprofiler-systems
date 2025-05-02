@@ -45,7 +45,7 @@
 include_guard(GLOBAL)
 
 # always provide Dyninst::Boost even if it is empty
-ROCPROFILER_SYSTEMS_ADD_INTERFACE_LIBRARY(Boost "Boost interface library")
+rocprofiler_systems_add_interface_library(Boost "Boost interface library")
 
 if(NOT BUILD_BOOST)
     find_package(Boost)
@@ -65,7 +65,7 @@ set(Boost_MIN_VERSION
 
 # Enforce minimum version
 if(${Boost_MIN_VERSION} VERSION_LESS ${_boost_min_version})
-    ROCPROFILER_SYSTEMS_MESSAGE(
+    rocprofiler_systems_message(
         FATAL_ERROR
         "Requested Boost-${Boost_MIN_VERSION} is less than minimum supported version (${_boost_min_version})"
         )
@@ -104,7 +104,7 @@ set(Boost_NO_SYSTEM_PATHS
 
 # A sanity check This must be done _before_ the cache variables are set
 if(PATH_BOOST AND Boost_ROOT_DIR)
-    ROCPROFILER_SYSTEMS_MESSAGE(
+    rocprofiler_systems_message(
         FATAL_ERROR
         "PATH_BOOST AND Boost_ROOT_DIR both specified. Please provide only one")
 endif()
@@ -151,14 +151,7 @@ set(Boost_NO_BOOST_CMAKE ON)
 
 # The required Boost library components NB: These are just the ones that require
 # compilation/linking This should _not_ be a cache variable
-set(_boost_components
-    atomic
-    chrono
-    date_time
-    filesystem
-    system
-    thread
-    timer)
+set(_boost_components atomic chrono date_time filesystem system thread timer)
 
 if(NOT BUILD_BOOST)
     find_package(Boost ${Boost_MIN_VERSION} QUIET COMPONENTS ${_boost_components})
@@ -179,28 +172,30 @@ if(Boost_FOUND AND NOT BUILD_BOOST)
         ${Boost_INCLUDE_DIR}
         CACHE PATH "Boost include directory" FORCE)
 elseif(NOT Boost_FOUND AND STERILE_BUILD)
-    ROCPROFILER_SYSTEMS_MESSAGE(FATAL_ERROR
-                    "Boost not found and cannot be downloaded because build is sterile.")
+    rocprofiler_systems_message(
+        FATAL_ERROR "Boost not found and cannot be downloaded because build is sterile.")
 elseif(NOT BUILD_BOOST)
-    ROCPROFILER_SYSTEMS_MESSAGE(
+    rocprofiler_systems_message(
         FATAL_ERROR
         "Boost was not found. Either configure cmake to find Boost properly or set BUILD_BOOST=ON to download and build"
         )
 else()
-    ROCPROFILER_SYSTEMS_ADD_OPTION(BOOST_LINK_STATIC "Link to boost libraries statically" ON)
+    rocprofiler_systems_add_option(BOOST_LINK_STATIC "Link to boost libraries statically"
+                                   ON)
     # If we didn't find a suitable version on the system, then download one from the web
-    ROCPROFILER_SYSTEMS_ADD_CACHE_OPTION(BOOST_DOWNLOAD_VERSION "Version of boost to download and install" STRING "1.79.0")
+    rocprofiler_systems_add_cache_option(
+        BOOST_DOWNLOAD_VERSION "Version of boost to download and install" STRING "1.79.0")
 
     # If the user specifies a version other than BOOST_DOWNLOAD_VERSION, use that version.
     if(${BOOST_DOWNLOAD_VERSION} VERSION_LESS ${Boost_MIN_VERSION})
-        ROCPROFILER_SYSTEMS_MESSAGE(
+        rocprofiler_systems_message(
             FATAL_ERROR
             "Boost download version is set to ${BOOST_DOWNLOAD_VERSION} but Boost minimum version is set to ${Boost_MIN_VERSION}"
             )
     endif()
 
-    ROCPROFILER_SYSTEMS_MESSAGE(STATUS
-                    "Attempting to build ${BOOST_DOWNLOAD_VERSION} as external project")
+    rocprofiler_systems_message(
+        STATUS "Attempting to build ${BOOST_DOWNLOAD_VERSION} as external project")
 
     if(Boost_USE_MULTITHREADED)
         set(_boost_threading multi)
@@ -375,12 +370,11 @@ target_compile_definitions(Boost INTERFACE ${Boost_DEFINITIONS})
 target_link_directories(Boost INTERFACE ${Boost_LIBRARY_DIRS})
 target_link_libraries(Boost INTERFACE ${Boost_LIBRARIES})
 
-ROCPROFILER_SYSTEMS_MESSAGE(STATUS "Boost includes: ${Boost_INCLUDE_DIRS}")
-ROCPROFILER_SYSTEMS_MESSAGE(STATUS "Boost library dirs: ${Boost_LIBRARY_DIRS}")
-ROCPROFILER_SYSTEMS_MESSAGE(STATUS "Boost thread library: ${Boost_THREAD_LIBRARY}")
-ROCPROFILER_SYSTEMS_MESSAGE(STATUS "Boost libraries: ${Boost_LIBRARIES}")
+rocprofiler_systems_message(STATUS "Boost includes: ${Boost_INCLUDE_DIRS}")
+rocprofiler_systems_message(STATUS "Boost library dirs: ${Boost_LIBRARY_DIRS}")
+rocprofiler_systems_message(STATUS "Boost thread library: ${Boost_THREAD_LIBRARY}")
+rocprofiler_systems_message(STATUS "Boost libraries: ${Boost_LIBRARIES}")
 
 # Just the headers (effectively a simplified Boost::headers target)
 add_library(Dyninst::Boost_headers INTERFACE IMPORTED)
-target_include_directories(Dyninst::Boost_headers SYSTEM
-                            INTERFACE ${Boost_INCLUDE_DIRS})
+target_include_directories(Dyninst::Boost_headers SYSTEM INTERFACE ${Boost_INCLUDE_DIRS})
