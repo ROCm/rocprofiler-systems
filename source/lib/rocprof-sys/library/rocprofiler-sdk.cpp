@@ -832,20 +832,20 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                 auto* record = static_cast<rocprofiler_buffer_tracing_hip_api_record_t*>(
                     header->payload);
 
-                if (record->operation == ROCPROFILER_HIP_RUNTIME_API_ID_hipEventRecord)
+                if(record->operation == ROCPROFILER_HIP_RUNTIME_API_ID_hipEventRecord)
                 {
                     auto _corr_id   = record->correlation_id.internal;
                     auto _beg_ns    = record->start_timestamp;
                     auto _end_ns    = record->end_timestamp;
                     auto _thread_id = record->thread_id;
                     auto _name      = tool_data->buffered_tracing_info.at(record->kind,
-                                                                        record->operation);
+                                                                     record->operation);
 
                     if(get_use_timemory())
                     {
                         const auto& _tinfo =
                             thread_info::get(record->thread_id, SystemTID);
-                        auto _tid   = _tinfo->index_data->sequent_value;
+                        auto _tid = _tinfo->index_data->sequent_value;
 
                         auto _bundle = kernel_dispatch_bundle_t{ _name };
 
@@ -889,12 +889,12 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                 else if(record->operation ==
                         ROCPROFILER_HIP_RUNTIME_API_ID_hipEventSynchronize)
                 {
-                    auto        _corr_id   = record->correlation_id.internal;
-                    auto        _beg_ns    = record->start_timestamp;
-                    auto        _end_ns    = record->end_timestamp;
-                    auto        _thread_id = record->thread_id;
-                    auto        _name      = tool_data->buffered_tracing_info.at(record->kind,
-                                                                            record->operation);
+                    auto _corr_id   = record->correlation_id.internal;
+                    auto _beg_ns    = record->start_timestamp;
+                    auto _end_ns    = record->end_timestamp;
+                    auto _thread_id = record->thread_id;
+                    auto _name      = tool_data->buffered_tracing_info.at(record->kind,
+                                                                     record->operation);
 
                     if(get_use_timemory())
                     {
