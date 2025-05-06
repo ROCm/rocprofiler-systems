@@ -128,6 +128,7 @@ else()
     rocprofiler_systems_add_cache_option(
         ELFUTILS_DOWNLOAD_VERSION "Version of elfutils to download and install" STRING
         "0.188")
+    set(ELFUTILS_DOWNLOAD_VERSION ${ElfUtils_DOWNLOAD_VERSION})
 
     # make sure we are not downloading a version less than minimum
     if(${ELFUTILS_DOWNLOAD_VERSION} VERSION_LESS ${ElfUtils_MIN_VERSION})

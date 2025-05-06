@@ -207,7 +207,7 @@ else()
     externalproject_add(
         TBB-External
         PREFIX ${_tbb_prefix_dir}
-        URL  https://github.com/uxlfoundation/oneTBB/archive/refs/tags/2019_U9.tar.gz
+        URL https://github.com/uxlfoundation/oneTBB/archive/refs/tags/2019_U9.tar.gz
         BUILD_IN_SOURCE 1
         CONFIGURE_COMMAND ""
         BUILD_COMMAND
