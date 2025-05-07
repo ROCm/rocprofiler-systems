@@ -48,7 +48,11 @@ set(TBB_USE_DEBUG_BUILD
     CACHE BOOL "Use debug versions of TBB libraries")
 
 # Minimum version of TBB (assumes a dotted-decimal format: YYYY.XX)
-set(_tbb_min_version 2019.9)
+if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+    set(_tbb_min_version 2019.7)
+else()
+    set(_tbb_min_version 2018.6)
+endif()
 
 set(TBB_MIN_VERSION
     ${_tbb_min_version}
@@ -207,7 +211,7 @@ else()
     externalproject_add(
         TBB-External
         PREFIX ${_tbb_prefix_dir}
-        URL https://github.com/uxlfoundation/oneTBB/archive/refs/tags/2019_U9.tar.gz
+        URL https://github.com/ajanicijamd/oneTBB/archive/refs/tags/v${_tbb_ver_major}.${_tbb_ver_minor}.01.tar.gz
         BUILD_IN_SOURCE 1
         CONFIGURE_COMMAND ""
         BUILD_COMMAND
