@@ -409,9 +409,11 @@ rocprofsys_init_library_hidden()
 // - get_state() >= State::Init - so the code doesn't throw an exception
 // - rccl_initialized=false - so we don't try to initialize RCCL twice
 // - get_use_rcclp()=true - only if the environment is configured to use RCCL
+#if defined(ROCPROFSYS_USE_RCCL) && ROCPROFSYS_USE_RCCL > 0
 static void
 rccl_setup(bool postinit)
 {
+
     // Flag used to avoid initializing RCCL twice
     static bool rccl_initialized = false;
 
@@ -421,7 +423,19 @@ rccl_setup(bool postinit)
         rcclp::setup();
         rccl_initialized = true;
     }
+
 }
+#else
+static void
+rccl_setup(bool )
+{
+    // No-op if RCCL is not used
+    // This is to avoid compilation errors when RCCL is not available
+    // and the code is compiled with ROCPROFSYS_USE_RCCL > 0
+
+    // TODO: Clean this up.
+}
+#endif
 
 static void
 rocprofsys_init_library_hidden_with_rccl(bool postinit)
@@ -807,11 +821,13 @@ rocprofsys_finalize_hidden(void)
         component::vaapi_gotcha::shutdown();
     }
 
+#if defined(ROCPROFSYS_USE_RCCLP) && ROCPROFSYS_USE_RCCLP > 0
     if(get_use_rcclp())
     {
         ROCPROFSYS_VERBOSE_F(1, "Shutting down RCCLP...\n");
         rcclp::shutdown();
     }
+#endif
 
     if(get_use_ompt())
     {
