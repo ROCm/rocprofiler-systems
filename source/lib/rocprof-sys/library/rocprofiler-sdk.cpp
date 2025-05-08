@@ -866,7 +866,7 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                     {
                         auto _track_desc = [](rocprofiler_thread_id_t _tid) {
                             const auto& _tid_v = thread_info::get(_tid, SystemTID);
-                            return JOIN("", "HIP Runtime API Thread ",
+                            return JOIN("", "GPU HIP Runtime Thread ",
                                         _tid_v->index_data->sequent_value);
                         };
 
