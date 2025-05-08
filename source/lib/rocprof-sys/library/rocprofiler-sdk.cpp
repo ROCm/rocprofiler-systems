@@ -887,7 +887,7 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                                                                      _corr_id);
                                 }
                             });
-                        tracing::pop_perfetto(category::rocm_memory_copy{}, "", _track,
+                        tracing::pop_perfetto(category::rocm_hip_api{}, "", _track,
                                               _end_ns);
                     }
                 }
