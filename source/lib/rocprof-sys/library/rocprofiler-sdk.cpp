@@ -832,7 +832,12 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                 auto* record = static_cast<rocprofiler_buffer_tracing_hip_api_record_t*>(
                     header->payload);
 
-                if(record->operation == ROCPROFILER_HIP_RUNTIME_API_ID_hipEventRecord)
+                const auto _ops = std::unordered_set<int32_t>{
+                    ROCPROFILER_HIP_RUNTIME_API_ID_hipEventRecord,
+                    ROCPROFILER_HIP_RUNTIME_API_ID_hipEventSynchronize,
+                };
+                
+                if(_ops.count(record->operation) > 0)
                 {
                     auto _corr_id   = record->correlation_id.internal;
                     auto _beg_ns    = record->start_timestamp;
