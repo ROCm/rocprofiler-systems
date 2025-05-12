@@ -191,11 +191,11 @@ data::sample(uint32_t _dev_id)
 
     for(const auto& v_activity : _gpu_metrics.vcn_activity)
     {
-        if(v_activity != UINT16_MAX) m_vcn_metrics[_dev_id].push_back(v_activity);
+        if(v_activity != UINT16_MAX) m_vcn_metrics.push_back(v_activity);
     }
     for(const auto& j_activity : _gpu_metrics.jpeg_activity)
     {
-        if(j_activity != UINT16_MAX) m_jpeg_metrics[_dev_id].push_back(j_activity);
+        if(j_activity != UINT16_MAX) m_jpeg_metrics.push_back(j_activity);
     }
 
 #undef ROCPROFSYS_AMDSMI_GET
@@ -378,25 +378,15 @@ data::post_process(uint32_t _dev_id)
                                            "megabytes");
                 if(_settings.vcn_activity)
                 {
-                    for(const auto& [dev_id, metrics] : itr.m_vcn_metrics)
-                    {
-                        for(std::size_t i = 0; i < std::size(metrics); ++i)
-                        {
-                            counter_track::emplace(
-                                _dev_id, addendum_blk(i, "  VCN Activity"), "%");
-                        }
-                    }
+                    for(std::size_t i = 0; i < std::size(itr.m_vcn_metrics); ++i)
+                        counter_track::emplace(_dev_id, addendum_blk(i, "  VCN Activity"),
+                                               "%");
                 }
                 if(_settings.jpeg_activity)
                 {
-                    for(const auto& [dev_id, metrics] : itr.m_jpeg_metrics)
-                    {
-                        for(std::size_t i = 0; i < std::size(metrics); ++i)
-                        {
-                            counter_track::emplace(_dev_id,
-                                                   addendum_blk(i, "JPEG Activity"), "%");
-                        }
-                    }
+                    for(std::size_t i = 0; i < std::size(itr.m_jpeg_metrics); ++i)
+                        counter_track::emplace(_dev_id, addendum_blk(i, "JPEG Activity"),
+                                               "%");
                 }
             }
             uint64_t _ts = itr.m_ts;
@@ -429,28 +419,23 @@ data::post_process(uint32_t _dev_id)
                               counter_track::at(_dev_id, _idx.at(5)), _ts, _usage);
             if(_settings.vcn_activity)
             {
-                for(const auto& [dev_id, metrics] : itr.m_vcn_metrics)
+                uint64_t idx = _idx.at(6);
+                for(const auto& temp : itr.m_vcn_metrics)
                 {
-                    for(std::size_t i = 0; i < std::size(metrics); ++i)
-                    {
-                        double _vcn_activity = metrics[i];
-                        TRACE_COUNTER("device_vcn_activity",
-                                      counter_track::at(_dev_id, _idx.at(6) + i), _ts,
-                                      _vcn_activity);
-                    }
+                    TRACE_COUNTER("device_vcn_activity", counter_track::at(_dev_id, idx),
+                                  _ts, temp);
+                    ++idx;
                 }
             }
             if(_settings.jpeg_activity)
             {
-                for(const auto& [dev_id, metrics] : itr.m_jpeg_metrics)
+                uint64_t idx = _idx.at(7);
+                if(_settings.vcn_activity) idx += (itr.m_vcn_metrics.size() - 1);
+                for(const auto& temp : itr.m_jpeg_metrics)
                 {
-                    for(std::size_t i = 0; i < std::size(metrics); ++i)
-                    {
-                        double _jpeg_activity = metrics[i];
-                        TRACE_COUNTER("device_jpeg_activity",
-                                      counter_track::at(_dev_id, _idx.at(7) + i), _ts,
-                                      _jpeg_activity);
-                    }
+                    TRACE_COUNTER("device_jpeg_activity", counter_track::at(_dev_id, idx),
+                                  _ts, temp);
+                    ++idx;
                 }
             }
         }
@@ -541,34 +526,37 @@ setup()
     {
         for(auto itr : _devices)
         {
-            uint16_t dev_id = 0;
-            ROCPROFSYS_AMD_SMI_CALL(
-                amdsmi_get_gpu_id(gpu::get_handle_from_id(itr), &dev_id));
-            // dev_id holds the device ID of device i, upon a successful call
-
-            if(_metrics && !_metrics->empty())
+            // Enable selected metrics only
+            if((_metrics && !_metrics->empty()) && (*_metrics != "all"))
             {
                 using key_pair_t     = std::pair<std::string_view, bool&>;
                 const auto supported = std::unordered_map<std::string_view, bool&>{
-                    key_pair_t{ "busy", get_settings(dev_id).busy },
-                    key_pair_t{ "temp", get_settings(dev_id).temp },
-                    key_pair_t{ "power", get_settings(dev_id).power },
-                    key_pair_t{ "mem_usage", get_settings(dev_id).mem_usage },
-                    key_pair_t{ "vcn_activity", get_settings(dev_id).vcn_activity },
-                    key_pair_t{ "jpeg_activity", get_settings(dev_id).jpeg_activity },
+                    key_pair_t{ "busy", get_settings(itr).busy },
+                    key_pair_t{ "temp", get_settings(itr).temp },
+                    key_pair_t{ "power", get_settings(itr).power },
+                    key_pair_t{ "mem_usage", get_settings(itr).mem_usage },
+                    key_pair_t{ "vcn_activity", get_settings(itr).vcn_activity },
+                    key_pair_t{ "jpeg_activity", get_settings(itr).jpeg_activity },
                 };
 
-                get_settings(dev_id) = { false, false, false, false, false, false };
-                for(const auto& metric : tim::delimit(*_metrics, ",;:\t\n "))
-                {
-                    auto iitr = supported.find(metric);
-                    if(iitr == supported.end())
-                        ROCPROFSYS_FAIL_F("unsupported amd-smi metric: %s\n",
-                                          metric.c_str());
+                // Initialize all metrics to false
+                for(auto& it : supported)
+                    it.second = false;
 
-                    ROCPROFSYS_VERBOSE_F(1, "Enabling amd-smi metric '%s'\n",
-                                         metric.c_str());
-                    iitr->second = true;
+                // Parse list of metrics enabled by the user
+                if(*_metrics != "none")
+                {
+                    for(const auto& metric : tim::delimit(*_metrics, ",;:\t\n "))
+                    {
+                        auto iitr = supported.find(metric);
+                        if(iitr == supported.end())
+                            ROCPROFSYS_FAIL_F("unsupported amd-smi metric: %s\n",
+                                              metric.c_str());
+                        ROCPROFSYS_VERBOSE_F(
+                            1, "Enabling amd-smi metric '%s' on device [%u]\n",
+                            metric.c_str(), itr);
+                        iitr->second = true;
+                    }
                 }
             }
         }

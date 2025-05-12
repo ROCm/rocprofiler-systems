@@ -376,7 +376,7 @@ configure_file(
 
 configure_file(
     ${PROJECT_SOURCE_DIR}/scripts/merge-multiprocess-output.sh
-    ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/bin/merge-multiprocess-output.sh
+    ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBEXECDIR}/${PROJECT_NAME}/rocprof-sys-merge-output.sh
     COPYONLY)
 
 install(
@@ -398,8 +398,8 @@ install(
 
 install(
     PROGRAMS
-        ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/bin/merge-multiprocess-output.sh
-    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/bin/
+        ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBEXECDIR}/${PROJECT_NAME}/rocprof-sys-merge-output.sh
+    DESTINATION ${CMAKE_INSTALL_LIBEXECDIR}/${PROJECT_NAME}
     COMPONENT setup)
 
 # ------------------------------------------------------------------------------#
