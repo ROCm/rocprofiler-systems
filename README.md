@@ -59,11 +59,17 @@ The documentation source files reside in the [`/docs`](/docs) folder of this rep
 - HIP kernel tracing
 - HSA API tracing
 - HSA operation tracing
+- rocDecode API tracing
+- rocJPEG API tracing
 - System-level sampling (via rocm-smi)
   - Memory usage
   - Power usage
   - Temperature
   - Utilization
+  - VCN Utilization
+  - JPEG Utilization
+  
+  Note: The availability of VCN and JPEG engine utilization depends on device support for different ASICs. If unsupported, all values for VCN_ACTIVITY and JPEG_ACTIVITY will be reported as N/A in the output of `amd-smi metric --usage`.
 
 ### CPU Metrics
 

@@ -505,6 +505,14 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
                 break;
             }
 #endif
+#if(ROCPROFILER_VERSION >= 700)
+            case ROCPROFILER_CALLBACK_TRACING_ROCJPEG_API:
+            {
+                tool_tracing_callback_start(category::rocm_rocjpeg_api{}, record,
+                                            user_data, ts);
+                break;
+            }
+#endif
             case ROCPROFILER_CALLBACK_TRACING_NONE:
             case ROCPROFILER_CALLBACK_TRACING_LAST:
             case ROCPROFILER_CALLBACK_TRACING_MARKER_CONTROL_API:
@@ -584,6 +592,14 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
             case ROCPROFILER_CALLBACK_TRACING_ROCDECODE_API:
             {
                 tool_tracing_callback_stop(category::rocm_rocdecode_api{}, record,
+                                           user_data, ts, _bt_data);
+                break;
+            }
+#endif
+#if(ROCPROFILER_VERSION >= 700)
+            case ROCPROFILER_CALLBACK_TRACING_ROCJPEG_API:
+            {
+                tool_tracing_callback_stop(category::rocm_rocjpeg_api{}, record,
                                            user_data, ts, _bt_data);
                 break;
             }
@@ -1024,11 +1040,13 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
                 ROCPROFILER_CALLBACK_TRACING_HSA_FINALIZE_EXT_API,
                 ROCPROFILER_CALLBACK_TRACING_HIP_RUNTIME_API,
                 ROCPROFILER_CALLBACK_TRACING_HIP_COMPILER_API,
-#if(ROCPROFILER_VERSION_MAJOR == 0 && ROCPROFILER_VERSION_MINOR >= 6) ||                 \
-    ROCPROFILER_VERSION_MAJOR >= 1
+                ROCPROFILER_CALLBACK_TRACING_MARKER_CORE_API,
+#if(ROCPROFILER_VERSION >= 600)
                 ROCPROFILER_CALLBACK_TRACING_ROCDECODE_API,
 #endif
-                ROCPROFILER_CALLBACK_TRACING_MARKER_CORE_API
+#if(ROCPROFILER_VERSION >= 700)
+                ROCPROFILER_CALLBACK_TRACING_ROCJPEG_API,
+#endif
         })
     {
         if(_callback_domains.count(itr) > 0)
