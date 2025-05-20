@@ -140,8 +140,9 @@ std::unique_ptr<data::promise_t> data::polling_finished = {};
 data::data(uint32_t _dev_id) { sample(_dev_id); }
 
 // Add atomic to store signo
-std::atomic<int> g_last_signo{0};
-void signal_handler(int signo)
+std::atomic<int> g_last_signo{ 0 };
+void 
+signal_handler(int signo)
 {
     g_last_signo.store(signo, std::memory_order_relaxed);
 }
@@ -163,7 +164,7 @@ data::sample(uint32_t _dev_id)
     // Use the backtrace utility from library/components/backtrace.hpp
     signal(SIGUSR1, signal_handler);
     rocprofsys::component::backtrace bt;
-    bt.sample(g_last_signo.get());
+    bt.sample(g_last_signo.load());
     auto backtrace = bt.get();
     if(!backtrace.empty())
     {
@@ -311,7 +312,8 @@ data::shutdown()
     if constexpr(tim::trait::is_available<COMPONENT>::value)                             \
     {                                                                                    \
         auto* _val = BUNDLE.get<COMPONENT>();                                            \
-        if(_val) {                                                                      \
+        if(_val)                                                                         \
+        {                                                                                \
             _val->set_value(VAL);                                                        \
             _val->set_accum(TS);                                                         \
         }                                                                                \
@@ -462,7 +464,8 @@ data::post_process(uint32_t _dev_id)
             }
         }
 
-        using samp_bundle_t = tim::lightweight_tuple<sampling_gpu_busy_gfx, sampling_gpu_busy_umc,
+        using samp_bundle_t = 
+            tim::lightweight_tuple<sampling_gpu_busy_gfx, sampling_gpu_busy_umc,
                                         sampling_gpu_busy_mm, sampling_gpu_temp,
                                         sampling_gpu_power, sampling_gpu_memory>;
 
@@ -491,8 +494,8 @@ data::post_process(uint32_t _dev_id)
             bundle_v.reserve(itr.m_stack.size());
             for(const auto& s : itr.m_stack)
             {
-                std::string label = s;
-                auto& bundle = bundle_v.emplace_back(label);
+                std::string label  = s;
+                auto&   bundle     = bundle_v.emplace_back(label);
                 bundle.push();
                 bundle.start();
                 bundle.stop();
@@ -502,13 +505,16 @@ data::post_process(uint32_t _dev_id)
                     GPU_METRIC(sampling_gpu_busy_umc, bundle, _umcbusy, _ts, label);
                     GPU_METRIC(sampling_gpu_busy_mm, bundle, _mmbusy, _ts, label);
                 }
-                if(_settings.temp){
+                if(_settings.temp)
+                {
                     GPU_METRIC(sampling_gpu_temp, bundle, _temp, _ts, label);
                 }
-                if(_settings.power){
+                if(_settings.power)
+                {
                     GPU_METRIC(sampling_gpu_power, bundle, _power, _ts, label);
                 }
-                if(_settings.mem_usage){
+                if(_settings.mem_usage)
+                {
                     GPU_METRIC(sampling_gpu_memory, bundle, _usage, _ts, label);
                 }
                 bundle.pop();

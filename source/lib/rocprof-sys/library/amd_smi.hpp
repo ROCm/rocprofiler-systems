@@ -45,10 +45,10 @@
 #include <limits>
 #include <memory>
 #include <ratio>
+#include <string>
 #include <thread>
 #include <tuple>
 #include <type_traits>
-#include <string>
 
 namespace rocprofsys
 {
@@ -109,7 +109,7 @@ struct data
     mem_usage_t           m_mem_usage    = 0;
     std::vector<uint16_t> m_vcn_metrics  = {};
     std::vector<uint16_t> m_jpeg_metrics = {};
-    std::vector<std::string> m_stack = {};
+    std::vector<std::string> m_stack     = {};
 #if ROCPROFSYS_USE_ROCM > 0
     amdsmi_engine_usage_t m_busy_perc = {};
     amdsmi_power_info_t   m_power     = {};
