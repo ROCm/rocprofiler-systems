@@ -156,21 +156,29 @@ data::sample(uint32_t _dev_id)
 
     void* callstack[16];
     int frames = backtrace(callstack, 16);
-    for(int i = 0; i < frames; ++i)
-    {
-        Dl_info info;
-        if(dladdr(callstack[i], &info) && info.dli_sname)
-        {
-            int status = 0;
-            char* demangled = abi::__cxa_demangle(info.dli_sname, nullptr, nullptr, &status);
-            if(demangled && status == 0)
-                m_stack.push_back(std::string(demangled));
-            else
-                m_stack.push_back(std::string(info.dli_sname));
-            free(demangled);
+    char** symbols = backtrace_symbols(callstack, frames);
+    
+    if(symbols != nullptr) {
+        for(int i = 0; i < frames; ++i) {
+            std::string sym = symbols[i];
+            // Extract the mangled name from the backtrace symbol string
+            size_t start = sym.find('(');
+            size_t end = sym.find('+');
+            if(start != std::string::npos && end != std::string::npos) {
+                std::string mangled = sym.substr(start + 1, end - start - 1);
+                int status = 0;
+                char* demangled = abi::__cxa_demangle(mangled.c_str(), nullptr, nullptr, &status);
+                if(demangled && status == 0) {
+                    m_stack.push_back(std::string(demangled));
+                    free(demangled);
+                } else {
+                    m_stack.push_back(mangled);
+                }
+            } else {
+                m_stack.push_back(sym);
+            }
         }
-        else
-            m_stack.push_back("??");
+        free(symbols);
     }
 
 #define ROCPROFSYS_AMDSMI_GET(OPTION, FUNCTION, ...)                                     \
@@ -488,35 +496,30 @@ data::post_process(uint32_t _dev_id)
 
             std::vector<samp_bundle_t> bundle_v{};
             bundle_v.reserve(itr.m_stack.size());
-            std::string label = "??";
             for(const auto& s : itr.m_stack)
             {
-                if(s != "??")
+                std::string label = s;
+                auto& bundle = bundle_v.emplace_back(label);
+                bundle.push();
+                bundle.start();
+                bundle.stop();
+                if(_settings.busy)
                 {
-                    label = s;
-                    break;
+                    GPU_METRIC(sampling_gpu_busy_gfx, bundle, _gfxbusy, _ts, label);
+                    GPU_METRIC(sampling_gpu_busy_umc, bundle, _umcbusy, _ts, label);
+                    GPU_METRIC(sampling_gpu_busy_mm, bundle, _mmbusy, _ts, label);
                 }
+                if(_settings.temp){
+                    GPU_METRIC(sampling_gpu_temp, bundle, _temp, _ts, label);
+                }
+                if(_settings.power){
+                    GPU_METRIC(sampling_gpu_power, bundle, _power, _ts, label);
+                }
+                if(_settings.mem_usage){
+                    GPU_METRIC(sampling_gpu_memory, bundle, _usage, _ts, label);
+                }
+                bundle.pop();
             }
-
-            auto& bundle = bundle_v.emplace_back(label);
-            bundle.push();
-            bundle.start();
-            bundle.stop();
-            if(_settings.busy)
-            {
-                GPU_METRIC(sampling_gpu_busy_gfx, bundle, _gfxbusy, _ts);
-                GPU_METRIC(sampling_gpu_busy_umc, bundle, _umcbusy, _ts);
-                GPU_METRIC(sampling_gpu_busy_mm, bundle, _mmbusy, _ts);
-            }
-            if(_settings.temp){
-                GPU_METRIC(sampling_gpu_temp, bundle, _temp, _ts);            }
-            if(_settings.power){
-                GPU_METRIC(sampling_gpu_power, bundle, _power, _ts);
-            }
-            if(_settings.mem_usage){
-                GPU_METRIC(sampling_gpu_memory, bundle, _usage, _ts);
-            }
-            bundle.pop();
         }
     };
 
