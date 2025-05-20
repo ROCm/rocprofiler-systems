@@ -38,12 +38,12 @@ repos:
     rev: v11.1.0                                        # Version 11 as specified in contributor guide
     hooks:
       - id: clang-format
-        files: \.(c|cpp|h.*)$ # hpp not suported so regex needed
+        files: \.(c|cpp|h.*)$
 
   - repo: local
     hooks:
       - id: check-cmake
-        name: Check CMake
+        name: cmake-format
         entry: ./scripts/check_cmake_format.sh
         language: script
         files: (^|/)CMakeLists\.txt$
@@ -51,8 +51,8 @@ repos:
   - repo: local  
     hooks:  
       - id: check-copyright  
-        name: Check Copyright Notice  
-        require_serial: true # Slower, but prevents hook from running file multiple times
+        name: copyright-detector  
+        require_serial: true # Slightly slower, but prevents hook from running file multiple times
         entry: ./scripts/check_copyright.sh
         language: script                
         files: \.(c|h|txt|cpp|hpp|py)$ 
@@ -61,7 +61,7 @@ repos:
   # - repo: local  
   #   hooks:  
   #     - id: check-copyright-date
-  #       name: Check Copyright Date Notice
+  #       name: Check Copyright Date
   #       #Checks for if the copyright year in the staged files is up to date and displays the files with out-of-date copyright statements. 
   #       # Fails if something is out of date.
   #       # -u automatically updates copyright year
@@ -69,4 +69,3 @@ repos:
   #       language: script  
   #       files: .* 
 
-# Could add python hooks, but considering the small amount of python code in the repo, it is not worth it
