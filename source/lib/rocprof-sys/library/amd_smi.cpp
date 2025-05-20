@@ -38,9 +38,9 @@
 #include "core/gpu.hpp"
 #include "core/perfetto.hpp"
 #include "core/state.hpp"
+#include "library/components/backtrace.hpp"
 #include "library/runtime.hpp"
 #include "library/thread_info.hpp"
-#include "library/components/backtrace.hpp"
 
 #include <timemory/backends/threading.hpp>
 #include <timemory/components/timing/backends.hpp>
@@ -52,12 +52,12 @@
 #include <cassert>
 #include <chrono>
 #include <ios>
+#include <signal.h>
 #include <sstream>
 #include <stdexcept>
 #include <string>
 #include <sys/resource.h>
 #include <thread>
-#include <signal.h>
 
 #define ROCPROFSYS_AMD_SMI_CALL(...)                                                     \
     ::rocprofsys::amd_smi::check_error(__FILE__, __LINE__, __VA_ARGS__)
@@ -141,7 +141,7 @@ data::data(uint32_t _dev_id) { sample(_dev_id); }
 
 // Add atomic to store signo
 std::atomic<int> g_last_signo{ 0 };
-void 
+void
 signal_handler(int signo)
 {
     g_last_signo.store(signo, std::memory_order_relaxed);
@@ -464,10 +464,10 @@ data::post_process(uint32_t _dev_id)
             }
         }
 
-        using samp_bundle_t = 
+        using samp_bundle_t =
             tim::lightweight_tuple<sampling_gpu_busy_gfx, sampling_gpu_busy_umc,
-                                        sampling_gpu_busy_mm, sampling_gpu_temp,
-                                        sampling_gpu_power, sampling_gpu_memory>;
+                                   sampling_gpu_busy_mm, sampling_gpu_temp,
+                                   sampling_gpu_power, sampling_gpu_memory>;
 
         trait::runtime_enabled<sampling_gpu_busy_gfx>::set(_settings.busy);
         trait::runtime_enabled<sampling_gpu_busy_umc>::set(_settings.busy);
@@ -495,7 +495,7 @@ data::post_process(uint32_t _dev_id)
             for(const auto& s : itr.m_stack)
             {
                 std::string label  = s;
-                auto&   bundle     = bundle_v.emplace_back(label);
+                auto&       bundle = bundle_v.emplace_back(label);
                 bundle.push();
                 bundle.start();
                 bundle.stop();
