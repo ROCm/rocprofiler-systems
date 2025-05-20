@@ -91,7 +91,7 @@ pre-commit install
 
 Now, when you commit code to the repository you should see something like this:
 
-![A screen capture showing terminal output from a pre-commit hook](docs/data/contributing/pre-commit-hook.png)
+![A screen capture showing terminal output from a pre-commit hook](docs/data/pre-commit-hook.png)
 
 Please see the [pre-commit documentation](https://pre-commit.com/#quick-start) for additional information.
 
