@@ -56,6 +56,9 @@
 #include <string>
 #include <sys/resource.h>
 #include <thread>
+#include <cxxabi.h>
+#include <dlfcn.h>
+#include <execinfo.h>
 
 #define ROCPROFSYS_AMD_SMI_CALL(...)                                                     \
     ::rocprofsys::amd_smi::check_error(__FILE__, __LINE__, __VA_ARGS__)
@@ -150,6 +153,25 @@ data::sample(uint32_t _dev_id)
 
     m_dev_id = _dev_id;
     m_ts     = _ts;
+
+    void* callstack[16];
+    int frames = backtrace(callstack, 16);
+    for(int i = 0; i < frames; ++i)
+    {
+        Dl_info info;
+        if(dladdr(callstack[i], &info) && info.dli_sname)
+        {
+            int status = 0;
+            char* demangled = abi::__cxa_demangle(info.dli_sname, nullptr, nullptr, &status);
+            if(demangled && status == 0)
+                m_stack.push_back(std::string(demangled));
+            else
+                m_stack.push_back(std::string(info.dli_sname));
+            free(demangled);
+        }
+        else
+            m_stack.push_back("??");
+    }
 
 #define ROCPROFSYS_AMDSMI_GET(OPTION, FUNCTION, ...)                                     \
     if(OPTION)                                                                           \
@@ -284,14 +306,13 @@ data::shutdown()
     return true;
 }
 
-#define GPU_METRIC(COMPONENT, ...)                                                       \
+#define GPU_METRIC(COMPONENT, BUNDLE, VAL, TS, ...)                                      \
     if constexpr(tim::trait::is_available<COMPONENT>::value)                             \
     {                                                                                    \
-        auto* _val = _v.get<COMPONENT>();                                                \
-        if(_val)                                                                         \
-        {                                                                                \
-            _val->set_value(itr.__VA_ARGS__);                                            \
-            _val->set_accum(itr.__VA_ARGS__);                                            \
+        auto* _val = BUNDLE.get<COMPONENT>();                                            \
+        if(_val) {                                                                      \
+            _val->set_value(VAL);                                                        \
+            _val->set_accum(TS);                                                         \
         }                                                                                \
     }
 
@@ -438,6 +459,64 @@ data::post_process(uint32_t _dev_id)
                     ++idx;
                 }
             }
+        }
+
+        using samp_bundle_t = tim::lightweight_tuple<sampling_gpu_busy_gfx, sampling_gpu_busy_umc,
+                                        sampling_gpu_busy_mm, sampling_gpu_temp,
+                                        sampling_gpu_power, sampling_gpu_memory>;
+
+        trait::runtime_enabled<sampling_gpu_busy_gfx>::set(_settings.busy);
+        trait::runtime_enabled<sampling_gpu_busy_umc>::set(_settings.busy);
+        trait::runtime_enabled<sampling_gpu_busy_mm>::set(_settings.busy);
+        trait::runtime_enabled<sampling_gpu_temp>::set(_settings.temp);
+        trait::runtime_enabled<sampling_gpu_power>::set(_settings.power);
+        trait::runtime_enabled<sampling_gpu_memory>::set(_settings.mem_usage);
+
+        for(auto& itr : _amd_smi)
+        {
+            if(itr.m_dev_id != _dev_id) continue;
+
+            uint64_t _ts = itr.m_ts;
+            if(!_thread_info->is_valid_time(_ts)) continue;
+
+            double _gfxbusy = itr.m_busy_perc.gfx_activity;
+            double _umcbusy = itr.m_busy_perc.umc_activity;
+            double _mmbusy  = itr.m_busy_perc.mm_activity;
+            double _temp    = itr.m_temp;
+            double _power   = itr.m_power.current_socket_power;
+            double _usage   = itr.m_mem_usage / static_cast<double>(units::megabyte);
+
+            std::vector<samp_bundle_t> bundle_v{};
+            bundle_v.reserve(itr.m_stack.size());
+            std::string label = "??";
+            for(const auto& s : itr.m_stack)
+            {
+                if(s != "??")
+                {
+                    label = s;
+                    break;
+                }
+            }
+
+            auto& bundle = bundle_v.emplace_back(label);
+            bundle.push();
+            bundle.start();
+            bundle.stop();
+            if(_settings.busy)
+            {
+                GPU_METRIC(sampling_gpu_busy_gfx, bundle, _gfxbusy, _ts);
+                GPU_METRIC(sampling_gpu_busy_umc, bundle, _umcbusy, _ts);
+                GPU_METRIC(sampling_gpu_busy_mm, bundle, _mmbusy, _ts);
+            }
+            if(_settings.temp){
+                GPU_METRIC(sampling_gpu_temp, bundle, _temp, _ts);            }
+            if(_settings.power){
+                GPU_METRIC(sampling_gpu_power, bundle, _power, _ts);
+            }
+            if(_settings.mem_usage){
+                GPU_METRIC(sampling_gpu_memory, bundle, _usage, _ts);
+            }
+            bundle.pop();
         }
     };
 
