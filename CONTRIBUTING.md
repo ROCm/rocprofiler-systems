@@ -79,7 +79,7 @@ By creating a pull request, you agree to the statements made in the [code licens
 * Group related files together and maintain a logical hierarchy.
 * Use `clang-format-11` and `cmake-format` formatters to ensure consistency.
 
-### Using pre-commit hooks
+### Using pre-commit hooks ###
 
 Our project supports optional [*pre-commit hooks*](https://pre-commit.com/#introduction) which developers can leverage to verify formatting before publishing their code. Once enabled, any commits you propose to the repository will be automatically checked for formatting. Initial setup is as follows:
 
