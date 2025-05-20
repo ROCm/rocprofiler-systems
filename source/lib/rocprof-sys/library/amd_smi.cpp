@@ -40,6 +40,7 @@
 #include "core/state.hpp"
 #include "library/runtime.hpp"
 #include "library/thread_info.hpp"
+#include "library/components/backtrace.hpp"
 
 #include <timemory/backends/threading.hpp>
 #include <timemory/components/timing/backends.hpp>
@@ -56,9 +57,7 @@
 #include <string>
 #include <sys/resource.h>
 #include <thread>
-#include <cxxabi.h>
-#include <dlfcn.h>
-#include <execinfo.h>
+#include <signal.h>
 
 #define ROCPROFSYS_AMD_SMI_CALL(...)                                                     \
     ::rocprofsys::amd_smi::check_error(__FILE__, __LINE__, __VA_ARGS__)
@@ -140,6 +139,13 @@ std::unique_ptr<data::promise_t> data::polling_finished = {};
 
 data::data(uint32_t _dev_id) { sample(_dev_id); }
 
+// Add atomic to store signo
+std::atomic<int> g_last_signo{0};
+void signal_handler(int signo)
+{
+    g_last_signo.store(signo, std::memory_order_relaxed);
+}
+
 void
 data::sample(uint32_t _dev_id)
 {
@@ -154,31 +160,18 @@ data::sample(uint32_t _dev_id)
     m_dev_id = _dev_id;
     m_ts     = _ts;
 
-    void* callstack[16];
-    int frames = backtrace(callstack, 16);
-    char** symbols = backtrace_symbols(callstack, frames);
-    
-    if(symbols != nullptr) {
-        for(int i = 0; i < frames; ++i) {
-            std::string sym = symbols[i];
-            // Extract the mangled name from the backtrace symbol string
-            size_t start = sym.find('(');
-            size_t end = sym.find('+');
-            if(start != std::string::npos && end != std::string::npos) {
-                std::string mangled = sym.substr(start + 1, end - start - 1);
-                int status = 0;
-                char* demangled = abi::__cxa_demangle(mangled.c_str(), nullptr, nullptr, &status);
-                if(demangled && status == 0) {
-                    m_stack.push_back(std::string(demangled));
-                    free(demangled);
-                } else {
-                    m_stack.push_back(mangled);
-                }
-            } else {
-                m_stack.push_back(sym);
-            }
+    // Use the backtrace utility from library/components/backtrace.hpp
+    signal(SIGUSR1, signal_handler);
+    rocprofsys::component::backtrace bt;
+    bt.sample(g_last_signo.get());
+    auto backtrace = bt.get();
+    if(!backtrace.empty())
+    {
+        m_stack.reserve(backtrace.size());
+        for(const auto& itr : backtrace)
+        {
+            m_stack.push_back(itr.name);
         }
-        free(symbols);
     }
 
 #define ROCPROFSYS_AMDSMI_GET(OPTION, FUNCTION, ...)                                     \
