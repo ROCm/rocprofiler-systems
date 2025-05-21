@@ -27,10 +27,13 @@ if ! command -v cmake-format &> /dev/null; then
     exit 1
 fi
 
-CONFIG_FILE=".cmake-format.yaml"
-
 for file in "$@"; do
+    # Run cmake-format in-place
     cmake-format -i "$file"
+    # Check if the file has changes using git diff
+    if ! git diff --quiet -- "$file"; then
+        echo "Formatted: $file"
+    fi
 done
 
 exit 0
