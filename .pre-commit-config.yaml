@@ -44,7 +44,7 @@ repos:
     hooks:
       - id: check-cmake
         name: cmake-format
-        entry: ./scripts/check_cmake_format.sh
+        entry: ./scripts/check-cmake-format.sh
         language: script
         files: (^|/)CMakeLists\.txt$
 
@@ -53,7 +53,7 @@ repos:
       - id: check-copyright  
         name: copyright-detector  
         require_serial: true # Slightly slower, but prevents hook from running file multiple times
-        entry: ./scripts/check_copyright.sh
+        entry: ./scripts/check-copyright.sh
         language: script                
         files: \.(c|h|txt|cpp|hpp|py)$ 
         exclude: ^\.|^docs/|^examples/lulesh/|^examples/mpi/|^examples/openmp/|^external/|^cmake/
@@ -65,7 +65,7 @@ repos:
   #       #Checks for if the copyright year in the staged files is up to date and displays the files with out-of-date copyright statements. 
   #       # Fails if something is out of date.
   #       # -u automatically updates copyright year
-  #       entry: ./scripts/check_copyright.sh -u
+  #       entry: ./scripts/check-copyright.sh -u
   #       language: script  
   #       files: .* 
 
