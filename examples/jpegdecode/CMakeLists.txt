@@ -57,7 +57,7 @@ if(ROCPROFSYS_DISABLE_EXAMPLES)
     endif()
 endif()
 
-find_package(ROCJPEG QUIET)
+find_package(rocJPEG QUIET)
 find_package(rocprofiler-register QUIET)
 
 # Copy image files to build directory
