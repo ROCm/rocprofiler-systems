@@ -46,7 +46,7 @@ repos:
         name: cmake-format
         entry: ./scripts/check-cmake-format.sh
         language: script
-        files: (^|/)CMakeLists\.txt$
+        files: (^|/)(CMakeLists\.txt|.*\.cmake)$
 
   - repo: local  
     hooks:  
