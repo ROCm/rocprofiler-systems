@@ -23,7 +23,7 @@
 # THE SOFTWARE.
 
 if ! command -v cmake-format &> /dev/null; then
-    echo "cmake-format could not be found. Please install it with 'pip install cmake-format' or 'sudo apt install cmake-format'."
+    echo "cmake-format could not be found. Please install it with 'pip install cmake-format' or 'apt install cmake-format'."
     exit 1
 fi
 

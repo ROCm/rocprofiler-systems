@@ -84,10 +84,12 @@ By creating a pull request, you agree to the statements made in the [code licens
 Our project supports optional [*pre-commit hooks*](https://pre-commit.com/#introduction) which developers can leverage to verify formatting before publishing their code. Once enabled, any commits you propose to the repository will be automatically checked for formatting. Initial setup is as follows:
 
 ```console
-apt-get install pre-commit
+pip install pre-commit  # or: apt-get install pre-commit
 cd rocprofiler-systems
 pre-commit install
 ```
+
+**Note:** pre-commit version **3.0.0 or higher** is required.
 
 Now, when you commit code to the repository you should see something like this:
 
