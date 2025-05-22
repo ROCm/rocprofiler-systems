@@ -21,12 +21,10 @@
 # THE SOFTWARE.
 
 # Pre-configuration file for pre-commit hooks
-# This is optional. To run pre-commit, you need to install it and run it in the root of your repository.
-
+# This is optional. To run pre-commit, see CONTRIBUTING.md
 
 exclude: \.(svg)$ # Exclude files with these extensions
 default_stages: [pre-commit]
-fail_fast: true                        # Stop on the first failed hook.
 repos:
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -37,7 +35,7 @@ repos:
       - id: end-of-file-fixer # Fix files to have a newline at the end
 
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v11.1.0                                        # Version 11 as specified in contributor guide
+    rev: v11.1.0 # Version 11 as specified in contributor guide
     hooks:
       - id: clang-format
         files: \.(c|cpp|h.*)$
@@ -50,24 +48,24 @@ repos:
         language: script
         files: (^|/)(CMakeLists\.txt|.*\.cmake)$
 
-  - repo: local  
-    hooks:  
-      - id: check-copyright  
-        name: copyright-detector  
-        require_serial: true # Slightly slower, but prevents hook from running file multiple times
+  - repo: local
+    hooks:
+      - id: check-copyright
+        name: copyright-detector
+        require_serial: true # Slightly slower, but prevents hook running script many times
         entry: ./scripts/check-copyright.sh
-        language: script                
-        files: \.(c|h|txt|cpp|hpp|py)$ 
+        language: script
+        files: \.(c|h|txt|cpp|hpp|py)$
         exclude: ^\.|^docs/|^examples/lulesh/|^examples/mpi/|^examples/openmp/|^external/|^cmake/
 
-  # - repo: local  
-  #   hooks:  
+  # - repo: local
+  #   hooks:
   #     - id: check-copyright-date
   #       name: Check Copyright Date
-  #       #Checks for if the copyright year in the staged files is up to date and displays the files with out-of-date copyright statements. 
+  #       # Check copyright date in all files
   #       # Fails if something is out of date.
   #       # -u automatically updates copyright year
   #       entry: ./scripts/check-copyright.sh -u
-  #       language: script  
-  #       files: .* 
-
+  #       language: script
+  #       files: \.(c|h|txt|cpp|hpp|py)$
+  #       exclude: ^\.|^docs/|^examples/lulesh/|^examples/mpi/|^examples/openmp/|^external/|^cmake/

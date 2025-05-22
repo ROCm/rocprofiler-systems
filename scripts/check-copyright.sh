@@ -26,6 +26,10 @@ expected_copyright=("Copyright (c)" ".COPYRIGHT")
 files_with_missing_copyright=()
 files=("$@")
 
+if [[ "$ALLOW_MISSING_COPYRIGHT" == "1" ]]; then
+    exit 0
+fi
+
 for file in "${files[@]}"; do
     if [[ -f "$file" ]]; then
         found=0
@@ -42,30 +46,34 @@ for file in "${files[@]}"; do
 done
 
 if [ ${#files_with_missing_copyright[@]} -ne 0 ]; then
-    if [[ "$ADD_AMD_COPYRIGHT" == "1" ]]; then  
-        for file in "${files_with_missing_copyright[@]}"; do  
-            # Determine the comment style based on the file extension  
-            if [[ "$file" == *.c || "$file" == *.cpp || "$file" == *.h || "$file" == *.hpp ]]; then  
+    if [[ "$ADD_COPYRIGHT" == "1" ]]; then
+        for file in "${files_with_missing_copyright[@]}"; do
+            # Determine the comment style based on the file extension
+            if [[ "$file" == *.c || "$file" == *.cpp || "$file" == *.h || "$file" == *.hpp ]]; then
                 comS="//"
-            else   
+            else
                 comS="#"
-            fi  
+            fi
 
             # Read LICENSE file and prepend comment prefix to each line
             copyright_notice=""
             while IFS= read -r line; do
-                copyright_notice+="$comS $line"$'\n'
+                if [[ -n "$line" ]]; then
+                    copyright_notice+="$comS $line"$'\n'
+                else
+                    copyright_notice+="$comS"$'\n'
+                fi
             done < LICENSE
 
-            # Add the notice to the beginning of the file  
-            temp_file=$(mktemp)  
-            {  
+            # Add the notice to the beginning of the file
+            temp_file=$(mktemp)
+            {
                 echo -e "$copyright_notice"
-                cat "$file"  
-            } > "$temp_file"  
-            mv "$temp_file" "$file"  
-        done  
-        echo "Copyright notices added."  
+                cat "$file"
+            } > "$temp_file"
+            mv "$temp_file" "$file"
+        done
+        echo "Copyright notices added."
         exit 1
     fi
     echo "The following files are missing a valid copyright notice:"
@@ -76,10 +84,7 @@ if [ ${#files_with_missing_copyright[@]} -ne 0 ]; then
     echo ""
     echo "It may be the case that the copyright is not required by some files."
     echo "To override this check, set the environment variable ALLOW_MISSING_COPYRIGHT=1"
-    echo "To add the copyright to all files listed above, set the environment variable ADD_AMD_COPYRIGHT=1"
-    if [[ "$ALLOW_MISSING_COPYRIGHT" == "1" ]]; then
-        exit 0
-    fi
+    echo "To add the copyright to all files listed above, set the environment variable ADD_COPYRIGHT=1"
     exit 1
 fi
 
