@@ -23,7 +23,7 @@
 # Pre-configuration file for pre-commit hooks
 # This is optional. To run pre-commit, see CONTRIBUTING.md
 
-exclude: \.(svg)$ # Exclude files with these extensions
+exclude: \.(svg)$|(^|/)\.gitignore$ # Exclude files with these extensions
 default_stages: [pre-commit]
 repos:
 
