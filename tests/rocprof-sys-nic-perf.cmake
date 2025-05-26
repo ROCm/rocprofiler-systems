@@ -32,6 +32,8 @@ execute_process(
     OUTPUT_STRIP_TRAILING_WHITESPACE
     OUTPUT_VARIABLE _network_interface)
 
+message(STATUS "Default network interface is ${_network_interface}")
+
 set(_nic_perf_environment
     "${_base_environment}"
     "ROCPROFSYS_OUTPUT_PATH=${PROJECT_BINARY_DIR}/rocprof-sys-tests-output/nic-performance"
