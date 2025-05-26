@@ -26,7 +26,11 @@
 #
 # -------------------------------------------------------------------------------------- #
 
-set(_network_interface "lo")
+# Get the name of the default NIC and write it to _network_interface.
+execute_process(COMMAND "${CMAKE_SOURCE_DIR}/tests/get_default_nic.sh"
+                OUTPUT_STRIP_TRAILING_WHITESPACE
+                OUTPUT_VARIABLE _network_interface)
+
 set(_nic_perf_environment
     "${_base_environment}"
     "ROCPROFSYS_OUTPUT_PATH=${PROJECT_BINARY_DIR}/rocprof-sys-tests-output/nic-performance"
@@ -41,8 +45,9 @@ set(_nic_perf_environment
     "ROCPROFSYS_PAPI_EVENTS=net:::${_network_interface}:tx:byte net:::${_network_interface}:rx:byte net:::${_network_interface}:rx:packet net:::${_network_interface}:tx:packet"
     "ROCPROFSYS_SAMPLING_DELAY=0.05")
 
+# Set _download_url to a large file that will give rocprof-sys-sample time to collect NIC performance data.
 set(_download_url
-    "https://github.com/ROCm/rocprofiler-systems/releases/download/rocm-6.3.1/rocprofiler-systems-0.1.0-ubuntu-20.04-ROCm-60200-PAPI-OMPT-Python3.sh"
+    "https://github.com/llvm/llvm-project/releases/download/llvmorg-20.1.0/clang+llvm-20.1.0-armv7a-linux-gnueabihf.tar.gz"
     )
 
 # Run the NIC performance test
