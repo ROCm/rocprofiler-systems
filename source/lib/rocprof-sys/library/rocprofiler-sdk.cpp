@@ -527,12 +527,6 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
                 break;
             }
 #if ROCPROFILER_VERSION >= 600
-            case ROCPROFILER_CALLBACK_TRACING_OMPT:
-            {
-                tool_tracing_callback_start(category::rocm_ompt_api{}, record, user_data,
-                                            ts);
-                break;
-            }
             case ROCPROFILER_CALLBACK_TRACING_ROCDECODE_API:
             {
                 tool_tracing_callback_start(category::rocm_rocdecode_api{}, record,
@@ -558,6 +552,7 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
             case ROCPROFILER_CALLBACK_TRACING_MEMORY_COPY:
             case ROCPROFILER_CALLBACK_TRACING_RCCL_API:
 #if(ROCPROFILER_VERSION >= 600)
+            case ROCPROFILER_CALLBACK_TRACING_OMPT:
             case ROCPROFILER_CALLBACK_TRACING_MEMORY_ALLOCATION:
             case ROCPROFILER_CALLBACK_TRACING_RUNTIME_INITIALIZATION:
 #endif
@@ -626,12 +621,6 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
                 break;
             }
 #if(ROCPROFILER_VERSION >= 600)
-            case ROCPROFILER_CALLBACK_TRACING_OMPT:
-            {
-                tool_tracing_callback_stop(category::rocm_ompt_api{}, record, user_data,
-                                           ts, _bt_data);
-                break;
-            }
             case ROCPROFILER_CALLBACK_TRACING_ROCDECODE_API:
             {
                 tool_tracing_callback_stop(category::rocm_rocdecode_api{}, record,
@@ -657,6 +646,7 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
             case ROCPROFILER_CALLBACK_TRACING_MEMORY_COPY:
             case ROCPROFILER_CALLBACK_TRACING_RCCL_API:
 #if(ROCPROFILER_VERSION >= 600)
+            case ROCPROFILER_CALLBACK_TRACING_OMPT:
             case ROCPROFILER_CALLBACK_TRACING_MEMORY_ALLOCATION:
             case ROCPROFILER_CALLBACK_TRACING_RUNTIME_INITIALIZATION:
 #endif
@@ -716,6 +706,8 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
 
         if(ROCPROFSYS_LIKELY(header->category == ROCPROFILER_BUFFER_CATEGORY_TRACING))
         {
+
+            // TODO: Refactor with helper functions
             if(header->kind == ROCPROFILER_BUFFER_TRACING_KERNEL_DISPATCH)
             {
                 auto* record =
@@ -867,6 +859,72 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                             }
                         });
                     tracing::pop_perfetto(category::rocm_memory_copy{}, "", _track,
+                                          _end_ns);
+                }
+            }
+            else if (header->kind == ROCPROFILER_BUFFER_TRACING_OMPT)
+            {
+                auto* record = static_cast<rocprofiler_buffer_tracing_ompt_record_t*>(header->payload);
+                auto        _corr_id      = record->correlation_id.internal;
+                auto        _beg_ns       = record->start_timestamp;
+                auto        _end_ns       = record->end_timestamp;
+                auto        _name =
+                    tool_data->buffered_tracing_info.at(record->kind, record->operation);
+
+                // TODO: Remove logging
+                auto info = std::stringstream{};
+                info << std::left << "tid=" << record->thread_id
+                     << ", cid=" << std::setw(3) << _corr_id
+                     << ", kind=" << std::setw(2) << record->kind << " (OMPT)"
+                     << ", operation=" << std::setw(3) << record->operation
+                     << ", start_ts=" << std::setw(8) << _beg_ns
+                     << ", end_ts=" << std::setw(8) << _end_ns
+                     << ", name=" << _name;
+                ROCPROFSYS_VERBOSE_F(1, "%s\n", info.str().c_str());
+
+                if(get_use_timemory())
+                {
+                    const auto& _tinfo = thread_info::get(record->thread_id, SystemTID);
+                    auto        _tid   = _tinfo->index_data->sequent_value;
+
+                    auto _bundle = kernel_dispatch_bundle_t{ _name };
+
+                    _bundle.push(_tid).start().stop();
+                    _bundle.get([_beg_ns, _end_ns](tim::component::wall_clock* _wc) {
+                        _wc->set_value(_end_ns - _beg_ns);
+                        _wc->set_accum(_end_ns - _beg_ns);
+                    });
+                    _bundle.pop();
+                }
+
+                if(get_use_perfetto())
+                {
+                    auto _track_desc = [](rocprofiler_thread_id_t _tid) {
+                        const auto& _tid_v = thread_info::get(_tid, SystemTID);
+                        return JOIN("", "OMPT Thread ", _tid_v->index_data->sequent_value);
+                    };
+
+                    const auto _track = tracing::get_perfetto_track(
+                        category::rocm_ompt_api{}, _track_desc,
+                        record->thread_id);
+
+                    // TODO: Parse record->payload's union of target* structures
+
+                    tracing::push_perfetto(
+                        category::rocm_ompt_api{}, _name.data(), _track, _beg_ns,
+                        ::perfetto::Flow::ProcessScoped(_corr_id),
+                        [&](::perfetto::EventContext ctx)
+                        {
+                            if(config::get_perfetto_annotations())
+                            {
+                                tracing::add_perfetto_annotation(ctx, "begin_ns",
+                                                                 _beg_ns);
+                                tracing::add_perfetto_annotation(ctx, "end_ns", _end_ns);
+                                tracing::add_perfetto_annotation(ctx, "corr_id",
+                                                                 _corr_id);
+                            }
+                        });
+                    tracing::pop_perfetto(category::rocm_ompt_api{}, "", _track,
                                           _end_ns);
                 }
             }
@@ -1074,6 +1132,7 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
     auto _callback_domains = rocprofiler_sdk::get_callback_domains();
     auto _buffered_domain  = rocprofiler_sdk::get_buffered_domains();
     auto _counter_events   = rocprofiler_sdk::get_rocm_events();
+    const auto callback_tracing_info = rocprofiler::sdk::get_callback_tracing_names();
 
     auto* _data        = as_client_data(user_data);
     _data->client_fini = fini_func;
@@ -1096,7 +1155,6 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
                 ROCPROFILER_CALLBACK_TRACING_HIP_COMPILER_API,
                 ROCPROFILER_CALLBACK_TRACING_MARKER_CORE_API,
 #if(ROCPROFILER_VERSION >= 600)
-                ROCPROFILER_CALLBACK_TRACING_OMPT,
                 ROCPROFILER_CALLBACK_TRACING_ROCDECODE_API,
 #endif
 #if(ROCPROFILER_VERSION >= 700)
@@ -1106,9 +1164,15 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
     {
         if(_callback_domains.count(itr) > 0)
         {
+            auto _callback_name = std::string{callback_tracing_info[itr].name};
+            ROCPROFSYS_VERBOSE_F(
+                1, "Configuring callback tracing service for domain: %s (%i)\n",
+                _callback_name.c_str(), itr);
+
             auto _ops = rocprofiler_sdk::get_operations(itr);
             _data->backtrace_operations.emplace(
                 itr, rocprofiler_sdk::get_backtrace_operations(itr));
+
             ROCPROFILER_CALL(rocprofiler_configure_callback_tracing_service(
                 _data->primary_ctx, itr, _ops.data(), _ops.size(), tool_tracing_callback,
                 _data));
@@ -1154,6 +1218,26 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
             _data->primary_ctx, ROCPROFILER_BUFFER_TRACING_MEMORY_COPY,
             (_ops.empty()) ? nullptr : _ops.data(), _ops.size(),
             _data->memory_copy_buffer));
+    }
+
+    if(_buffered_domain.count(ROCPROFILER_BUFFER_TRACING_OMPT) > 0)
+    {
+        ROCPROFILER_CALL(rocprofiler_create_buffer(
+            _data->primary_ctx, buffer_size, watermark,
+            ROCPROFILER_BUFFER_POLICY_LOSSLESS, tool_tracing_buffered, tool_data,
+            &_data->ompt_buffer));
+
+        auto _ops =
+            rocprofiler_sdk::get_operations(ROCPROFILER_BUFFER_TRACING_OMPT);
+
+        ROCPROFILER_CALL(rocprofiler_configure_buffer_tracing_service(
+            _data->primary_ctx, ROCPROFILER_BUFFER_TRACING_OMPT,
+            (_ops.empty()) ? nullptr : _ops.data(), _ops.size(),
+            _data->ompt_buffer));
+
+        ROCPROFSYS_VERBOSE_F(
+            1, "Configuring OMPT buffered tracing service with %zu operations\n",
+            _ops.size());
     }
 
     if(!_counter_events.empty())

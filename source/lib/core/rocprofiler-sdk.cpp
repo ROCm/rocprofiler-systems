@@ -343,9 +343,6 @@ config_settings(const std::shared_ptr<settings>& _config)
              join::join(join::array_config{ ", ", "", "" }, _domain_choices));
     auto _domain_defaults = std::string{ "hip_runtime_api,marker_api,kernel_dispatch,"
                                          "memory_copy,scratch_memory" };
-#    if(ROCPROFILER_VERSION < 10000)
-    _domain_defaults.append(",page_migration");
-#    endif
 
     ROCPROFSYS_CONFIG_SETTING(std::string, "ROCPROFSYS_ROCM_DOMAINS", _domain_description,
                               _domain_defaults, "rocm", "rocprofiler-sdk")
@@ -393,7 +390,6 @@ get_callback_domains()
 
     if(_version.formatted >= 600)
     {
-        supported.emplace(ROCPROFILER_CALLBACK_TRACING_OMPT);  // OMPT API
         supported.emplace(ROCPROFILER_CALLBACK_TRACING_ROCDECODE_API);
     }
 #    endif
@@ -409,14 +405,6 @@ get_callback_domains()
         tim::delimit(config::get_setting_value<std::string>("ROCPROFSYS_ROCM_DOMAINS")
                          .value_or(std::string{}),
                      " ,;:\t\n");
-
-#    if ROCPROFILER_VERSION >= 600
-    // Translate some configuration settings to rocprofiler domains
-    if(config::get_use_ompt() && _version.formatted >= 600)
-    {
-        _data.emplace(ROCPROFILER_CALLBACK_TRACING_OMPT);
-    }
-#    endif
 
     // Check that the domains are valid
     const auto valid_choices =
@@ -476,15 +464,21 @@ std::unordered_set<rocprofiler_buffer_tracing_kind_t>
 get_buffered_domains()
 {
     const auto buffer_tracing_info = rocprofiler::sdk::get_buffer_tracing_names();
-    const auto supported           = std::unordered_set<rocprofiler_buffer_tracing_kind_t>
+    auto supported                 = std::unordered_set<rocprofiler_buffer_tracing_kind_t>
     {
         ROCPROFILER_BUFFER_TRACING_KERNEL_DISPATCH,
-            ROCPROFILER_BUFFER_TRACING_MEMORY_COPY,
-#    if(ROCPROFILER_VERSION < 10000)
-            ROCPROFILER_BUFFER_TRACING_PAGE_MIGRATION,
-#    endif
-            ROCPROFILER_BUFFER_TRACING_SCRATCH_MEMORY,
+        ROCPROFILER_BUFFER_TRACING_MEMORY_COPY,
+        ROCPROFILER_BUFFER_TRACING_SCRATCH_MEMORY,
     };
+
+#if ROCPROFILER_VERSION >= 600
+    auto _version = get_version();
+
+    if(_version.formatted >= 600)
+    {
+        supported.emplace(ROCPROFILER_BUFFER_TRACING_OMPT);  // OpenMP Tool API
+    }
+#endif
 
     auto _data = std::unordered_set<rocprofiler_buffer_tracing_kind_t>{};
     auto _domains =
@@ -498,6 +492,15 @@ get_buffered_domains()
         return !std::any_of(valid_choices.begin(), valid_choices.end(),
                             [&domainv](const auto& aitr) { return (aitr == domainv); });
     };
+
+#if ROCPROFILER_VERSION >= 600
+    // Translate some configuration settings to rocprofiler domains
+    if(config::get_use_ompt() && _version.formatted >= 600)
+    {
+        ROCPROFSYS_PRINT_F("Using OpenMP Tool API for buffer tracing\n");
+        _data.emplace(ROCPROFILER_BUFFER_TRACING_OMPT);
+    }
+#endif
 
     for(const auto& itr : _domains)
     {
