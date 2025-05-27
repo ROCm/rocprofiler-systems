@@ -836,7 +836,7 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                     ROCPROFILER_HIP_RUNTIME_API_ID_hipEventRecord,
                     ROCPROFILER_HIP_RUNTIME_API_ID_hipEventSynchronize,
                 };
-                
+
                 if(_ops.count(record->operation) > 0)
                 {
                     auto _corr_id   = record->correlation_id.internal;
