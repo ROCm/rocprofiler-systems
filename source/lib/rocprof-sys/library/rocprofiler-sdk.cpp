@@ -882,20 +882,20 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                      << ", name=" << _name;
                 ROCPROFSYS_VERBOSE_F(1, "%s\n", info.str().c_str());
 
-                if(get_use_timemory())
-                {
-                    const auto& _tinfo = thread_info::get(record->thread_id, SystemTID);
-                    auto        _tid   = _tinfo->index_data->sequent_value;
+                // if(get_use_timemory())
+                // {
+                //     const auto& _tinfo = thread_info::get(record->thread_id, SystemTID);
+                //     auto        _tid   = _tinfo->index_data->sequent_value;
 
-                    auto _bundle = kernel_dispatch_bundle_t{ _name };
+                //     auto _bundle = kernel_dispatch_bundle_t{ _name };
 
-                    _bundle.push(_tid).start().stop();
-                    _bundle.get([_beg_ns, _end_ns](tim::component::wall_clock* _wc) {
-                        _wc->set_value(_end_ns - _beg_ns);
-                        _wc->set_accum(_end_ns - _beg_ns);
-                    });
-                    _bundle.pop();
-                }
+                //     _bundle.push(_tid).start().stop();
+                //     _bundle.get([_beg_ns, _end_ns](tim::component::wall_clock* _wc) {
+                //         _wc->set_value(_end_ns - _beg_ns);
+                //         _wc->set_accum(_end_ns - _beg_ns);
+                //     });
+                //     _bundle.pop();
+                // }
 
                 if(get_use_perfetto())
                 {
@@ -922,6 +922,39 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                                 tracing::add_perfetto_annotation(ctx, "end_ns", _end_ns);
                                 tracing::add_perfetto_annotation(ctx, "corr_id",
                                                                  _corr_id);
+                                switch (record->operation)
+                                {
+                                    case ROCPROFILER_OMPT_ID_target_emi:
+                                    {
+
+                                        tracing::add_perfetto_annotation(ctx, "kind", record->target.kind);
+                                        tracing::add_perfetto_annotation(ctx, "device_num", record->target.device_num);
+                                        tracing::add_perfetto_annotation(ctx, "task_id", record->target.task_id);
+                                        tracing::add_perfetto_annotation(ctx, "target_id", record->target.target_id);
+                                        break;
+                                    }
+                                    case ROCPROFILER_OMPT_ID_target_data_op_emi:
+                                    {
+                                        tracing::add_perfetto_annotation(ctx, "host_op_id", record->target_data_op.host_op_id);
+                                        tracing::add_perfetto_annotation(ctx, "optype", record->target_data_op.optype);
+                                        tracing::add_perfetto_annotation(ctx, "src_device_num", record->target_data_op.src_device_num);
+                                        tracing::add_perfetto_annotation(ctx, "dst_device_num", record->target_data_op.dst_device_num);
+                                        tracing::add_perfetto_annotation(ctx, "bytes", record->target_data_op.bytes);
+                                        break;
+                                    }
+                                    case ROCPROFILER_OMPT_ID_target_submit_emi:
+                                    {
+                                        tracing::add_perfetto_annotation(ctx, "device_num", record->target_kernel.device_num);
+                                        tracing::add_perfetto_annotation(ctx, "requested_num_teams", record->target_kernel.requested_num_teams);
+                                        tracing::add_perfetto_annotation(ctx, "host_op_id", record->target_kernel.host_op_id);
+                                        break;
+                                    }
+                                    default:
+                                    {
+                                        // Nothing to do
+                                        break;
+                                    }
+                                }
                             }
                         });
                     tracing::pop_perfetto(category::rocm_ompt_api{}, "", _track,
@@ -1193,6 +1226,9 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
             _data->primary_ctx, ROCPROFILER_BUFFER_TRACING_KERNEL_DISPATCH, nullptr, 0,
             _data->kernel_dispatch_buffer));
 
+        ROCPROFSYS_VERBOSE_F(
+            1, "Configuring callback tracing service for domain: KERNEL DISPATCH (%i)\n",
+            (int) ROCPROFILER_BUFFER_TRACING_KERNEL_DISPATCH);
         // auto external_corr_id_request_kinds =
         //     std::array<rocprofiler_external_correlation_id_request_kind_t, 1>{
         //         ROCPROFILER_EXTERNAL_CORRELATION_REQUEST_KERNEL_DISPATCH
@@ -1218,6 +1254,10 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
             _data->primary_ctx, ROCPROFILER_BUFFER_TRACING_MEMORY_COPY,
             (_ops.empty()) ? nullptr : _ops.data(), _ops.size(),
             _data->memory_copy_buffer));
+
+        ROCPROFSYS_VERBOSE_F(
+            1, "Configuring callback tracing service for domain: MEMORY_COPY (%i)\n",
+            (int) ROCPROFILER_BUFFER_TRACING_MEMORY_COPY);
     }
 
     if(_buffered_domain.count(ROCPROFILER_BUFFER_TRACING_OMPT) > 0)
@@ -1236,8 +1276,8 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
             _data->ompt_buffer));
 
         ROCPROFSYS_VERBOSE_F(
-            1, "Configuring OMPT buffered tracing service with %zu operations\n",
-            _ops.size());
+                1, "Configuring callback tracing service for domain: OMPT (%i)\n",
+                (int) ROCPROFILER_BUFFER_TRACING_OMPT);
     }
 
     if(!_counter_events.empty())
@@ -1320,6 +1360,7 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
 void
 tool_fini(void* callback_data)
 {
+    ROCPROFSYS_VERBOSE_F(1, "Tool Fini called by ROCm profiler...\n");
     static std::atomic_flag _once = ATOMIC_FLAG_INIT;
     if(_once.test_and_set()) return;
 
@@ -1358,6 +1399,12 @@ setup()
 void
 shutdown()
 {
+    ROCPROFSYS_VERBOSE_F(1, "Shutting Down ROCm profiler...\n");
+    ROCPROFSYS_VERBOSE_F(1, "Sleeping for 500 ms\n")
+    using namespace std::chrono_literals;
+    std::this_thread::yield();
+    std::this_thread::sleep_for(std::chrono::milliseconds{ 500 });
+
     // shutdown
     if(tool_data && tool_data->client_id && tool_data->client_fini)
         tool_data->client_fini(*tool_data->client_id);
@@ -1392,6 +1439,7 @@ start()
 void
 stop()
 {
+    ROCPROFSYS_VERBOSE_F(1, "Stopping ROCm profiler...\n");
     if(!tool_data) return;
 
     for(auto itr : tool_data->get_contexts())
