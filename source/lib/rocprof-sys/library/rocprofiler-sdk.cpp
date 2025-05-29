@@ -496,11 +496,6 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
                 break;
             }
             case ROCPROFILER_CALLBACK_TRACING_HIP_RUNTIME_API:
-            {
-                tool_tracing_callback_start(category::rocm_hip_api{}, record, user_data,
-                                            ts);
-                break;
-            }
             case ROCPROFILER_CALLBACK_TRACING_HIP_COMPILER_API:
             {
                 tool_tracing_callback_start(category::rocm_hip_api{}, record, user_data,
