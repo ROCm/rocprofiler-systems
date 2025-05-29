@@ -831,6 +831,7 @@ setup()
 std::set<int>
 shutdown()
 {
+    threading::set_is_shutting_down(true);
     if(is_child_process())
     {
         for(auto& itr : *sampler_instances::get())
