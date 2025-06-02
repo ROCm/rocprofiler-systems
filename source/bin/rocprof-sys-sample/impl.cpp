@@ -743,13 +743,10 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
     _backend_choices.erase("ompt");
 #endif
 
-    // #if !defined(ROCPROFSYS_USE_RCCL)
-    //     _backend_choices.erase("rcclp");
-    // #endif
-
 #if !defined(ROCPROFSYS_USE_ROCM)
     _backend_choices.erase("rocm");
     _backend_choices.erase("amd-smi");
+    _backend_choices.erase("rcclp");
 #endif
 
     parser.start_group("BACKEND OPTIONS",

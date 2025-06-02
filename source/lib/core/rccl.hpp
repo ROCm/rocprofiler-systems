@@ -23,7 +23,3 @@
 #pragma once
 
 #include "core/defines.hpp"
-
-#if defined(ROCPROFSYS_USE_RCCL) && ROCPROFSYS_USE_RCCL > 0
-#    include <rccl/rccl.h>
-#endif

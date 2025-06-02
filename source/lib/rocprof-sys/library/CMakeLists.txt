@@ -34,11 +34,6 @@ set(library_headers
 target_sources(rocprofiler-systems-object-library PRIVATE ${library_sources}
                                                           ${library_headers})
 
-if(ROCPROFSYS_USE_RCCL)
-    target_sources(rocprofiler-systems-object-library
-                   PRIVATE ${CMAKE_CURRENT_LIST_DIR}/rcclp.cpp)
-endif()
-
 if(ROCPROFSYS_USE_ROCM)
     target_sources(
         rocprofiler-systems-object-library
@@ -56,7 +51,6 @@ add_subdirectory(tracing)
 set(ndebug_sources
     ${CMAKE_CURRENT_LIST_DIR}/components/mpi_gotcha.cpp
     ${CMAKE_CURRENT_LIST_DIR}/components/backtrace_metrics.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/rcclp.cpp
     ${CMAKE_CURRENT_LIST_DIR}/kokkosp.cpp
     ${CMAKE_CURRENT_LIST_DIR}/amd_smi.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ompt.cpp)

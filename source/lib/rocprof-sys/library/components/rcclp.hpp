@@ -25,7 +25,6 @@
 #include "core/common.hpp"
 #include "core/components/fwd.hpp"
 #include "core/defines.hpp"
-#include "core/rccl.hpp"
 #include "core/timemory.hpp"
 #include "library/components/category_region.hpp"
 #include "library/components/comm_data.hpp"

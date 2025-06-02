@@ -39,8 +39,6 @@ setup();
 void
 shutdown();
 
-#if !defined(ROCPROFSYS_USE_RCCL) ||                                                     \
-    (defined(ROCPROFSYS_USE_RCCL) && ROCPROFSYS_USE_RCCL == 0)
 inline void
 configure()
 {}
@@ -52,6 +50,5 @@ setup()
 inline void
 shutdown()
 {}
-#endif
 }  // namespace rcclp
 }  // namespace rocprofsys
