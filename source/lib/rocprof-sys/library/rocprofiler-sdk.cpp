@@ -364,7 +364,8 @@ tool_tracing_callback_stop(
                 if(config::get_perfetto_annotations())
                 {
                     tracing::add_perfetto_annotation(ctx, "begin_ns", _beg_ts);
-
+                    tracing::add_perfetto_annotation(ctx, "corr_id",
+                                                     record.correlation_id.internal);
                     for(const auto& [key, val] : args)
                         tracing::add_perfetto_annotation(ctx, key, val);
 
@@ -1301,14 +1302,12 @@ rocprofiler_configure(uint32_t version, const char* runtime_version, uint32_t pr
         _first = false;
     }
 
-    // If ROCPROFSYS_PRELOAD or ROCPROFSYS_INIT_TOOLING is not set,
-    // the tooling will not be initialized so we cannot enable
-    // profiling with rocprofiler
-    if(!tim::get_env("ROCPROFSYS_PRELOAD", true) ||
-       !tim::get_env("ROCPROFSYS_INIT_TOOLING", true))
-        return nullptr;
-
+    if(!tim::get_env("ROCPROFSYS_INIT_TOOLING", true)) return nullptr;
     if(!tim::settings::enabled()) return nullptr;
+
+    if(!rocprofsys::config::settings_are_configured() &&
+       rocprofsys::get_state() < rocprofsys::State::Active)
+        rocprofsys_init_tooling_hidden();
 
     if(!rocprofsys::config::get_use_rocm())
     {

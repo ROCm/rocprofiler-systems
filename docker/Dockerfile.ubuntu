@@ -15,17 +15,13 @@ WORKDIR /tmp
 SHELL [ "/bin/bash", "-c" ]
 
 ARG EXTRA_PACKAGES=""
-ARG ROCM_REPO_VERSION="debian"
 ARG ROCM_VERSION="0.0"
-ARG ROCM_REPO_DIST="ubuntu"
-ARG PYTHON_VERSIONS="6 7 8 9 10 11 12"
-ARG AMDGPU_DEB=6.0/ubuntu/focal/amdgpu-install_6.0.60000-1_all.deb
 ENV PATH ${HOME}/.local/bin:${PATH}
 
 RUN apt-get update && \
     apt-get dist-upgrade -y && \
     apt-get install -y apt-utils autoconf autotools-dev bash-completion bison \
-        build-essential cmake curl flex gettext git-core gnupg2 libnuma1 libopenmpi-dev \
+        build-essential chrpath cmake curl flex gettext git-core gnupg2 libnuma1 libopenmpi-dev \
         libpapi-dev libpfm4-dev librpm-dev libtool libudev1 lsb-release m4 \
         python3-pip rpm texinfo wget iproute2 && \
     OS_VERSION=$(cat /etc/os-release | grep VERSION_ID | sed 's/=/ /'1 | awk '{print $NF}' | sed 's/"//g') && \
@@ -36,12 +32,20 @@ RUN apt-get update && \
     fi
 
 RUN if [ "${ROCM_VERSION}" != "0.0" ]; then \
-        wget https://repo.radeon.com/amdgpu-install/${ROCM_VERSION}/ubuntu/${ROCM_REPO_DIST}/${AMDGPU_DEB} && \
+        OS_VERSION=$(grep '^VERSION_ID=' /etc/os-release | cut -d'=' -f2 | tr -d '"') && \
+        OS_CODENAME=$(grep '^VERSION_CODENAME=' /etc/os-release | cut -d'=' -f2) && \
+        ROCM_MAJOR=$(echo "${ROCM_VERSION}" | sed 's/\./ /g' | awk '{print $1}') && \
+        ROCM_MINOR=$(echo "${ROCM_VERSION}" | sed 's/\./ /g' | awk '{print $2}') && \
+        ROCM_VERSN=$(( ("${ROCM_MAJOR}"*10000)+("${ROCM_MINOR}"*100) )) && \
+        AMDGPU_DEB="amdgpu-install_${ROCM_MAJOR}.${ROCM_MINOR}.${ROCM_VERSN}-1_all.deb" && \
+        wget https://repo.radeon.com/amdgpu-install/${ROCM_VERSION}/ubuntu/${OS_CODENAME}/${AMDGPU_DEB} && \
         apt-get install -y ./${AMDGPU_DEB} && \
         apt-get update && \
         apt-get install -y rocm-dev rccl-dev libpciaccess0 ${EXTRA_PACKAGES} && \
         apt-get autoclean; \
     fi
+
+ARG PYTHON_VERSIONS="6 7 8 9 10 11 12 13"
 
 RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh && \
     bash miniconda.sh -b -p /opt/conda && \
