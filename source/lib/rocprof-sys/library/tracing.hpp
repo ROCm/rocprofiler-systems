@@ -555,7 +555,7 @@ push_perfetto_track(CategoryT, const char* name, ::perfetto::Track _track, uint6
     if(category_push_disabled<CategoryT>()) return;
 
     ++get_tracing_stack<CategoryT>();
-    TRACE_EVENT_BEGIN(trait::name<CategoryT>::value, ::perfetto::StaticString(name),
+    TRACE_EVENT_BEGIN(trait::name<CategoryT>::value, ::perfetto::DynamicString{name},
                       _track, _ts, std::forward<Args>(args)...);
 }
 
