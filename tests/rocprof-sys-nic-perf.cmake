@@ -58,7 +58,7 @@ set(_download_url
 add_test(
     NAME nic-performance
     COMMAND $<TARGET_FILE:rocprofiler-systems-sample> -- wget --no-check-certificate
-            --quiet ${_download_url} -O /tmp/rocprofiler-systems.test.bin
+            ${_download_url} -O /tmp/rocprofiler-systems.test.bin
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 
 set_tests_properties(nic-performance PROPERTIES ENVIRONMENT "${_nic_perf_environment}"
