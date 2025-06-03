@@ -110,98 +110,66 @@ tool_tracing_callback_rccl(rocprofiler_callback_tracing_record_t record,
         auto* payload =
             static_cast<rocprofiler_callback_tracing_rccl_api_data_t*>(record.payload);
 
-        int  size     = 0;
-        int  count    = 0;
-        int  datatype = 0;
-        bool is_send  = false;
+        size_t size    = 0;
+        bool   is_send = false;
+
+        auto set_recv = [&](size_t count, ncclDataType_t _dt) {
+            is_send = false;
+            size    = count * rccl_type_size(_dt);
+        };
+
+        auto set_send = [&](size_t count, ncclDataType_t _dt) {
+            is_send = true;
+            size    = count * rccl_type_size(_dt);
+        };
 
         switch(record.operation)
         {
             // RCCL Data Receive
             case ROCPROFILER_RCCL_API_ID_ncclAllGather:
-            {
-                count    = payload->args.ncclAllGather.sendcount;
-                datatype = payload->args.ncclAllGather.datatype;
-                is_send  = false;
-                size     = count * rccl_type_size(payload->args.ncclAllGather.datatype);
-            }
-            break;
+                set_recv(payload->args.ncclAllGather.sendcount,
+                         payload->args.ncclAllGather.datatype);
+                break;
             case ROCPROFILER_RCCL_API_ID_ncclAllReduce:
-            {
-                count    = payload->args.ncclAllReduce.count;
-                datatype = payload->args.ncclAllReduce.datatype;
-                is_send  = false;
-                size     = count * rccl_type_size(payload->args.ncclAllReduce.datatype);
-            }
-            break;
+                set_recv(payload->args.ncclAllReduce.count,
+                         payload->args.ncclAllReduce.datatype);
+                break;
             case ROCPROFILER_RCCL_API_ID_ncclGather:
-            {
-                count    = payload->args.ncclGather.sendcount;
-                datatype = payload->args.ncclGather.datatype;
-                is_send  = false;
-                size     = count * rccl_type_size(payload->args.ncclGather.datatype);
-            }
-            break;
+                set_recv(payload->args.ncclGather.sendcount,
+                         payload->args.ncclGather.datatype);
+                break;
             case ROCPROFILER_RCCL_API_ID_ncclRecv:
-            {
-                count    = payload->args.ncclRecv.count;
-                datatype = payload->args.ncclRecv.datatype;
-                is_send  = false;
-                size     = count * rccl_type_size(payload->args.ncclRecv.datatype);
-            }
-            break;
+                set_recv(payload->args.ncclRecv.count, payload->args.ncclRecv.datatype);
+                break;
             case ROCPROFILER_RCCL_API_ID_ncclReduce:
-            {
-                count    = payload->args.ncclReduce.count;
-                datatype = payload->args.ncclReduce.datatype;
-                is_send  = false;
-                size     = count * rccl_type_size(payload->args.ncclReduce.datatype);
-            }
-            break;
+                set_recv(payload->args.ncclReduce.count,
+                         payload->args.ncclReduce.datatype);
+                break;
 
             // RCCL Data Send
             case ROCPROFILER_RCCL_API_ID_ncclBroadcast:
-            {
-                is_send  = true;
-                count    = payload->args.ncclBroadcast.count;
-                datatype = payload->args.ncclBroadcast.datatype;
-                size     = count * rccl_type_size(payload->args.ncclBroadcast.datatype);
-            }
-            break;
+                set_send(payload->args.ncclBroadcast.count,
+                         payload->args.ncclBroadcast.datatype);
+                break;
             case ROCPROFILER_RCCL_API_ID_ncclReduceScatter:
-            {
-                is_send  = true;
-                count    = payload->args.ncclReduceScatter.recvcount;
-                datatype = payload->args.ncclReduceScatter.datatype;
-                size = count * rccl_type_size(payload->args.ncclReduceScatter.datatype);
-            }
-            break;
+                set_send(payload->args.ncclReduceScatter.recvcount,
+                         payload->args.ncclReduceScatter.datatype);
+                break;
             case ROCPROFILER_RCCL_API_ID_ncclSend:
-            {
-                is_send  = true;
-                count    = payload->args.ncclSend.count;
-                datatype = payload->args.ncclSend.datatype;
-                size     = count * rccl_type_size(payload->args.ncclSend.datatype);
-            }
-            break;
+                set_send(payload->args.ncclSend.count, payload->args.ncclSend.datatype);
+                break;
 
             default:
-            {
                 // Skip other RCCL operations
                 break;
-            }
         }
 
         if(config::get_use_perfetto() && size > 0)
         {
             if(is_send)
-            {
                 write_perfetto_counter_track<rccl_send>(size, begin_ts, end_ts);
-            }
             else
-            {
                 write_perfetto_counter_track<rccl_recv>(size, begin_ts, end_ts);
-            }
         }
     }
 }
