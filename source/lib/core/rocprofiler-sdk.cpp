@@ -414,7 +414,8 @@ get_callback_domains()
                          .value_or(std::string{}),
                      " ,;:\t\n");
 
-    if (config::get_use_rcclp() && _version.formatted >= 600) {
+    if(config::get_use_rcclp() && _version.formatted >= 600)
+    {
         // Translate ROCPROFSYS_USE_RCCLP to entry in ROCPROFSYS_ROCM_DOMAINS
         _data.emplace(ROCPROFILER_CALLBACK_TRACING_RCCL_API);
     }
@@ -461,7 +462,6 @@ get_callback_domains()
                 auto dval = static_cast<rocprofiler_callback_tracing_kind_t>(idx);
                 if(itr == to_lower(ditr.name) && supported.count(dval) > 0)
                 {
-                    printf("[DFG] %s Adding domain: %s\n", __FUNCTION__, itr.c_str());
                     _data.emplace(dval);
                     break;
                 }
