@@ -130,6 +130,10 @@ tool_tracing_callback_rccl(rocprofiler_callback_tracing_record_t record,
                 set_recv(payload->args.ncclAllGather.sendcount,
                          payload->args.ncclAllGather.datatype);
                 break;
+            case ROCPROFILER_RCCL_API_ID_ncclAllToAll:
+                set_recv(payload->args.ncclAllToAll.count,
+                         payload->args.ncclAllToAll.datatype);
+                break;
             case ROCPROFILER_RCCL_API_ID_ncclAllReduce:
                 set_recv(payload->args.ncclAllReduce.count,
                          payload->args.ncclAllReduce.datatype);
