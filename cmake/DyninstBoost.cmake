@@ -184,9 +184,11 @@ else()
                                    ON)
     # If we didn't find a suitable version on the system, then download one from the web
     rocprofiler_systems_add_cache_option(
-        ROCPROFSYS_BOOST_DOWNLOAD_VERSION "Version of boost to download and install" STRING "1.79.0")
+        ROCPROFSYS_BOOST_DOWNLOAD_VERSION "Version of boost to download and install"
+        STRING "1.79.0")
 
-    # If the user specifies a version other than ROCPROFSYS_BOOST_DOWNLOAD_VERSION, use that version.
+    # If the user specifies a version other than ROCPROFSYS_BOOST_DOWNLOAD_VERSION, use
+    # that version.
     if(${ROCPROFSYS_BOOST_DOWNLOAD_VERSION} VERSION_LESS ${Boost_MIN_VERSION})
         rocprofiler_systems_message(
             FATAL_ERROR
@@ -195,7 +197,9 @@ else()
     endif()
 
     rocprofiler_systems_message(
-        STATUS "Attempting to build BOOST(${ROCPROFSYS_BOOST_DOWNLOAD_VERSION}) as external project")
+        STATUS
+        "Attempting to build BOOST(${ROCPROFSYS_BOOST_DOWNLOAD_VERSION}) as external project"
+        )
 
     if(Boost_USE_MULTITHREADED)
         set(_boost_threading multi)
