@@ -184,7 +184,7 @@ else()
                                    ON)
     # If we didn't find a suitable version on the system, then download one from the web
     rocprofiler_systems_add_cache_option(
-        BOOST_DOWNLOAD_VERSION "Version of boost to download and install" STRING "1.79.0")
+        ROCPROFSYS_BOOST_DOWNLOAD_VERSION "Version of boost to download and install" STRING "1.79.0")
 
     # If the user specifies a version other than BOOST_DOWNLOAD_VERSION, use that version.
     if(${BOOST_DOWNLOAD_VERSION} VERSION_LESS ${Boost_MIN_VERSION})
