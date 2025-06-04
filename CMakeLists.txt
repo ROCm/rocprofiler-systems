@@ -11,7 +11,7 @@ endif()
 
 # find_package() uses upper-case <PACKAGENAME>_ROOT variables.
 if(POLICY CMP0144)
-    cmake_policy(SET ${POLICY} NEW)
+    cmake_policy(SET CMP0144 NEW)
 endif()
 
 if(NOT UNIX OR APPLE)
