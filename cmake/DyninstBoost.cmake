@@ -195,7 +195,7 @@ else()
     endif()
 
     rocprofiler_systems_message(
-        STATUS "Attempting to build ${BOOST_DOWNLOAD_VERSION} as external project")
+        STATUS "Attempting to build BOOST(${ROCPROFSYS_BOOST_DOWNLOAD_VERSION}) as external project")
 
     if(Boost_USE_MULTITHREADED)
         set(_boost_threading multi)
