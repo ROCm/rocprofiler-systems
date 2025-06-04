@@ -186,11 +186,11 @@ else()
     rocprofiler_systems_add_cache_option(
         ROCPROFSYS_BOOST_DOWNLOAD_VERSION "Version of boost to download and install" STRING "1.79.0")
 
-    # If the user specifies a version other than BOOST_DOWNLOAD_VERSION, use that version.
-    if(${BOOST_DOWNLOAD_VERSION} VERSION_LESS ${Boost_MIN_VERSION})
+    # If the user specifies a version other than ROCPROFSYS_BOOST_DOWNLOAD_VERSION, use that version.
+    if(${ROCPROFSYS_BOOST_DOWNLOAD_VERSION} VERSION_LESS ${Boost_MIN_VERSION})
         rocprofiler_systems_message(
             FATAL_ERROR
-            "Boost download version is set to ${BOOST_DOWNLOAD_VERSION} but Boost minimum version is set to ${Boost_MIN_VERSION}"
+            "Boost download version is set to ${ROCPROFSYS_BOOST_DOWNLOAD_VERSION} but Boost minimum version is set to ${Boost_MIN_VERSION}"
             )
     endif()
 
