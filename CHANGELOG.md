@@ -2,6 +2,12 @@
 
 Full documentation for ROCm Systems Profiler is available at [https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/](https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/).
 
+## ROCm Systems Profiler 1.0.2 for ROCm 6.4.2
+
+### Resolved issues
+
+- Fixed the file path to the script that merges Perfetto files from multi-process MPI runs. The script has also been renamed from "merge-multiprocess-output.sh" to "rocprof-sys-merge-output.sh".
+
 ## ROCm Systems Profiler 1.0.1 for ROCm 6.4.1
 
 ### Added
