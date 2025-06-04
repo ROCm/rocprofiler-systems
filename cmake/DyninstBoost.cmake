@@ -262,7 +262,7 @@ else()
         list(APPEND BOOST_ARGS cflags=-fPIC cxxflags=-fPIC)
     endif()
 
-    string(REPLACE "." "_" _boost_download_filename ${BOOST_DOWNLOAD_VERSION})
+    string(REPLACE "." "_" _boost_download_filename ${ROCPROFSYS_BOOST_DOWNLOAD_VERSION})
     # zip is subject to locales on Unix
     set(_boost_download_ext "zip")
     if(UNIX)
