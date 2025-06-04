@@ -326,7 +326,7 @@ else()
         Boost-External
         PREFIX ${PROJECT_BINARY_DIR}/boost
         GIT_REPOSITORY https://github.com/boostorg/boost.git
-        GIT_TAG boost-${BOOST_DOWNLOAD_VERSION}
+        GIT_TAG boost-${ROCPROFSYS_BOOST_DOWNLOAD_VERSION}
         BUILD_IN_SOURCE 1
         CONFIGURE_COMMAND ${BOOST_BOOTSTRAP} --prefix=${Boost_ROOT_DIR}
                           --with-libraries=${_boost_lib_names}
