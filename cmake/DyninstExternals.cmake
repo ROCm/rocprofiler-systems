@@ -1,26 +1,27 @@
 include(MacroUtilities)
 
-# Set BUILD_BOOST to ON if ROCPROFSYS_BUILD_BOOST is ON
-if(ROCPROFSYS_BUILD_BOOST)
-    rocprofiler_systems_add_option(BUILD_BOOST "Enable building Boost internally" ON)
-endif()
+# Map deprecated DYNINST_BUILD_* variables to new ROCPROFSYS_BUILD_* variables
+foreach(dep BOOST TBB ELFUTILS LIBIBERTY)
+    if(DYNINST_BUILD_${dep})
+        message(WARNING "DYNINST_BUILD_${dep} is deprecated. Use ROCPROFSYS_BUILD_${dep} instead.")
+        set(ROCPROFSYS_BUILD_${dep} ON)
+    endif()
+endforeach()
 
-# Set BUILD_TBB to ON if ROCPROFSYS_BUILD_TBB is ON
-if(ROCPROFSYS_BUILD_TBB)
-    rocprofiler_systems_add_option(BUILD_TBB "Enable building TBB internally" ON)
-endif()
-
-# Set BUILD_ELFUTILS to ON if ROCPROFSYS_BUILD_ELFUTILS is ON
-if(ROCPROFSYS_BUILD_ELFUTILS)
-    rocprofiler_systems_add_option(BUILD_ELFUTILS "Enable building elfutils internally"
-                                   ON)
-endif()
-
-# Set BUILD_LIBIBERTY to ON if ROCPROFSYS_BUILD_LIBIBERTY is ON
-if(ROCPROFSYS_BUILD_LIBIBERTY)
-    rocprofiler_systems_add_option(BUILD_LIBIBERTY "Enable building libiberty internally"
-                                   ON)
-endif()
+# Set BUILD_* to ON if ROCPROFSYS_BUILD_* is ON
+foreach(dep BOOST TBB ELFUTILS LIBIBERTY)
+    if(ROCPROFSYS_BUILD_${dep})
+        if(dep STREQUAL "BOOST")
+            rocprofiler_systems_add_option(BUILD_BOOST "Enable building Boost internally" ON)
+        elseif(dep STREQUAL "TBB")
+            rocprofiler_systems_add_option(BUILD_TBB "Enable building TBB internally" ON)
+        elseif(dep STREQUAL "ELFUTILS")
+            rocprofiler_systems_add_option(BUILD_ELFUTILS "Enable building elfutils internally" ON)
+        elseif(dep STREQUAL "LIBIBERTY")
+            rocprofiler_systems_add_option(BUILD_LIBIBERTY "Enable building libiberty internally" ON)
+        endif()
+    endif()
+endforeach()
 
 set(TPL_STAGING_PREFIX
     "${PROJECT_BINARY_DIR}/tpls"
