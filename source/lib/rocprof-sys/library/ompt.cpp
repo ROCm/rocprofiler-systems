@@ -74,7 +74,7 @@ struct ompt : comp::base<ompt, void>
     ompt(const ompt&)     = default;
     ompt(ompt&&) noexcept = default;
 
-    ompt& operator=(const ompt&)     = default;
+    ompt& operator=(const ompt&) = default;
     ompt& operator=(ompt&&) noexcept = default;
 
     template <typename... Args>
@@ -151,6 +151,7 @@ struct ompt : comp::base<ompt, void>
                        const context_info_t& common)
     {
         (void) thrd_id;
+        (void) targ_id;
 
         auto _annotate = [&](::perfetto::EventContext ctx) {
             if(config::get_perfetto_annotations())
