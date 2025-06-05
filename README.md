@@ -69,8 +69,8 @@ The documentation source files reside in the [`/docs`](/docs) folder of this rep
   - Power usage
   - Temperature
   - Utilization
-  - VCN Utilization
-  - JPEG Utilization
+  - VCN Engine Utilization
+  - JPEG Engine Utilization
   
   Note: The availability of VCN and JPEG engine utilization depends on device support for different ASICs. If unsupported, all values for VCN_ACTIVITY and JPEG_ACTIVITY will be reported as N/A in the output of `amd-smi metric --usage`.
 
