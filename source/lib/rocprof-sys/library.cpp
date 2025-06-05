@@ -1017,13 +1017,6 @@ rocprofsys_finalize_hidden(void)
         [](int) {});
 
     common::destroy_static_objects();
-
-    if(get_use_rcclp())
-    {
-        // this is a workaround for a bug in RCCL resulting in double free or corruption
-        // error when exiting
-        std::quick_exit(EXIT_SUCCESS);
-    }
 }
 
 //======================================================================================//
