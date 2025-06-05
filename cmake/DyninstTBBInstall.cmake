@@ -21,7 +21,7 @@ file(
     DESTINATION ${LIBDIR}
     FILES_MATCHING
     PATTERN "*.so.*")
-file(COPY ${PREFIX}/src/TBB-External/include/tbb DESTINATION ${INCDIR})
+file(COPY ${PREFIX}/src/rocprofiler-systems-tbb-build/include/tbb DESTINATION ${INCDIR})
 file(GLOB _tbb_libs ${LIBDIR}/libtbb*.so.*)
 
 foreach(_lib ${_tbb_libs})

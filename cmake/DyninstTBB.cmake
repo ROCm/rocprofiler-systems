@@ -34,7 +34,7 @@
 include_guard(GLOBAL)
 
 # always provide Dyninst::TBB even if it is a dummy
-rocprofiler_systems_add_interface_library(TBB "Threading Building Blocks")
+rocprofiler_systems_add_interface_library(rocprofiler-systems-tbb "Threading Building Blocks")
 
 if(TBB_FOUND)
     return()
@@ -209,7 +209,7 @@ else()
 
     include(ExternalProject)
     externalproject_add(
-        TBB-External
+        rocprofiler-systems-tbb-build
         PREFIX ${_tbb_prefix_dir}
         URL https://github.com/ajanicijamd/oneTBB/archive/refs/tags/v${_tbb_ver_major}.${_tbb_ver_minor}.01.tar.gz
         BUILD_IN_SOURCE 1
@@ -224,7 +224,7 @@ else()
 
     # post-build target for installing build
     add_custom_command(
-        TARGET TBB-External
+        TARGET rocprofiler-systems-tbb-build
         POST_BUILD
         COMMAND
             ${CMAKE_COMMAND} ARGS -DLIBDIR=${TPL_STAGING_PREFIX}/lib
@@ -234,7 +234,7 @@ else()
         COMMENT "Installing TBB...")
 
     add_custom_target(
-        install-tbb-external
+        rocprofiler-systems-tbb-install
         COMMAND
             ${CMAKE_COMMAND} -DLIBDIR=${TPL_STAGING_PREFIX}/lib
             -DINCDIR=${TPL_STAGING_PREFIX}/include -DPREFIX=${_tbb_prefix_dir} -P
@@ -248,10 +248,10 @@ foreach(_DIR_TYPE INCLUDE LIBRARY)
     endif()
 endforeach()
 
-target_include_directories(TBB SYSTEM INTERFACE ${TBB_INCLUDE_DIRS})
-target_compile_definitions(TBB INTERFACE ${TBB_DEFINITIONS})
-target_link_directories(TBB INTERFACE ${TBB_LIBRARY_DIRS})
-target_link_libraries(TBB INTERFACE ${TBB_LIBRARIES})
+target_include_directories(rocprofiler-systems-tbb SYSTEM INTERFACE ${TBB_INCLUDE_DIRS})
+target_compile_definitions(rocprofiler-systems-tbb INTERFACE ${TBB_DEFINITIONS})
+target_link_directories(rocprofiler-systems-tbb INTERFACE ${TBB_LIBRARY_DIRS})
+target_link_libraries(rocprofiler-systems-tbb INTERFACE ${TBB_LIBRARIES})
 
 rocprofiler_systems_message(STATUS "TBB include directory: ${TBB_INCLUDE_DIRS}")
 rocprofiler_systems_message(STATUS "TBB library directory: ${TBB_LIBRARY_DIRS}")

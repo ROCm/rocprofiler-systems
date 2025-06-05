@@ -42,11 +42,11 @@ if(TARGET rocprofiler-systems-boost-build)
 endif()
 
 include(DyninstTBB)
-if(TARGET TBB-External AND TARGET external-prebuild)
+if(TARGET rocprofiler-systems-tbb-build AND TARGET external-prebuild)
     # Make TBB build serially and wait for Boost
-    set_target_properties(TBB-External PROPERTIES JOB_POOL_COMPILE external_deps_pool
+    set_target_properties(rocprofiler-systems-tbb-build PROPERTIES JOB_POOL_COMPILE external_deps_pool
                                                   JOB_POOL_LINK external_deps_pool)
-    add_dependencies(external-prebuild TBB-External)
+    add_dependencies(external-prebuild rocprofiler-systems-tbb-build)
 endif()
 
 include(DyninstElfUtils)
@@ -87,10 +87,10 @@ if(NOT TARGET Dyninst::ElfUtils AND TARGET ElfUtils)
     message(STATUS "Created imported target Dyninst::ElfUtils linked to ElfUtils")
 endif()
 
-if(NOT TARGET Dyninst::TBB AND TARGET TBB)
+if(NOT TARGET Dyninst::TBB AND TARGET rocprofiler-systems-tbb)
     add_library(Dyninst::TBB INTERFACE IMPORTED)
-    set_target_properties(Dyninst::TBB PROPERTIES INTERFACE_LINK_LIBRARIES TBB)
-    message(STATUS "Created imported target Dyninst::TBB linked to TBB")
+    set_target_properties(Dyninst::TBB PROPERTIES INTERFACE_LINK_LIBRARIES rocprofiler-systems-tbb)
+    message(STATUS "Created imported target Dyninst::TBB linked to rocprofiler-systems-tbb")
 endif()
 
 if(NOT TARGET Dyninst::LibIberty AND TARGET LibIberty)
