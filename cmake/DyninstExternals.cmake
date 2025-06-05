@@ -29,15 +29,16 @@ set(TPL_STAGING_PREFIX
 file(MAKE_DIRECTORY "${TPL_STAGING_PREFIX}")
 file(MAKE_DIRECTORY "${TPL_STAGING_PREFIX}/include")
 
+add_custom_target(external-prebuild)
+
 # Add external dependencies to be built
 include(DyninstBoost)
-if(TARGET Boost-External)
+if(TARGET rocprofiler-systems-boost-build)
     # Make Boost build serially
-    set_target_properties(Boost-External PROPERTIES JOB_POOL_COMPILE external_deps_pool
+    set_target_properties(rocprofiler-systems-boost PROPERTIES JOB_POOL_COMPILE external_deps_pool
                                                     JOB_POOL_LINK external_deps_pool)
     # Create a prebuild target that depends on Boost
-    add_custom_target(external-prebuild)
-    add_dependencies(external-prebuild Boost-External)
+    add_dependencies(external-prebuild rocprofiler-systems-boost-build)
 endif()
 
 include(DyninstTBB)
@@ -74,10 +75,10 @@ if(TARGET external-prebuild)
     add_dependencies(external-deps-complete external-prebuild)
 endif()
 
-if(NOT TARGET Dyninst::Boost AND TARGET Boost)
+if(NOT TARGET Dyninst::Boost AND TARGET rocprofiler-systems-boost)
     add_library(Dyninst::Boost INTERFACE IMPORTED)
-    set_target_properties(Dyninst::Boost PROPERTIES INTERFACE_LINK_LIBRARIES Boost)
-    message(STATUS "Created imported target Dyninst::Boost linked to Boost")
+    set_target_properties(Dyninst::Boost PROPERTIES INTERFACE_LINK_LIBRARIES rocprofiler-systems-boost)
+    message(STATUS "Created imported target Dyninst::Boost linked to rocprofiler-systems-boost")
 endif()
 
 if(NOT TARGET Dyninst::ElfUtils AND TARGET ElfUtils)

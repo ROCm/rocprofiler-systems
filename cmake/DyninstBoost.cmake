@@ -45,7 +45,7 @@
 include_guard(GLOBAL)
 
 # always provide Dyninst::Boost even if it is empty
-rocprofiler_systems_add_interface_library(Boost "Boost interface library")
+rocprofiler_systems_add_interface_library(rocprofiler-systems-boost "Boost interface library")
 
 if(NOT BUILD_BOOST)
     find_package(Boost)
@@ -327,7 +327,7 @@ else()
 
     include(ExternalProject)
     externalproject_add(
-        Boost-External
+        rocprofiler-systems-boost-build
         PREFIX ${PROJECT_BINARY_DIR}/boost
         GIT_REPOSITORY https://github.com/boostorg/boost.git
         GIT_TAG boost-${ROCPROFSYS_BOOST_DOWNLOAD_VERSION}
@@ -341,7 +341,7 @@ else()
 
     # target for re-executing the installation
     add_custom_target(
-        install-boost-external
+        rocprofiler-systems-boost-install
         COMMAND ${BOOST_BUILD} ${BOOST_ARGS} -d0 install
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/boost/src/Boost-External
         COMMENT "Installing Boost...")
@@ -369,10 +369,10 @@ set(Boost_LIBRARIES
     ${Boost_LIBRARIES}
     CACHE FILEPATH "Boost library files" FORCE)
 
-target_include_directories(Boost SYSTEM INTERFACE ${Boost_INCLUDE_DIRS})
-target_compile_definitions(Boost INTERFACE ${Boost_DEFINITIONS})
-target_link_directories(Boost INTERFACE ${Boost_LIBRARY_DIRS})
-target_link_libraries(Boost INTERFACE ${Boost_LIBRARIES})
+target_include_directories(rocprofiler-systems-boost SYSTEM INTERFACE ${Boost_INCLUDE_DIRS})
+target_compile_definitions(rocprofiler-systems-boost INTERFACE ${Boost_DEFINITIONS})
+target_link_directories(rocprofiler-systems-boost INTERFACE ${Boost_LIBRARY_DIRS})
+target_link_libraries(rocprofiler-systems-boost INTERFACE ${Boost_LIBRARIES})
 
 rocprofiler_systems_message(STATUS "Boost includes: ${Boost_INCLUDE_DIRS}")
 rocprofiler_systems_message(STATUS "Boost library dirs: ${Boost_LIBRARY_DIRS}")
