@@ -57,11 +57,11 @@ if(TARGET ElfUtils-External AND TARGET external-prebuild)
 endif()
 
 include(DyninstLibIberty)
-if(TARGET LibIberty-External AND TARGET external-prebuild)
+if(TARGET rocprofiler-systems-libiberty-build AND TARGET external-prebuild)
     set_target_properties(
-        LibIberty-External PROPERTIES JOB_POOL_COMPILE external_deps_pool
-                                      JOB_POOL_LINK external_deps_pool)
-    add_dependencies(external-prebuild LibIberty-External)
+        rocprofiler-systems-libiberty-build PROPERTIES JOB_POOL_COMPILE external_deps_pool
+                                                       JOB_POOL_LINK external_deps_pool)
+    add_dependencies(external-prebuild rocprofiler-systems-libiberty-build)
 endif()
 
 # Final dependency check
@@ -93,11 +93,11 @@ if(NOT TARGET Dyninst::TBB AND TARGET rocprofiler-systems-tbb)
     message(STATUS "Created imported target Dyninst::TBB linked to rocprofiler-systems-tbb")
 endif()
 
-if(NOT TARGET Dyninst::LibIberty AND TARGET LibIberty)
+if(NOT TARGET Dyninst::LibIberty AND TARGET rocprofiler-systems-libiberty)
     add_library(Dyninst::LibIberty INTERFACE IMPORTED)
     set_target_properties(Dyninst::LibIberty PROPERTIES INTERFACE_LINK_LIBRARIES
-                                                        LibIberty)
-    message(STATUS "Created imported target Dyninst::LibIberty linked to LibIberty")
+                                                        rocprofiler-systems-libiberty)
+    message(STATUS "Created imported target Dyninst::LibIberty linked to rocprofiler-systems-libiberty")
 endif()
 
 # for packaging

@@ -22,7 +22,7 @@
 include_guard(GLOBAL)
 
 # always provide Dyninst::LibIberty even if it is empty
-rocprofiler_systems_add_interface_library(LibIberty "LibIberty interface library")
+rocprofiler_systems_add_interface_library(rocprofiler-systems-libiberty "LibIberty interface library")
 
 if(NOT UNIX)
     return()
@@ -66,9 +66,11 @@ else()
     rocprofiler_systems_message(STATUS
                                 "Attempting to build LibIberty as external project")
 
+    set(_li_project_name rocprofiler-systems-libiberty-build)
+    set(_li_working_dir ${PROJECT_BINARY_DIR}/binutils/src/${_li_project_name})
     set(_li_root ${TPL_STAGING_PREFIX})
     set(_li_inc_dirs
-        $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/binutils/src/LibIberty-External/include>)
+        $<BUILD_INTERFACE:${_li_working_dir}/include>)
     set(_li_lib_dirs $<BUILD_INTERFACE:${_li_root}/lib>
                      $<INSTALL_INTERFACE:${INSTALL_LIB_DIR}/${TPL_INSTALL_LIB_DIR}>)
     set(_li_libs
@@ -77,12 +79,12 @@ else()
         )
     set(_li_build_byproducts "${_li_root}/lib/libiberty${CMAKE_STATIC_LIBRARY_SUFFIX}")
 
-    file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/binutils/src/LibIberty-External/lib")
-    file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/binutils/src/LibIberty-External/include")
+    file(MAKE_DIRECTORY "${_li_working_dir}/lib")
+    file(MAKE_DIRECTORY "${_li_working_dir}/include")
 
     include(ExternalProject)
     externalproject_add(
-        LibIberty-External
+        ${_li_project_name}
         PREFIX ${PROJECT_BINARY_DIR}/binutils
         URL ${DYNINST_BINUTILS_DOWNLOAD_URL}
             http://ftpmirror.gnu.org/gnu/binutils/binutils-2.42.tar.gz
@@ -97,23 +99,23 @@ else()
         INSTALL_COMMAND "")
 
     add_custom_command(
-        TARGET LibIberty-External
+        TARGET ${_li_project_name}
         POST_BUILD
         COMMAND ${CMAKE_COMMAND} ARGS -E make_directory ${TPL_STAGING_PREFIX}/lib
         COMMAND
             install ARGS -C
-            ${PROJECT_BINARY_DIR}/binutils/src/LibIberty-External/libiberty/libiberty.a
+            ${_li_working_dir}/libiberty/libiberty.a
             ${TPL_STAGING_PREFIX}/lib
         COMMENT "Installing LibIberty...")
 
     # target for re-executing the installation
     add_custom_target(
-        install-libiberty-external
+        rocprofiler-systems-libiberty-install
         COMMAND
             install -C
-            ${PROJECT_BINARY_DIR}/binutils/src/LibIberty-External/libiberty/libiberty.a
+            ${_li_working_dir}/libiberty/libiberty.a
             ${TPL_STAGING_PREFIX}/lib
-        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/binutils/src/LibIberty-External
+        WORKING_DIRECTORY ${_li_working_dir}
         COMMENT "Installing LibIberty...")
 
     # For backward compatibility
@@ -129,9 +131,9 @@ foreach(_DIR_TYPE inc lib)
     endif()
 endforeach()
 
-target_include_directories(LibIberty INTERFACE ${_li_inc_dirs})
-target_link_directories(LibIberty INTERFACE ${_lib_lib_dirs})
-target_link_libraries(LibIberty INTERFACE ${_li_libs})
+target_include_directories(rocprofiler-systems-libiberty INTERFACE ${_li_inc_dirs})
+target_link_directories(rocprofiler-systems-libiberty INTERFACE ${_lib_lib_dirs})
+target_link_libraries(rocprofiler-systems-libiberty INTERFACE ${_li_libs})
 
 set(LibIberty_ROOT_DIR
     ${_li_root}
