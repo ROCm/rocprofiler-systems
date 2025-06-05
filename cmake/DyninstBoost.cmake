@@ -45,7 +45,8 @@
 include_guard(GLOBAL)
 
 # always provide Dyninst::Boost even if it is empty
-rocprofiler_systems_add_interface_library(rocprofiler-systems-boost "Boost interface library")
+rocprofiler_systems_add_interface_library(rocprofiler-systems-boost
+                                          "Boost interface library")
 
 if(NOT BUILD_BOOST)
     find_package(Boost)
@@ -369,7 +370,8 @@ set(Boost_LIBRARIES
     ${Boost_LIBRARIES}
     CACHE FILEPATH "Boost library files" FORCE)
 
-target_include_directories(rocprofiler-systems-boost SYSTEM INTERFACE ${Boost_INCLUDE_DIRS})
+target_include_directories(rocprofiler-systems-boost SYSTEM
+                           INTERFACE ${Boost_INCLUDE_DIRS})
 target_compile_definitions(rocprofiler-systems-boost INTERFACE ${Boost_DEFINITIONS})
 target_link_directories(rocprofiler-systems-boost INTERFACE ${Boost_LIBRARY_DIRS})
 target_link_libraries(rocprofiler-systems-boost INTERFACE ${Boost_LIBRARIES})

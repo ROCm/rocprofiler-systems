@@ -34,7 +34,8 @@
 include_guard(GLOBAL)
 
 # always provide Dyninst::TBB even if it is a dummy
-rocprofiler_systems_add_interface_library(rocprofiler-systems-tbb "Threading Building Blocks")
+rocprofiler_systems_add_interface_library(rocprofiler-systems-tbb
+                                          "Threading Building Blocks")
 
 if(TBB_FOUND)
     return()

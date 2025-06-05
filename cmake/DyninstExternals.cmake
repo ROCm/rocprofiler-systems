@@ -3,7 +3,10 @@ include(MacroUtilities)
 # Map deprecated DYNINST_BUILD_* variables to new ROCPROFSYS_BUILD_* variables
 foreach(dep BOOST TBB ELFUTILS LIBIBERTY)
     if(DYNINST_BUILD_${dep})
-        message(WARNING "DYNINST_BUILD_${dep} is deprecated. Use ROCPROFSYS_BUILD_${dep} instead.")
+        message(
+            WARNING
+                "DYNINST_BUILD_${dep} is deprecated. Use ROCPROFSYS_BUILD_${dep} instead."
+            )
         set(ROCPROFSYS_BUILD_${dep} ON)
     endif()
 endforeach()
@@ -12,13 +15,16 @@ endforeach()
 foreach(dep BOOST TBB ELFUTILS LIBIBERTY)
     if(ROCPROFSYS_BUILD_${dep})
         if(dep STREQUAL "BOOST")
-            rocprofiler_systems_add_option(BUILD_BOOST "Enable building Boost internally" ON)
+            rocprofiler_systems_add_option(BUILD_BOOST "Enable building Boost internally"
+                                           ON)
         elseif(dep STREQUAL "TBB")
             rocprofiler_systems_add_option(BUILD_TBB "Enable building TBB internally" ON)
         elseif(dep STREQUAL "ELFUTILS")
-            rocprofiler_systems_add_option(BUILD_ELFUTILS "Enable building elfutils internally" ON)
+            rocprofiler_systems_add_option(BUILD_ELFUTILS
+                                           "Enable building elfutils internally" ON)
         elseif(dep STREQUAL "LIBIBERTY")
-            rocprofiler_systems_add_option(BUILD_LIBIBERTY "Enable building libiberty internally" ON)
+            rocprofiler_systems_add_option(BUILD_LIBIBERTY
+                                           "Enable building libiberty internally" ON)
         endif()
     endif()
 endforeach()
@@ -35,8 +41,9 @@ add_custom_target(external-prebuild)
 include(DyninstBoost)
 if(TARGET rocprofiler-systems-boost-build)
     # Make Boost build serially
-    set_target_properties(rocprofiler-systems-boost PROPERTIES JOB_POOL_COMPILE external_deps_pool
-                                                    JOB_POOL_LINK external_deps_pool)
+    set_target_properties(
+        rocprofiler-systems-boost PROPERTIES JOB_POOL_COMPILE external_deps_pool
+                                             JOB_POOL_LINK external_deps_pool)
     # Create a prebuild target that depends on Boost
     add_dependencies(external-prebuild rocprofiler-systems-boost-build)
 endif()
@@ -44,8 +51,9 @@ endif()
 include(DyninstTBB)
 if(TARGET rocprofiler-systems-tbb-build AND TARGET external-prebuild)
     # Make TBB build serially and wait for Boost
-    set_target_properties(rocprofiler-systems-tbb-build PROPERTIES JOB_POOL_COMPILE external_deps_pool
-                                                  JOB_POOL_LINK external_deps_pool)
+    set_target_properties(
+        rocprofiler-systems-tbb-build PROPERTIES JOB_POOL_COMPILE external_deps_pool
+                                                 JOB_POOL_LINK external_deps_pool)
     add_dependencies(external-prebuild rocprofiler-systems-tbb-build)
 endif()
 
@@ -77,8 +85,11 @@ endif()
 
 if(NOT TARGET Dyninst::Boost AND TARGET rocprofiler-systems-boost)
     add_library(Dyninst::Boost INTERFACE IMPORTED)
-    set_target_properties(Dyninst::Boost PROPERTIES INTERFACE_LINK_LIBRARIES rocprofiler-systems-boost)
-    message(STATUS "Created imported target Dyninst::Boost linked to rocprofiler-systems-boost")
+    set_target_properties(Dyninst::Boost PROPERTIES INTERFACE_LINK_LIBRARIES
+                                                    rocprofiler-systems-boost)
+    message(
+        STATUS
+            "Created imported target Dyninst::Boost linked to rocprofiler-systems-boost")
 endif()
 
 if(NOT TARGET Dyninst::ElfUtils AND TARGET ElfUtils)
@@ -89,15 +100,20 @@ endif()
 
 if(NOT TARGET Dyninst::TBB AND TARGET rocprofiler-systems-tbb)
     add_library(Dyninst::TBB INTERFACE IMPORTED)
-    set_target_properties(Dyninst::TBB PROPERTIES INTERFACE_LINK_LIBRARIES rocprofiler-systems-tbb)
-    message(STATUS "Created imported target Dyninst::TBB linked to rocprofiler-systems-tbb")
+    set_target_properties(Dyninst::TBB PROPERTIES INTERFACE_LINK_LIBRARIES
+                                                  rocprofiler-systems-tbb)
+    message(
+        STATUS "Created imported target Dyninst::TBB linked to rocprofiler-systems-tbb")
 endif()
 
 if(NOT TARGET Dyninst::LibIberty AND TARGET rocprofiler-systems-libiberty)
     add_library(Dyninst::LibIberty INTERFACE IMPORTED)
     set_target_properties(Dyninst::LibIberty PROPERTIES INTERFACE_LINK_LIBRARIES
                                                         rocprofiler-systems-libiberty)
-    message(STATUS "Created imported target Dyninst::LibIberty linked to rocprofiler-systems-libiberty")
+    message(
+        STATUS
+            "Created imported target Dyninst::LibIberty linked to rocprofiler-systems-libiberty"
+        )
 endif()
 
 # for packaging

@@ -22,7 +22,8 @@
 include_guard(GLOBAL)
 
 # always provide Dyninst::LibIberty even if it is empty
-rocprofiler_systems_add_interface_library(rocprofiler-systems-libiberty "LibIberty interface library")
+rocprofiler_systems_add_interface_library(rocprofiler-systems-libiberty
+                                          "LibIberty interface library")
 
 if(NOT UNIX)
     return()
@@ -69,8 +70,7 @@ else()
     set(_li_project_name rocprofiler-systems-libiberty-build)
     set(_li_working_dir ${PROJECT_BINARY_DIR}/binutils/src/${_li_project_name})
     set(_li_root ${TPL_STAGING_PREFIX})
-    set(_li_inc_dirs
-        $<BUILD_INTERFACE:${_li_working_dir}/include>)
+    set(_li_inc_dirs $<BUILD_INTERFACE:${_li_working_dir}/include>)
     set(_li_lib_dirs $<BUILD_INTERFACE:${_li_root}/lib>
                      $<INSTALL_INTERFACE:${INSTALL_LIB_DIR}/${TPL_INSTALL_LIB_DIR}>)
     set(_li_libs
@@ -102,19 +102,15 @@ else()
         TARGET ${_li_project_name}
         POST_BUILD
         COMMAND ${CMAKE_COMMAND} ARGS -E make_directory ${TPL_STAGING_PREFIX}/lib
-        COMMAND
-            install ARGS -C
-            ${_li_working_dir}/libiberty/libiberty.a
-            ${TPL_STAGING_PREFIX}/lib
+        COMMAND install ARGS -C ${_li_working_dir}/libiberty/libiberty.a
+                ${TPL_STAGING_PREFIX}/lib
         COMMENT "Installing LibIberty...")
 
     # target for re-executing the installation
     add_custom_target(
         rocprofiler-systems-libiberty-install
-        COMMAND
-            install -C
-            ${_li_working_dir}/libiberty/libiberty.a
-            ${TPL_STAGING_PREFIX}/lib
+        COMMAND install -C ${_li_working_dir}/libiberty/libiberty.a
+                ${TPL_STAGING_PREFIX}/lib
         WORKING_DIRECTORY ${_li_working_dir}
         COMMENT "Installing LibIberty...")
 
