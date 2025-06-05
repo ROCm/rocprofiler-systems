@@ -74,7 +74,7 @@ struct ompt : comp::base<ompt, void>
     ompt(const ompt&)     = default;
     ompt(ompt&&) noexcept = default;
 
-    ompt& operator=(const ompt&) = default;
+    ompt& operator=(const ompt&)     = default;
     ompt& operator=(ompt&&) noexcept = default;
 
     template <typename... Args>
@@ -151,7 +151,6 @@ struct ompt : comp::base<ompt, void>
                        const context_info_t& common)
     {
         (void) thrd_id;
-        (void) targ_id;
 
         auto _annotate = [&](::perfetto::EventContext ctx) {
             if(config::get_perfetto_annotations())
@@ -163,10 +162,7 @@ struct ompt : comp::base<ompt, void>
 
         auto _track = tracing::get_perfetto_track(
             category::ompt{},
-            [](uint64_t _targ_id_v) {
-                return ::timemory::join::join("", "OMP Target ", _targ_id_v);
-            },
-            targ_id);
+            [](auto) -> std::string { return "OpenMP Target Offloads"; }, 0);
 
         category_region<category::ompt>::start<tim::quirk::perfetto>(
             name, _track, beg_time, ::perfetto::Flow::ProcessScoped(id),
