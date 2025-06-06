@@ -130,15 +130,15 @@ else()
     endif()
 
     set(TBB_ROOT_DIR
-        ${CMAKE_INSTALL_PREFIX}
+        ${TPL_STAGING_PREFIX}/tbb
         CACHE PATH "TBB root directory" FORCE)
 
     set(_tbb_libraries)
     set(_tbb_components_cfg)
-    set(_tbb_library_dirs $<BUILD_INTERFACE:${TPL_STAGING_PREFIX}/lib>
+    set(_tbb_library_dirs $<BUILD_INTERFACE:${TBB_ROOT_DIR}/lib>
                           $<INSTALL_INTERFACE:${INSTALL_LIB_DIR}/${TPL_INSTALL_LIB_DIR}>)
     set(_tbb_include_dirs
-        $<BUILD_INTERFACE:${TPL_STAGING_PREFIX}/include>
+        $<BUILD_INTERFACE:${TBB_ROOT_DIR}/include>
         $<INSTALL_INTERFACE:${INSTALL_LIB_DIR}/${TPL_INSTALL_INCLUDE_DIR}>)
 
     # Forcibly update the cache variables
@@ -152,6 +152,9 @@ else()
         ""
         CACHE STRING "TBB compiler definitions" FORCE)
 
+    file(MAKE_DIRECTORY "${TBB_ROOT_DIR}/include")
+    file(MAKE_DIRECTORY "${TBB_ROOT_DIR}/lib")
+
     foreach(c ${_tbb_components})
         # Generate make target names
         if(${c} STREQUAL tbbmalloc_proxy)
@@ -162,13 +165,13 @@ else()
         endif()
 
         set(_tbb_${c}_lib
-            $<BUILD_INTERFACE:${TPL_STAGING_PREFIX}/lib/lib${c}${CMAKE_SHARED_LIBRARY_SUFFIX}>
+            $<BUILD_INTERFACE:${TBB_ROOT_DIR}/lib/lib${c}${CMAKE_SHARED_LIBRARY_SUFFIX}>
             $<INSTALL_INTERFACE:${c}>)
 
         # Generate library filenames
         list(APPEND _tbb_libraries ${_tbb_${c}_lib})
         list(APPEND _tbb_build_byproducts
-             "${TPL_STAGING_PREFIX}/lib/lib${c}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+             "${TBB_ROOT_DIR}/lib/lib${c}${CMAKE_SHARED_LIBRARY_SUFFIX}")
 
         foreach(t RELEASE DEBUG)
             set(TBB_${c}_LIBRARY_${t}
@@ -185,8 +188,6 @@ else()
     string(REGEX REPLACE "\\." ";" _tbb_download_name ${TBB_MIN_VERSION})
     list(GET _tbb_download_name 0 _tbb_ver_major)
     list(GET _tbb_download_name 1 _tbb_ver_minor)
-
-    set(_tbb_prefix_dir ${PROJECT_BINARY_DIR}/tbb)
 
     # Set the compiler for TBB It assumes gcc and tests for Intel, so clang is the only
     # one that needs special treatment.
@@ -211,15 +212,15 @@ else()
     include(ExternalProject)
     externalproject_add(
         rocprofiler-systems-tbb-build
-        PREFIX ${_tbb_prefix_dir}
+        PREFIX ${TBB_ROOT_DIR}
         URL https://github.com/ajanicijamd/oneTBB/archive/refs/tags/v${_tbb_ver_major}.${_tbb_ver_minor}.01.tar.gz
         BUILD_IN_SOURCE 1
         CONFIGURE_COMMAND ""
         BUILD_COMMAND
             ${CMAKE_COMMAND} -E env CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER}
             [=[LDFLAGS=-Wl,-rpath='$$ORIGIN']=] ${MAKE_EXECUTABLE} -C src
-            ${_tbb_components_cfg} tbb_build_dir=${_tbb_prefix_dir}/src
-            tbb_build_prefix=tbb ${_tbb_compiler}
+            ${_tbb_components_cfg} tbb_build_dir=${TBB_ROOT_DIR}/src tbb_build_prefix=tbb
+            ${_tbb_compiler}
         BUILD_BYPRODUCTS ${_tbb_build_byproducts}
         INSTALL_COMMAND "")
 
@@ -228,8 +229,8 @@ else()
         TARGET rocprofiler-systems-tbb-build
         POST_BUILD
         COMMAND
-            ${CMAKE_COMMAND} ARGS -DLIBDIR=${TPL_STAGING_PREFIX}/lib
-            -DINCDIR=${TPL_STAGING_PREFIX}/include -DPREFIX=${_tbb_prefix_dir}
+            ${CMAKE_COMMAND} ARGS -DLIBDIR=${TBB_LIBRARY_DIRS}
+            -DINCDIR=${TBB_INCLUDE_DIRS} -DPREFIX=${TBB_ROOT_DIR}
             -DCMAKE_STRIP=${CMAKE_STRIP} -P
             ${CMAKE_CURRENT_LIST_DIR}/DyninstTBBInstall.cmake
         COMMENT "Installing TBB...")
@@ -237,9 +238,8 @@ else()
     add_custom_target(
         rocprofiler-systems-tbb-install
         COMMAND
-            ${CMAKE_COMMAND} -DLIBDIR=${TPL_STAGING_PREFIX}/lib
-            -DINCDIR=${TPL_STAGING_PREFIX}/include -DPREFIX=${_tbb_prefix_dir} -P
-            ${CMAKE_CURRENT_LIST_DIR}/DyninstTBBInstall.cmake
+            ${CMAKE_COMMAND} -DLIBDIR=${TBB_LIBRARY_DIRS} -DINCDIR=${TBB_INCLUDE_DIRS}
+            -DPREFIX=${TBB_ROOT_DIR} -P ${CMAKE_CURRENT_LIST_DIR}/DyninstTBBInstall.cmake
         COMMENT "Installing TBB...")
 endif()
 
