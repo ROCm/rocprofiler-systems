@@ -30,7 +30,7 @@ foreach(dep BOOST TBB ELFUTILS LIBIBERTY)
 endforeach()
 
 set(TPL_STAGING_PREFIX
-    "${PROJECT_BINARY_DIR}/tpls"
+    "${PROJECT_BINARY_DIR}/external"
     CACHE PATH "Third-party library build-tree install prefix")
 file(MAKE_DIRECTORY "${TPL_STAGING_PREFIX}")
 file(MAKE_DIRECTORY "${TPL_STAGING_PREFIX}/include")

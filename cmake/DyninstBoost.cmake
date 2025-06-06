@@ -216,19 +216,22 @@ else()
 
     # Change the base directory
     set(Boost_ROOT_DIR
-        ${TPL_STAGING_PREFIX}
+        ${TPL_STAGING_PREFIX}/boost
         CACHE PATH "Base directory the of Boost installation" FORCE)
 
     # Update the exported variables
     set(Boost_INCLUDE_DIRS
-        "$<BUILD_INTERFACE:${TPL_STAGING_PREFIX}/include>;$<INSTALL_INTERFACE:${CMAKE_INSTALL_LIBDIR}/${TPL_INSTALL_INCLUDE_DIR}>"
+        "$<BUILD_INTERFACE:${Boost_ROOT_DIR}/include>;$<INSTALL_INTERFACE:${CMAKE_INSTALL_LIBDIR}/${TPL_INSTALL_INCLUDE_DIR}>"
         CACHE PATH "Boost include directory" FORCE)
     set(Boost_LIBRARY_DIRS
-        "$<BUILD_INTERFACE:${TPL_STAGING_PREFIX}/lib>;$<INSTALL_INTERFACE:${CMAKE_INSTALL_LIBDIR}/${TPL_INSTALL_LIB_DIR}>"
+        "$<BUILD_INTERFACE:${Boost_ROOT_DIR}/lib>;$<INSTALL_INTERFACE:${CMAKE_INSTALL_LIBDIR}/${TPL_INSTALL_LIB_DIR}>"
         CACHE PATH "Boost library directory" FORCE)
     set(Boost_INCLUDE_DIR
         ${Boost_INCLUDE_DIRS}
         CACHE PATH "Boost include directory" FORCE)
+
+    file(MAKE_DIRECTORY ${Boost_ROOT_DIR}/include)
+    file(MAKE_DIRECTORY ${Boost_ROOT_DIR}/lib)
 
     if(BOOST_LINK_STATIC)
         set(_BOOST_LINK static)
@@ -285,12 +288,12 @@ else()
         foreach(c ${_boost_components})
             list(APPEND Boost_LIBRARIES "optimized libboost_${c} debug libboost_${c}-gd ")
             list(APPEND _boost_build_byproducts
-                 "{TPL_STAGING_PREFIX}/lib/libboost_${c}${_LIB_SUFFIX}")
+                 "{Boost_ROOT_DIR}/lib/libboost_${c}${_LIB_SUFFIX}")
             set(Boost_${c}_LIBRARY
-                $<BUILD_INTERFACE:${TPL_STAGING_PREFIX}/lib/libboost_${c}${_LIB_SUFFIX}>
+                $<BUILD_INTERFACE:${Boost_ROOT_DIR}/lib/libboost_${c}${_LIB_SUFFIX}>
                 $<INSTALL_INTERFACE:boost_${c}>)
             set(Boost_${c}_LIBRARY_DEBUG
-                $<BUILD_INTERFACE:${TPL_STAGING_PREFIX}/lib/libboost_${c}${_LIB_SUFFIX}>
+                $<BUILD_INTERFACE:${Boost_ROOT_DIR}/lib/libboost_${c}${_LIB_SUFFIX}>
                 $<INSTALL_INTERFACE:libboost_${c}-gd>)
 
             # Also export cache variables for the file location of each library
@@ -308,11 +311,11 @@ else()
         set(Boost_LIBRARIES "")
         foreach(c ${_boost_components})
             set(Boost_${c}_LIBRARY
-                $<BUILD_INTERFACE:${TPL_STAGING_PREFIX}/lib/libboost_${c}${_LIB_SUFFIX}>
+                $<BUILD_INTERFACE:${Boost_ROOT_DIR}/lib/libboost_${c}${_LIB_SUFFIX}>
                 $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${INSTALL_LIB_DIR}/${TPL_INSTALL_LIB_DIR}/libboost_${c}${_LIB_SUFFIX}>
                 )
             list(APPEND _boost_build_byproducts
-                 "${TPL_STAGING_PREFIX}/lib/libboost_${c}${_LIB_SUFFIX}")
+                 "${Boost_ROOT_DIR}/lib/libboost_${c}${_LIB_SUFFIX}")
             list(APPEND Boost_LIBRARIES "${Boost_${c}_LIBRARY}")
 
             # Also export cache variables for the file location of each library
@@ -329,7 +332,7 @@ else()
     include(ExternalProject)
     externalproject_add(
         rocprofiler-systems-boost-build
-        PREFIX ${PROJECT_BINARY_DIR}/boost
+        PREFIX ${Boost_ROOT_DIR}
         GIT_REPOSITORY https://github.com/boostorg/boost.git
         GIT_TAG boost-${ROCPROFSYS_BOOST_DOWNLOAD_VERSION}
         BUILD_IN_SOURCE 1
@@ -344,7 +347,7 @@ else()
     add_custom_target(
         rocprofiler-systems-boost-install
         COMMAND ${BOOST_BUILD} ${BOOST_ARGS} -d0 install
-        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/boost/src/Boost-External
+        WORKING_DIRECTORY ${Boost_ROOT_DIR}/src/Boost-External
         COMMENT "Installing Boost...")
 endif()
 
