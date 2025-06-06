@@ -8,6 +8,8 @@ Full documentation for ROCm Systems Profiler is available at [https://rocm.docs.
 
 - Fixed the file path to the script that merges Perfetto files from multi-process MPI runs. The script has also been renamed from "merge-multiprocess-output.sh" to "rocprof-sys-merge-output.sh".
 
+- Improve readability of OpenMP target offload traces by showing on a single Perfetto track.
+
 ## ROCm Systems Profiler 1.0.1 for ROCm 6.4.1
 
 ### Added
