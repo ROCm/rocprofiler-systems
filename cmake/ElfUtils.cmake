@@ -94,13 +94,10 @@ endif()
 set(_eu_root ${PROJECT_BINARY_DIR}/external/elfutils)
 set(_eu_inc_dirs $<BUILD_INTERFACE:${_eu_root}/include>)
 set(_eu_lib_dirs $<BUILD_INTERFACE:${_eu_root}/lib>)
-set(_eu_libs $<BUILD_INTERFACE:${_eu_root}/lib/libdw${CMAKE_SHARED_LIBRARY_SUFFIX}>
-             $<BUILD_INTERFACE:${_eu_root}/lib/libelf${CMAKE_SHARED_LIBRARY_SUFFIX}>)
-set(_eu_build_byproducts "${_eu_root}/lib/libdw${CMAKE_SHARED_LIBRARY_SUFFIX}"
-                         "${_eu_root}/lib/libelf${CMAKE_SHARED_LIBRARY_SUFFIX}")
-
-file(MAKE_DIRECTORY ${_eu_root}/include)
-file(MAKE_DIRECTORY ${_eu_root}/lib)
+set(_eu_libs $<BUILD_INTERFACE:${_eu_root}/lib/libdw${CMAKE_STATIC_LIBRARY_SUFFIX}>
+             $<BUILD_INTERFACE:${_eu_root}/lib/libelf${CMAKE_STATIC_LIBRARY_SUFFIX}>)
+set(_eu_build_byproducts "${_eu_root}/lib/libdw${CMAKE_STATIC_LIBRARY_SUFFIX}"
+                         "${_eu_root}/lib/libelf${CMAKE_STATIC_LIBRARY_SUFFIX}")
 
 externalproject_add(
     rocprofiler-systems-elfutils-build
@@ -145,7 +142,3 @@ set(ElfUtils_INCLUDE_DIR
 set(ElfUtils_LIBRARIES
     ${_eu_libs}
     CACHE FILEPATH "elfutils library files" FORCE)
-
-rocprofiler_systems_message(STATUS "ElfUtils includes: ${ElfUtils_INCLUDE_DIRS}")
-rocprofiler_systems_message(STATUS "ElfUtils library dirs: ${ElfUtils_LIBRARY_DIRS}")
-rocprofiler_systems_message(STATUS "ElfUtils libraries: ${ElfUtils_LIBRARIES}")
