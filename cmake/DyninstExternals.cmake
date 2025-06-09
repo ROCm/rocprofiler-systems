@@ -59,8 +59,9 @@ endif()
 
 include(DyninstElfUtils)
 if(TARGET rocprofiler-systems-elfutils-build AND TARGET external-prebuild)
-    set_target_properties(rocprofiler-systems-elfutils-build PROPERTIES JOB_POOL_COMPILE external_deps_pool
-                                                                        JOB_POOL_LINK external_deps_pool)
+    set_target_properties(
+        rocprofiler-systems-elfutils-build PROPERTIES JOB_POOL_COMPILE external_deps_pool
+                                                      JOB_POOL_LINK external_deps_pool)
     add_dependencies(external-prebuild rocprofiler-systems-elfutils-build)
 endif()
 
@@ -94,7 +95,8 @@ endif()
 
 if(NOT TARGET Dyninst::ElfUtils AND TARGET rocprofiler-systems-elfutils)
     add_library(Dyninst::ElfUtils INTERFACE IMPORTED)
-    set_target_properties(Dyninst::ElfUtils PROPERTIES INTERFACE_LINK_LIBRARIES rocprofiler-systems-elfutils)
+    set_target_properties(Dyninst::ElfUtils PROPERTIES INTERFACE_LINK_LIBRARIES
+                                                       rocprofiler-systems-elfutils)
     message(STATUS "Created imported target Dyninst::ElfUtils linked to ElfUtils")
 endif()
 

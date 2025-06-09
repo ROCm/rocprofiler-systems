@@ -29,7 +29,8 @@
 include_guard(GLOBAL)
 
 # always provide Dyninst::ElfUtils even if it is a dummy
-rocprofiler_systems_add_interface_library(rocprofiler-systems-elfutils "ElfUtils interface library")
+rocprofiler_systems_add_interface_library(rocprofiler-systems-elfutils
+                                          "ElfUtils interface library")
 
 if(NOT BUILD_ELFUTILS)
     find_package(Elfutils)
@@ -211,7 +212,8 @@ set(ElfUtils_LIBRARIES
     ${_eu_libs}
     CACHE FILEPATH "elfutils library files" FORCE)
 
-target_include_directories(rocprofiler-systems-elfutils SYSTEM INTERFACE ${ElfUtils_INCLUDE_DIRS})
+target_include_directories(rocprofiler-systems-elfutils SYSTEM
+                           INTERFACE ${ElfUtils_INCLUDE_DIRS})
 target_compile_definitions(rocprofiler-systems-elfutils INTERFACE ${ElfUtils_DEFINITIONS})
 target_link_directories(rocprofiler-systems-elfutils INTERFACE ${ElfUtils_LIBRARY_DIRS})
 target_link_libraries(rocprofiler-systems-elfutils INTERFACE ${ElfUtils_LIBRARIES})
