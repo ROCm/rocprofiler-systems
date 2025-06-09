@@ -21,10 +21,6 @@
 
 include_guard(GLOBAL)
 
-# always provide Dyninst::LibIberty even if it is empty
-rocprofiler_systems_add_interface_library(rocprofiler-systems-libiberty
-                                          "LibIberty interface library")
-
 if(NOT UNIX)
     return()
 endif()

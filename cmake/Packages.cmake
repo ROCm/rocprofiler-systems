@@ -15,6 +15,14 @@ rocprofiler_systems_add_interface_library(rocprofiler-systems-threading
 rocprofiler_systems_add_interface_library(
     rocprofiler-systems-dyninst
     "Provides flags and libraries for Dyninst (dynamic instrumentation)")
+rocprofiler_systems_add_interface_library(rocprofiler-systems-boost
+                                          "Boost interface library (for Dyninst)")
+rocprofiler_systems_add_interface_library(rocprofiler-systems-elfutils
+                                          "ElfUtils interface library (for Dyninst)")
+rocprofiler_systems_add_interface_library(rocprofiler-systems-libiberty
+                                          "LibIberty interface library (for Dyninst)")
+rocprofiler_systems_add_interface_library(
+    rocprofiler-systems-tbb "Threading Building Blocks interface library (for Dyninst)")
 rocprofiler_systems_add_interface_library(rocprofiler-systems-rocm
                                           "Provides flags and libraries for ROCm")
 rocprofiler_systems_add_interface_library(rocprofiler-systems-mpi
