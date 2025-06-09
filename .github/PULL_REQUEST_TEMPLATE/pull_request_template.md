@@ -20,7 +20,11 @@
 - [ ] Yes
 - [ ] No - does not apply to this PR
 
-## Have you added or updated documentation (CHANGELOG.md)?
+## Added / Updated documentation?
+- [ ] Yes
+- [ ] No - does not apply to this PR
+
+## Have you updated CHANGELOG?
 <!-- Needed for Release updates for a ROCm release. -->
 - [ ] Yes
 - [ ] No - does not apply to this PR
