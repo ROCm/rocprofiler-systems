@@ -5,6 +5,7 @@
 - [ ] Closes #<issue number or link>
 
 ## What type of PR is this? (check all that apply)
+
 - [ ] Refactor
 - [ ] Feature
 - [ ] Bug Fix
@@ -17,10 +18,12 @@
 <!-- Please explain the changes. -->
 
 ## Have you added or updated tests to validate functionality?
+
 - [ ] Yes
 - [ ] No - does not apply to this PR
 
 ## Added / Updated documentation?
+
 - [ ] Yes
 - [ ] No - does not apply to this PR
 
@@ -28,4 +31,3 @@
 <!-- Needed for Release updates for a ROCm release. -->
 - [ ] Yes
 - [ ] No - does not apply to this PR
-
