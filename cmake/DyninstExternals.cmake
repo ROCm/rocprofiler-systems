@@ -117,18 +117,3 @@ if(NOT TARGET Dyninst::LibIberty AND TARGET rocprofiler-systems-libiberty)
             "Created imported target Dyninst::LibIberty linked to rocprofiler-systems-libiberty"
         )
 endif()
-
-# for packaging
-install(
-    DIRECTORY ${TPL_STAGING_PREFIX}/lib/
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}
-    FILES_MATCHING
-    PATTERN "*${CMAKE_SHARED_LIBRARY_SUFFIX}*"
-    PATTERN "*${CMAKE_STATIC_LIBRARY_SUFFIX}*")
-
-install(
-    DIRECTORY ${TPL_STAGING_PREFIX}/tbb/lib/
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}
-    FILES_MATCHING
-    PATTERN "*${CMAKE_SHARED_LIBRARY_SUFFIX}*"
-    PATTERN "*${CMAKE_STATIC_LIBRARY_SUFFIX}*")
