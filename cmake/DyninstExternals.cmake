@@ -5,7 +5,7 @@ foreach(dep BOOST TBB ELFUTILS LIBIBERTY)
     if(DYNINST_BUILD_${dep})
         message(
             WARNING
-                "DYNINST_BUILD_${dep} is deprecated. Use ROCPROFSYS_BUILD_${dep} instead."
+                "DYNINST_BUILD_${dep} is deprecated. Using ROCPROFSYS_BUILD_${dep} instead."
             )
         set(ROCPROFSYS_BUILD_${dep} ON)
     endif()
