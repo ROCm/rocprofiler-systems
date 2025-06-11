@@ -84,6 +84,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Set LD_LIBRARY_PATH for Dyninst
+      run: |
+        echo "LD_LIBRARY_PATH=/usr/local/lib/dyninst/lib:/usr/local/lib/dyninst/lib:${LD_LIBRARY_PATH}" >> $GITHUB_ENV
+
     - name: Install Packages
       timeout-minutes: 25
       uses: nick-fields/retry@v3
@@ -267,6 +271,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Set LD_LIBRARY_PATH for Dyninst
+      run: |
+        echo "LD_LIBRARY_PATH=/usr/local/lib/dyninst/lib:/usr/local/lib/dyninst/lib:${LD_LIBRARY_PATH}" >> $GITHUB_ENV
+
     - name: Install Packages
       timeout-minutes: 25
       uses: nick-fields/retry@v3
@@ -425,6 +433,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Set LD_LIBRARY_PATH for Dyninst
+      run: |
+        echo "LD_LIBRARY_PATH=/usr/local/lib/dyninst/lib:/usr/local/lib/dyninst/lib:${LD_LIBRARY_PATH}" >> $GITHUB_ENV
 
     - name: Install Packages
       timeout-minutes: 25
