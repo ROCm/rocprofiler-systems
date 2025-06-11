@@ -6,12 +6,13 @@
 
 ## What type of PR is this? (check all that apply)
 
-- [ ] Refactor
-- [ ] Feature
 - [ ] Bug Fix
-- [ ] Optimization
-- [ ] Documentation Update
+- [ ] Cherry Pick
 - [ ] Continuous Integration
+- [ ] Documentation Update
+- [ ] Feature
+- [ ] Optimization
+- [ ] Refactor
 - [ ] Other (please specify)
 
 ## Technical Details
