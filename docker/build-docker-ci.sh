@@ -134,7 +134,7 @@ if [ ! -f ${DOCKER_FILE} ]; then
 fi
 
 verbose-run rm -rf ./dyninst-source
-verbose-run cp -r ../external/dyninst ./dyninst-source
+verbose-run git clone -b dyninst_13_external https://github.com/ROCm/dyninst.git dyninst-source
 verbose-run rm -rf ./dyninst-source/{build,install}*
 
 set -e

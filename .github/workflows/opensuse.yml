@@ -43,7 +43,7 @@ jobs:
   opensuse:
     runs-on: ubuntu-latest
     container:
-      image: dgaliffiamd/rocprofiler-systems:ci-base-opensuse-${{ matrix.os-release }}
+      image: prswarup/rocprofsys:ci-base-opensuse-${{ matrix.os-release }}
     strategy:
       fail-fast: false
       matrix:

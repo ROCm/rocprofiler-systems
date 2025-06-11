@@ -43,7 +43,7 @@ jobs:
   ubuntu-noble:
     runs-on: ubuntu-latest
     container:
-      image: dgaliffiamd/rocprofiler-systems:ci-base-ubuntu-24.04
+      image: prswarup/rocprofsys:ci-base-ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
