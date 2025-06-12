@@ -55,6 +55,7 @@ jobs:
         mpi-headers: ['OFF']
         static-libgcc: ['OFF']
         static-libstdcxx: ['OFF']
+        build-dyninst: ['OFF']
         include:
           - compiler: 'g++-9'
             lto: 'OFF'
@@ -86,7 +87,8 @@ jobs:
 
     - name: Set LD_LIBRARY_PATH for Dyninst
       run: |
-        echo "LD_LIBRARY_PATH=/usr/local/lib/dyninst/lib:/usr/local/lib/dyninst/lib:${LD_LIBRARY_PATH}" >> $GITHUB_ENV
+        echo "LD_LIBRARY_PATH=/usr/local/lib/dyninst/lib:${LD_LIBRARY_PATH}" >> $GITHUB_ENV
+        echo "CMAKE_PREFIX_PATH=/usr/local/lib/dyninst;${CMAKE_PREFIX_PATH}" >> $GITHUB_ENV
 
     - name: Install Packages
       timeout-minutes: 25
@@ -154,11 +156,11 @@ jobs:
           -DROCPROFSYS_USE_ROCM=OFF
           -DROCPROFSYS_USE_OMPT=OFF
           -DROCPROFSYS_USE_PAPI=OFF
-          -DROCPROFSYS_BUILD_DYNINST=ON
-          -DROCPROFSYS_BUILD_BOOST=ON
-          -DROCPROFSYS_BUILD_TBB=ON
-          -DROCPROFSYS_BUILD_ELFUTILS=ON
-          -DROCPROFSYS_BUILD_LIBIBERTY=ON
+          -DROCPROFSYS_BUILD_DYNINST=${{ matrix.build-dyninst }}
+          -DROCPROFSYS_BUILD_BOOST=${{ matrix.build-dyninst }}
+          -DROCPROFSYS_BUILD_TBB=${{ matrix.build-dyninst }}
+          -DROCPROFSYS_BUILD_ELFUTILS=${{ matrix.build-dyninst }}
+          -DROCPROFSYS_BUILD_LIBIBERTY=${{ matrix.build-dyninst }}
           -DROCPROFSYS_USE_PYTHON=${{ matrix.python }}
           -DROCPROFSYS_USE_MPI_HEADERS=${{ matrix.mpi-headers }}
           -DROCPROFSYS_STRIP_LIBRARIES=${{ matrix.strip }}
@@ -261,6 +263,7 @@ jobs:
         rocm-version: ['6.3']
         mpi-headers: ['OFF']
         build-jobs: ['3']
+        build-dyninst: ['ON']
         ctest-exclude: ['-LE "transpose|videodecode|jpegdecode|network"']
 
     env:
@@ -273,7 +276,8 @@ jobs:
 
     - name: Set LD_LIBRARY_PATH for Dyninst
       run: |
-        echo "LD_LIBRARY_PATH=/usr/local/lib/dyninst/lib:/usr/local/lib/dyninst/lib:${LD_LIBRARY_PATH}" >> $GITHUB_ENV
+        echo "LD_LIBRARY_PATH=/usr/local/lib/dyninst/lib:${LD_LIBRARY_PATH}" >> $GITHUB_ENV
+        echo "CMAKE_PREFIX_PATH=/usr/local/lib/dyninst;${CMAKE_PREFIX_PATH}" >> $GITHUB_ENV
 
     - name: Install Packages
       timeout-minutes: 25
@@ -359,11 +363,11 @@ jobs:
           -DROCPROFSYS_USE_OMPT=OFF
           -DROCPROFSYS_USE_PYTHON=ON
           -DROCPROFSYS_USE_MPI_HEADERS=${{ matrix.mpi-headers }}
-          -DROCPROFSYS_BUILD_DYNINST=ON
-          -DROCPROFSYS_BUILD_BOOST=ON
-          -DROCPROFSYS_BUILD_TBB=ON
-          -DROCPROFSYS_BUILD_ELFUTILS=ON
-          -DROCPROFSYS_BUILD_LIBIBERTY=ON
+          -DROCPROFSYS_BUILD_DYNINST=${{ matrix.build-dyninst }}
+          -DROCPROFSYS_BUILD_BOOST=${{ matrix.build-dyninst }}
+          -DROCPROFSYS_BUILD_TBB=${{ matrix.build-dyninst }}
+          -DROCPROFSYS_BUILD_ELFUTILS=${{ matrix.build-dyninst }}
+          -DROCPROFSYS_BUILD_LIBIBERTY=${{ matrix.build-dyninst }}
           -DROCPROFSYS_USE_SANITIZER=OFF
           -DROCPROFSYS_PYTHON_PREFIX=/opt/conda/envs
           -DROCPROFSYS_PYTHON_ENVS="py3.6;py3.7;py3.8;py3.9;py3.10;py3.11"
@@ -436,7 +440,8 @@ jobs:
 
     - name: Set LD_LIBRARY_PATH for Dyninst
       run: |
-        echo "LD_LIBRARY_PATH=/usr/local/lib/dyninst/lib:/usr/local/lib/dyninst/lib:${LD_LIBRARY_PATH}" >> $GITHUB_ENV
+        echo "LD_LIBRARY_PATH=/usr/local/lib/dyninst/lib:${LD_LIBRARY_PATH}" >> $GITHUB_ENV
+        echo "CMAKE_PREFIX_PATH=/usr/local/lib/dyninst;${CMAKE_PREFIX_PATH}" >> $GITHUB_ENV
 
     - name: Install Packages
       timeout-minutes: 25
