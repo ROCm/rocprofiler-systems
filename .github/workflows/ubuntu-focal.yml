@@ -65,6 +65,7 @@ jobs:
             mpi-headers: 'ON'
             static-libgcc: 'ON'
             static-libstdcxx: 'ON'
+            build-dyninst: ['OFF']
           - compiler: 'g++-10'
             lto: 'OFF'
             strip: 'ON'
@@ -73,6 +74,7 @@ jobs:
             mpi-headers: 'ON'
             static-libgcc: 'ON'
             static-libstdcxx: 'OFF'
+            build-dyninst: ['OFF']
           - compiler: 'g++-11'
             lto: 'ON'
             strip: 'ON'
@@ -81,6 +83,7 @@ jobs:
             mpi-headers: 'ON'
             static-libgcc: 'ON'
             static-libstdcxx: 'OFF'
+            build-dyninst: ['OFF']
 
     steps:
     - uses: actions/checkout@v4
