@@ -32,11 +32,11 @@ C******************************************************************************
       call MPI_COMM_SIZE( MPI_COMM_WORLD, numtasks, ierr )
       numworkers = numtasks-1
       print *, 'task ID= ',taskid
-      
+
 C *************************** master task *************************************
       if (taskid .eq. MASTER) then
 
-C     Initialize A and B 
+C     Initialize A and B
         do 30 i=1, NRA
           do 30 j=1, NCA
           a(i,j) = (i-1)+(j-1)
@@ -46,7 +46,7 @@ C     Initialize A and B
 	    b(i,j) = (i-1)*(j-1)
  40     continue
 
-C     Send matrix data to the worker tasks 
+C     Send matrix data to the worker tasks
         avecol = NCB/numworkers
         extra = mod(NCB, numworkers)
         offset = 1
@@ -58,11 +58,11 @@ C     Send matrix data to the worker tasks
             cols = avecol
           endif
           write(*,*)'   sending',cols,' cols to task',dest
-          call MPI_SEND( offset, 1, MPI_INTEGER, dest, mtype, 
+          call MPI_SEND( offset, 1, MPI_INTEGER, dest, mtype,
      &                   MPI_COMM_WORLD, ierr )
-          call MPI_SEND( cols, 1, MPI_INTEGER, dest, mtype, 
+          call MPI_SEND( cols, 1, MPI_INTEGER, dest, mtype,
      &                   MPI_COMM_WORLD, ierr )
-          call MPI_SEND( a, NRA*NCA, MPI_DOUBLE_PRECISION, dest, mtype, 
+          call MPI_SEND( a, NRA*NCA, MPI_DOUBLE_PRECISION, dest, mtype,
      &                   MPI_COMM_WORLD, ierr )
           call MPI_SEND( b(:,offset), cols*NCA, MPI_DOUBLE_PRECISION,
      &                   dest, mtype, MPI_COMM_WORLD, ierr )
@@ -77,11 +77,11 @@ C     Receive results from worker tasks
      &                   mtype, MPI_COMM_WORLD, status, ierr )
           call MPI_RECV( cols, 1, MPI_INTEGER, source,
      &                   mtype, MPI_COMM_WORLD, status, ierr )
-          call MPI_RECV( c(:,offset), cols*NRA, MPI_DOUBLE_PRECISION, 
+          call MPI_RECV( c(:,offset), cols*NRA, MPI_DOUBLE_PRECISION,
      &                   source, mtype, MPI_COMM_WORLD, status, ierr )
  60     continue
 
-C     Print results 
+C     Print results
         do 90 i=1, NRA
           do 80 j = 1, NCB
             write(*,70)c(i,j)
@@ -114,9 +114,9 @@ C     Do matrix multiply
 
 C     Send results back to master task
         mtype = FROM_WORKER
-        call MPI_SEND( offset, 1, MPI_INTEGER, MASTER, mtype, 
+        call MPI_SEND( offset, 1, MPI_INTEGER, MASTER, mtype,
      &                 MPI_COMM_WORLD, ierr )
-        call MPI_SEND( cols, 1, MPI_INTEGER, MASTER, mtype, 
+        call MPI_SEND( cols, 1, MPI_INTEGER, MASTER, mtype,
      &                 MPI_COMM_WORLD, ierr )
         call MPI_SEND( c, cols*NRA, MPI_DOUBLE_PRECISION, MASTER,
      &                  mtype, MPI_COMM_WORLD, ierr )

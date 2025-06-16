@@ -2,22 +2,22 @@ C *****************************************************************************
 C FILE: mpi_array.f
 C DESCRIPTION:
 C   MPI Example - Array Assignment - Fortran Version
-C   This program demonstrates a simple data decomposition. The master task 
+C   This program demonstrates a simple data decomposition. The master task
 C   first initializes an array and then distributes an equal portion that
 C   array to the other tasks. After the other tasks receive their portion
 C   of the array, they perform an addition operation to each array element.
 C   They also maintain a sum for their portion of the array. The master task
-C   does likewise with its portion of the array and any leftover elements. 
-C   As each of the non-master tasks finish, they send their updated portion 
-C   of the array to the master. An MPI collective communication call is used 
-C   to collect the sums maintained by each task.  Finally, the master 
-C   task displays selected parts of the final array and the global sum of 
+C   does likewise with its portion of the array and any leftover elements.
+C   As each of the non-master tasks finish, they send their updated portion
+C   of the array to the master. An MPI collective communication call is used
+C   to collect the sums maintained by each task.  Finally, the master
+C   task displays selected parts of the final array and the global sum of
 C   all array elements.
 C AUTHOR: Blaise Barney
 C LAST REVISED: 07/03/19
 C **************************************************************************
 
-      program array 
+      program array
       include 'mpif.h'
 
       integer   ARRAYSIZE, MASTER
@@ -53,7 +53,7 @@ C***** Master task only ******
 
 C       Initialize the array
         sum = 0.0
-        do i=1, ARRAYSIZE 
+        do i=1, ARRAYSIZE
           data(i) = i * 1.0
           sum = sum + data(i)
         end do
@@ -66,9 +66,9 @@ C       Send each task its portion of the array - master keeps 1st part
 C       plus leftover elements
         offset = chunksize + leftover + 1
         do dest=1, numtasks-1
-          call MPI_SEND(offset, 1, MPI_INTEGER, dest, tag1, 
+          call MPI_SEND(offset, 1, MPI_INTEGER, dest, tag1,
      &      MPI_COMM_WORLD, ierr)
-          call MPI_SEND(data(offset), chunksize, MPI_REAL8, dest, 
+          call MPI_SEND(data(offset), chunksize, MPI_REAL8, dest,
      &      tag2, MPI_COMM_WORLD, ierr)
           write(*,22) chunksize, dest, offset
   22      format('Sent ',I8,' elements to task ',I4,' offset= ',I10)
@@ -84,9 +84,9 @@ C       Wait to receive results from each task
           source = i
           call MPI_RECV(offset, 1, MPI_INTEGER, source, tag1,
      &      MPI_COMM_WORLD, status, ierr)
-          call MPI_RECV(data(offset), chunksize, MPI_REAL8, 
+          call MPI_RECV(data(offset), chunksize, MPI_REAL8,
      &      source, tag2, MPI_COMM_WORLD, status, ierr)
-        end do 
+        end do
 
 C       Get final sum and print sample results
         call MPI_Reduce(mysum, sum, 1, MPI_REAL8, MPI_SUM, MASTER,
@@ -95,7 +95,7 @@ C       Get final sum and print sample results
         offset = 1
         do i=1, numtasks
           write (*,30) data(offset:offset+4)
-  30      format(5E14.6) 
+  30      format(5E14.6)
           offset = offset + chunksize
         end do
         write(*,40) sum
@@ -142,13 +142,11 @@ C       Use sum reduction operation to obtain final sum
         real*8 mysum, data(ARRAYSIZE)
         common /a/ data
 C       Perform addition to each of my array elements and keep my sum
-        mysum = 0 
+        mysum = 0
         do i=myoffset, myoffset + chunksize-1
-          data(i) = data(i) + (i * 1.0) 
+          data(i) = data(i) + (i * 1.0)
           mysum = mysum + data(i)
         end do
         write(*,50) myid,mysum
-  50    format('Task',I4,' mysum = ',E14.6) 
+  50    format('Task',I4,' mysum = ',E14.6)
       end subroutine update
-
- 

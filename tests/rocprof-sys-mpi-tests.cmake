@@ -99,55 +99,43 @@ rocprofiler_systems_add_test(
         ">>> mpi-flat.inst(.*\n.*)>>> MPI_Init_thread(.*\n.*)>>> pthread_create(.*\n.*)>>> MPI_Comm_size(.*\n.*)>>> MPI_Comm_rank(.*\n.*)>>> MPI_Barrier(.*\n.*)>>> MPI_Alltoall"
     )
 
-if (ROCPROFSYS_USE_MPI AND CMAKE_Fortran_COMPILER)
-rocprofiler_systems_add_test(
-    SKIP_REWRITE #To be fixed before merge
-    NAME "mpi-fortran-array"
-    TARGET mpi_array
-    MPI ON
-    NUM_PROCS 2
-    ENVIRONMENT "${_mpi_fortran_environment};"
-    BASELINE_PASS_REGEX 
-        "Final sum= *0\\.400000E\\+15"
-)
+if(ROCPROFSYS_USE_MPI AND CMAKE_Fortran_COMPILER)
+    rocprofiler_systems_add_test(
+        SKIP_REWRITE # To be fixed before merge
+        NAME "mpi-fortran-array"
+        TARGET mpi_array
+        MPI ON
+        NUM_PROCS 2
+        ENVIRONMENT "${_mpi_fortran_environment};"
+        BASELINE_PASS_REGEX "Final sum= *0\\.400000E\\+15")
 
-rocprofiler_systems_add_test(
-    SKIP_REWRITE SKIP_RUNTIME # Runtime needs to be skipped as it only works on 1 thread, which code does not allow. REWRITE needs to be skipped until related issue is fixed.
-    NAME "mpi-fortran-mm"
-    TARGET mpi_mm
-    MPI ON
-    NUM_PROCS 2
-    # REWRITE_ARGS
-    #     -e
-    #     -v
-    #     2
-    #     --label
-    #     file
-    #     line
-    #     args
-    #     --min-instructions
-    #     0
-    ENVIRONMENT "${_mpi_fortran_environment};"
-    BASELINE_PASS_REGEX 
-        "1015\\.00.*44520\\.00"
-)
+    rocprofiler_systems_add_test(
+        SKIP_REWRITE SKIP_RUNTIME # Runtime needs to be skipped as it only works on 1
+                                  # thread, which code does not allow. REWRITE needs to be
+                                  # skipped until related issue is fixed.
+        NAME "mpi-fortran-mm"
+        TARGET mpi_mm
+        MPI ON
+        NUM_PROCS 2
+        # REWRITE_ARGS -e -v 2 --label file line args --min-instructions 0
+        ENVIRONMENT "${_mpi_fortran_environment};"
+        BASELINE_PASS_REGEX "1015\\.00.*44520\\.00")
 
-set(_mpi_fortran_environment
-    "ROCPROFSYS_TRACE=ON"
-    "ROCPROFSYS_PROFILE=ON"
-    "ROCPROFSYS_USE_SAMPLING=OFF"
-    "ROCPROFSYS_USE_PROCESS_SAMPLING=OFF"
-    "ROCPROFSYS_TIME_OUTPUT=OFF"
-    "ROCPROFSYS_FILE_OUTPUT=ON"
-    "ROCPROFSYS_USE_MPIP=ON"
-    "ROCPROFSYS_DEBUG=ON"
-    "ROCPROFSYS_VERBOSE=2"
-    "ROCPROFSYS_DL_VERBOSE=2"
-    "${_test_openmp_env}"
-    "${_test_library_path}")
+    set(_mpi_fortran_environment
+        "ROCPROFSYS_TRACE=ON"
+        "ROCPROFSYS_PROFILE=ON"
+        "ROCPROFSYS_USE_SAMPLING=OFF"
+        "ROCPROFSYS_USE_PROCESS_SAMPLING=OFF"
+        "ROCPROFSYS_TIME_OUTPUT=OFF"
+        "ROCPROFSYS_FILE_OUTPUT=ON"
+        "ROCPROFSYS_USE_MPIP=ON"
+        "ROCPROFSYS_DEBUG=ON"
+        "ROCPROFSYS_VERBOSE=2"
+        "ROCPROFSYS_DL_VERBOSE=2"
+        "${_test_openmp_env}"
+        "${_test_library_path}")
 
 endif()
-
 
 set(_mpip_environment
     "ROCPROFSYS_TRACE=ON"
