@@ -73,7 +73,7 @@ if(ROCPROFSYS_USE_MPI AND MPI_FOUND)
         find_package(MPI REQUIRED Fortran)
 
         add_executable(mpi_array mpi_array.f)
-        target_compile_options(mpi_array PRIVATE -fallow-argument-mismatch)
+        target_compile_options(mpi_array PRIVATE -w -fallow-argument-mismatch)
         target_link_libraries(mpi_array PRIVATE MPI::MPI_Fortran)
 
         add_executable(mpi_mm mpi_mm.f)

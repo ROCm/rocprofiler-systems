@@ -59,7 +59,7 @@ rocprofiler_systems_add_test(
     NAME "mpi-flat-mpip"
     TARGET mpi-example
     MPI ON
-    NUM_PROCS 1
+    NUM_PROCS 2
     LABELS "mpip"
     REWRITE_ARGS
         -e
