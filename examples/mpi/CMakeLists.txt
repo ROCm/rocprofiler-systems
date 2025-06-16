@@ -56,6 +56,30 @@ target_link_libraries(mpi-send-recv PRIVATE mpi-c-interface-library)
 add_executable(mpi-allreduce allreduce.c)
 target_link_libraries(mpi-allreduce PRIVATE mpi-c-interface-library m)
 
+if(ROCPROFSYS_USE_MPI AND MPI_FOUND)
+    find_program(MPI_FORTRAN_COMPILER NAMES mpifort mpif90 mpif77)
+    if (NOT MPI_FORTRAN_COMPILER)
+        message(STATUS "NOTICE: MPI Fortran compiler not found, disabling Fortran testing. Please ensure MPI is installed and the compiler is in your PATH.")
+    else()
+        message(STATUS "NOTICE: Using MPI Fortran compiler: ${MPI_FORTRAN_COMPILER}")
+        set(CMAKE_Fortran_COMPILER "${MPI_FORTRAN_COMPILER}" CACHE STRING "" FORCE)
+        enable_language(Fortran)
+
+        find_package(MPI REQUIRED Fortran)
+
+        add_executable(mpi_array mpi_array.f)
+        target_compile_options(mpi_array PRIVATE -fallow-argument-mismatch)
+        target_link_libraries(mpi_array PRIVATE MPI::MPI_Fortran)
+
+        add_executable(mpi_mm mpi_mm.f)
+        target_compile_options(mpi_mm PRIVATE -w -fallow-argument-mismatch)
+        target_link_libraries(mpi_mm PRIVATE MPI::MPI_Fortran)
+
+    endif()
+else() 
+    message(STATUS "NOTICE: MPI Fortran support is disabled. To enable, set ROCPROFSYS_USE_MPI to ON and ensure MPI is installed with Fortran support.")
+endif()
+
 set(CMAKE_BUILD_TYPE "Release")
 
 add_library(mpi-cxx-interface-library INTERFACE)
