@@ -8,7 +8,8 @@ Full documentation for ROCm Systems Profiler is available at [https://rocm.docs.
 
 - Profiling and metric collection capabilities for VCN engine activity, JPEG engine activity, and API tracing for rocDecode, rocJPEG and VA-APIs.
 - How-to document for VCN and JPEG activity sampling and tracing.
-- Support for tracing in Fortran
+- Support for tracing Fortran applications
+- Support for tracing MPI API tracing in Fortran
 
 ### Changed
 
