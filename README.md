@@ -141,14 +141,14 @@ export LD_LIBRARY_PATH=/opt/rocprofiler-systems/lib:${LD_LIBRARY_PATH}
 
 To quickly set up an environment for building and testing, run the following commands:
 
-```bash
+```shell
 cd docker
 docker compose -f docker-compose.test.yml up --force-recreate -d && docker attach rocprof-sys-test
 ```
 
 Inside the container, clean, build and install the project with tests enabled:
 
-```bash
+```shell
 rm -rf rocprof-sys-build && cmake -B rocprof-sys-build -D CMAKE_INSTALL_PREFIX=/opt/rocprofiler-systems -D ROCPROFSYS_USE_ROCM=ON -D ROCPROFSYS_USE_PYTHON=ON -D ROCPROFSYS_USE_OMPT=ON -D ROCPROFSYS_USE_MPI_HEADERS=ON -D ROCPROFSYS_BUILD_PAPI=ON -D ROCPROFSYS_BUILD_LIBUNWIND=ON -D ROCPROFSYS_BUILD_DYNINST=ON -D DYNINST_BUILD_TBB=ON -D DYNINST_BUILD_BOOST=ON -D DYNINST_BUILD_ELFUTILS=ON -D DYNINST_BUILD_LIBIBERTY=ON -D ROCPROFSYS_BUILD_TESTING=ON -D ROCPROFSYS_INSTALL_PERFETTO_TOOLS=ON && cmake --build rocprof-sys-build --target all --parallel 8 && cmake --build rocprof-sys-build --target install && source /opt/rocprofiler-systems/share/rocprofiler-systems/setup-env.sh
 ```
 
@@ -156,7 +156,7 @@ Note that per the above command, the `rocprof-sys-build` directory will contain 
 
 Then, to run the automated test suite, navigate to `rocprof-sys-build` and run the following command:
 
-```bash
+```shell
 ctest
 ```
 
@@ -168,20 +168,20 @@ NOTE: This Dockerfile uses `rocm/dev-ubuntu-24.04` as the base image.
 
 You can also build and run the environment manually using the provided build script. To see available options:
 
-```bash
+```shell
 cd docker
 ./build-docker.sh --help
 ```
 
 **Example:** Build an Ubuntu 24.04 + ROCm 6.4 + Python 3.12 image:
 
-```bash
+```shell
 ./build-docker.sh --distro ubuntu --versions 24.04 --rocm-versions 6.4 --python-versions 12 --retry 1
 ```
 
 To run the container:
 
-```bash
+```shell
 docker run --name rocprof-sys-test \
     -v "$(cd .. && pwd)":/home/development \
     -it -w /home/development \
@@ -191,7 +191,7 @@ docker run --name rocprof-sys-test \
 
 To manually enable MPI testing inside the container, set the following environment variables:
 
-```bash
+```shell
 export OMPI_ALLOW_RUN_AS_ROOT=1
 export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
 ```
