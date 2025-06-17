@@ -155,6 +155,7 @@ rm -rf rocprof-sys-build && cmake -B rocprof-sys-build -D CMAKE_INSTALL_PREFIX=/
 Note that per the above command, the `rocprof-sys-build` directory will contain the build and installed assets.
 
 Then, to run the automated test suite, navigate to `rocprof-sys-build` and run the following command:
+
 ```bash
 ctest
 ```
@@ -194,7 +195,6 @@ To manually enable MPI testing inside the container, set the following environme
 export OMPI_ALLOW_RUN_AS_ROOT=1
 export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
 ```
-
 
 ### ROCm Systems Profiler Settings
 
