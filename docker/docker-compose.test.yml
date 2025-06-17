@@ -1,0 +1,17 @@
+services:
+  test:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.test
+    image: rocm/rocprof-sys-test
+    container_name: rocprof-sys-test
+    # ROCm specific device mappings
+    devices:
+      - /dev/kfd
+      - /dev/dri
+    security_opt:
+      - seccomp:unconfined
+    volumes:
+      - ../:/development
+    tty: true
+    stdin_open: true
