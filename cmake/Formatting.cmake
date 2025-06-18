@@ -43,7 +43,7 @@ find_program(
     NAMES clang-format-11 clang-format-mp-11 clang-format
 )
 
-find_program(ROCPROFSYS_CMAKE_FORMAT_EXE NAMES cmake-format)
+find_program(ROCPROFSYS_CMAKE_FORMAT_EXE NAMES gersemi)
 find_program(ROCPROFSYS_BLACK_FORMAT_EXE NAMES black)
 
 add_custom_target(format-rocprofiler-systems)
