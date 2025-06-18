@@ -152,21 +152,19 @@ Inside the container, clean, build and install the project with tests enabled:
 rm -rf rocprof-sys-build && cmake -B rocprof-sys-build -D CMAKE_INSTALL_PREFIX=/opt/rocprofiler-systems -D ROCPROFSYS_USE_ROCM=ON -D ROCPROFSYS_USE_PYTHON=ON -D ROCPROFSYS_USE_OMPT=ON -D ROCPROFSYS_USE_MPI_HEADERS=ON -D ROCPROFSYS_BUILD_PAPI=ON -D ROCPROFSYS_BUILD_LIBUNWIND=ON -D ROCPROFSYS_BUILD_DYNINST=ON -D DYNINST_BUILD_TBB=ON -D DYNINST_BUILD_BOOST=ON -D DYNINST_BUILD_ELFUTILS=ON -D DYNINST_BUILD_LIBIBERTY=ON -D ROCPROFSYS_BUILD_TESTING=ON -D ROCPROFSYS_INSTALL_PERFETTO_TOOLS=ON && cmake --build rocprof-sys-build --target all --parallel 8 && cmake --build rocprof-sys-build --target install && source /opt/rocprofiler-systems/share/rocprofiler-systems/setup-env.sh
 ```
 
-Note that per the above command, the `rocprof-sys-build` directory will contain the build and installed assets.
-
 Then, to run the automated test suite, navigate to `rocprof-sys-build` and run the following command:
 
 ```shell
 ctest
 ```
 
-For manual testing, you can find the executables at `rocprof-sys-build/bin`.
+For manual testing, you can find the executables in `rocprof-sys-build/bin`.
 
 NOTE: This Dockerfile uses `rocm/dev-ubuntu-24.04` as the base image.
 
 ### Manual Test Environment
 
-You can also build and run the environment manually using the provided build script. To see available options:
+You can also build and run the environment manually using the provided build script. To see available options, use the commands below:
 
 ```shell
 cd docker
