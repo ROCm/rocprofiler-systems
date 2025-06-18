@@ -52,7 +52,7 @@ jobs:
     - name: gersemi
       run: |
         set +e
-        gersemi -i $(find . -type f | egrep 'CMakeLists.txt|\.cmake$')
+        gersemi -i $(find . -type f ! -path '*/external/*' | grep -E 'CMakeLists.txt|\.cmake$')
         if [ $(git diff | wc -l) -gt 0 ]; then
           echo -e "\nError! CMake code not formatted. Run gersemi ...\n"
           echo -e "\nFiles:\n"
