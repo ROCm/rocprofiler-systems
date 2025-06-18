@@ -77,7 +77,7 @@ By creating a pull request, you agree to the statements made in the [code licens
 * Adhere to the coding style used in the project. This includes naming conventions, indentation, and commenting practices.
 * Follow the existing directory structure and organization of the codebase.
 * Group related files together and maintain a logical hierarchy.
-* Use `clang-format-11` and `cmake-format` formatters to ensure consistency.
+* Use `clang-format-18` and `cmake-format` formatters to ensure consistency.
 
 ### Using pre-commit hooks ###
 
