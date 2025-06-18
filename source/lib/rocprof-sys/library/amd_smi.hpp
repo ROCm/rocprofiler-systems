@@ -160,7 +160,9 @@ inline void
 post_process()
 {}
 
-inline void set_state(State) {}
+inline void
+set_state(State)
+{}
 #endif
 }  // namespace amd_smi
 }  // namespace rocprofsys
