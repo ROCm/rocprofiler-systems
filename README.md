@@ -152,6 +152,8 @@ Inside the container, clean, build and install the project with tests enabled:
 rm -rf rocprof-sys-build && cmake -B rocprof-sys-build -D CMAKE_INSTALL_PREFIX=/opt/rocprofiler-systems -D ROCPROFSYS_USE_ROCM=ON -D ROCPROFSYS_USE_PYTHON=ON -D ROCPROFSYS_USE_OMPT=ON -D ROCPROFSYS_USE_MPI_HEADERS=ON -D ROCPROFSYS_BUILD_PAPI=ON -D ROCPROFSYS_BUILD_LIBUNWIND=ON -D ROCPROFSYS_BUILD_DYNINST=ON -D DYNINST_BUILD_TBB=ON -D DYNINST_BUILD_BOOST=ON -D DYNINST_BUILD_ELFUTILS=ON -D DYNINST_BUILD_LIBIBERTY=ON -D ROCPROFSYS_BUILD_TESTING=ON -D ROCPROFSYS_INSTALL_PERFETTO_TOOLS=ON && cmake --build rocprof-sys-build --target all --parallel 8 && cmake --build rocprof-sys-build --target install && source /opt/rocprofiler-systems/share/rocprofiler-systems/setup-env.sh
 ```
 
+**Note**: If your system has less than 32GB of RAM, consider reducing the `--parallel 8` flag to `--parallel 4` to prevent running out of memory during the build process.
+
 Then, to run the automated test suite, navigate to `rocprof-sys-build` and run the following command:
 
 ```shell
@@ -160,7 +162,7 @@ ctest
 
 For manual testing, you can find the executables in `rocprof-sys-build/bin`.
 
-NOTE: This Dockerfile uses `rocm/dev-ubuntu-24.04` as the base image.
+**Note**: This Dockerfile uses `rocm/dev-ubuntu-24.04` as the base image.
 
 ### Manual Test Environment
 
