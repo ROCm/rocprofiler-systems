@@ -50,9 +50,7 @@ set(_nic_perf_environment
 
 # Set _download_url to a large file that will give rocprof-sys-sample time to collect NIC
 # performance data (but not too large, because each test will time out after 2 min).
-set(_download_url
-    "https://ftp.wayne.edu/gnu/gcc/gcc-15.1.0/gcc-14.2.0-15.1.0.diff.gz"
-    )
+set(_download_url "https://ftp.wayne.edu/gnu/gcc/gcc-15.1.0/gcc-14.2.0-15.1.0.diff.gz")
 
 # Run the NIC performance test
 add_test(
