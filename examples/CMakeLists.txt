@@ -1,6 +1,22 @@
 cmake_minimum_required(VERSION 3.18.4 FATAL_ERROR)
 
-project(rocprofiler-systems-examples LANGUAGES C CXX)
+find_program(GFORTRAN_EXECUTABLE NAMES gfortran)
+find_program(FORTRAN_WRAPPER_COMPILER NAMES mpifort mpif90 mpif77)
+
+if(GFORTRAN_EXECUTABLE AND FORTRAN_WRAPPER_COMPILER)
+    set(CMAKE_Fortran_COMPILER
+        "${FORTRAN_WRAPPER_COMPILER}"
+        CACHE STRING "" FORCE)
+    set(ENABLE_FORTRAN TRUE)
+else()
+    set(ENABLE_FORTRAN FALSE)
+endif()
+
+if(ENABLE_FORTRAN)
+    project(rocprofiler-systems-mpi-examples LANGUAGES C CXX Fortran)
+else()
+    project(rocprofiler-systems-mpi-examples LANGUAGES C CXX)
+endif()
 
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
     set(CMAKE_BUILD_TYPE
