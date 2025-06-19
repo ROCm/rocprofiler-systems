@@ -3,7 +3,7 @@ services:
     build:
       context: ../
       dockerfile: docker/Dockerfile.test
-    image: rocm/rocprof-sys-test
+    image: rocm/rocprofiler-systems-test
     container_name: rocprof-sys-test
     # ROCm specific device mappings
     devices:
