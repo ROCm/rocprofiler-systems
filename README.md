@@ -149,7 +149,15 @@ docker compose -f docker-compose.test.yml up --force-recreate -d && docker attac
 Inside the container, clean, build and install the project with tests enabled:
 
 ```shell
-rm -rf rocprof-sys-build && cmake -B rocprof-sys-build -D CMAKE_INSTALL_PREFIX=/opt/rocprofiler-systems -D ROCPROFSYS_USE_ROCM=ON -D ROCPROFSYS_USE_PYTHON=ON -D ROCPROFSYS_USE_OMPT=ON -D ROCPROFSYS_USE_MPI_HEADERS=ON -D ROCPROFSYS_BUILD_PAPI=ON -D ROCPROFSYS_BUILD_LIBUNWIND=ON -D ROCPROFSYS_BUILD_DYNINST=ON -D DYNINST_BUILD_TBB=ON -D DYNINST_BUILD_BOOST=ON -D DYNINST_BUILD_ELFUTILS=ON -D DYNINST_BUILD_LIBIBERTY=ON -D ROCPROFSYS_BUILD_TESTING=ON -D ROCPROFSYS_INSTALL_PERFETTO_TOOLS=ON && cmake --build rocprof-sys-build --target all --parallel 8 && cmake --build rocprof-sys-build --target install && source /opt/rocprofiler-systems/share/rocprofiler-systems/setup-env.sh
+rm -rf rocprof-sys-build 
+cmake -B rocprof-sys-build -S . -D CMAKE_INSTALL_PREFIX=/opt/rocprofiler-systems \
+       -D ROCPROFSYS_USE_PYTHON=ON -D ROCPROFSYS_BUILD_DYNINST=ON \
+       -D ROCPROFSYS_BUILD_TBB=ON -D ROCPROFSYS_BUILD_BOOST=ON \
+       -D ROCPROFSYS_BUILD_ELFUTILS=ON -D ROCPROFSYS_BUILD_LIBIBERTY=ON \
+       -D ROCPROFSYS_BUILD_TESTING=ON
+cmake --build rocprof-sys-build --target all --parallel 8 
+cmake --build rocprof-sys-build --target install
+source /opt/rocprofiler-systems/share/rocprofiler-systems/setup-env.sh
 ```
 
 Then, to run the automated test suite, navigate to `rocprof-sys-build` and run the following command:
