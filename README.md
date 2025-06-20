@@ -160,11 +160,10 @@ cmake --build rocprof-sys-build --target install
 source /opt/rocprofiler-systems/share/rocprofiler-systems/setup-env.sh
 ```
 
-Then, to run the automated test suite, navigate to `rocprof-sys-build` and run the following command:
+Then, use the following command to start automated testing.
 
 ```shell
-ctest
-```
+ctest --test-dir rocprof-sys-build --output-on-failure
 
 For manual testing, you can find the executables in `rocprof-sys-build/bin`.
 
