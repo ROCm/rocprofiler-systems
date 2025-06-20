@@ -164,7 +164,7 @@ Inside the container, clean, build, and install the project with tests enabled u
 
 ```shell
 rm -rf rocprof-sys-build
-cmake -B rocprof-sys-build -S .
+cmake -B rocprof-sys-build -S .                                                  \
        -D CMAKE_INSTALL_PREFIX=/opt/rocprofiler-systems                          \
        -D ROCPROFSYS_USE_PYTHON=ON      -D ROCPROFSYS_BUILD_DYNINST=ON           \
        -D ROCPROFSYS_BUILD_TBB=ON       -D ROCPROFSYS_BUILD_BOOST=ON             \
