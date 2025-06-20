@@ -139,11 +139,26 @@ export LD_LIBRARY_PATH=/opt/rocprofiler-systems/lib:${LD_LIBRARY_PATH}
 
 ### Testing Environment
 
-To quickly set up an environment for building and testing, run the following commands:
+The `build-docker` script can be used to create a testing environment. To see available options, use the commands below:
 
 ```shell
 cd docker
-docker compose -f docker-compose.test.yml up --force-recreate -d && docker attach rocprof-sys-test
+./build-docker.sh --help
+```
+
+To quickly set up an environment for building and testing, run the following commands:
+
+```shell
+./build-docker.sh \
+        --distro ubuntu --versions 24.04 \
+        --rocm-versions 6.4 --python-versions 12 \
+        --retry 1
+docker run -v "$(cd .. && pwd)":/home/development \
+        -it -w /home/development \
+        --device /dev/kfd --device /dev/dri \
+        rocm/rocprofiler-systems:release-base-ubuntu-24.04-rocm-6.4
+git config --global --add safe.directory /home/development
+git config --global --add safe.directory /home/development/external/timemory
 ```
 
 Inside the container, clean, build, and install the project with tests enabled using the following commands.
@@ -164,41 +179,16 @@ Then, use the following command to start automated testing.
 
 ```shell
 ctest --test-dir rocprof-sys-build --output-on-failure
-
-For manual testing, you can find the executables in `rocprof-sys-build/bin`.
-
-**Note**: This Dockerfile uses `rocm/dev-ubuntu-24.04` as the base image.
-
-### Manual Test Environment
-
-You can also build and run the environment manually using the provided build script. To see available options, use the commands below:
-
-```shell
-cd docker
-./build-docker.sh --help
 ```
 
-**Example:** Build an Ubuntu 24.04 + ROCm 6.4 + Python 3.12 image:
-
-```shell
-./build-docker.sh --distro ubuntu --versions 24.04 --rocm-versions 6.4 --python-versions 12 --retry 1
-```
-
-To run the container:
-
-```shell
-docker run -v "$(cd .. && pwd)":/home/development \
-    -it -w /home/development \
-    --device /dev/kfd --device /dev/dri \
-    rocm/rocprofiler-systems:release-base-ubuntu-24.04-rocm-6.4
-```
-
-To manually enable MPI testing inside the container, set the following environment variables:
+To enable MPI testing inside the container, set the following environment variables:
 
 ```shell
 export OMPI_ALLOW_RUN_AS_ROOT=1
 export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
 ```
+
+For manual testing, you can find the executables in `rocprof-sys-build/bin`.
 
 ### ROCm Systems Profiler Settings
 
