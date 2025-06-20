@@ -158,7 +158,7 @@ docker run -v "$(cd .. && pwd)":/home/development                               
         rocm/rocprofiler-systems:release-base-ubuntu-24.04-rocm-6.4
 ```
 
-Inside the container, clean, build, and install the project with tests enabled using the following commands.
+Inside the container, clean, build, and install the project with tests enabled using the following commands:
 
 ```shell
 rm -rf rocprof-sys-build
@@ -177,7 +177,7 @@ source /opt/rocprofiler-systems/share/rocprofiler-systems/setup-env.sh
 > ***`git config --global --add safe.directory /home/development` and***
 > ***`git config --global --add safe.directory /home/development/external/timemory`***
 
-Then, use the following command to start automated testing.
+Then, use the following command to start automated testing:
 
 ```shell
 ctest --test-dir rocprof-sys-build --output-on-failure
