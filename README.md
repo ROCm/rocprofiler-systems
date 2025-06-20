@@ -156,8 +156,6 @@ docker run -v "$(cd .. && pwd)":/home/development                               
         -it -w /home/development                                                 \
         --device /dev/kfd --device /dev/dri                                      \
         rocm/rocprofiler-systems:release-base-ubuntu-24.04-rocm-6.4
-git config --global --add safe.directory /home/development
-git config --global --add safe.directory /home/development/external/timemory
 ```
 
 Inside the container, clean, build, and install the project with tests enabled using the following commands.
@@ -174,6 +172,11 @@ cmake --build rocprof-sys-build --target all --parallel 8
 cmake --build rocprof-sys-build --target install
 source /opt/rocprofiler-systems/share/rocprofiler-systems/setup-env.sh
 ```
+
+> ***If you see Git errors about "dubious ownership" when working in the container, run***
+> ***`git config --global --add safe.directory /home/development` and***
+> ***`git config --global --add safe.directory /home/development/external/timemory`***
+> ***to tell Git these directories are safe for repository operations.***
 
 Then, use the following command to start automated testing.
 
