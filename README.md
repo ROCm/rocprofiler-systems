@@ -149,13 +149,13 @@ cd docker
 To quickly set up an environment for building and testing, run the following commands:
 
 ```shell
-./build-docker.sh \
-        --distro ubuntu --versions 24.04 \
-        --rocm-versions 6.4 --python-versions 12 \
+./build-docker.sh                                   \
+        --distro ubuntu --versions 24.04            \
+        --rocm-versions 6.4 --python-versions 12    \
         --retry 1
-docker run -v "$(cd .. && pwd)":/home/development \
-        -it -w /home/development \
-        --device /dev/kfd --device /dev/dri \
+docker run -v "$(cd .. && pwd)":/home/development   \
+        -it -w /home/development                    \
+        --device /dev/kfd --device /dev/dri         \
         rocm/rocprofiler-systems:release-base-ubuntu-24.04-rocm-6.4
 git config --global --add safe.directory /home/development
 git config --global --add safe.directory /home/development/external/timemory
@@ -166,9 +166,9 @@ Inside the container, clean, build, and install the project with tests enabled u
 ```shell
 rm -rf rocprof-sys-build 
 cmake -B rocprof-sys-build -S . -D CMAKE_INSTALL_PREFIX=/opt/rocprofiler-systems \
-       -D ROCPROFSYS_USE_PYTHON=ON -D ROCPROFSYS_BUILD_DYNINST=ON \
-       -D ROCPROFSYS_BUILD_TBB=ON -D ROCPROFSYS_BUILD_BOOST=ON \
-       -D ROCPROFSYS_BUILD_ELFUTILS=ON -D ROCPROFSYS_BUILD_LIBIBERTY=ON \
+       -D ROCPROFSYS_USE_PYTHON=ON      -D ROCPROFSYS_BUILD_DYNINST=ON           \
+       -D ROCPROFSYS_BUILD_TBB=ON       -D ROCPROFSYS_BUILD_BOOST=ON             \
+       -D ROCPROFSYS_BUILD_ELFUTILS=ON  -D ROCPROFSYS_BUILD_LIBIBERTY=ON         \
        -D ROCPROFSYS_BUILD_TESTING=ON
 cmake --build rocprof-sys-build --target all --parallel 8 
 cmake --build rocprof-sys-build --target install
