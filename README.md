@@ -176,7 +176,6 @@ source /opt/rocprofiler-systems/share/rocprofiler-systems/setup-env.sh
 > ***If you see Git errors about "dubious ownership" when working in the container, run***
 > ***`git config --global --add safe.directory /home/development` and***
 > ***`git config --global --add safe.directory /home/development/external/timemory`***
-> ***to tell Git these directories are safe for repository operations.***
 
 Then, use the following command to start automated testing.
 
