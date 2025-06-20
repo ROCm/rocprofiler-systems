@@ -146,7 +146,7 @@ cd docker
 ./build-docker.sh --help
 ```
 
-To quickly set up an environment for building and testing, run the following commands:
+**Example:** To set up an Ubuntu 24.04 + ROCm 6.4 + Python 3.12 environment for building and testing, run the following commands:
 
 ```shell
 cd docker
