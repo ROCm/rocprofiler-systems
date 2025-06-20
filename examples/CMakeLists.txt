@@ -7,9 +7,13 @@ if(GFORTRAN_EXECUTABLE AND FORTRAN_WRAPPER_COMPILER)
     set(CMAKE_Fortran_COMPILER
         "${FORTRAN_WRAPPER_COMPILER}"
         CACHE STRING "" FORCE)
-    set(ENABLE_FORTRAN TRUE)
+    set(ENABLE_FORTRAN
+        TRUE
+        CACHE BOOL "Enable Fortran support")
 else()
-    set(ENABLE_FORTRAN FALSE)
+    set(ENABLE_FORTRAN
+        FALSE
+        CACHE BOOL "Enable Fortran support")
 endif()
 
 if(ENABLE_FORTRAN)
