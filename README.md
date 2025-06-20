@@ -150,13 +150,11 @@ To quickly set up an environment for building and testing, run the following com
 
 ```shell
 cd docker
-./build-docker.sh                                   \
-        --distro ubuntu --versions 24.04            \
-        --rocm-versions 6.4 --python-versions 12    \
-        --retry 1
-docker run -v "$(cd .. && pwd)":/home/development   \
-        -it -w /home/development                    \
-        --device /dev/kfd --device /dev/dri         \
+./build-docker.sh --distro ubuntu --versions 24.04 \
+        --rocm-versions 6.4 --python-versions 12 --retry 1
+docker run -v "$(cd .. && pwd)":/home/development \
+        -it -w /home/development \
+        --device /dev/kfd --device /dev/dri \
         rocm/rocprofiler-systems:release-base-ubuntu-24.04-rocm-6.4
 git config --global --add safe.directory /home/development
 git config --global --add safe.directory /home/development/external/timemory
