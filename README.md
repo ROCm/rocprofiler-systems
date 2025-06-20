@@ -146,7 +146,7 @@ cd docker
 docker compose -f docker-compose.test.yml up --force-recreate -d && docker attach rocprof-sys-test
 ```
 
-Inside the container, clean, build and install the project with tests enabled:
+Inside the container, clean, build, and install the project with tests enabled using the following commands.
 
 ```shell
 rm -rf rocprof-sys-build 
