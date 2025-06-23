@@ -265,6 +265,7 @@ mkdir -p ./lib
 rocprof-sys-instrument -R '^hip' -o ./lib/libamdhip64.so.4 -- /opt/rocm/lib/libamdhip64.so.4
 export LD_LIBRARY_PATH=${PWD}/lib:${LD_LIBRARY_PATH}
 ```
+
 > [!NOTE]
 > Verify via `ldd` that your executable will load the instrumented library. If you built your executable with an RPATH to the original library's directory, then prefixing `LD_LIBRARY_PATH` will have no effect.
 
@@ -323,6 +324,7 @@ rocprof-sys-python --help
 rocprof-sys-python <rocprof-sys-options> -- <python-script> <script-args>
 rocprof-sys-python -- ./script.py
 ```
+
 > [!NOTE]
 > The first argument after the double-hyphen must be a Python script, e.g. `rocprof-sys-python -- ./script.py`.
 
@@ -392,6 +394,7 @@ pkill traced
 traced --background
 perfetto --out ./rocprof-sys-perfetto.proto --txt -c ${ROCPROFSYS_ROOT}/share/perfetto.cfg --background
 ```
+
 > [!NOTE]
 > If the perfetto tools were installed by rocprofiler-systems, replace `traced` with `rocprof-sys-perfetto-traced` and `perfetto` with `rocprof-sys-perfetto`.
 
