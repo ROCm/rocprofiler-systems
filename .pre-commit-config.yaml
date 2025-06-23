@@ -35,18 +35,15 @@ repos:
       - id: end-of-file-fixer # Fix files to have a newline at the end
 
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v11.1.0 # Version 11 as specified in contributor guide
+    rev: v18.1.8 # Version 18 as specified in contributor guide
     hooks:
       - id: clang-format
         files: \.(c|cpp|h.*)$
 
-  - repo: local
+  - repo: https://github.com/BlankSpruce/gersemi
+    rev: 0.19.3
     hooks:
-      - id: check-cmake
-        name: cmake-format
-        entry: ./scripts/check-cmake-format.sh
-        language: script
-        files: (^|/)(CMakeLists\.txt|.*\.cmake)$
+    - id: gersemi
 
   - repo: local
     hooks:
