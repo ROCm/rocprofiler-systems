@@ -141,7 +141,7 @@ export LD_LIBRARY_PATH=/opt/rocprofiler-systems/lib:${LD_LIBRARY_PATH}
 
 ### Testing environment
 
-The `build-docker` script can be used to create a testing environment. To see available options, use the commands below:
+The `build-docker` script can be used to create a testing environment. To see the available options, use the following commands:
 
 ```shell
 cd docker
