@@ -4,9 +4,6 @@ find_program(GFORTRAN_EXECUTABLE NAMES gfortran)
 find_program(FORTRAN_WRAPPER_COMPILER NAMES mpifort mpif90 mpif77)
 
 if(GFORTRAN_EXECUTABLE AND FORTRAN_WRAPPER_COMPILER)
-    set(CMAKE_Fortran_COMPILER
-        "${FORTRAN_WRAPPER_COMPILER}"
-        CACHE STRING "" FORCE)
     set(ENABLE_FORTRAN
         TRUE
         CACHE BOOL "Enable Fortran support")
@@ -14,6 +11,7 @@ else()
     set(ENABLE_FORTRAN
         FALSE
         CACHE BOOL "Enable Fortran support")
+
 endif()
 
 if(ENABLE_FORTRAN)

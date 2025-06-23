@@ -61,7 +61,6 @@ add_executable(mpi-allreduce allreduce.c)
 target_link_libraries(mpi-allreduce PRIVATE mpi-c-interface-library m)
 
 if(MPI_FOUND AND ENABLE_FORTRAN)
-
     find_package(MPI REQUIRED Fortran) # Ensure MPI Fortran bindings are found
     add_library(mpi-fortran-interface-library INTERFACE)
     target_link_libraries(
@@ -71,7 +70,6 @@ if(MPI_FOUND AND ENABLE_FORTRAN)
             MPI::MPI_Fortran
             $<TARGET_NAME_IF_EXISTS:rocprofiler-systems::rocprofiler-systems-compile-options>
         )
-
     execute_process(
         COMMAND ${GFORTRAN_EXECUTABLE} -dumpversion
         OUTPUT_VARIABLE GFORTRAN_VERSION
