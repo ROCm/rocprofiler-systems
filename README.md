@@ -71,7 +71,7 @@ The documentation source files reside in the [`/docs`](/docs) folder of this rep
   - Utilization
   - VCN Utilization
   - JPEG Utilization
-    
+
 > [!NOTE]
 > The availability of VCN and JPEG engine utilization depends on device support for different ASICs. If unsupported, all values for VCN_ACTIVITY and JPEG_ACTIVITY will be reported as N/A in the output of `amd-smi metric --usage`.
 
@@ -174,16 +174,20 @@ cmake --build rocprof-sys-build --target all --parallel 8
 cmake --build rocprof-sys-build --target install
 source /opt/rocprofiler-systems/share/rocprofiler-systems/setup-env.sh
 ```
+
 > [!NOTE]
 > If you see "dubious ownership" Git errors when working in the container, run:
+>
 > ```shell
 > git config --global --add safe.directory /home/development
 > ```
+>
 > and
+>
 > ```shell
 > git config --global --add safe.directory /home/development/external/timemory
 > ```
- 
+
 Then, use the following command to start automated testing:
 
 ```shell
