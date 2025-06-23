@@ -160,7 +160,7 @@ docker run -v "$(cd .. && pwd)":/home/development                               
         rocm/rocprofiler-systems:release-base-ubuntu-24.04-rocm-6.4
 ```
 
-Inside the container, clean, build, and install the project with tests enabled using the following commands:
+Inside the container, clean, build, and install the project with testing enabled using the following commands:
 
 ```shell
 rm -rf rocprof-sys-build
