@@ -75,11 +75,12 @@ if(MPI_FOUND AND ENABLE_FORTRAN)
             Threads::Threads
             MPI::MPI_Fortran
             $<TARGET_NAME_IF_EXISTS:rocprofiler-systems::rocprofiler-systems-compile-options>
-        )
+    )
     execute_process(
         COMMAND ${GFORTRAN_EXECUTABLE} -dumpversion
         OUTPUT_VARIABLE GFORTRAN_VERSION
-        OUTPUT_STRIP_TRAILING_WHITESPACE)
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
     if(GFORTRAN_VERSION VERSION_GREATER_EQUAL "10")
         set(MPI_FORTRAN_COMPILE_FLAGS "-w;-fallow-argument-mismatch")
     else()
@@ -98,17 +99,19 @@ if(MPI_FOUND AND ENABLE_FORTRAN)
         install(
             TARGETS mpi-fortran-array mpi-fortran-mm
             DESTINATION bin
-            COMPONENT rocprofiler-systems-examples)
+            COMPONENT rocprofiler-systems-examples
+        )
     endif()
-
 else()
     if("${CMAKE_PROJECT_NAME}" STREQUAL "rocprofiler-systems" AND "$ENV{ROCPROFSYS_CI}")
         set(_MSG_TYPE STATUS) # don't generate warnings during CI
     else()
         set(_MSG_TYPE AUTHOR_WARNING)
     endif()
-    message(${_MSG_TYPE}
-            "Fortran support is disabled. No Fortran examples will be built.")
+    message(
+        ${_MSG_TYPE}
+        "Fortran support is disabled. No Fortran examples will be built."
+    )
 endif()
 
 set(CMAKE_BUILD_TYPE "Release")

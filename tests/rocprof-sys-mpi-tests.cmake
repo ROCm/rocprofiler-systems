@@ -117,7 +117,8 @@ if(ENABLE_FORTRAN)
             --min-instructions
             0
         ENVIRONMENT "${_mpip_environment};"
-        BASELINE_PASS_REGEX "Final sum= *0\\.400000E\\+15")
+        BASELINE_PASS_REGEX "Final sum= *0\\.400000E\\+15"
+    )
 
     rocprofiler_systems_add_test(
         SKIP_RUNTIME # Runtime needs to be skipped
@@ -137,7 +138,8 @@ if(ENABLE_FORTRAN)
             --min-instructions
             0
         ENVIRONMENT "${_mpip_environment};"
-        BASELINE_PASS_REGEX "1015\\.00.*44520\\.00")
+        BASELINE_PASS_REGEX "1015\\.00.*44520\\.00"
+    )
 endif()
 
 set(_mpip_environment
