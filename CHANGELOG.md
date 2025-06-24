@@ -20,7 +20,7 @@ Full documentation for ROCm Systems Profiler is available at [https://rocm.docs.
 
 ### Resolved issues
 
-- Fixed GPU metric collection settings with ROCPROFSYS_AMD_SMI_METRICS.
+- Fixed GPU metric collection settings with `ROCPROFSYS_AMD_SMI_METRICS`.
 - Fixed a build issue with CMake 4.
 - Fixed incorrect kernel names shown for kernel dispatch tracks in Perfetto.
 - Fixed formatting of some output logs.
