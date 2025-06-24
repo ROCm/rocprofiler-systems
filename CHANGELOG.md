@@ -16,7 +16,7 @@ Full documentation for ROCm Systems Profiler is available at [https://rocm.docs.
 - Replaced ROCm SMI backend with AMD SMI backend for collecting GPU metrics.
 - ROCprofiler-SDK is now used to trace RCCL API and collect communication counters.
 - Updated the Dyninst submodule to v13.0.
-- Set the default value of `ROCPROFSYS_SAMPLING_CPUS` to `none`
+- Set the default value of `ROCPROFSYS_SAMPLING_CPUS` to `none`.
 
 ### Resolved issues
 
