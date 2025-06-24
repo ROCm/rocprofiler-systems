@@ -110,7 +110,7 @@ else()
     endif()
     message(
         ${_MSG_TYPE}
-        "Fortran support is disabled. No Fortran examples will be built."
+        "Fortran MPI support is disabled. No Fortran MPI examples will be built."
     )
 endif()
 
