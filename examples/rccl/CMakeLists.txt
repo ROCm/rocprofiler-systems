@@ -51,7 +51,11 @@ endif()
 
 if(hip_FOUND AND rccl_FOUND)
     include(FetchContent)
-    fetchcontent_declare(rccl-tests GIT_REPOSITORY https://github.com/pranswarup/rccl-tests.git GIT_TAG master-cpp)
+    FetchContent_Declare(
+        rccl-tests
+        GIT_REPOSITORY https://github.com/pranswarup/rccl-tests.git
+        GIT_TAG master-cpp
+    )
 
     # After the following call, the CMake targets defined by googletest and Catch2 will be
     # available to the rest of the build
