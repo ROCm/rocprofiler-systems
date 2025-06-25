@@ -54,7 +54,7 @@ if(hip_FOUND AND rccl_FOUND)
     set(rccl-tests_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/rccl-tests")
     set(rccl-tests_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/rccl-tests")
     file(COPY ${rccl-tests_SOURCE_DIR}/ DESTINATION ${rccl-tests_BUILD_DIR})
-    
+
     if(NOT EXISTS "${rccl-tests_SOURCE_DIR}")
         rccl_message(AUTHOR_WARNING "${PROJECT_NAME} skipped. Missing rccl-tests source at ${rccl-tests_SOURCE_DIR}")
         return()
@@ -77,10 +77,7 @@ if(hip_FOUND AND rccl_FOUND)
         rccl_message(${_RCCL_BUILD_OUT})
         rccl_message(AUTHOR_WARNING "Failed to build rccl-tests: ${_RCCL_BUILD_ERR}")
     else()
-        file(
-            GLOB RCCL_TEST_EXECUTABLES
-            ${rccl-tests_BUILD_DIR}/build/*_perf
-        )
+        file(GLOB RCCL_TEST_EXECUTABLES ${rccl-tests_BUILD_DIR}/build/*_perf)
         set(_RCCL_TEST_TARGETS)
 
         foreach(_EXE ${RCCL_TEST_EXECUTABLES})

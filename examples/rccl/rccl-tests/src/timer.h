@@ -4,12 +4,14 @@
 #include <cstdint>
 
 // Can't include <chrono> because of bug with gcc 10.3.0
-class timer {
-  std::uint64_t t0;
+class timer
+{
+    std::uint64_t t0;
+
 public:
-  timer();
-  double elapsed() const;
-  double reset();
+    timer();
+    double elapsed() const;
+    double reset();
 };
 
 #endif

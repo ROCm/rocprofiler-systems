@@ -35,22 +35,24 @@
  */
 
 // Use this as the local scalar for PreMulSum ops
-template<typename T>
-__host__ __device__ T ncclVerifiablePremulScalar(int rank_me) {
-  return T(rank_me%2 == 0 ? 1.0f : 2.0f);
+template <typename T>
+__host__ __device__ T
+ncclVerifiablePremulScalar(int rank_me)
+{
+    return T(rank_me % 2 == 0 ? 1.0f : 2.0f);
 }
 
 // Enqueue kernel to generate data which is to be reduced.
-void ncclVerifiablePrepareInput(
-  void *elts, intptr_t elt_n, int elt_ty, int red_op, int rank_n, int rank_me,
-  uint64_t seed, intptr_t elt_ix0, cudaStream_t stream
-);
+void
+ncclVerifiablePrepareInput(void* elts, intptr_t elt_n, int elt_ty, int red_op, int rank_n,
+                           int rank_me, uint64_t seed, intptr_t elt_ix0,
+                           cudaStream_t stream);
 
 // Enqueue kernel to generate expected results of reduction.
-void ncclVerifiablePrepareExpected(
-  void *elts, intptr_t elt_n, int elt_ty, int red_op, int rank_n,
-  uint64_t seed, intptr_t elt_ix0, cudaStream_t stream
-);
+void
+ncclVerifiablePrepareExpected(void* elts, intptr_t elt_n, int elt_ty, int red_op,
+                              int rank_n, uint64_t seed, intptr_t elt_ix0,
+                              cudaStream_t stream);
 
 // Enqueue kernel to verify reduced data matches expectation. The number of
 // failed elements is written to bad_elt_n which must be in cudaHost memory.
@@ -58,9 +60,8 @@ void ncclVerifiablePrepareExpected(
 // which can be costly. Thus if you plan to run the same reduction multiple
 // times it is advantageous to precompute the expected values with
 // ncclVerifiablePrepareExpected and pass them as `expected` here.
-void ncclVerifiableVerify(
-  void const *results, void const *expected, intptr_t elt_n, int elt_ty,
-  int red_op, int rank_n, uint64_t seed, intptr_t elt_ix0,
-  int64_t *bad_elt_n, cudaStream_t stream
-);
+void
+ncclVerifiableVerify(void const* results, void const* expected, intptr_t elt_n,
+                     int elt_ty, int red_op, int rank_n, uint64_t seed, intptr_t elt_ix0,
+                     int64_t* bad_elt_n, cudaStream_t stream);
 #endif
