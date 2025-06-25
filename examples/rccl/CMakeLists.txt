@@ -50,23 +50,22 @@ if(NOT rccl_FOUND)
 endif()
 
 if(hip_FOUND AND rccl_FOUND)
-    include(FetchContent)
-    FetchContent_Declare(
-        rccl-tests
-        GIT_REPOSITORY https://github.com/pranswarup/rccl-tests.git
-        GIT_TAG master-cpp
-    )
-
-    # After the following call, the CMake targets defined by googletest and Catch2 will be
-    # available to the rest of the build
-    FetchContent_Populate(rccl-tests)
+    # Use existing rccl-tests source in the project binary directory
+    set(rccl-tests_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/rccl-tests")
+    set(rccl-tests_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/rccl-tests")
+    file(COPY ${rccl-tests_SOURCE_DIR}/ DESTINATION ${rccl-tests_BUILD_DIR})
+    
+    if(NOT EXISTS "${rccl-tests_SOURCE_DIR}")
+        rccl_message(AUTHOR_WARNING "${PROJECT_NAME} skipped. Missing rccl-tests source at ${rccl-tests_SOURCE_DIR}")
+        return()
+    endif()
 
     get_filename_component(rccl_ROOT_DIR "${rccl_INCLUDE_DIR}" DIRECTORY)
 
     rccl_message(STATUS "Building rccl-tests...")
     execute_process(
         COMMAND make HIP_HOME=${ROCM_PATH} RCCL_HOME=${rccl_ROOT_DIR}
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/_deps/rccl-tests-src
+        WORKING_DIRECTORY ${rccl-tests_BUILD_DIR}
         RESULT_VARIABLE _RCCL_BUILD_RET
         ERROR_VARIABLE _RCCL_BUILD_ERR
         OUTPUT_VARIABLE _RCCL_BUILD_OUT
@@ -80,7 +79,7 @@ if(hip_FOUND AND rccl_FOUND)
     else()
         file(
             GLOB RCCL_TEST_EXECUTABLES
-            ${CMAKE_BINARY_DIR}/_deps/rccl-tests-src/build/*_perf
+            ${rccl-tests_BUILD_DIR}/build/*_perf
         )
         set(_RCCL_TEST_TARGETS)
 
