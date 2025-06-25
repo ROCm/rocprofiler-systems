@@ -1437,7 +1437,7 @@ main(int argc, char* argv[])
         }
         else if(strcmp(arg, "-G") == 0 || strcmp(arg, "--cudagraph") == 0)
         {
-#if (NCCL_MAJOR > 2 || (NCCL_MAJOR >= 2 && NCCL_MINOR >= 9)) && HIP_VERSION >= 50221310
+#if(NCCL_MAJOR > 2 || (NCCL_MAJOR >= 2 && NCCL_MINOR >= 9)) && HIP_VERSION >= 50221310
             cudaGraphLaunches = strtol(argv[++argi], NULL, 0);
 #else
             printf("Option -G (HIP graph) not supported before NCCL 2.9 + ROCm 5.2 "
