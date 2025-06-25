@@ -54,6 +54,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Set LIBRARY_PATH needed for OpenSuse 15.6
+      run: |
+        echo "LIBRARY_PATH=/usr/local/lib:${LIBRARY_PATH}" >> $GITHUB_ENV
+        echo "LD_LIBRARY_PATH=/usr/local/lib:${LD_LIBRARY_PATH}" >> $GITHUB_ENV
+
     - name: Install Packages
       timeout-minutes: 25
       uses: nick-fields/retry@v3
