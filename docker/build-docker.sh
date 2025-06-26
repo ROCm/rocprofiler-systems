@@ -26,8 +26,9 @@ usage()
 {
     print_option() { printf "    --%-20s %-24s     %s\n" "${1}" "${2}" "${3}"; }
     echo "Options:"
-    print_option "help -h" "" "This message"
-    print_option "no-pull" "" "Do not pull down most recent base container"
+    print_option "help -h"   "" "This message"
+    print_option "no-pull"   "" "Do not pull down most recent base container"
+    print_option "matrix -m" "[ubuntu|opensuse|rhel]" "Shows compatibility matrix"
 
     echo ""
     print_default_option() { printf "    --%-20s %-24s     %s (default: %s)\n" "${1}" "${2}" "${3}" "$(tolower ${4})"; }
@@ -46,6 +47,75 @@ send-error()
     usage
     echo -e "\nError: ${@}"
     exit 1
+}
+
+# Prints compatibility matrix by scanning .github/workflows/containers.yml matrix
+show-matrix()
+{
+    local filter_distro="${1:-}"
+    local workflow_file="../.github/workflows/containers.yml"
+
+    if [ -n "${filter_distro}" ]; then
+        filter_distro=$(tolower "${filter_distro}")
+        case "${filter_distro}" in
+            ubuntu|opensuse|rhel)
+                ;;
+            *)
+                echo -e "\n Error: Unsupported distribution '${filter_distro}'"
+                echo "   Supported distributions: ubuntu, opensuse, rhel"
+                echo ""
+                exit 1
+                ;;
+        esac
+    fi
+    if [ ! -f "${workflow_file}" ]; then
+        echo -e "\n Error: Cannot find ${workflow_file}"
+        exit 1
+    fi
+
+    echo ""
+    if [ -n "${filter_distro}" ]; then
+        echo "        Supported ${filter_distro} + ROCm Combinations     "
+        echo "   =============================================="
+    else
+        echo "        Supported OS + ROCm Combinations     "
+        echo "   =========================================="
+    fi
+    echo ""
+    echo "   OS Distribution    Version    ROCm Version"
+    echo "   ----------------   -------    ------------"
+
+    awk -v filter="${filter_distro}" '
+    /rocprofiler-systems-release:/, /steps:/ {
+        if (/- os-distro:/) {
+            gsub(/[[:space:]]*- os-distro:[[:space:]]*"/, "")
+            gsub(/"/, "")
+            distro = $0
+        }
+        if (/os-version:/) {
+            gsub(/[[:space:]]*os-version:[[:space:]]*"/, "")
+            gsub(/"/, "")
+            version = $0
+        }
+        if (/rocm-version:/) {
+            gsub(/[[:space:]]*rocm-version:[[:space:]]*"/, "")
+            gsub(/"/, "")
+            rocm = $0
+            if (rocm == "0.0") {
+                rocm = "0.0"
+            } else {
+                rocm = rocm
+            }
+            if (filter == "" || distro == filter) {
+                printf "   %-16s   %-9s  %s\n", distro, version, rocm
+            }
+        }
+    }
+    ' "${workflow_file}"
+
+    echo ""
+    echo "ROCm '0.0' means no ROCm installation (CPU-only build)"
+    echo ""
 }
 
 verbose-run()
@@ -93,10 +163,19 @@ do
             usage
             exit 0
             ;;
+        -m|--matrix)
+            shift
+            if [[ $# -gt 0 && ! "${1}" =~ ^-- ]]; then
+                show-matrix "${1}"
+            else
+                show-matrix
+            fi
+            exit 0
+            ;;
         "--distro")
             shift
-            DISTRO=${1}
-            last() { DISTRO="${DISTRO} ${1}"; }
+            DISTRO=$(tolower ${1})
+            last() { DISTRO="${DISTRO} $(tolower${1})"; }
             ;;
         "--versions")
             shift
