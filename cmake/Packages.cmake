@@ -220,12 +220,8 @@ else()
     set(ROCPROFSYS_ROCM_VERSION_MAJOR 0)
     set(ROCPROFSYS_ROCM_VERSION_MINOR 0)
     set(ROCPROFSYS_ROCM_VERSION_PATCH 0)
-    set(ROCPROFSYS_ROCM_6_2_COMPATIBILITY
-        TRUE
-        CACHE BOOL
-        "Enable ROCm 6.2 compatibility mode"
-    )
-    set(ROCPROFSYS_ROCM_6_2_COMPATIBILITY_VALUE 1)
+    set(ROCPROFSYS_ROCM_6_2_COMPATIBILITY FALSE)
+    set(ROCPROFSYS_ROCM_6_2_COMPATIBILITY_VALUE 0)
 endif()
 
 # ----------------------------------------------------------------------------------------#
