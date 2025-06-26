@@ -107,7 +107,7 @@ struct functors;
 }  // namespace component
 }  // namespace rocprofsys
 
-#if !defined(ROCPROFSYS_USE_RCCL)
+#if !defined(ROCPROFSYS_USE_RCCL) || ROCPROFSYS_ROCM_6_2_COMPATIBILITY
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, category::rocm_rccl, false_type)
 ROCPROFSYS_DEFINE_CONCRETE_TRAIT(is_available, component::rcclp_handle, false_type)
 #endif

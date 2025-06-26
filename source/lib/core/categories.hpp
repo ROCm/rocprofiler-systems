@@ -102,7 +102,9 @@ ROCPROFSYS_DEFINE_CATEGORY(category, rocm_counter_collection, ROCPROFSYS_CATEGOR
 ROCPROFSYS_DEFINE_CATEGORY(category, rocm_marker_api, ROCPROFSYS_CATEGORY_ROCM_MARKER_API, "rocm_marker_api", "ROCTx labels")
 ROCPROFSYS_DEFINE_CATEGORY(category, rocm_rocdecode_api, ROCPROFSYS_CATEGORY_ROCM_ROCDECODE_API, "rocm_rocdecode_api", "ROCm RocDecode API")
 ROCPROFSYS_DEFINE_CATEGORY(category, rocm_rocjpeg_api, ROCPROFSYS_CATEGORY_ROCM_ROCJPEG_API, "rocm_rocjpeg_api", "ROCm RocJPEG API")
+#if !ROCPROFSYS_ROCM_6_2_COMPATIBILITY
 ROCPROFSYS_DEFINE_CATEGORY(category, rocm_rccl_api, ROCPROFSYS_CATEGORY_ROCM_RCCL_API, "rocm_rccl_api", "ROCm RCCL API")
+#endif
 ROCPROFSYS_DEFINE_CATEGORY(category, amd_smi, ROCPROFSYS_CATEGORY_AMD_SMI, "amd_smi", "AMD-SMI data")
 ROCPROFSYS_DEFINE_CATEGORY(category, amd_smi_gfx_busy, ROCPROFSYS_CATEGORY_AMD_SMI_BUSY_GFX, "device_busy_gfx", "Busy percentage of GFX engine on a GPU device")
 ROCPROFSYS_DEFINE_CATEGORY(category, amd_smi_umc_busy, ROCPROFSYS_CATEGORY_AMD_SMI_BUSY_UMC, "device_busy_umc", "Busy percentage of UMC engin on a GPU device")
@@ -152,6 +154,12 @@ using name = perfetto_category<Tp...>;
 }
 }  // namespace tim
 
+#if !ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+    #define ROCPROFSYS_PERFETTO_CATEGORY_SDK_RCCL ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_rccl),  
+#else  
+    #define ROCPROFSYS_PERFETTO_CATEGORY_SDK_RCCL 
+#endif  
+
 #define ROCPROFSYS_PERFETTO_CATEGORY(TYPE)                                               \
     ::perfetto::Category(::tim::trait::perfetto_category<::tim::TYPE>::value)            \
         .SetDescription(::tim::trait::perfetto_category<::tim::TYPE>::description)
@@ -172,7 +180,7 @@ using name = perfetto_category<Tp...>;
         ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_marker_api),                         \
         ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_rocdecode_api),                      \
         ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_rocjpeg_api),                        \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_rccl_api),                           \
+        ROCPROFSYS_PERFETTO_CATEGORY_SDK_RCCL                                            \
         ROCPROFSYS_PERFETTO_CATEGORY(category::amd_smi),                                 \
         ROCPROFSYS_PERFETTO_CATEGORY(category::amd_smi_gfx_busy),                        \
         ROCPROFSYS_PERFETTO_CATEGORY(category::amd_smi_umc_busy),                        \

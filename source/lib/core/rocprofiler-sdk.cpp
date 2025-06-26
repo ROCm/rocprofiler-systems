@@ -397,11 +397,13 @@ get_callback_domains()
     if(_version.formatted >= 600)
     {
         // Argument tracing is supported in rocprofiler-sdk 0.6.0 and later
+        #if !ROCPROFSYS_ROCM_6_2_COMPATIBILITY
         supported.emplace(ROCPROFILER_CALLBACK_TRACING_RCCL_API);
+        #endif
         supported.emplace(ROCPROFILER_CALLBACK_TRACING_ROCDECODE_API);
     }
 #    endif
-#    if(ROCPROFILER_VERSION >= 700)
+#    if(ROCPROFILER_VERSION >= 700) && !ROCPROFSYS_ROCM_6_2_COMPATIBILITY
     if(_version.formatted >= 700)
     {
         supported.emplace(ROCPROFILER_CALLBACK_TRACING_ROCJPEG_API);
@@ -413,12 +415,13 @@ get_callback_domains()
         tim::delimit(config::get_setting_value<std::string>("ROCPROFSYS_ROCM_DOMAINS")
                          .value_or(std::string{}),
                      " ,;:\t\n");
-
+    #if !ROCPROFSYS_ROCM_6_2_COMPATIBILITY
     if(config::get_use_rcclp() && _version.formatted >= 600)
     {
         // Translate ROCPROFSYS_USE_RCCLP to entry in ROCPROFSYS_ROCM_DOMAINS
         _data.emplace(ROCPROFILER_CALLBACK_TRACING_RCCL_API);
     }
+    #endif
 
     const auto valid_choices =
         settings::instance()->at("ROCPROFSYS_ROCM_DOMAINS")->get_choices();
@@ -581,7 +584,39 @@ get_operations(rocprofiler_buffer_tracing_kind_t kindv)
 
     return get_operations_impl(_complete, _include, _exclude);
 }
+#if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+std::unordered_set<uint32_t>
+get_backtrace_operations(rocprofiler_callback_tracing_kind_t kindv)
+{
+    ROCPROFSYS_CONDITIONAL_ABORT_F(
+        callback_operation_option_names.count(kindv) == 0,
+        "callback_operation_operation_names does not have value for %i\n", kindv);
 
+    auto _data = get_operations_impl(
+        kindv, callback_operation_option_names.at(kindv).operations_annotate_backtrace);
+    auto _ret = std::unordered_set<uint32_t>{};
+    _ret.reserve(_data.size());
+    for(auto itr : _data)
+        _ret.emplace(static_cast<uint32_t>(itr));
+    return _ret;
+}
+
+std::unordered_set<uint32_t>
+get_backtrace_operations(rocprofiler_buffer_tracing_kind_t kindv)
+{
+    ROCPROFSYS_CONDITIONAL_ABORT_F(
+        buffered_operation_option_names.count(kindv) == 0,
+        "buffered_operation_option_names does not have value for %i\n", kindv);
+
+    auto _data = get_operations_impl(
+        kindv, buffered_operation_option_names.at(kindv).operations_annotate_backtrace);
+    auto _ret = std::unordered_set<uint32_t>{};
+    _ret.reserve(_data.size());
+    for(auto itr : _data)
+        _ret.emplace(static_cast<uint32_t>(itr));
+    return _ret;
+}
+#else
 std::unordered_set<int32_t>
 get_backtrace_operations(rocprofiler_callback_tracing_kind_t kindv)
 {
@@ -613,6 +648,7 @@ get_backtrace_operations(rocprofiler_buffer_tracing_kind_t kindv)
         _ret.emplace(itr);
     return _ret;
 }
+#endif
 }  // namespace rocprofiler_sdk
 }  // namespace rocprofsys
 

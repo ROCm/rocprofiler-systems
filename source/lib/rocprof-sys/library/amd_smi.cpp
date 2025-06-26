@@ -225,6 +225,7 @@ data::sample(uint32_t _dev_id)
             fill_busy_metrics(metrics.jpeg_busy, _gpu_metrics.jpeg_activity);
             if(!metrics.jpeg_busy.empty()) m_xcp_metrics.push_back(metrics);
         }
+#    if AMDSMI_LIB_VERSION_MAJOR >= 26
         else
         {
             // Neither is supported - use XCP stats
@@ -238,6 +239,7 @@ data::sample(uint32_t _dev_id)
                     m_xcp_metrics.push_back(metrics);
             }
         }
+#    endif
     }
 
 #undef ROCPROFSYS_AMDSMI_GET

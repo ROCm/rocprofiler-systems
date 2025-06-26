@@ -36,7 +36,11 @@
 #include <rocprofiler-sdk/cxx/hash.hpp>
 #include <rocprofiler-sdk/cxx/name_info.hpp>
 #include <rocprofiler-sdk/cxx/operators.hpp>
-#include <rocprofiler-sdk/dispatch_counting_service.h>
+#if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+    #include <rocprofiler-sdk/dispatch_profile.h>
+#else
+    #include <rocprofiler-sdk/dispatch_counting_service.h>
+#endif
 #include <rocprofiler-sdk/fwd.h>
 #include <rocprofiler-sdk/registration.h>
 
@@ -50,7 +54,11 @@ namespace rocprofiler_sdk
 {
 struct counter_dispatch_record
 {
+    #if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+    const rocprofiler_profile_counting_dispatch_data_t* dispatch_data  = nullptr;
+    #else
     const rocprofiler_dispatch_counting_service_data_t* dispatch_data  = nullptr;
+    #endif
     rocprofiler_dispatch_id_t                           dispatch_id    = 0;
     rocprofiler_counter_id_t                            counter_id     = {};
     rocprofiler_record_counter_t                        record_counter = {};

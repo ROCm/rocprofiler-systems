@@ -580,6 +580,10 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
     _backend_choices.erase("rcclp");
 #endif
 
+#if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+    _backend_choices.erase("rcclp");
+#endif 
+
     if(gpu::device_count() == 0)
     {
         // remove GPU-specific backends
