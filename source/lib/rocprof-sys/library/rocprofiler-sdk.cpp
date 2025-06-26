@@ -34,7 +34,9 @@
 #include "library/components/category_region.hpp"
 #include "library/rocprofiler-sdk/counters.hpp"
 #include "library/rocprofiler-sdk/fwd.hpp"
-#include "library/rocprofiler-sdk/rccl.hpp"
+#if !ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+#    include "library/rocprofiler-sdk/rccl.hpp"
+#endif
 #include "library/thread_info.hpp"
 #include "library/tracing.hpp"
 
@@ -208,7 +210,12 @@ get_kernel_symbol_info(uint64_t _kernel_id)
 
 // Implementation of rocprofiler_callback_tracing_operation_args_cb_t
 int
-save_args(rocprofiler_callback_tracing_kind_t /*kind*/, int32_t /*operation*/,
+save_args(rocprofiler_callback_tracing_kind_t /*kind*/,
+#if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+          uint32_t /*operation*/,
+#else
+          int32_t /*operation*/,
+#endif
           uint32_t /*arg_number*/, const void* const /*arg_value_addr*/,
           int32_t /*arg_indirection_count*/, const char* /*arg_type*/,
           const char* arg_name, const char*        arg_value_str,
@@ -537,12 +544,14 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
                 break;
             }
 #endif
+#if !ROCPROFSYS_ROCM_6_2_COMPATIBILITY
             case ROCPROFILER_CALLBACK_TRACING_RCCL_API:
             {
                 tool_tracing_callback_start(category::rocm_rccl_api{}, record, user_data,
                                             ts);
                 break;
             }
+#endif
             case ROCPROFILER_CALLBACK_TRACING_NONE:
             case ROCPROFILER_CALLBACK_TRACING_LAST:
             case ROCPROFILER_CALLBACK_TRACING_MARKER_CONTROL_API:
@@ -636,6 +645,7 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
                 break;
             }
 #endif
+#if !ROCPROFSYS_ROCM_6_2_COMPATIBILITY
             case ROCPROFILER_CALLBACK_TRACING_RCCL_API:
             {
                 tool_tracing_callback_rccl(record, user_data->value, ts);
@@ -643,6 +653,7 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
                                            ts, _bt_data);
                 break;
             }
+#endif
             case ROCPROFILER_CALLBACK_TRACING_NONE:
             case ROCPROFILER_CALLBACK_TRACING_LAST:
             case ROCPROFILER_CALLBACK_TRACING_MARKER_CONTROL_API:
@@ -884,7 +895,11 @@ auto&
 get_counter_dispatch_data()
 {
     static auto _v =
+#if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+        container::stable_vector<rocprofiler_profile_counting_dispatch_data_t>{};
+#else
         container::stable_vector<rocprofiler_dispatch_counting_service_data_t>{};
+#endif
     return _v;
 }
 
@@ -906,12 +921,19 @@ get_counter_storage()
     static auto* _v = new agent_counter_storage_map_t{};
     return _v;
 }
-
+#if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+void
+counter_record_callback(rocprofiler_profile_counting_dispatch_data_t dispatch_data,
+                        rocprofiler_record_counter_t* record_data, size_t record_count,
+                        rocprofiler_user_data_t /*user_data*/,
+                        void* /*callback_data_arg*/)
+#else
 void
 counter_record_callback(rocprofiler_dispatch_counting_service_data_t dispatch_data,
                         rocprofiler_record_counter_t* record_data, size_t record_count,
                         rocprofiler_user_data_t /*user_data*/,
                         void* /*callback_data_arg*/)
+#endif
 {
     auto* _agent_counter_storage = get_counter_storage();
     if(!_agent_counter_storage) return;
@@ -976,9 +998,14 @@ counter_record_callback(rocprofiler_dispatch_counting_service_data_t dispatch_da
 
 void
 dispatch_counting_service_callback(
+#if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+    rocprofiler_profile_counting_dispatch_data_t dispatch_data,
+#else
     rocprofiler_dispatch_counting_service_data_t dispatch_data,
+#endif
     rocprofiler_profile_config_id_t* config, rocprofiler_user_data_t* /*user_data*/,
     void*                            callback_data_arg)
+
 {
     auto* _data = as_client_data(callback_data_arg);
     if(!_data || !config) return;
@@ -1091,7 +1118,9 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
             ROCPROFILER_CALLBACK_TRACING_HIP_RUNTIME_API,
             ROCPROFILER_CALLBACK_TRACING_HIP_COMPILER_API,
             ROCPROFILER_CALLBACK_TRACING_MARKER_CORE_API,
+#if !ROCPROFSYS_ROCM_6_2_COMPATIBILITY
             ROCPROFILER_CALLBACK_TRACING_RCCL_API,
+#endif
 #if(ROCPROFILER_VERSION >= 600)
             ROCPROFILER_CALLBACK_TRACING_ROCDECODE_API,
 #endif
@@ -1105,9 +1134,17 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
             auto _ops = rocprofiler_sdk::get_operations(itr);
             _data->backtrace_operations.emplace(
                 itr, rocprofiler_sdk::get_backtrace_operations(itr));
+#if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+            ROCPROFILER_CALL(rocprofiler_configure_callback_tracing_service(
+                _data->primary_ctx, itr,
+                reinterpret_cast<rocprofiler_tracing_operation_t*>(
+                    _ops.data()),  // uint32_t to int32_t
+                _ops.size(), tool_tracing_callback, _data));
+#else
             ROCPROFILER_CALL(rocprofiler_configure_callback_tracing_service(
                 _data->primary_ctx, itr, _ops.data(), _ops.size(), tool_tracing_callback,
                 _data));
+#endif
         }
     }
 
@@ -1145,13 +1182,20 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
 
         auto _ops =
             rocprofiler_sdk::get_operations(ROCPROFILER_BUFFER_TRACING_MEMORY_COPY);
-
+#if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+        ROCPROFILER_CALL(rocprofiler_configure_buffer_tracing_service(
+            _data->primary_ctx, ROCPROFILER_BUFFER_TRACING_MEMORY_COPY,
+            (_ops.empty())
+                ? nullptr
+                : reinterpret_cast<rocprofiler_tracing_operation_t*>(_ops.data()),
+            _ops.size(), _data->memory_copy_buffer));
+#else
         ROCPROFILER_CALL(rocprofiler_configure_buffer_tracing_service(
             _data->primary_ctx, ROCPROFILER_BUFFER_TRACING_MEMORY_COPY,
             (_ops.empty()) ? nullptr : _ops.data(), _ops.size(),
             _data->memory_copy_buffer));
+#endif
     }
-
     if(!_counter_events.empty())
     {
         for(const auto& itr : _data->gpu_agents)
@@ -1171,9 +1215,14 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
             _data->counter_ctx, ROCPROFILER_CALLBACK_TRACING_KERNEL_DISPATCH,
             _operations.data(), _operations.size(), tool_tracing_callback, _data));
 
-        ROCPROFILER_CALL(rocprofiler_configure_callback_dispatch_counting_service(
-            _data->counter_ctx, dispatch_counting_service_callback, _data,
-            counter_record_callback, _data));
+        ROCPROFILER_CALL(
+#if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+            rocprofiler_configure_callback_dispatch_profile_counting_service
+#else
+            rocprofiler_configure_callback_dispatch_counting_service
+#endif
+            (_data->counter_ctx, dispatch_counting_service_callback, _data,
+             counter_record_callback, _data));
 
         // ROCPROFILER_CALL(rocprofiler_create_buffer(
         //     counter_ctx, buffer_size, watermark,

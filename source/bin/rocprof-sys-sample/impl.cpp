@@ -749,6 +749,10 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
     _backend_choices.erase("rcclp");
 #endif
 
+#if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+    _backend_choices.erase("rcclp");
+#endif
+
     parser.start_group("BACKEND OPTIONS",
                        "These options control region information captured "
                        "w/o sampling or instrumentation");

@@ -282,6 +282,7 @@ get_processor_handles()
                 vcn_supported  = has_valid(gpu_metrics.vcn_activity);
                 jpeg_supported = has_valid(gpu_metrics.jpeg_activity);
                 // Check if VCN and JPEG busy metrics are available
+#    if AMDSMI_LIB_VERSION_MAJOR >= 26
                 for(const auto& xcp : gpu_metrics.xcp_stats)
                 {
                     if(!v_busy_supported && has_valid(xcp.vcn_busy))
@@ -290,6 +291,7 @@ get_processor_handles()
                         j_busy_supported = true;
                     if(v_busy_supported && j_busy_supported) break;
                 }
+#    endif
             }
             processors::vcn_activity_supported.push_back(vcn_supported);
             processors::jpeg_activity_supported.push_back(jpeg_supported);
@@ -313,7 +315,7 @@ is_jpeg_activity_supported(uint32_t dev_id)
     if(dev_id >= processors::jpeg_activity_supported.size()) return false;
     return processors::jpeg_activity_supported[dev_id];
 }
-
+#    if AMDSMI_LIB_VERSION_MAJOR >= 26
 bool
 is_vcn_busy_supported(uint32_t dev_id)
 {
@@ -327,7 +329,19 @@ is_jpeg_busy_supported(uint32_t dev_id)
     if(dev_id >= processors::jpeg_busy_supported.size()) return false;
     return processors::jpeg_busy_supported[dev_id];
 }
+#    else
+bool
+is_vcn_busy_supported(uint32_t dev_id)
+{
+    return false;
+}
 
+bool
+is_jpeg_busy_supported(uint32_t dev_id)
+{
+    return false;
+}
+#    endif
 uint32_t
 get_processor_count()
 {

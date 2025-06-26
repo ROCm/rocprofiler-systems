@@ -1365,6 +1365,12 @@ configure_disabled_settings(const std::shared_ptr<settings>& _config)
         _config->find(itr)->second->set_hidden(true);
 #endif
 
+#if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+    _config->find("ROCPROFSYS_USE_RCCLP")->second->set_hidden(true);
+    for(const auto& itr : _config->disable_category("rcclp"))
+        _config->find(itr)->second->set_hidden(true);
+#endif
+
 #if defined(ROCPROFSYS_USE_OMPT) || ROCPROFSYS_USE_OMPT == 0
     _config->find("ROCPROFSYS_USE_OMPT")->second->set_hidden(true);
     for(const auto& itr : _config->disable_category("ompt"))
@@ -1935,13 +1941,20 @@ get_use_code_coverage()
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
+#if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+bool
+get_use_rcclp()
+{
+    return false;
+}
+#else
 bool
 get_use_rcclp()
 {
     static auto _v = get_config()->find("ROCPROFSYS_USE_RCCLP");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
-
+#endif
 size_t
 get_num_threads_hint()
 {

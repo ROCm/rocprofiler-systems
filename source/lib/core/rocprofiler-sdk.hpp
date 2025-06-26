@@ -70,12 +70,19 @@ get_operations(rocprofiler_buffer_tracing_kind_t kindv);
 std::vector<std::string>
 get_rocm_events();
 
+#    if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+std::unordered_set<uint32_t>
+#    else
 std::unordered_set<int32_t>
+#    endif
 get_backtrace_operations(rocprofiler_callback_tracing_kind_t kindv);
 
+#    if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+std::unordered_set<uint32_t>
+#    else
 std::unordered_set<int32_t>
+#    endif
 get_backtrace_operations(rocprofiler_buffer_tracing_kind_t kindv);
-
 #endif
 }  // namespace rocprofiler_sdk
 }  // namespace rocprofsys
