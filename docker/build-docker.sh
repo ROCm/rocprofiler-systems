@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 : ${USER:=$(whoami)}
-: ${ROCM_VERSIONS:="6.2"}
+: ${ROCM_VERSIONS:="6.2.0"}
 : ${DISTRO:=ubuntu}
 : ${VERSIONS:=20.04}
 : ${PYTHON_VERSIONS:="6 7 8 9 10 11 12 13"}
@@ -34,7 +34,7 @@ usage()
     print_default_option() { printf "    --%-20s %-24s     %s (default: %s)\n" "${1}" "${2}" "${3}" "$(tolower ${4})"; }
     print_default_option distro "[ubuntu|opensuse|rhel]" "OS distribution" "${DISTRO}"
     print_default_option versions "[VERSION] [VERSION...]" "Ubuntu, OpenSUSE, or RHEL release" "${VERSIONS}"
-    print_default_option rocm-versions "[VERSION] [VERSION...]" "ROCm versions" "${ROCM_VERSIONS}"
+    print_default_option rocm-versions "[VERSION] [VERSION...]" "ROCm versions (format: Major.Minor.Patch, patch defaults to 0 if not specified)" "${ROCM_VERSIONS}"
     print_default_option python-versions "[VERSION] [VERSION...]" "Python 3 minor releases" "${PYTHON_VERSIONS}"
     print_default_option "user -u" "[USERNAME]" "DockerHub username" "${USER}"
     print_default_option "retry -r" "[N]" "Number of attempts to build (to account for network errors)" "${RETRY}"
@@ -115,6 +115,8 @@ show-matrix()
 
     echo ""
     echo "ROCm '0.0' means no ROCm installation (CPU-only build)"
+    echo ""
+    echo "Note: Patch versions are also supported (See: https://repo.radeon.com/amdgpu-install/)"
     echo ""
 }
 
@@ -238,10 +240,13 @@ do
     VERSION_PATCH=$(echo ${VERSION} | sed 's/\./ /g' | awk '{print $3}')
     for ROCM_VERSION in ${ROCM_VERSIONS}
     do
-        CONTAINER=${USER}/rocprofiler-systems:release-base-${DISTRO}-${VERSION}-rocm-${ROCM_VERSION}
         ROCM_MAJOR=$(echo ${ROCM_VERSION} | sed 's/\./ /g' | awk '{print $1}')
         ROCM_MINOR=$(echo ${ROCM_VERSION} | sed 's/\./ /g' | awk '{print $2}')
         ROCM_PATCH=$(echo ${ROCM_VERSION} | sed 's/\./ /g' | awk '{print $3}')
+        if [ -z "${ROCM_PATCH}" ]  || ([ "${ROCM_MAJOR}" = "0" ] && [ "${ROCM_MINOR}" = "0" ]); then
+            ROCM_PATCH=0
+        fi
+        CONTAINER=${USER}/rocprofiler-systems:release-base-${DISTRO}-${VERSION}-rocm-${ROCM_MAJOR}.${ROCM_MINOR}.${ROCM_PATCH}
         if [ -n "${ROCM_PATCH}" ]; then
             ROCM_VERSN=$(( (${ROCM_MAJOR}*10000)+(${ROCM_MINOR}*100)+(${ROCM_PATCH}) ))
             ROCM_SEP="."
