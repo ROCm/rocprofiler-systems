@@ -41,7 +41,7 @@ jobs:
   ubuntu-jammy-external:
     runs-on: ubuntu-latest
     container:
-      image: dgaliffiamd/rocprofiler-systems:ci-base-ubuntu-22.04
+      image: dgaliffiamd/rocprofiler-systems:ci-base-6.4-ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -55,7 +55,7 @@ jobs:
         hidden: ['ON', 'OFF']
         build-type: ['Release']
         mpi-headers: ['ON', 'OFF']
-        build-dyninst: ['ON']
+        build-dyninst: ['OFF']
         rocm-version: ['0.0']
 
     env:
@@ -198,7 +198,7 @@ jobs:
   ubuntu-jammy-external-rocm:
     runs-on: ubuntu-latest
     container:
-      image: dgaliffiamd/rocprofiler-systems:ci-base-ubuntu-22.04
+      image: dgaliffiamd/rocprofiler-systems:ci-base-6.4-ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -212,7 +212,7 @@ jobs:
         hidden: ['ON']
         build-type: ['Release']
         mpi-headers: ['OFF']
-        build-dyninst: ['ON']
+        build-dyninst: ['OFF']
         rocm-version: ['6.3', '6.4']
 
     env:

@@ -43,7 +43,7 @@ jobs:
   ubuntu-focal-external:
     runs-on: ubuntu-latest
     container:
-      image: dgaliffiamd/rocprofiler-systems:ci-base-ubuntu-20.04
+      image: dgaliffiamd/rocprofiler-systems:ci-base-6.4-ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
@@ -150,11 +150,6 @@ jobs:
           -DROCPROFSYS_USE_ROCM=OFF
           -DROCPROFSYS_USE_OMPT=OFF
           -DROCPROFSYS_USE_PAPI=OFF
-          -DROCPROFSYS_BUILD_DYNINST=ON
-          -DDYNINST_BUILD_BOOST=ON
-          -DDYNINST_BUILD_TBB=ON
-          -DDYNINST_BUILD_ELFUTILS=ON
-          -DDYNINST_BUILD_LIBIBERTY=ON
           -DROCPROFSYS_USE_PYTHON=${{ matrix.python }}
           -DROCPROFSYS_USE_MPI_HEADERS=${{ matrix.mpi-headers }}
           -DROCPROFSYS_STRIP_LIBRARIES=${{ matrix.strip }}
@@ -249,7 +244,7 @@ jobs:
   ubuntu-focal-external-rocm:
     runs-on: ubuntu-latest
     container:
-      image: dgaliffiamd/rocprofiler-systems:ci-base-ubuntu-20.04
+      image: dgaliffiamd/rocprofiler-systems:ci-base-6.4-ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
@@ -346,11 +341,6 @@ jobs:
           -DROCPROFSYS_BUILD_LTO=OFF
           -DROCPROFSYS_USE_MPI=OFF
           -DROCPROFSYS_USE_ROCM=ON
-          -DROCPROFSYS_BUILD_DYNINST=ON
-          -DDYNINST_BUILD_BOOST=ON
-          -DDYNINST_BUILD_TBB=ON
-          -DDYNINST_BUILD_ELFUTILS=ON
-          -DDYNINST_BUILD_LIBIBERTY=ON
           -DROCPROFSYS_MAX_THREADS=64
           -DROCPROFSYS_USE_PAPI=OFF
           -DROCPROFSYS_USE_OMPT=OFF
@@ -416,7 +406,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: dgaliffiamd/rocprofiler-systems:ci-base-ubuntu-20.04
+      image: dgaliffiamd/rocprofiler-systems:ci-base-6.4-ubuntu-20.04
       options: --cap-add CAP_SYS_ADMIN
 
     env:
@@ -465,11 +455,6 @@ jobs:
           -DCMAKE_INSTALL_PREFIX=/opt/rocprofiler-systems
           -DROCPROFSYS_BUILD_CI=OFF
           -DROCPROFSYS_BUILD_TESTING=ON
-          -DROCPROFSYS_BUILD_DYNINST=ON
-          -DDYNINST_BUILD_BOOST=ON
-          -DDYNINST_BUILD_TBB=ON
-          -DDYNINST_BUILD_ELFUTILS=ON
-          -DDYNINST_BUILD_LIBIBERTY=ON
           -DROCPROFSYS_BUILD_DEBUG=OFF
           -DROCPROFSYS_BUILD_HIDDEN_VISIBILITY=OFF
           -DROCPROFSYS_USE_MPI=ON
