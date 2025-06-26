@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18.4 FATAL_ERROR)
 
-if(ENABLE_FORTRAN)
+if(ENABLE_FORTRAN_TESTS)
     project(rocprofiler-systems-mpi-examples LANGUAGES C CXX Fortran)
 else()
     project(rocprofiler-systems-mpi-examples LANGUAGES C CXX)
@@ -66,7 +66,7 @@ target_link_libraries(mpi-send-recv PRIVATE mpi-c-interface-library)
 add_executable(mpi-allreduce allreduce.c)
 target_link_libraries(mpi-allreduce PRIVATE mpi-c-interface-library m)
 
-if(MPI_FOUND AND ENABLE_FORTRAN)
+if(MPI_FOUND AND ENABLE_FORTRAN_TESTS)
     find_package(MPI REQUIRED Fortran) # Ensure MPI Fortran bindings are found
     add_library(mpi-fortran-interface-library INTERFACE)
     target_link_libraries(

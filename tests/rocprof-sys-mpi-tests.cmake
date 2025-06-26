@@ -99,7 +99,7 @@ rocprofiler_systems_add_test(
         ">>> mpi-flat.inst(.*\n.*)>>> MPI_Init_thread(.*\n.*)>>> pthread_create(.*\n.*)>>> MPI_Comm_size(.*\n.*)>>> MPI_Comm_rank(.*\n.*)>>> MPI_Barrier(.*\n.*)>>> MPI_Alltoall"
 )
 
-if(ENABLE_FORTRAN)
+if(ENABLE_FORTRAN_TESTS)
     rocprofiler_systems_add_test(
         NAME "mpi-fortran-array"
         TARGET mpi-fortran-array
