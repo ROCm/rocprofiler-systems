@@ -1118,7 +1118,7 @@ flush()
 
 int
 set_kernel_rename_and_stream_correlation_id(
-    rocprofiler_thread_id_t  /* thr_id */, rocprofiler_context_id_t /* ctx_id */,
+    rocprofiler_thread_id_t /* thr_id */, rocprofiler_context_id_t /* ctx_id */,
     rocprofiler_external_correlation_id_request_kind_t /* kind */,
     rocprofiler_tracing_operation_t /* op */, uint64_t /* internal_corr_id */,
     rocprofiler_user_data_t* external_corr_id, void* /* user_data */)
