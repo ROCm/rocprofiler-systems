@@ -351,6 +351,8 @@ do
             DISTRO_BASE_IMAGE=rockylinux/rockylinux
             verbose-build docker build . ${PULL} --progress plain -f ${DOCKER_FILE} --tag ${CONTAINER} --build-arg DISTRO=${DISTRO_BASE_IMAGE} --build-arg VERSION=${VERSION} --build-arg ROCM_VERSION=${ROCM_VERSION} --build-arg PYTHON_VERSIONS=\"${PYTHON_VERSIONS}\"
         elif [ "${DISTRO}" = "opensuse" ]; then
+            DISTRO_IMAGE="opensuse/leap"
+            echo "DISTRO_IMAGE: ${DISTRO_IMAGE}"
             if [[ "${VERSION_MAJOR}" -le 15 && "${VERSION_MINOR}" -le 5 ]]; then
                 PERL_REPO="15.6"
             else
