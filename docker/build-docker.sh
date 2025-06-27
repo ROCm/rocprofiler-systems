@@ -138,7 +138,7 @@ validate-combinations()
             ROCM_MAJOR=$(echo ${ROCM_VERSION} | sed 's/\./ /g' | awk '{print $1}')
             ROCM_MINOR=$(echo ${ROCM_VERSION} | sed 's/\./ /g' | awk '{print $2}')
             ROCM_MAJOR_MINOR="${ROCM_MAJOR}.${ROCM_MINOR}"
-            if ! [ "${ROCM_MAJOR_MINOR}" == "0.0" ] && [ "${ROCM_VERSION}" != "0.0" ]; then
+            if ! ([ "${ROCM_MAJOR_MINOR}" == "0.0" ] && [ "${ROCM_VERSION}" != "0.0" ]); then
                 for i in "${!MATRIX_DISTROS[@]}"; do
                     if [[ "${MATRIX_DISTROS[i]}" == "${DISTRO}" && \
                         "${MATRIX_VERSIONS[i]}" == "${VERSION}" && \
