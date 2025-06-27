@@ -156,7 +156,7 @@ using name = perfetto_category<Tp...>;
 
 #if !ROCPROFSYS_ROCM_6_2_COMPATIBILITY
 #    define ROCPROFSYS_PERFETTO_CATEGORY_SDK_RCCL                                        \
-        ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_rccl),
+        ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_rccl_api),
 #else
 #    define ROCPROFSYS_PERFETTO_CATEGORY_SDK_RCCL
 #endif
