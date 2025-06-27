@@ -43,7 +43,7 @@ jobs:
   ubuntu-focal-external:
     runs-on: ubuntu-latest
     container:
-      image: dgaliffiamd/rocprofiler-systems:ci-base-ubuntu-20.04
+      image: dgaliffiamd/rocprofiler-systems:ci-base-6.4-ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
@@ -244,7 +244,7 @@ jobs:
   ubuntu-focal-external-rocm:
     runs-on: ubuntu-latest
     container:
-      image: dgaliffiamd/rocprofiler-systems:ci-base-ubuntu-20.04
+      image: dgaliffiamd/rocprofiler-systems:ci-base-6.4-ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
@@ -406,7 +406,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: dgaliffiamd/rocprofiler-systems:ci-base-ubuntu-20.04
+      image: dgaliffiamd/rocprofiler-systems:ci-base-6.4-ubuntu-20.04
       options: --cap-add CAP_SYS_ADMIN
 
     env:
@@ -455,7 +455,6 @@ jobs:
           -DCMAKE_INSTALL_PREFIX=/opt/rocprofiler-systems
           -DROCPROFSYS_BUILD_CI=OFF
           -DROCPROFSYS_BUILD_TESTING=ON
-          -DROCPROFSYS_BUILD_DYNINST=OFF
           -DROCPROFSYS_BUILD_DEBUG=OFF
           -DROCPROFSYS_BUILD_HIDDEN_VISIBILITY=OFF
           -DROCPROFSYS_USE_MPI=ON

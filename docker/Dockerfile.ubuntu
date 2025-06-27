@@ -15,8 +15,6 @@ WORKDIR /tmp
 SHELL [ "/bin/bash", "-c" ]
 
 ARG EXTRA_PACKAGES=""
-ARG ROCM_VERSION="0.0"
-ARG PYTHON_VERSIONS="6 7 8 9 10 11 12"
 ENV PATH ${HOME}/.local/bin:${PATH}
 
 RUN apt-get update && \
@@ -32,6 +30,8 @@ RUN apt-get update && \
         python3 -m pip install 'cmake==3.21'; \
     fi
 
+ARG ROCM_VERSION="0.0"
+
 RUN if [ "${ROCM_VERSION}" != "0.0" ]; then \
         OS_VERSION=$(grep '^VERSION_ID=' /etc/os-release | cut -d'=' -f2 | tr -d '"') && \
         OS_CODENAME=$(grep '^VERSION_CODENAME=' /etc/os-release | cut -d'=' -f2) && \
@@ -46,12 +46,14 @@ RUN if [ "${ROCM_VERSION}" != "0.0" ]; then \
         apt-get autoclean; \
     fi
 
-RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh && \
-    bash miniconda.sh -b -p /opt/conda && \
+ARG PYTHON_VERSIONS="6 7 8 9 10 11 12 13"
+
+RUN wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh -O miniforge.sh && \
+    bash miniforge.sh -b -p /opt/conda && \
     export PATH="/opt/conda/bin:${PATH}" && \
     conda config --set always_yes yes --set changeps1 no && \
-    conda update -c defaults -n base conda && \
-    for i in ${PYTHON_VERSIONS}; do conda create -n py3.${i} -c defaults -c conda-forge python=3.${i} pip; done && \
+    conda update -c conda-forge -n base conda && \
+    for i in ${PYTHON_VERSIONS}; do conda create -n py3.${i} -c conda-forge python=3.${i} pip numpy; done && \
     for i in ${PYTHON_VERSIONS}; do /opt/conda/envs/py3.${i}/bin/python -m pip install numpy perfetto dataclasses; done && \
     conda clean -a -y && \
     conda init
