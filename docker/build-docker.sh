@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 : ${USER:=$(whoami)}
-: ${ROCM_VERSIONS:="6.2.0"}
+: ${ROCM_VERSIONS:="6.2"}
 : ${DISTRO:=ubuntu}
 : ${VERSIONS:=20.04}
 : ${PYTHON_VERSIONS:="6 7 8 9 10 11 12 13"}
@@ -9,8 +9,11 @@
 : ${PUSH:=0}
 : ${PULL:=--pull}
 : ${RETRY:=3}
+: ${SCRIPT_DIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]:-$0}")")}
 
 set -e
+
+cd $(dirname ${SCRIPT_DIR})
 
 tolower()
 {
@@ -53,7 +56,7 @@ send-error()
 show-matrix()
 {
     local filter_distro="${1:-}"
-    local workflow_file="../.github/workflows/containers.yml"
+    local workflow_file=".github/workflows/containers.yml"
 
     if [ -n "${filter_distro}" ]; then
         filter_distro=$(tolower "${filter_distro}")
@@ -230,7 +233,7 @@ if [ "${RETRY}" -lt 1 ]; then
 fi
 
 if [ -n "${BUILD_CI}" ]; then DOCKER_FILE="${DOCKER_FILE}.ci"; fi
-if [ ! -f ${DOCKER_FILE} ]; then cd docker; fi
+cd docker # Forced since PWD is parent dir
 if [ ! -f ${DOCKER_FILE} ]; then send-error "File \"${DOCKER_FILE}\" not found"; fi
 
 for VERSION in ${VERSIONS}
@@ -243,20 +246,13 @@ do
         ROCM_MAJOR=$(echo ${ROCM_VERSION} | sed 's/\./ /g' | awk '{print $1}')
         ROCM_MINOR=$(echo ${ROCM_VERSION} | sed 's/\./ /g' | awk '{print $2}')
         ROCM_PATCH=$(echo ${ROCM_VERSION} | sed 's/\./ /g' | awk '{print $3}')
-        if [ -z "${ROCM_PATCH}" ]  || ([ "${ROCM_MAJOR}" = "0" ] && [ "${ROCM_MINOR}" = "0" ]); then
-            ROCM_PATCH=0
-        fi
-        CONTAINER=${USER}/rocprofiler-systems:release-base-${DISTRO}-${VERSION}-rocm-${ROCM_MAJOR}.${ROCM_MINOR}.${ROCM_PATCH}
-        if [ -n "${ROCM_PATCH}" ]; then
-            ROCM_VERSN=$(( (${ROCM_MAJOR}*10000)+(${ROCM_MINOR}*100)+(${ROCM_PATCH}) ))
-            ROCM_SEP="."
+        if [ "${ROCM_PATCH}" = "0" ] || [ -z "${ROCM_PATCH}" ]; then
+            CONTAINER=${USER}/rocprofiler-systems:release-base-${DISTRO}-${VERSION}-rocm-${ROCM_MAJOR}.${ROCM_MINOR}
         else
-            ROCM_VERSN=$(( (${ROCM_MAJOR}*10000)+(${ROCM_MINOR}*100) ))
-            ROCM_SEP=""
+            CONTAINER=${USER}/rocprofiler-systems:release-base-${DISTRO}-${VERSION}-rocm-${ROCM_VERSION}
         fi
         if [ "${DISTRO}" = "ubuntu" ]; then
             ROCM_REPO_DIST="ubuntu"
-            ROCM_REPO_VERSION=${ROCM_VERSION}
             case "${ROCM_VERSION}" in
                 6.*)
                     case "${VERSION}" in
@@ -272,26 +268,19 @@ do
                         *)
                             ;;
                     esac
-                    ROCM_DEB=amdgpu-install_${ROCM_MAJOR}.${ROCM_MINOR}.${ROCM_VERSN}-1_all.deb
                     ;;
                 *)
                     ;;
             esac
-            verbose-build docker build . ${PULL} --progress plain -f ${DOCKER_FILE} --tag ${CONTAINER} --build-arg DISTRO=${DISTRO} --build-arg VERSION=${VERSION} --build-arg ROCM_VERSION=${ROCM_VERSION} --build-arg ROCM_REPO_VERSION=${ROCM_REPO_VERSION} --build-arg ROCM_REPO_DIST=${ROCM_REPO_DIST} --build-arg AMDGPU_DEB=${ROCM_DEB} --build-arg PYTHON_VERSIONS=\"${PYTHON_VERSIONS}\"
+            verbose-build docker build . ${PULL} --progress plain -f ${DOCKER_FILE} --tag ${CONTAINER} --build-arg DISTRO=${DISTRO} --build-arg VERSION=${VERSION} --build-arg ROCM_VERSION=${ROCM_VERSION} --build-arg PYTHON_VERSIONS=\"${PYTHON_VERSIONS}\"
         elif [ "${DISTRO}" = "rhel" ]; then
             if [ -z "${VERSION_MINOR}" ]; then
                 send-error "Please provide a major and minor version of the OS. Supported: >= 8.8, <= 9.4"
             fi
 
-            # Components used to create the sub-URL below
-            #   set <OS-VERSION> in amdgpu-install/<ROCM-VERSION>/rhel/<OS-VERSION>
-            RPM_PATH=${VERSION_MAJOR}.${VERSION_MINOR}
-            RPM_TAG=".el${VERSION_MAJOR}"
-
             # set the sub-URL in https://repo.radeon.com/amdgpu-install/<sub-URL>
             case "${ROCM_VERSION}" in
                 6.*)
-                    ROCM_RPM=${ROCM_VERSION}/rhel/${RPM_PATH}/amdgpu-install-${ROCM_MAJOR}.${ROCM_MINOR}.${ROCM_VERSN}-1${RPM_TAG}.noarch.rpm
                     ;;
                 0.0)
                     ;;
@@ -303,7 +292,7 @@ do
             # use Rocky Linux as a base image for RHEL builds
             DISTRO_BASE_IMAGE=rockylinux/rockylinux
 
-            verbose-build docker build . ${PULL} --progress plain -f ${DOCKER_FILE} --tag ${CONTAINER} --build-arg DISTRO=${DISTRO_BASE_IMAGE} --build-arg VERSION=${VERSION} --build-arg ROCM_VERSION=${ROCM_VERSION} --build-arg AMDGPU_RPM=${ROCM_RPM} --build-arg PYTHON_VERSIONS=\"${PYTHON_VERSIONS}\"
+            verbose-build docker build . ${PULL} --progress plain -f ${DOCKER_FILE} --tag ${CONTAINER} --build-arg DISTRO=${DISTRO_BASE_IMAGE} --build-arg VERSION=${VERSION} --build-arg ROCM_VERSION=${ROCM_VERSION} --build-arg PYTHON_VERSIONS=\"${PYTHON_VERSIONS}\"
         elif [ "${DISTRO}" = "opensuse" ]; then
             case "${VERSION}" in
                 15.*)
@@ -316,7 +305,6 @@ do
             esac
             case "${ROCM_VERSION}" in
                 6.*)
-                    ROCM_RPM=${ROCM_VERSION}/sle/${VERSION}/amdgpu-install-${ROCM_MAJOR}.${ROCM_MINOR}.${ROCM_VERSN}-1.noarch.rpm
                     ;;
                 0.0)
                     ;;
@@ -329,7 +317,7 @@ do
             else
                 PERL_REPO="${VERSION_MAJOR}.${VERSION_MINOR}"
             fi
-            verbose-build docker build . ${PULL} --progress plain -f ${DOCKER_FILE} --tag ${CONTAINER} --build-arg DISTRO=${DISTRO_IMAGE} --build-arg VERSION=${VERSION} --build-arg ROCM_VERSION=${ROCM_VERSION} --build-arg AMDGPU_RPM=${ROCM_RPM} --build-arg PERL_REPO=${PERL_REPO} --build-arg PYTHON_VERSIONS=\"${PYTHON_VERSIONS}\"
+            verbose-build docker build . ${PULL} --progress plain -f ${DOCKER_FILE} --tag ${CONTAINER} --build-arg DISTRO=${DISTRO_IMAGE} --build-arg VERSION=${VERSION} --build-arg ROCM_VERSION=${ROCM_VERSION} --build-arg PERL_REPO=${PERL_REPO} --build-arg PYTHON_VERSIONS=\"${PYTHON_VERSIONS}\"
         fi
         if [ "${PUSH}" -ne 0 ]; then
             docker push ${CONTAINER}

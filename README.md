@@ -151,16 +151,16 @@ cd docker
 > [!NOTE]
 > The `-m` argument can be used to show supported OS + ROCm combinations.
 
-**Example:** To set up an Ubuntu 24.04 + ROCm 6.4.0 + Python 3.12 environment for building and testing, run the following commands:
+**Example:** To set up an Ubuntu 24.04 + ROCm 6.4 + Python 3.12 environment for building and testing, run the following commands:
 
 ```shell
 cd docker
 ./build-docker.sh --distro ubuntu --versions 24.04                               \
-        --rocm-versions 6.4.0 --python-versions 12 --retry 1
+        --rocm-versions 6.4 --python-versions 12 --retry 1
 docker run -v "$(cd .. && pwd)":/home/development                                \
         -it -w /home/development                                                 \
         --device /dev/kfd --device /dev/dri                                      \
-        $(whoami)/rocprofiler-systems:release-base-ubuntu-24.04-rocm-6.4.0
+        $(whoami)/rocprofiler-systems:release-base-ubuntu-24.04-rocm-6.4
 ```
 
 Inside the container, clean, build, and install the project with testing enabled using the following commands:
