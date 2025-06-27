@@ -15,6 +15,149 @@ set -e
 
 cd $(dirname ${SCRIPT_DIR})
 
+declare -a MATRIX_DISTROS=()
+declare -a MATRIX_VERSIONS=()
+declare -a MATRIX_ROCM_VERSIONS=()
+
+load-matrix()
+{
+    local workflow_file=".github/workflows/containers.yml"
+    if [ ! -f "${workflow_file}" ]; then
+        echo -e "\n Error: Cannot find ${workflow_file}"
+        exit 1
+    fi
+
+    local matrix_data=$(awk '
+    /rocprofiler-systems-release:/, /steps:/ {
+        if (/- os-distro:/) {
+            gsub(/[[:space:]]*- os-distro:[[:space:]]*"/, "")
+            gsub(/"/, "")
+            distro = $0
+        }
+        if (/os-version:/) {
+            gsub(/[[:space:]]*os-version:[[:space:]]*"/, "")
+            gsub(/"/, "")
+            version = $0
+        }
+        if (/rocm-version:/) {
+            gsub(/[[:space:]]*rocm-version:[[:space:]]*"/, "")
+            gsub(/"/, "")
+            rocm = $0
+            printf "%s;%s;%s\n", distro, version, rocm
+        }
+    }
+    ' "${workflow_file}")
+
+    while IFS=';' read -r distro os_version rocm_version; do
+        MATRIX_DISTROS+=("$distro")
+        MATRIX_VERSIONS+=("$os_version")
+        MATRIX_ROCM_VERSIONS+=("$rocm_version")
+    done <<< "$matrix_data"
+}
+
+validate-distro()
+{
+    local distro="${1}"
+    
+    if [ -n "${distro}" ]; then
+        distro=$(tolower "${distro}")
+        case "${distro}" in
+            ubuntu|opensuse|rhel)
+                ;;
+            *)
+                send-error "Unsupported distribution '${distro}'" "Supported distributions: ubuntu, opensuse, rhel"
+                ;;
+        esac
+    fi
+}
+
+show-matrix()
+{
+    local filter_distro="${1:-}"
+
+    if [ -n "${filter_distro}" ]; then
+        validate-distro "${filter_distro}" 
+        filter_distro=$(tolower "${filter_distro}") 
+    fi
+
+    echo ""
+    if [ -n "${filter_distro}" ]; then
+        echo "        Supported ${filter_distro} + ROCm Combinations     "
+        echo "   =============================================="
+    else
+        echo "        Supported OS + ROCm Combinations     "
+        echo "   =========================================="
+    fi
+    echo ""
+    echo "   OS Distribution    Version    ROCm Version"
+    echo "   ----------------   -------    ------------"
+
+    for i in "${!MATRIX_DISTROS[@]}"; do
+        distro="${MATRIX_DISTROS[i]}"
+        version="${MATRIX_VERSIONS[i]}"
+        rocm="${MATRIX_ROCM_VERSIONS[i]}"
+        if [[ -z "${filter_distro}" || "${distro}" == "${filter_distro}" ]]; then
+            printf "   %-16s   %-9s  %s\n" "${distro}" "${version}" "${rocm}"
+        fi
+    done
+
+    echo ""
+    echo "ROCm '0.0' means no ROCm installation (CPU-only build)"
+    echo ""
+    echo "Note: Patch versions are also supported (See: https://repo.radeon.com/amdgpu-install/)"
+    echo ""
+}
+
+# Cross checks arguments against compatibility matrix (ignores patch versions)
+validate-combinations()
+{
+    # Check OS version combinations
+    for VERSION in ${VERSIONS}; do
+        VERSION_MAJOR=$(echo ${VERSION} | sed 's/\./ /g' | awk '{print $1}')
+        VERSION_MINOR=$(echo ${VERSION} | sed 's/\./ /g' | awk '{print $2}')
+        
+        local os_version_valid=0
+        for i in "${!MATRIX_DISTROS[@]}"; do
+            if [[ "${MATRIX_DISTROS[i]}" == "${DISTRO}" && \
+                  "${MATRIX_VERSIONS[i]}" == "${VERSION}" ]]; then
+                os_version_valid=1
+                break
+            fi
+        done
+        
+        if [ ${os_version_valid} -eq 0 ]; then
+            send-error "Unsupported OS version :: ${VERSION}. See compatibility matrix for supported versions."
+        fi
+    done
+
+    # Check ROCm version combinations
+    # Since the list is small, the loop will not be too expensive
+    for VERSION in ${VERSIONS}; do
+        for ROCM_VERSION in ${ROCM_VERSIONS}; do
+            local valid=0
+            ROCM_MAJOR=$(echo ${ROCM_VERSION} | sed 's/\./ /g' | awk '{print $1}')
+            ROCM_MINOR=$(echo ${ROCM_VERSION} | sed 's/\./ /g' | awk '{print $2}')
+            ROCM_MAJOR_MINOR="${ROCM_MAJOR}.${ROCM_MINOR}"
+            if [ "${ROCM_MAJOR_MINOR}" == "0.0" ] && [ "${ROCM_VERSION}" != "0.0" ]; then
+                send-error "Unsupported combination :: ${DISTRO}-${VERSION} + ROCm ${ROCM_VERSION}. See compatibility matrix for supported versions."
+            fi
+
+            for i in "${!MATRIX_DISTROS[@]}"; do
+                if [[ "${MATRIX_DISTROS[i]}" == "${DISTRO}" && \
+                      "${MATRIX_VERSIONS[i]}" == "${VERSION}" && \
+                      "${MATRIX_ROCM_VERSIONS[i]}" == "${ROCM_MAJOR_MINOR}" ]]; then
+                    valid=1
+                    break
+                fi
+            done
+
+            if [ ${valid} -eq 0 ]; then
+                send-error "Unsupported combination :: ${DISTRO}-${VERSION} + ROCm ${ROCM_VERSION}. See compatibility matrix for supported versions."
+            fi
+        done
+    done
+}
+
 tolower()
 {
     echo "$@" | awk -F '\\|~\\|' '{print tolower($1)}';
@@ -47,80 +190,17 @@ usage()
 
 send-error()
 {
+    # Restore basic default values for usage function
+    USER=$(whoami)
+    ROCM_VERSIONS="6.2"
+    DISTRO=ubuntu
+    VERSIONS=20.04
+    PYTHON_VERSIONS="6 7 8 9 10 11 12 13"
+    PUSH=0
+    RETRY=3
     usage
     echo -e "\nError: ${@}"
     exit 1
-}
-
-# Prints compatibility matrix by scanning .github/workflows/containers.yml matrix
-show-matrix()
-{
-    local filter_distro="${1:-}"
-    local workflow_file=".github/workflows/containers.yml"
-
-    if [ -n "${filter_distro}" ]; then
-        filter_distro=$(tolower "${filter_distro}")
-        case "${filter_distro}" in
-            ubuntu|opensuse|rhel)
-                ;;
-            *)
-                echo -e "\n Error: Unsupported distribution '${filter_distro}'"
-                echo "   Supported distributions: ubuntu, opensuse, rhel"
-                echo ""
-                exit 1
-                ;;
-        esac
-    fi
-    if [ ! -f "${workflow_file}" ]; then
-        echo -e "\n Error: Cannot find ${workflow_file}"
-        exit 1
-    fi
-
-    echo ""
-    if [ -n "${filter_distro}" ]; then
-        echo "        Supported ${filter_distro} + ROCm Combinations     "
-        echo "   =============================================="
-    else
-        echo "        Supported OS + ROCm Combinations     "
-        echo "   =========================================="
-    fi
-    echo ""
-    echo "   OS Distribution    Version    ROCm Version"
-    echo "   ----------------   -------    ------------"
-
-    awk -v filter="${filter_distro}" '
-    /rocprofiler-systems-release:/, /steps:/ {
-        if (/- os-distro:/) {
-            gsub(/[[:space:]]*- os-distro:[[:space:]]*"/, "")
-            gsub(/"/, "")
-            distro = $0
-        }
-        if (/os-version:/) {
-            gsub(/[[:space:]]*os-version:[[:space:]]*"/, "")
-            gsub(/"/, "")
-            version = $0
-        }
-        if (/rocm-version:/) {
-            gsub(/[[:space:]]*rocm-version:[[:space:]]*"/, "")
-            gsub(/"/, "")
-            rocm = $0
-            if (rocm == "0.0") {
-                rocm = "0.0"
-            } else {
-                rocm = rocm
-            }
-            if (filter == "" || distro == filter) {
-                printf "   %-16s   %-9s  %s\n", distro, version, rocm
-            }
-        }
-    }
-    ' "${workflow_file}"
-
-    echo ""
-    echo "ROCm '0.0' means no ROCm installation (CPU-only build)"
-    echo ""
-    echo "Note: Patch versions are also supported (See: https://repo.radeon.com/amdgpu-install/)"
-    echo ""
 }
 
 verbose-run()
@@ -159,7 +239,7 @@ reset-last()
 }
 
 reset-last
-
+load-matrix
 n=0
 while [[ $# -gt 0 ]]
 do
@@ -226,6 +306,8 @@ do
     shift
 done
 
+validate-distro # Gives better error msg if distro is invalid
+validate-combinations
 DOCKER_FILE="Dockerfile.${DISTRO}"
 
 if [ "${RETRY}" -lt 1 ]; then
@@ -252,66 +334,25 @@ do
             CONTAINER=${USER}/rocprofiler-systems:release-base-${DISTRO}-${VERSION}-rocm-${ROCM_VERSION}
         fi
         if [ "${DISTRO}" = "ubuntu" ]; then
-            ROCM_REPO_DIST="ubuntu"
-            case "${ROCM_VERSION}" in
-                6.*)
-                    case "${VERSION}" in
-                        24.04)
-                            ROCM_REPO_DIST="noble"
-                            ;;
-                        22.04)
-                            ROCM_REPO_DIST="jammy"
-                            ;;
-                        20.04)
-                            ROCM_REPO_DIST="focal"
-                            ;;
-                        *)
-                            ;;
-                    esac
+            case "${VERSION}" in
+                24.04)
+                    ROCM_REPO_DIST="noble"
+                    ;;
+                22.04)
+                    ROCM_REPO_DIST="jammy"
+                    ;;
+                20.04)
+                    ROCM_REPO_DIST="focal"
                     ;;
                 *)
                     ;;
             esac
             verbose-build docker build . ${PULL} --progress plain -f ${DOCKER_FILE} --tag ${CONTAINER} --build-arg DISTRO=${DISTRO} --build-arg VERSION=${VERSION} --build-arg ROCM_VERSION=${ROCM_VERSION} --build-arg PYTHON_VERSIONS=\"${PYTHON_VERSIONS}\"
         elif [ "${DISTRO}" = "rhel" ]; then
-            if [ -z "${VERSION_MINOR}" ]; then
-                send-error "Please provide a major and minor version of the OS. Supported: >= 8.8, <= 9.4"
-            fi
-
-            # set the sub-URL in https://repo.radeon.com/amdgpu-install/<sub-URL>
-            case "${ROCM_VERSION}" in
-                6.*)
-                    ;;
-                0.0)
-                    ;;
-                *)
-                    send-error "Unsupported combination :: ${DISTRO}-${VERSION} + ROCm ${ROCM_VERSION}"
-                    ;;
-            esac
-
             # use Rocky Linux as a base image for RHEL builds
             DISTRO_BASE_IMAGE=rockylinux/rockylinux
-
             verbose-build docker build . ${PULL} --progress plain -f ${DOCKER_FILE} --tag ${CONTAINER} --build-arg DISTRO=${DISTRO_BASE_IMAGE} --build-arg VERSION=${VERSION} --build-arg ROCM_VERSION=${ROCM_VERSION} --build-arg PYTHON_VERSIONS=\"${PYTHON_VERSIONS}\"
         elif [ "${DISTRO}" = "opensuse" ]; then
-            case "${VERSION}" in
-                15.*)
-                    DISTRO_IMAGE="opensuse/leap"
-                    echo "DISTRO_IMAGE: ${DISTRO_IMAGE}"
-                    ;;
-                *)
-                    send-error "Invalid opensuse version ${VERSION}. Supported: 15.x"
-                    ;;
-            esac
-            case "${ROCM_VERSION}" in
-                6.*)
-                    ;;
-                0.0)
-                    ;;
-                *)
-                    send-error "Unsupported combination :: ${DISTRO}-${VERSION} + ROCm ${ROCM_VERSION}"
-                ;;
-            esac
             if [[ "${VERSION_MAJOR}" -le 15 && "${VERSION_MINOR}" -le 5 ]]; then
                 PERL_REPO="15.6"
             else
