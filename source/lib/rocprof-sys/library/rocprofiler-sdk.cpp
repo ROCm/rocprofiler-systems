@@ -92,23 +92,24 @@ thread_postcreate(rocprofiler_runtime_library_t /*lib*/, void* /*tool_data*/)
     pop_thread_state();
 }
 
-// Stores stream ids and kernel region ids for kernel-rename service and hip stream display service
+// Stores stream ids and kernel region ids for kernel-rename service and hip stream
+// display service
 struct kernel_rename_and_stream_data
 {
     uint64_t                region_id = 0;  // roctx region correlation id
-    rocprofiler_stream_id_t stream_id = {.handle = 0};
+    rocprofiler_stream_id_t stream_id = { .handle = 0 };
 };
 
 template <typename Tp>
 rocprofiler_stream_id_t
 get_stream_id(Tp* _record)
 {
-    auto _stream_id = rocprofiler_stream_id_t{.handle = 0};
+    auto _stream_id = rocprofiler_stream_id_t{ .handle = 0 };
     if(_record->correlation_id.external.ptr != nullptr)
     {
         // Extract the stream id
-        auto* _ecid_data =
-            static_cast<kernel_rename_and_stream_data*>(_record->correlation_id.external.ptr);
+        auto* _ecid_data = static_cast<kernel_rename_and_stream_data*>(
+            _record->correlation_id.external.ptr);
         _stream_id                             = _ecid_data->stream_id;
         auto _region_id                        = _ecid_data->region_id;
         _record->correlation_id.external.value = _region_id;
@@ -404,7 +405,7 @@ tool_tracing_callback_stop(
 
         uint64_t _beg_ts = begin_ts;
         uint64_t _end_ts = ts;
-        auto stream_id = get_stream_stack().back();
+        auto stream_id   = get_stream_stack().back();
 
         tracing::push_perfetto_ts(
             CategoryT{}, _name.data(), _beg_ts,
@@ -415,7 +416,7 @@ tool_tracing_callback_stop(
                     tracing::add_perfetto_annotation(ctx, "begin_ns", _beg_ts);
                     tracing::add_perfetto_annotation(ctx, "corr_id",
                                                      record.correlation_id.internal);
-                    if (stream_id.handle != 0)
+                    if(stream_id.handle != 0)
                         tracing::add_perfetto_annotation(ctx, "stream_id",
                                                          stream_id.handle);
                     for(const auto& [key, val] : args)
@@ -816,9 +817,9 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                                 tracing::add_perfetto_annotation(ctx, "end_ns", _end_ns);
                                 tracing::add_perfetto_annotation(ctx, "corr_id",
                                                                  _corr_id);
-                                if (stream_id.handle != 0)
+                                if(stream_id.handle != 0)
                                     tracing::add_perfetto_annotation(ctx, "stream_id",
-                                                                 stream_id.handle);
+                                                                     stream_id.handle);
                                 tracing::add_perfetto_annotation(
                                     ctx, "node_id", _agent->agent->logical_node_id);
                                 tracing::add_perfetto_annotation(ctx, "queue",
@@ -913,7 +914,7 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                                                                  _corr_id);
                                 tracing::add_perfetto_annotation(ctx, "stream_id",
                                                                  stream_id.handle);
-                                 tracing::add_perfetto_annotation(
+                                tracing::add_perfetto_annotation(
                                     ctx, "dst_agent", _dst_agent->logical_node_id);
                                 tracing::add_perfetto_annotation(
                                     ctx, "src_agent", _src_agent->logical_node_id);
@@ -1116,13 +1117,11 @@ flush()
 }
 
 int
-set_kernel_rename_and_stream_correlation_id(rocprofiler_thread_id_t  /* thr_id */,
-                                            rocprofiler_context_id_t /* ctx_id */,
-                                            rocprofiler_external_correlation_id_request_kind_t /* kind */,
-                                            rocprofiler_tracing_operation_t                    /* op */,
-                                            uint64_t                 /* internal_corr_id */,
-                                            rocprofiler_user_data_t* external_corr_id,
-                                            void*                    /* user_data */)
+set_kernel_rename_and_stream_correlation_id(
+    rocprofiler_thread_id_t  /* thr_id */, rocprofiler_context_id_t /* ctx_id */,
+    rocprofiler_external_correlation_id_request_kind_t /* kind */,
+    rocprofiler_tracing_operation_t /* op */, uint64_t /* internal_corr_id */,
+    rocprofiler_user_data_t* external_corr_id, void* /* user_data */)
 {
     auto* _info = new kernel_rename_and_stream_data{};
 
@@ -1136,8 +1135,7 @@ set_kernel_rename_and_stream_correlation_id(rocprofiler_thread_id_t  /* thr_id *
 
 void
 tool_hip_stream_callback(rocprofiler_callback_tracing_record_t record,
-                         rocprofiler_user_data_t* /* user_data */,
-                         void* /* data */)
+                         rocprofiler_user_data_t* /* user_data */, void* /* data */)
 {
     if(record.kind != ROCPROFILER_CALLBACK_TRACING_HIP_STREAM) return;
     // Extract stream ID from record
@@ -1260,13 +1258,12 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
 
         ROCPROFILER_CALL(rocprofiler_configure_external_correlation_id_request_service(
             _data->primary_ctx, external_corr_id_request_kinds.data(),
-            external_corr_id_request_kinds.size(), set_kernel_rename_and_stream_correlation_id,
-            _data));
+            external_corr_id_request_kinds.size(),
+            set_kernel_rename_and_stream_correlation_id, _data));
 
         ROCPROFILER_CALL(rocprofiler_configure_callback_tracing_service(
             _data->primary_ctx, ROCPROFILER_CALLBACK_TRACING_HIP_STREAM, nullptr, 0,
             tool_hip_stream_callback, nullptr));
-
     }
 
     if(_buffered_domain.count(ROCPROFILER_BUFFER_TRACING_MEMORY_COPY) > 0)
@@ -1291,8 +1288,8 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
 
         ROCPROFILER_CALL(rocprofiler_configure_external_correlation_id_request_service(
             _data->primary_ctx, external_corr_id_request_kinds.data(),
-            external_corr_id_request_kinds.size(), set_kernel_rename_and_stream_correlation_id,
-            _data));
+            external_corr_id_request_kinds.size(),
+            set_kernel_rename_and_stream_correlation_id, _data));
 
         ROCPROFILER_CALL(rocprofiler_configure_callback_tracing_service(
             _data->primary_ctx, ROCPROFILER_CALLBACK_TRACING_HIP_STREAM, nullptr, 0,
