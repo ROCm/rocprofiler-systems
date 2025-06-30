@@ -27,6 +27,7 @@ load-matrix()
         exit 1
     fi
 
+    # In form os-distro;os-version;rocm-version
     local matrix_data=$(awk '
     /rocprofiler-systems-release:/, /steps:/ {
         if (/- os-distro:/) {
@@ -48,8 +49,8 @@ load-matrix()
     }
     ' "${workflow_file}")
 
-    while IFS=';' read -r distro os_version rocm_version; do
-        MATRIX_DISTROS+=("$distro")
+    while IFS=';' read -r os_distro os_version rocm_version; do
+        MATRIX_DISTROS+=("$os_distro")
         MATRIX_VERSIONS+=("$os_version")
         MATRIX_ROCM_VERSIONS+=("$rocm_version")
     done <<< "$matrix_data"
@@ -58,7 +59,7 @@ load-matrix()
 validate-distro()
 {
     local distro="${1}"
-    
+
     if [ -n "${distro}" ]; then
         distro=$(tolower "${distro}")
         case "${distro}" in
@@ -76,8 +77,8 @@ show-matrix()
     local filter_distro="${1:-}"
 
     if [ -n "${filter_distro}" ]; then
-        validate-distro "${filter_distro}" 
-        filter_distro=$(tolower "${filter_distro}") 
+        validate-distro "${filter_distro}"
+        filter_distro=$(tolower "${filter_distro}")
     fi
 
     echo ""
@@ -93,11 +94,8 @@ show-matrix()
     echo "   ----------------   -------    ------------"
 
     for i in "${!MATRIX_DISTROS[@]}"; do
-        distro="${MATRIX_DISTROS[i]}"
-        version="${MATRIX_VERSIONS[i]}"
-        rocm="${MATRIX_ROCM_VERSIONS[i]}"
-        if [[ -z "${filter_distro}" || "${distro}" == "${filter_distro}" ]]; then
-            printf "   %-16s   %-9s  %s\n" "${distro}" "${version}" "${rocm}"
+        if [[ -z "${filter_distro}" || "${MATRIX_DISTROS[i]}" == "${filter_distro}" ]]; then
+            printf "   %-16s   %-9s  %s\n" "${MATRIX_DISTROS[i]}" "${MATRIX_VERSIONS[i]}" "${MATRIX_ROCM_VERSIONS[i]}"
         fi
     done
 
@@ -108,14 +106,14 @@ show-matrix()
     echo ""
 }
 
-# Cross checks arguments against compatibility matrix (ignores patch versions)
+# Cross checks arguments against compatibility matrix (ignores ROCm patch version)
 validate-combinations()
 {
     # Check OS version combinations
     for VERSION in ${VERSIONS}; do
         VERSION_MAJOR=$(echo ${VERSION} | sed 's/\./ /g' | awk '{print $1}')
         VERSION_MINOR=$(echo ${VERSION} | sed 's/\./ /g' | awk '{print $2}')
-        
+
         local os_version_valid=0
         for i in "${!MATRIX_DISTROS[@]}"; do
             if [[ "${MATRIX_DISTROS[i]}" == "${DISTRO}" && \
@@ -124,14 +122,13 @@ validate-combinations()
                 break
             fi
         done
-        
+
         if [ ${os_version_valid} -eq 0 ]; then
             send-error "Unsupported OS version :: ${VERSION}. See compatibility matrix for supported versions."
         fi
     done
 
     # Check ROCm version combinations
-    # Since the list is small, the loop will not be too expensive
     for VERSION in ${VERSIONS}; do
         for ROCM_VERSION in ${ROCM_VERSIONS}; do
             local valid=0
