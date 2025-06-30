@@ -749,7 +749,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
     _backend_choices.erase("rcclp");
 #endif
 
-#if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+#if(ROCPROFILER_VERSION < 500)
     _backend_choices.erase("rcclp");
 #endif
 

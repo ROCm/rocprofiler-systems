@@ -34,7 +34,7 @@
 #include "library/components/category_region.hpp"
 #include "library/rocprofiler-sdk/counters.hpp"
 #include "library/rocprofiler-sdk/fwd.hpp"
-#if !ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+#if !(ROCPROFILER_VERSION < 500)
 #    include "library/rocprofiler-sdk/rccl.hpp"
 #endif
 #include "library/thread_info.hpp"
@@ -211,7 +211,7 @@ get_kernel_symbol_info(uint64_t _kernel_id)
 // Implementation of rocprofiler_callback_tracing_operation_args_cb_t
 int
 save_args(rocprofiler_callback_tracing_kind_t /*kind*/,
-#if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+#if(ROCPROFILER_VERSION < 500)
           uint32_t /*operation*/,
 #else
           int32_t /*operation*/,
@@ -544,7 +544,7 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
                 break;
             }
 #endif
-#if !ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+#if !(ROCPROFILER_VERSION < 500)
             case ROCPROFILER_CALLBACK_TRACING_RCCL_API:
             {
                 tool_tracing_callback_start(category::rocm_rccl_api{}, record, user_data,
@@ -645,7 +645,7 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
                 break;
             }
 #endif
-#if !ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+#if !(ROCPROFILER_VERSION < 500)
             case ROCPROFILER_CALLBACK_TRACING_RCCL_API:
             {
                 tool_tracing_callback_rccl(record, user_data->value, ts);
@@ -895,7 +895,7 @@ auto&
 get_counter_dispatch_data()
 {
     static auto _v =
-#if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+#if(ROCPROFILER_VERSION < 500)
         container::stable_vector<rocprofiler_profile_counting_dispatch_data_t>{};
 #else
         container::stable_vector<rocprofiler_dispatch_counting_service_data_t>{};
@@ -921,7 +921,7 @@ get_counter_storage()
     static auto* _v = new agent_counter_storage_map_t{};
     return _v;
 }
-#if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+#if(ROCPROFILER_VERSION < 500)
 void
 counter_record_callback(rocprofiler_profile_counting_dispatch_data_t dispatch_data,
                         rocprofiler_record_counter_t* record_data, size_t record_count,
@@ -998,7 +998,7 @@ counter_record_callback(rocprofiler_dispatch_counting_service_data_t dispatch_da
 
 void
 dispatch_counting_service_callback(
-#if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+#if(ROCPROFILER_VERSION < 500)
     rocprofiler_profile_counting_dispatch_data_t dispatch_data,
 #else
     rocprofiler_dispatch_counting_service_data_t dispatch_data,
@@ -1118,7 +1118,7 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
             ROCPROFILER_CALLBACK_TRACING_HIP_RUNTIME_API,
             ROCPROFILER_CALLBACK_TRACING_HIP_COMPILER_API,
             ROCPROFILER_CALLBACK_TRACING_MARKER_CORE_API,
-#if !ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+#if !(ROCPROFILER_VERSION < 500)
             ROCPROFILER_CALLBACK_TRACING_RCCL_API,
 #endif
 #if(ROCPROFILER_VERSION >= 600)
@@ -1134,7 +1134,7 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
             auto _ops = rocprofiler_sdk::get_operations(itr);
             _data->backtrace_operations.emplace(
                 itr, rocprofiler_sdk::get_backtrace_operations(itr));
-#if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+#if(ROCPROFILER_VERSION < 500)
             ROCPROFILER_CALL(rocprofiler_configure_callback_tracing_service(
                 _data->primary_ctx, itr,
                 reinterpret_cast<rocprofiler_tracing_operation_t*>(
@@ -1182,7 +1182,7 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
 
         auto _ops =
             rocprofiler_sdk::get_operations(ROCPROFILER_BUFFER_TRACING_MEMORY_COPY);
-#if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+#if(ROCPROFILER_VERSION < 500)
         ROCPROFILER_CALL(rocprofiler_configure_buffer_tracing_service(
             _data->primary_ctx, ROCPROFILER_BUFFER_TRACING_MEMORY_COPY,
             (_ops.empty())
@@ -1216,7 +1216,7 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
             _operations.data(), _operations.size(), tool_tracing_callback, _data));
 
         ROCPROFILER_CALL(
-#if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+#if(ROCPROFILER_VERSION < 500)
             rocprofiler_configure_callback_dispatch_profile_counting_service
 #else
             rocprofiler_configure_callback_dispatch_counting_service

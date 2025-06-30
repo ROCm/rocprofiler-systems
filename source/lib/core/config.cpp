@@ -1365,7 +1365,7 @@ configure_disabled_settings(const std::shared_ptr<settings>& _config)
         _config->find(itr)->second->set_hidden(true);
 #endif
 
-#if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+#if(ROCPROFILER_VERSION < 500)
     _config->find("ROCPROFSYS_USE_RCCLP")->second->set_hidden(true);
     for(const auto& itr : _config->disable_category("rcclp"))
         _config->find(itr)->second->set_hidden(true);
@@ -1941,7 +1941,7 @@ get_use_code_coverage()
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
-#if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+#if(ROCPROFILER_VERSION < 500)
 bool
 get_use_rcclp()
 {

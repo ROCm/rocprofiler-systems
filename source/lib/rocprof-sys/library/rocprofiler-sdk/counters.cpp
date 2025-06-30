@@ -34,7 +34,7 @@
 #include <rocprofiler-sdk/cxx/hash.hpp>
 #include <rocprofiler-sdk/cxx/name_info.hpp>
 #include <rocprofiler-sdk/cxx/operators.hpp>
-#if ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+#if(ROCPROFILER_VERSION < 500)
 #    include <rocprofiler-sdk/dispatch_profile.h>
 #else
 #    include <rocprofiler-sdk/dispatch_counting_service.h>

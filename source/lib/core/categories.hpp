@@ -102,7 +102,7 @@ ROCPROFSYS_DEFINE_CATEGORY(category, rocm_counter_collection, ROCPROFSYS_CATEGOR
 ROCPROFSYS_DEFINE_CATEGORY(category, rocm_marker_api, ROCPROFSYS_CATEGORY_ROCM_MARKER_API, "rocm_marker_api", "ROCTx labels")
 ROCPROFSYS_DEFINE_CATEGORY(category, rocm_rocdecode_api, ROCPROFSYS_CATEGORY_ROCM_ROCDECODE_API, "rocm_rocdecode_api", "ROCm RocDecode API")
 ROCPROFSYS_DEFINE_CATEGORY(category, rocm_rocjpeg_api, ROCPROFSYS_CATEGORY_ROCM_ROCJPEG_API, "rocm_rocjpeg_api", "ROCm RocJPEG API")
-#if !ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+#if !(ROCPROFILER_VERSION < 500)
 ROCPROFSYS_DEFINE_CATEGORY(category, rocm_rccl_api, ROCPROFSYS_CATEGORY_ROCM_RCCL_API, "rocm_rccl_api", "ROCm RCCL API")
 #endif
 ROCPROFSYS_DEFINE_CATEGORY(category, amd_smi, ROCPROFSYS_CATEGORY_AMD_SMI, "amd_smi", "AMD-SMI data")
@@ -154,7 +154,7 @@ using name = perfetto_category<Tp...>;
 }
 }  // namespace tim
 
-#if !ROCPROFSYS_ROCM_6_2_COMPATIBILITY
+#if !(ROCPROFILER_VERSION < 500)
 #    define ROCPROFSYS_PERFETTO_CATEGORY_SDK_RCCL                                        \
         ROCPROFSYS_PERFETTO_CATEGORY(category::rocm_rccl_api),
 #else
