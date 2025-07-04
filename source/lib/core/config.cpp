@@ -1941,20 +1941,13 @@ get_use_code_coverage()
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
 
-#if(ROCPROFILER_VERSION < 500)
-bool
-get_use_rcclp()
-{
-    return false;
-}
-#else
 bool
 get_use_rcclp()
 {
     static auto _v = get_config()->find("ROCPROFSYS_USE_RCCLP");
     return static_cast<tim::tsettings<bool>&>(*_v->second).get();
 }
-#endif
+
 size_t
 get_num_threads_hint()
 {

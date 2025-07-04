@@ -580,7 +580,7 @@ add_core_arguments(parser_t& _parser, parser_data& _data)
     _backend_choices.erase("rcclp");
 #endif
 
-#if(ROCPROFILER_VERSION < 500)
+#if(ROCPROFSYS_USE_RCCLP)
     _backend_choices.erase("rcclp");
 #endif
 

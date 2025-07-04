@@ -544,7 +544,7 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
                 break;
             }
 #endif
-#if !(ROCPROFILER_VERSION < 500)
+#if(ROCPROFILER_VERSION >= 500)
             case ROCPROFILER_CALLBACK_TRACING_RCCL_API:
             {
                 tool_tracing_callback_start(category::rocm_rccl_api{}, record, user_data,
@@ -645,7 +645,7 @@ tool_tracing_callback(rocprofiler_callback_tracing_record_t record,
                 break;
             }
 #endif
-#if !(ROCPROFILER_VERSION < 500)
+#if(ROCPROFILER_VERSION >= 500)
             case ROCPROFILER_CALLBACK_TRACING_RCCL_API:
             {
                 tool_tracing_callback_rccl(record, user_data->value, ts);
@@ -1118,7 +1118,7 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
             ROCPROFILER_CALLBACK_TRACING_HIP_RUNTIME_API,
             ROCPROFILER_CALLBACK_TRACING_HIP_COMPILER_API,
             ROCPROFILER_CALLBACK_TRACING_MARKER_CORE_API,
-#if !(ROCPROFILER_VERSION < 500)
+#if(ROCPROFILER_VERSION >= 500)
             ROCPROFILER_CALLBACK_TRACING_RCCL_API,
 #endif
 #if(ROCPROFILER_VERSION >= 600)
