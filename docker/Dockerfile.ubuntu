@@ -29,9 +29,10 @@ RUN apt-get update && \
         python3 -m pip install --break-system-packages 'cmake==3.21'; \
     else \
         python3 -m pip install 'cmake==3.21'; \
-    fi \
+    fi; \
     if [ "${OS_VERSION}" == "20.04" ]; then \
-        apt-get install -y gfortran;
+        apt-get install -y gfortran; \
+    fi;
 
 RUN if [ "${ROCM_VERSION}" != "0.0" ]; then \
         OS_VERSION=$(grep '^VERSION_ID=' /etc/os-release | cut -d'=' -f2 | tr -d '"') && \
