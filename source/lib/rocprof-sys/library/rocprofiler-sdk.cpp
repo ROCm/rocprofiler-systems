@@ -1214,15 +1214,16 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
         ROCPROFILER_CALL(rocprofiler_configure_callback_tracing_service(
             _data->counter_ctx, ROCPROFILER_CALLBACK_TRACING_KERNEL_DISPATCH,
             _operations.data(), _operations.size(), tool_tracing_callback, _data));
-
-        ROCPROFILER_CALL(
+// Cannot embed directive within macro arguments
 #if(ROCPROFILER_VERSION < 500)
-            rocprofiler_configure_callback_dispatch_profile_counting_service
+        ROCPROFILER_CALL(rocprofiler_configure_callback_dispatch_profile_counting_service(
+            _data->counter_ctx, dispatch_counting_service_callback, _data,
+            counter_record_callback, _data));
 #else
-            rocprofiler_configure_callback_dispatch_counting_service
+        ROCPROFILER_CALL(rocprofiler_configure_callback_dispatch_counting_service(
+            _data->counter_ctx, dispatch_counting_service_callback, _data,
+            counter_record_callback, _data));
 #endif
-            (_data->counter_ctx, dispatch_counting_service_callback, _data,
-             counter_record_callback, _data));
 
         // ROCPROFILER_CALL(rocprofiler_create_buffer(
         //     counter_ctx, buffer_size, watermark,
