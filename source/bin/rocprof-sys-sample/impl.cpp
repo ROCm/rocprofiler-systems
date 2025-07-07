@@ -749,7 +749,7 @@ parse_args(int argc, char** argv, std::vector<char*>& _env)
     _backend_choices.erase("rcclp");
 #endif
 
-#if(ROCPROFSYS_USE_RCCLP)
+#if(!ROCPROFSYS_USE_RCCLP)
     _backend_choices.erase("rcclp");
 #endif
 

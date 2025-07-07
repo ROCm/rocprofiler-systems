@@ -195,6 +195,7 @@ if(ROCPROFSYS_USE_ROCM)
     set(ROCPROFSYS_ROCM_VERSION_MINOR ${ROCmVersion_MINOR_VERSION})
     set(ROCPROFSYS_ROCM_VERSION_PATCH ${ROCmVersion_PATCH_VERSION})
     set(ROCPROFSYS_ROCM_VERSION ${ROCmVersion_TRIPLE_VERSION})
+
     rocprofiler_systems_add_feature(ROCPROFSYS_ROCM_VERSION
                                     "ROCm version used by rocprofiler-systems"
     )
@@ -216,14 +217,8 @@ if(ROCPROFSYS_USE_ROCM)
     rocprofiler_systems_target_compile_definitions(rocprofiler-systems-rocm
                                                    INTERFACE ROCPROFSYS_USE_ROCM
     )
-    # Store the version string
-    set(ROCPROFILER_VERSION_STRING
-        ${rocprofiler-sdk_VERSION}
-        CACHE STRING
-        "rocprofiler-sdk version"
-    )
-    string(REGEX MATCH "^0\\.4\\." _version_is_0_4 "${rocprofiler-sdk_VERSION}")
-    if(_version_is_0_4)
+    # Compatibility for ROCm 6.2.
+    if(rocprofiler-sdk_VERSION_MAJOR EQUAL 0 AND rocprofiler-sdk_VERSION_MINOR EQUAL 4)
         set(ROCPROFSYS_USE_RCCLP OFF)
     else()
         set(ROCPROFSYS_USE_RCCLP ON)
