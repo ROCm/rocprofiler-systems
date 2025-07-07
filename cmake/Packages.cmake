@@ -219,9 +219,19 @@ if(ROCPROFSYS_USE_ROCM)
     )
     # Compatibility for ROCm 6.2.
     if(rocprofiler-sdk_VERSION_MAJOR EQUAL 0 AND rocprofiler-sdk_VERSION_MINOR EQUAL 4)
-        set(ROCPROFSYS_USE_RCCLP OFF)
+        set(ROCPROFSYS_USE_RCCLP
+            OFF
+            CACHE BOOL
+            "RCCLP support (disabled for ROCm 6.2 compatibility)"
+            FORCE
+        )
     else()
-        set(ROCPROFSYS_USE_RCCLP ON)
+        set(ROCPROFSYS_USE_RCCLP
+            ON
+            CACHE BOOL
+            "RCCLP support (disabled for ROCm 6.2 compatibility)"
+            FORCE
+        )
     endif()
     rocprofiler_systems_target_compile_definitions(rocprofiler-systems-rocm
                                                    INTERFACE ROCPROFSYS_USE_RCCLP

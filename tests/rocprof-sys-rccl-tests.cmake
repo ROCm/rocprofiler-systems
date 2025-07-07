@@ -26,6 +26,10 @@
 #
 # -------------------------------------------------------------------------------------- #
 
+if(NOT ROCPROFSYS_USE_RCCLP)
+    return()
+endif()
+
 foreach(_TARGET ${RCCL_TEST_TARGETS})
     string(REPLACE "rccl-tests::" "" _NAME "${_TARGET}")
     string(REPLACE "_" "-" _NAME "${_NAME}")
