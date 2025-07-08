@@ -912,8 +912,9 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                                 tracing::add_perfetto_annotation(ctx, "end_ns", _end_ns);
                                 tracing::add_perfetto_annotation(ctx, "corr_id",
                                                                  _corr_id);
-                                tracing::add_perfetto_annotation(ctx, "stream_id",
-                                                                 stream_id.handle);
+                                if(stream_id.handle != 0)
+                                    tracing::add_perfetto_annotation(ctx, "stream_id",
+                                                                     stream_id.handle);
                                 tracing::add_perfetto_annotation(
                                     ctx, "dst_agent", _dst_agent->logical_node_id);
                                 tracing::add_perfetto_annotation(
