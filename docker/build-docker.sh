@@ -1,15 +1,20 @@
 #!/usr/bin/env bash
 
-: ${USER:=$(whoami)}
-: ${ROCM_VERSIONS:="6.2"}
-: ${DISTRO:=ubuntu}
-: ${VERSIONS:=20.04}
-: ${PYTHON_VERSIONS:="6 7 8 9 10 11 12 13"}
-: ${BUILD_CI:=""}
-: ${PUSH:=0}
-: ${PULL:=--pull}
-: ${RETRY:=3}
-: ${SCRIPT_DIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]:-$0}")")}
+set-user-defaults()
+{
+    : ${USER:=$(whoami)}
+    : ${ROCM_VERSIONS:="6.3"}
+    : ${DISTRO:=ubuntu}
+    : ${VERSIONS:=20.04}
+    : ${PYTHON_VERSIONS:="6 7 8 9 10 11 12 13"}
+    : ${BUILD_CI:=""}
+    : ${PUSH:=0}
+    : ${PULL:=--pull}
+    : ${RETRY:=3}
+    : ${SCRIPT_DIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]:-$0}")")}
+}
+
+set-user-defaults
 
 set -e
 
@@ -165,6 +170,7 @@ toupper()
 
 usage()
 {
+    set-user-defaults
     print_option() { printf "    --%-20s %-24s     %s\n" "${1}" "${2}" "${3}"; }
     echo "Options:"
     print_option "help -h"   "" "This message"
@@ -185,14 +191,6 @@ usage()
 
 send-error()
 {
-    # Restore basic default values for usage function
-    USER=$(whoami)
-    ROCM_VERSIONS="6.2"
-    DISTRO=ubuntu
-    VERSIONS=20.04
-    PYTHON_VERSIONS="6 7 8 9 10 11 12 13"
-    PUSH=0
-    RETRY=3
     usage
     echo -e "\nError: ${@}"
     exit 1
@@ -301,8 +299,10 @@ do
     shift
 done
 
-validate-distro # Gives better error msg if distro is invalid
+# Validate input parameters for os-distros and rocm-versions
+validate-distro
 validate-combinations
+
 DOCKER_FILE="Dockerfile.${DISTRO}"
 
 if [ "${RETRY}" -lt 1 ]; then
@@ -349,7 +349,6 @@ do
             verbose-build docker build . ${PULL} --progress plain -f ${DOCKER_FILE} --tag ${CONTAINER} --build-arg DISTRO=${DISTRO_BASE_IMAGE} --build-arg VERSION=${VERSION} --build-arg ROCM_VERSION=${ROCM_VERSION} --build-arg PYTHON_VERSIONS=\"${PYTHON_VERSIONS}\"
         elif [ "${DISTRO}" = "opensuse" ]; then
             DISTRO_IMAGE="opensuse/leap"
-            echo "DISTRO_IMAGE: ${DISTRO_IMAGE}"
             if [[ "${VERSION_MAJOR}" -le 15 && "${VERSION_MINOR}" -le 5 ]]; then
                 PERL_REPO="15.6"
             else
