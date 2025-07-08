@@ -218,7 +218,10 @@ if(ROCPROFSYS_USE_ROCM)
                                                    INTERFACE ROCPROFSYS_USE_ROCM
     )
     # Compatibility for ROCm 6.2.
-    if(rocprofiler-sdk_VERSION_MAJOR EQUAL 0 AND rocprofiler-sdk_VERSION_MINOR EQUAL 4)
+    if(
+        rocprofiler-sdk_VERSION_MAJOR EQUAL 0
+        AND rocprofiler-sdk_VERSION_MINOR LESS_EQUAL 4
+    )
         set(ROCPROFSYS_USE_RCCLP
             OFF
             CACHE BOOL
