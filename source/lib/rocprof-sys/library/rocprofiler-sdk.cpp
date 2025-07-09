@@ -222,14 +222,16 @@ save_args(rocprofiler_callback_tracing_kind_t /*kind*/, int32_t /*operation*/,
 auto&
 get_marker_pushed_ranges()
 {
-    static thread_local auto _v = std::vector<std::pair <tim::hash_value_t, rocprofiler_timestamp_t>>{};
+    static thread_local auto _v =
+        std::vector<std::pair<tim::hash_value_t, rocprofiler_timestamp_t>>{};
     return _v;
 }
 
 auto&
 get_marker_started_ranges()
 {
-    static thread_local auto _v = std::vector<std::pair <tim::hash_value_t, rocprofiler_timestamp_t>>{};
+    static thread_local auto _v =
+        std::vector<std::pair<tim::hash_value_t, rocprofiler_timestamp_t>>{};
     return _v;
 }
 
@@ -254,7 +256,8 @@ tool_tracing_callback_start(CategoryT, rocprofiler_callback_tracing_record_t rec
                 {
                     _name      = _data->args.roctxRangePushA.message;
                     auto _hash = tim::add_hash_id(_name);
-                    std::pair <tim::hash_value_t, rocprofiler_timestamp_t> _rangePush (_hash, ts);
+                    std::pair<tim::hash_value_t, rocprofiler_timestamp_t> _rangePush(
+                        _hash, ts);
                     get_marker_pushed_ranges().emplace_back(_rangePush);
                     break;
                 }
@@ -262,7 +265,8 @@ tool_tracing_callback_start(CategoryT, rocprofiler_callback_tracing_record_t rec
                 {
                     _name      = _data->args.roctxRangeStartA.message;
                     auto _hash = tim::add_hash_id(_name);
-                    std::pair <tim::hash_value_t, rocprofiler_timestamp_t> _rangeStart (_hash, ts);
+                    std::pair<tim::hash_value_t, rocprofiler_timestamp_t> _rangeStart(
+                        _hash, ts);
                     get_marker_started_ranges().emplace_back(_rangeStart);
                     break;
                 }
@@ -310,11 +314,12 @@ tool_tracing_callback_stop(
                 {
                     ROCPROFSYS_CONDITIONAL_ABORT_F(
                         get_marker_pushed_ranges().empty(),
-                        "roctxRangePop does not have corresponding roctxRangePush on this thread");
+                        "roctxRangePop does not have corresponding roctxRangePush on "
+                        "this thread");
 
                     auto _hash = get_marker_pushed_ranges().back().first;
                     _name      = tim::get_hash_identifier_fast(_hash);
-                    begin_ts = get_marker_pushed_ranges().back().second;
+                    begin_ts   = get_marker_pushed_ranges().back().second;
                     get_marker_pushed_ranges().pop_back();
                     break;
                 }
@@ -322,11 +327,12 @@ tool_tracing_callback_stop(
                 {
                     ROCPROFSYS_CONDITIONAL_ABORT_F(
                         get_marker_started_ranges().empty(),
-                        "roctxRangeStop does not have corresponding roctxRangeStart on this thread");
+                        "roctxRangeStop does not have corresponding roctxRangeStart on "
+                        "this thread");
 
                     auto _hash = get_marker_started_ranges().back().first;
                     _name      = tim::get_hash_identifier_fast(_hash);
-                    begin_ts = get_marker_started_ranges().back().second;
+                    begin_ts   = get_marker_started_ranges().back().second;
                     get_marker_started_ranges().pop_back();
                     break;
                 }
