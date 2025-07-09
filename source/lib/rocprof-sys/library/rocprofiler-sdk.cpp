@@ -222,14 +222,14 @@ save_args(rocprofiler_callback_tracing_kind_t /*kind*/, int32_t /*operation*/,
 auto&
 get_marker_pushed_ranges()
 {
-    static thread_local auto _v = std::vector<tim::hash_value_t>{};
+    static thread_local auto _v = std::vector<std::pair <tim::hash_value_t, rocprofiler_timestamp_t>>{};
     return _v;
 }
 
 auto&
 get_marker_started_ranges()
 {
-    static thread_local auto _v = std::vector<tim::hash_value_t>{};
+    static thread_local auto _v = std::vector<std::pair <tim::hash_value_t, rocprofiler_timestamp_t>>{};
     return _v;
 }
 
@@ -237,7 +237,7 @@ template <typename CategoryT>
 void
 tool_tracing_callback_start(CategoryT, rocprofiler_callback_tracing_record_t record,
                             rocprofiler_user_data_t* /*user_data*/,
-                            rocprofiler_timestamp_t /*ts*/)
+                            rocprofiler_timestamp_t ts)
 {
     auto _name = tool_data->callback_tracing_info.at(record.kind, record.operation);
 
@@ -254,14 +254,16 @@ tool_tracing_callback_start(CategoryT, rocprofiler_callback_tracing_record_t rec
                 {
                     _name      = _data->args.roctxRangePushA.message;
                     auto _hash = tim::add_hash_id(_name);
-                    get_marker_pushed_ranges().emplace_back(_hash);
+                    std::pair <tim::hash_value_t, rocprofiler_timestamp_t> _rangePush (_hash, ts);
+                    get_marker_pushed_ranges().emplace_back(_rangePush);
                     break;
                 }
                 case ROCPROFILER_MARKER_CORE_API_ID_roctxRangeStartA:
                 {
                     _name      = _data->args.roctxRangeStartA.message;
                     auto _hash = tim::add_hash_id(_name);
-                    get_marker_started_ranges().emplace_back(_hash);
+                    std::pair <tim::hash_value_t, rocprofiler_timestamp_t> _rangeStart (_hash, ts);
+                    get_marker_started_ranges().emplace_back(_rangeStart);
                     break;
                 }
                 case ROCPROFILER_MARKER_CORE_API_ID_roctxMarkA:
@@ -294,6 +296,7 @@ tool_tracing_callback_stop(
 {
     auto _name = tool_data->callback_tracing_info.at(record.kind, record.operation);
 
+    uint64_t begin_ts = user_data->value;
     if constexpr(std::is_same<CategoryT, category::rocm_marker_api>::value)
     {
         if(record.kind == ROCPROFILER_CALLBACK_TRACING_MARKER_CORE_API)
@@ -307,11 +310,11 @@ tool_tracing_callback_stop(
                 {
                     ROCPROFSYS_CONDITIONAL_ABORT_F(
                         get_marker_pushed_ranges().empty(),
-                        "roctxRangePop does not have corresponding roctxRangePush on "
-                        "this thread");
+                        "roctxRangePop does not have corresponding roctxRangePush on this thread");
 
-                    auto _hash = get_marker_pushed_ranges().back();
+                    auto _hash = get_marker_pushed_ranges().back().first;
                     _name      = tim::get_hash_identifier_fast(_hash);
+                    begin_ts = get_marker_pushed_ranges().back().second;
                     get_marker_pushed_ranges().pop_back();
                     break;
                 }
@@ -319,11 +322,11 @@ tool_tracing_callback_stop(
                 {
                     ROCPROFSYS_CONDITIONAL_ABORT_F(
                         get_marker_started_ranges().empty(),
-                        "roctxRangeStop does not have corresponding roctxRangeStart on "
-                        "this thread");
+                        "roctxRangeStop does not have corresponding roctxRangeStart on this thread");
 
-                    auto _hash = get_marker_started_ranges().back();
+                    auto _hash = get_marker_started_ranges().back().first;
                     _name      = tim::get_hash_identifier_fast(_hash);
+                    begin_ts = get_marker_started_ranges().back().second;
                     get_marker_started_ranges().pop_back();
                     break;
                 }
@@ -334,7 +337,7 @@ tool_tracing_callback_stop(
                 }
                 default:
                 {
-                    break;
+                    return;
                 }
             }
         }
@@ -355,7 +358,7 @@ tool_tracing_callback_stop(
                                                                      &args);
         }
 
-        uint64_t _beg_ts = user_data->value;
+        uint64_t _beg_ts = begin_ts;
         uint64_t _end_ts = ts;
 
         tracing::push_perfetto_ts(
@@ -1396,3 +1399,4 @@ rocprofiler_configure(uint32_t version, const char* runtime_version, uint32_t pr
     // return pointer to configure data
     return &cfg;
 }
+
