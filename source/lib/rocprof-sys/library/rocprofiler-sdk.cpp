@@ -256,18 +256,14 @@ tool_tracing_callback_start(CategoryT, rocprofiler_callback_tracing_record_t rec
                 {
                     _name      = _data->args.roctxRangePushA.message;
                     auto _hash = tim::add_hash_id(_name);
-                    std::pair<tim::hash_value_t, rocprofiler_timestamp_t> _rangePush(
-                        _hash, ts);
-                    get_marker_pushed_ranges().emplace_back(_rangePush);
+                    get_marker_pushed_ranges().emplace_back(_hash, ts);
                     break;
                 }
                 case ROCPROFILER_MARKER_CORE_API_ID_roctxRangeStartA:
                 {
                     _name      = _data->args.roctxRangeStartA.message;
                     auto _hash = tim::add_hash_id(_name);
-                    std::pair<tim::hash_value_t, rocprofiler_timestamp_t> _rangeStart(
-                        _hash, ts);
-                    get_marker_started_ranges().emplace_back(_rangeStart);
+                    get_marker_started_ranges().emplace_back(_hash, ts);
                     break;
                 }
                 case ROCPROFILER_MARKER_CORE_API_ID_roctxMarkA:
