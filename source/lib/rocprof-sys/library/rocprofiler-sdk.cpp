@@ -1399,4 +1399,3 @@ rocprofiler_configure(uint32_t version, const char* runtime_version, uint32_t pr
     // return pointer to configure data
     return &cfg;
 }
-
