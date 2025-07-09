@@ -330,7 +330,6 @@ is_jpeg_busy_supported(uint32_t dev_id)
     return processors::jpeg_busy_supported[dev_id];
 }
 #    else
-// Hide unused variable warning by using [[maybe_unused]] (C++17)
 bool
 is_vcn_busy_supported([[maybe_unused]] uint32_t dev_id)
 {
