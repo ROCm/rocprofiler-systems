@@ -123,38 +123,16 @@ client_data::initialize()
     buffered_tracing_info = rocprofiler::sdk::get_buffer_tracing_names();
     callback_tracing_info = rocprofiler::sdk::get_callback_tracing_names();
 
-    static constexpr auto supported_agent_info_version = ROCPROFILER_AGENT_INFO_VERSION_0;
-
-    rocprofiler_query_available_agents_cb_t iterate_cb =
-        [](rocprofiler_agent_version_t version, const void** agents_arr,
-           size_t num_agents, void* user_data) {
-            ROCPROFSYS_CONDITIONAL_ABORT(version != supported_agent_info_version,
-                                         "rocprofiler agent info version != expected "
-                                         "agent info version (=%i). value: %i\n",
-                                         supported_agent_info_version, version);
-
-            auto _agents_v = std::vector<rocprofiler_agent_v0_t>{};
-            for(size_t i = 0; i < num_agents; ++i)
-            {
-                const auto* _agent =
-                    static_cast<const rocprofiler_agent_v0_t*>(agents_arr[i]);
-                _agents_v.emplace_back(*_agent);
-            }
-
-            auto* tool_data_v = as_client_data(user_data);
-            tool_data_v->set_agents(std::move(_agents_v));
-
-            return ROCPROFILER_STATUS_SUCCESS;
-        };
-
-    ROCPROFILER_CALL(rocprofiler_query_available_agents(
-        supported_agent_info_version, iterate_cb, sizeof(rocprofiler_agent_t), this));
+    set_agents();
 }
 
 void
 client_data::initialize_event_info()
 {
-    if(agents.empty()) initialize();
+    if(rocpd::agent_manager::get_instance().get_agents().empty())
+    {
+        initialize();
+    }
 
     if(agent_counter_info.size() != gpu_agents.size())
         agent_counter_info = get_agent_counter_info(gpu_agents);
@@ -248,23 +226,20 @@ client_data::initialize_event_info()
 }
 
 void
-client_data::set_agents(agent_vec_t&& _agents_v)
+client_data::set_agents()
 {
-    agents = std::move(_agents_v);
+    auto& agent_mngr = rocpd::agent_manager::get_instance();
 
-    std::sort(agents.begin(), agents.end(),
-              [](const auto& lhs, const auto& rhs) { return lhs.node_id < rhs.node_id; });
+    auto fill_agents = [&](rocprofiler_agent_type_t type, std::vector<tool_agent>& out) {
+        const auto& _agents = agent_mngr.get_agents_by_type(type);
+        for(const auto& agent : _agents)
+        {
+            out.emplace_back(tool_agent{ agent->device_id, agent->agent });
+        }
+    };
 
-    cpu_agents.clear();
-    gpu_agents.clear();
-
-    for(const auto& itr : agents)
-    {
-        if(itr.type == ROCPROFILER_AGENT_TYPE_CPU)
-            cpu_agents.emplace_back(tool_agent{ cpu_agents.size(), &itr });
-        else if(itr.type == ROCPROFILER_AGENT_TYPE_GPU)
-            gpu_agents.emplace_back(tool_agent{ gpu_agents.size(), &itr });
-    }
+    fill_agents(ROCPROFILER_AGENT_TYPE_GPU, gpu_agents);
+    fill_agents(ROCPROFILER_AGENT_TYPE_CPU, cpu_agents);
 }
 }  // namespace rocprofiler_sdk
 }  // namespace rocprofsys

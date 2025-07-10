@@ -22,6 +22,11 @@ set(core_sources
     ${CMAKE_CURRENT_LIST_DIR}/state.cpp
     ${CMAKE_CURRENT_LIST_DIR}/timemory.cpp
     ${CMAKE_CURRENT_LIST_DIR}/utility.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/rocpd/data_processor.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/rocpd/node_info.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/rocpd/agent_manager.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/rocpd/json.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/rocpd/data_storage/database.cpp
 )
 
 set(core_headers
@@ -46,6 +51,13 @@ set(core_headers
     ${CMAKE_CURRENT_LIST_DIR}/state.hpp
     ${CMAKE_CURRENT_LIST_DIR}/timemory.hpp
     ${CMAKE_CURRENT_LIST_DIR}/utility.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/rocpd/data_processor.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/rocpd/agent_manager.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/rocpd/node_info.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/rocpd/json.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/rocpd/data_storage/database.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/rocpd/data_storage/queries/table_insert_query.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/rocpd/data_storage/queries/query_builders/insert_query_builders.hpp
 )
 
 add_library(rocprofiler-systems-core-library STATIC)
@@ -86,6 +98,7 @@ target_link_libraries(
         $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-compile-definitions>
         $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-compile-options>
         $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-perfetto>
+        $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-sqlite3>
         $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-timemory>
         $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-mpi>
         $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-rocm>
@@ -94,6 +107,22 @@ target_link_libraries(
         $<BUILD_INTERFACE:rocprofiler-systems::rocprofiler-systems-sanitizer>
         $<BUILD_INTERFACE:$<IF:$<BOOL:${ROCPROFSYS_BUILD_LTO}>,rocprofiler-systems::rocprofiler-systems-lto,>>
 )
+
+file(GLOB ROCPD_SCHEMA_FILES "${CMAKE_CURRENT_LIST_DIR}/rocpd/data_storage/schema/*.sql")
+
+foreach(_SRC ${ROCPD_SCHEMA_FILES})
+    cmake_path(GET _SRC FILENAME _BASE)
+    configure_file(
+        ${_SRC}
+        ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/${_BASE}
+        COPYONLY
+    )
+    install(
+        FILES ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/${_BASE}
+        DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}
+        COMPONENT core
+    )
+endforeach()
 
 set_target_properties(
     rocprofiler-systems-core-library
