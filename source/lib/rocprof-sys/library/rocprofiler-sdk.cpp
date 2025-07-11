@@ -241,6 +241,10 @@ tool_tracing_callback_start(CategoryT, rocprofiler_callback_tracing_record_t rec
                             rocprofiler_user_data_t* /*user_data*/,
                             rocprofiler_timestamp_t ts)
 {
+    // Required because of how some compilers handle templates. This may result in an
+    // "unused variable" warning.
+    (void) ts;
+
     auto _name = tool_data->callback_tracing_info.at(record.kind, record.operation);
 
     if constexpr(std::is_same<CategoryT, category::rocm_marker_api>::value)
