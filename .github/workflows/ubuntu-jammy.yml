@@ -41,7 +41,7 @@ jobs:
   ubuntu-jammy-external:
     runs-on: ubuntu-latest
     container:
-      image: dgaliffiamd/rocprofiler-systems:ci-base-ubuntu-22.04
+      image: dgaliffiamd/rocprofiler-systems:ci-base-6.4-ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -131,6 +131,10 @@ jobs:
           -DROCPROFSYS_USE_PYTHON=${{ matrix.python }}
           -DROCPROFSYS_USE_MPI_HEADERS=${{ matrix.mpi-headers }}
           -DROCPROFSYS_BUILD_DYNINST=${{ matrix.build-dyninst }}
+          -DDYNINST_BUILD_BOOST=${{ matrix.build-dyninst }}
+          -DDYNINST_BUILD_TBB=${{ matrix.build-dyninst }}
+          -DDYNINST_BUILD_ELFUTILS=${{ matrix.build-dyninst }}
+          -DDYNINST_BUILD_LIBIBERTY=${{ matrix.build-dyninst }}
           -DROCPROFSYS_BUILD_HIDDEN_VISIBILITY=${{ matrix.hidden }}
           -DROCPROFSYS_PYTHON_PREFIX=/opt/conda/envs
           -DROCPROFSYS_PYTHON_ENVS="py3.7;py3.8;py3.9;py3.10;py3.11"
@@ -194,7 +198,7 @@ jobs:
   ubuntu-jammy-external-rocm:
     runs-on: ubuntu-latest
     container:
-      image: dgaliffiamd/rocprofiler-systems:ci-base-ubuntu-22.04
+      image: dgaliffiamd/rocprofiler-systems:ci-base-6.4-ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -308,6 +312,10 @@ jobs:
           -DROCPROFSYS_USE_PYTHON=${{ matrix.python }}
           -DROCPROFSYS_USE_MPI_HEADERS=${{ matrix.mpi-headers }}
           -DROCPROFSYS_BUILD_DYNINST=${{ matrix.build-dyninst }}
+          -DDYNINST_BUILD_BOOST=${{ matrix.build-dyninst }}
+          -DDYNINST_BUILD_TBB=${{ matrix.build-dyninst }}
+          -DDYNINST_BUILD_ELFUTILS=${{ matrix.build-dyninst }}
+          -DDYNINST_BUILD_LIBIBERTY=${{ matrix.build-dyninst }}
           -DROCPROFSYS_BUILD_HIDDEN_VISIBILITY=${{ matrix.hidden }}
           -DROCPROFSYS_PYTHON_PREFIX=/opt/conda/envs
           -DROCPROFSYS_PYTHON_ENVS="py3.7;py3.8;py3.9;py3.10;py3.11"
