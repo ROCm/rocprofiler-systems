@@ -49,13 +49,13 @@
       }
     },
     {
-      "name": "release",
-      "displayName": "official release build",
-      "description": "Official release build parameters",
+      "name": "rel-with-deb-info",
+      "displayName": "release build with debug info",
+      "description": "Release build with debug info",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/release",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "ReleaseWithDebInfo",
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
         "CMAKE_INSTALL_PREFIX": "/opt/rocprofiler-systems",
         "CMAKE_C_COMPILER": "gcc",
         "CMAKE_CXX_COMPILER": "g++",
@@ -65,7 +65,8 @@
         "ROCPROFSYS_BUILD_TBB": "ON",
         "ROCPROFSYS_BUILD_BOOST": "ON",
         "ROCPROFSYS_BUILD_ELFUTILS": "ON",
-        "ROCPROFSYS_BUILD_LIBIBERTY": "ON"
+        "ROCPROFSYS_BUILD_LIBIBERTY": "ON",
+        "ROCPROFSYS_STRIP_LIBRARIES": "OFF"
       }
     }
   ]
