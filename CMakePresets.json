@@ -1,26 +1,71 @@
 {
-  "version": 3,
+  "version": 6,
   "configurePresets": [
     {
       "name": "ci",
       "displayName": "official CI build",
       "description": "Official CI build parameters",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/ci",
       "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_INSTALL_PREFIX": "/opt/rocprofiler-systems",
-        "ROCPROFSYS_USE_HIP": "ON",
-        "ROCPROFSYS_USE_ROCM_SMI": "ON",
-        "ROCPROFSYS_USE_ROCTRACER": "ON",
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++",
+        "ROCPROFSYS_USE_ROCM": "ON",
         "ROCPROFSYS_USE_PYTHON": "ON",
-        "ROCPROFSYS_USE_OMPT": "ON",
-        "ROCPROFSYS_USE_MPI_HEADERS": "ON",
-        "ROCPROFSYS_BUILD_PAPI": "ON",
-        "ROCPROFSYS_BUILD_LIBUNWIND": "ON",
         "ROCPROFSYS_BUILD_DYNINST": "ON",
-        "DYNINST_BUILD_TBB": "ON",
-        "DYNINST_BUILD_BOOST": "ON",
-        "DYNINST_BUILD_ELFUTILS": "ON",
-        "DYNINST_BUILD_LIBIBERTY": "ON",
-        "ROCPROFSYS_BUILD_TESTING": "ON"
+        "ROCPROFSYS_BUILD_TBB": "ON",
+        "ROCPROFSYS_BUILD_BOOST": "ON",
+        "ROCPROFSYS_BUILD_ELFUTILS": "ON",
+        "ROCPROFSYS_BUILD_LIBIBERTY": "ON",
+        "ROCPROFSYS_BUILD_TESTING": "ON",
+        "ROCPROFSYS_STRIP_LIBRARIES": "OFF",
+        "ROCPROFSYS_MAX_THREADS": "64",
+        "ROCPROFSYS_BUILD_CI": "ON"
+      }
+    },
+    {
+      "name": "debug",
+      "displayName": "official debug build",
+      "description": "Official debug build parameters",
+      "binaryDir": "${sourceDir}/build/debug",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_INSTALL_PREFIX": "/opt/rocprofiler-systems",
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++",
+        "ROCPROFSYS_USE_ROCM": "ON",
+        "ROCPROFSYS_USE_PYTHON": "ON",
+        "ROCPROFSYS_BUILD_DYNINST": "ON",
+        "ROCPROFSYS_BUILD_TBB": "ON",
+        "ROCPROFSYS_BUILD_BOOST": "ON",
+        "ROCPROFSYS_BUILD_ELFUTILS": "ON",
+        "ROCPROFSYS_BUILD_LIBIBERTY": "ON",
+        "ROCPROFSYS_BUILD_TESTING": "ON",
+        "ROCPROFSYS_STRIP_LIBRARIES": "OFF",
+        "ROCPROFSYS_BUILD_DEBUG": "ON"
+      }
+    },
+    {
+      "name": "release",
+      "displayName": "official release build",
+      "description": "Official release build parameters",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "ReleaseWithDebInfo",
+        "CMAKE_INSTALL_PREFIX": "/opt/rocprofiler-systems",
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++",
+        "ROCPROFSYS_USE_ROCM": "ON",
+        "ROCPROFSYS_USE_PYTHON": "ON",
+        "ROCPROFSYS_BUILD_DYNINST": "ON",
+        "ROCPROFSYS_BUILD_TBB": "ON",
+        "ROCPROFSYS_BUILD_BOOST": "ON",
+        "ROCPROFSYS_BUILD_ELFUTILS": "ON",
+        "ROCPROFSYS_BUILD_LIBIBERTY": "ON"
       }
     }
   ]
