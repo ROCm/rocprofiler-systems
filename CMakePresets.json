@@ -28,7 +28,7 @@
     {
       "name": "debug",
       "displayName": "official debug build",
-      "description": "Official debug build parameters",
+      "description": "Debug build parameters with tests",
       "binaryDir": "${sourceDir}/build/debug",
       "generator": "Ninja",
       "cacheVariables": {
@@ -49,11 +49,11 @@
       }
     },
     {
-      "name": "rel-with-deb-info",
+      "name": "debug-optimized",
       "displayName": "release build with debug info",
-      "description": "Release build with debug info",
+      "description": "Release build with debug info with tests",
       "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/release",
+      "binaryDir": "${sourceDir}/build/debug-optimized",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "RelWithDebInfo",
         "CMAKE_INSTALL_PREFIX": "/opt/rocprofiler-systems",
@@ -66,7 +66,28 @@
         "ROCPROFSYS_BUILD_BOOST": "ON",
         "ROCPROFSYS_BUILD_ELFUTILS": "ON",
         "ROCPROFSYS_BUILD_LIBIBERTY": "ON",
+        "ROCPROFSYS_BUILD_TESTING": "ON",
         "ROCPROFSYS_STRIP_LIBRARIES": "OFF"
+      }
+    },
+    {
+      "name": "release",
+      "displayName": "official release build",
+      "description": "Official release build",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_INSTALL_PREFIX": "/opt/rocprofiler-systems",
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++",
+        "ROCPROFSYS_USE_ROCM": "ON",
+        "ROCPROFSYS_USE_PYTHON": "ON",
+        "ROCPROFSYS_BUILD_DYNINST": "ON",
+        "ROCPROFSYS_BUILD_TBB": "ON",
+        "ROCPROFSYS_BUILD_BOOST": "ON",
+        "ROCPROFSYS_BUILD_ELFUTILS": "ON",
+        "ROCPROFSYS_BUILD_LIBIBERTY": "ON"
       }
     }
   ]
