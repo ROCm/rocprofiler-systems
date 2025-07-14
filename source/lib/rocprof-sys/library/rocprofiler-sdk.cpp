@@ -341,9 +341,14 @@ tool_tracing_callback_stop(
                     _name = _data->args.roctxMarkA.message;
                     break;
                 }
-                default:
+                case ROCPROFILER_MARKER_CORE_API_ID_roctxRangePushA:
+                case ROCPROFILER_MARKER_CORE_API_ID_roctxRangeStartA:
                 {
                     return;
+                }
+                default:
+                {
+                    break;
                 }
             }
         }
