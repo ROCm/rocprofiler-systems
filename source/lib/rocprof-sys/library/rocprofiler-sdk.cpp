@@ -325,18 +325,21 @@ get_stream_stack()
     return _v;
 }
 
-void stream_id_push(rocprofiler_stream_id_t stream_id)
+void
+stream_id_push(rocprofiler_stream_id_t stream_id)
 {
     get_stream_stack().emplace_back(stream_id);
 }
 
-rocprofiler_stream_id_t stream_id_top()
+rocprofiler_stream_id_t
+stream_id_top()
 {
     auto stream_id = get_stream_stack().back();
     return stream_id;
 }
 
-void stream_id_pop()
+void
+stream_id_pop()
 {
     get_stream_stack().pop_back();
 }
@@ -421,7 +424,7 @@ tool_tracing_callback_stop(
 
         uint64_t _beg_ts   = begin_ts;
         uint64_t _end_ts   = ts;
-        auto stream_id = stream_id_top();
+        auto stream_id     = stream_id_top();
 
         tracing::push_perfetto_ts(
             CategoryT{}, _name.data(), _beg_ts,
