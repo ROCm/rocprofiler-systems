@@ -372,6 +372,14 @@ config_settings(const std::shared_ptr<settings>& _config)
 
     for(const auto& itr : buffered_tracing_info)
         _add_operation_settings(itr.name, itr, buffered_operation_option_names);
+
+    ROCPROFSYS_CONFIG_SETTING(
+        bool, "ROCPROFSYS_ROCM_GROUP_BY_QUEUE",
+        "By default, Perfetto trace will show the HIP streams to which kernel "
+        "and memory copy operations submitted. With the "
+        "`ROCPROFSYS_ROCM_GROUP_BY_QUEUE` option, the trace will display HSA queues "
+        "to which these kernel and memory operations were submitted.",
+        false, "rocm", "perfetto");
 }
 
 std::unordered_set<rocprofiler_callback_tracing_kind_t>
@@ -548,6 +556,13 @@ get_rocm_events()
     return tim::delimit(
         get_setting_value<std::string>("ROCPROFSYS_ROCM_EVENTS").value_or(std::string{}),
         " ,;\t\n");
+}
+
+bool
+get_group_by_queue(void)
+{
+    return config::get_setting_value<bool>("ROCPROFSYS_ROCM_GROUP_BY_QUEUE")
+        .value_or(false);
 }
 
 std::vector<int32_t>
