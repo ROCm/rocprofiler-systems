@@ -325,6 +325,22 @@ get_stream_stack()
     return _v;
 }
 
+void stream_id_push(rocprofiler_stream_id_t stream_id)
+{
+    get_stream_stack().emplace_back(stream_id);
+}
+
+rocprofiler_stream_id_t stream_id_top()
+{
+    auto stream_id = get_stream_stack().back();
+    return stream_id;
+}
+
+void stream_id_pop()
+{
+    get_stream_stack().pop_back();
+}
+
 template <typename CategoryT>
 void
 tool_tracing_callback_stop(
@@ -403,9 +419,9 @@ tool_tracing_callback_stop(
                                                                      &args);
         }
 
-        uint64_t _beg_ts = begin_ts;
-        uint64_t _end_ts = ts;
-        auto stream_id   = get_stream_stack().back();
+        uint64_t _beg_ts   = begin_ts;
+        uint64_t _end_ts   = ts;
+        auto stream_id = stream_id_top();
 
         tracing::push_perfetto_ts(
             CategoryT{}, _name.data(), _beg_ts,
@@ -1053,30 +1069,6 @@ dispatch_counting_service_callback(
     }
 }
 
-// int
-// external_correlation_id_callback(
-//     rocprofiler_thread_id_t /*thr_id*/, rocprofiler_context_id_t /*ctx_id*/,
-//     rocprofiler_external_correlation_id_request_kind_t /*kind*/,
-//     rocprofiler_tracing_operation_t /*op*/, uint64_t /*internal_corr_id*/,
-//     rocprofiler_user_data_t* external_corr_id, void* /*user_data*/)
-// {
-//     auto* _data = new kernel_dispatch_bundle_t{ "kernel_dispatch" };
-//     _data->push();
-//     external_corr_id->ptr = _data;
-//     return 0;
-// }
-
-// void
-// agent_counter_profile_callback(rocprofiler_context_id_t context_id,
-// rocprofiler_agent_id_t agent,
-//             rocprofiler_agent_set_profile_callback_t set_config, void*)
-// {
-//     if(!agent_counter_profiles) return;
-//     if(auto itr = agent_counter_profiles->find(agent);
-//        itr != agent_counter_profiles->end() && itr->second)
-//         set_config(context_id, *itr->second);
-// }
-
 bool
 is_initialized(rocprofiler_context_id_t ctx)
 {
@@ -1126,7 +1118,7 @@ set_kernel_rename_and_stream_correlation_id(
 {
     auto* _info = new kernel_rename_and_stream_data{};
 
-    _info->stream_id = get_stream_stack().back();
+    _info->stream_id = stream_id_top();
 
     // Set the external correlation id service to point to struct
     external_corr_id->ptr = _info;
@@ -1165,7 +1157,7 @@ tool_hip_stream_callback(rocprofiler_callback_tracing_record_t record,
             ROCPROFSYS_VERBOSE_F(
                 2, "Entered hip_streams_callback function for ROCPROFILER_HIP_STREAM_SET "
                    "with ROCPROFILER_CALLBACK_PHASE_ENTER");
-            get_stream_stack().emplace_back(stream_id);
+            stream_id_push(stream_id);
         }
         // Pop stream ID off of stream stack after underlying HIP function is completed
         else if(record.phase == ROCPROFILER_CALLBACK_PHASE_EXIT)
@@ -1173,7 +1165,7 @@ tool_hip_stream_callback(rocprofiler_callback_tracing_record_t record,
             ROCPROFSYS_VERBOSE_F(
                 2, "Entered hip_stream_callback function for ROCPROFILER_HIP_STREAM_SET "
                    "with ROCPROFILER_CALLBACK_PHASE_EXIT");
-            get_stream_stack().pop_back();
+            stream_id_pop();
         }
     }
     else
@@ -1241,6 +1233,20 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
     constexpr auto buffer_size = 8192;
     constexpr auto watermark   = 7936;
 
+    // Configure external correlation id request service for kernel dispatch
+    // and memory copy.
+
+    auto external_corr_id_request_kinds =
+        std::array<rocprofiler_external_correlation_id_request_kind_t, 2>{
+            ROCPROFILER_EXTERNAL_CORRELATION_REQUEST_KERNEL_DISPATCH,
+            ROCPROFILER_EXTERNAL_CORRELATION_REQUEST_MEMORY_COPY
+        };
+
+    ROCPROFILER_CALL(rocprofiler_configure_external_correlation_id_request_service(
+        _data->primary_ctx, external_corr_id_request_kinds.data(),
+        external_corr_id_request_kinds.size(),
+        set_kernel_rename_and_stream_correlation_id, _data));
+
     if(_buffered_domain.count(ROCPROFILER_BUFFER_TRACING_KERNEL_DISPATCH) > 0)
     {
         ROCPROFILER_CALL(rocprofiler_create_buffer(
@@ -1251,16 +1257,6 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
         ROCPROFILER_CALL(rocprofiler_configure_buffer_tracing_service(
             _data->primary_ctx, ROCPROFILER_BUFFER_TRACING_KERNEL_DISPATCH, nullptr, 0,
             _data->kernel_dispatch_buffer));
-
-        auto external_corr_id_request_kinds =
-            std::array<rocprofiler_external_correlation_id_request_kind_t, 1>{
-                ROCPROFILER_EXTERNAL_CORRELATION_REQUEST_KERNEL_DISPATCH
-            };
-
-        ROCPROFILER_CALL(rocprofiler_configure_external_correlation_id_request_service(
-            _data->primary_ctx, external_corr_id_request_kinds.data(),
-            external_corr_id_request_kinds.size(),
-            set_kernel_rename_and_stream_correlation_id, _data));
 
         ROCPROFILER_CALL(rocprofiler_configure_callback_tracing_service(
             _data->primary_ctx, ROCPROFILER_CALLBACK_TRACING_HIP_STREAM, nullptr, 0,
@@ -1274,23 +1270,9 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
             ROCPROFILER_BUFFER_POLICY_LOSSLESS, tool_tracing_buffered, tool_data,
             &_data->memory_copy_buffer));
 
-        auto _ops =
-            rocprofiler_sdk::get_operations(ROCPROFILER_BUFFER_TRACING_MEMORY_COPY);
-
-        auto external_corr_id_request_kinds =
-            std::array<rocprofiler_external_correlation_id_request_kind_t, 1>{
-                ROCPROFILER_EXTERNAL_CORRELATION_REQUEST_MEMORY_COPY
-            };
-
         ROCPROFILER_CALL(rocprofiler_configure_buffer_tracing_service(
-            _data->primary_ctx, ROCPROFILER_BUFFER_TRACING_MEMORY_COPY,
-            (_ops.empty()) ? nullptr : _ops.data(), _ops.size(),
+            _data->primary_ctx, ROCPROFILER_BUFFER_TRACING_MEMORY_COPY, nullptr, 0,
             _data->memory_copy_buffer));
-
-        ROCPROFILER_CALL(rocprofiler_configure_external_correlation_id_request_service(
-            _data->primary_ctx, external_corr_id_request_kinds.data(),
-            external_corr_id_request_kinds.size(),
-            set_kernel_rename_and_stream_correlation_id, _data));
 
         ROCPROFILER_CALL(rocprofiler_configure_callback_tracing_service(
             _data->primary_ctx, ROCPROFILER_CALLBACK_TRACING_HIP_STREAM, nullptr, 0,
