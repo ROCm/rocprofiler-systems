@@ -424,7 +424,7 @@ tool_tracing_callback_stop(
 
         uint64_t _beg_ts   = begin_ts;
         uint64_t _end_ts   = ts;
-        auto stream_id     = stream_id_top();
+        auto     stream_id = stream_id_top();
 
         tracing::push_perfetto_ts(
             CategoryT{}, _name.data(), _beg_ts,
