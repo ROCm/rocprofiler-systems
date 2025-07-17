@@ -777,29 +777,27 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
     static auto _mtx = std::mutex{};
     auto        _lk  = std::unique_lock<std::mutex>{ _mtx };
 
+    auto _track_desc_stream = [](rocprofiler_stream_id_t _stream_id) {
+        if(_stream_id.handle != 0)
+        {
+            return JOIN("", "HIP Activity Stream ", _stream_id.handle);
+        }
+        else
+        {
+            ROCPROFSYS_PRINT_F(
+                "Generating a heading for a stream track, but stream_id is 0");
+            return JOIN("", "HIP Activity");
+        }
+    };
+
+    bool _group_by_queue = get_group_by_queue();
+
     for(size_t i = 0; i < num_headers; ++i)
     {
         auto* header = headers[i];
 
         if(ROCPROFSYS_LIKELY(header->category == ROCPROFILER_BUFFER_CATEGORY_TRACING))
         {
-
-            auto _track_desc_stream = [](int32_t /* _device_id_v */,
-                                         rocprofiler_stream_id_t _stream_id) {
-                if(_stream_id.handle != 0)
-                {
-                    return JOIN("", "HIP Activity Stream ", _stream_id.handle);
-                }
-                else
-                {
-                    ROCPROFSYS_PRINT_F(
-                        "Generating a heading for a stream track, but stream_id is 0");
-                    return JOIN("", "HIP Activity");
-                }
-            };
-
-            bool _group_by_queue = get_group_by_queue();
-
             if(header->kind == ROCPROFILER_BUFFER_TRACING_KERNEL_DISPATCH)
             {
                 auto* record =
@@ -841,11 +839,11 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                         if(_group_by_queue)
                         {
                             return JOIN("", "GPU Kernel Dispatch [", _device_id_v,
-                                "] Queue ", _queue_id_v);
+                                        "] Queue ", _queue_id_v);
                         }
                         else
                         {
-                            return _track_desc_stream(_device_id_v, _stream_id);
+                            return _track_desc_stream(_stream_id);
                         }
                     };
 
@@ -948,7 +946,7 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                         }
                         else
                         {
-                            return _track_desc_stream(_device_id_v, _stream_id);
+                            return _track_desc_stream(_stream_id);
                         }
                     };
 
