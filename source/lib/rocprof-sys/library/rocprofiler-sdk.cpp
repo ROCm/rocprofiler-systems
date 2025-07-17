@@ -784,15 +784,16 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
         if(ROCPROFSYS_LIKELY(header->category == ROCPROFILER_BUFFER_CATEGORY_TRACING))
         {
 
-            auto _track_desc_stream = [](int32_t                 /* _device_id_v */,
+            auto _track_desc_stream = [](int32_t /* _device_id_v */,
                                          rocprofiler_stream_id_t _stream_id) {
-                if (_stream_id.handle != 0)
+                if(_stream_id.handle != 0)
                 {
                     return JOIN("", "HIP Activity Stream ", _stream_id.handle);
                 }
                 else
                 {
-                    ROCPROFSYS_PRINT_F("Generating a heading for a stream track, but stream_id is 0");
+                    ROCPROFSYS_PRINT_F(
+                        "Generating a heading for a stream track, but stream_id is 0");
                     return JOIN("", "HIP Activity");
                 }
             };
@@ -839,8 +840,8 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                                            int32_t _device_id_v, int64_t _queue_id_v) {
                         if(_group_by_queue)
                         {
-                            return JOIN("", "GPU Kernel Dispatch [", _device_id_v, "] Queue ",
-                                        _queue_id_v);
+                            return JOIN("", "GPU Kernel Dispatch [", _device_id_v,
+                                "] Queue ", _queue_id_v);
                         }
                         else
                         {
