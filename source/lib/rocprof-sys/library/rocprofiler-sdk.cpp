@@ -777,27 +777,28 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
     static auto _mtx = std::mutex{};
     auto        _lk  = std::unique_lock<std::mutex>{ _mtx };
 
-    auto _track_desc_stream = [](int32_t                 _device_id_v,
-                                 rocprofiler_stream_id_t _stream_id) {
-        if(_stream_id.handle != 0)
-        {
-            return JOIN("", "HIP Activity [", _device_id_v, "] Stream ",
-                        _stream_id.handle);
-        }
-        else
-        {
-            return JOIN("", "HIP Activity [", _device_id_v, "]");
-        }
-    };
-
-    bool _group_by_queue = get_group_by_queue();
-
     for(size_t i = 0; i < num_headers; ++i)
     {
         auto* header = headers[i];
 
         if(ROCPROFSYS_LIKELY(header->category == ROCPROFILER_BUFFER_CATEGORY_TRACING))
         {
+
+            auto _track_desc_stream = [](int32_t                 /* _device_id_v */,
+                                         rocprofiler_stream_id_t _stream_id) {
+                if (_stream_id.handle != 0)
+                {
+                    return JOIN("", "HIP Activity Stream ", _stream_id.handle);
+                }
+                else
+                {
+                    ROCPROFSYS_PRINT_F("Generating a heading for a stream track, but stream_id is 0");
+                    return JOIN("", "HIP Activity");
+                }
+            };
+
+            bool _group_by_queue = get_group_by_queue();
+
             if(header->kind == ROCPROFILER_BUFFER_TRACING_KERNEL_DISPATCH)
             {
                 auto* record =
@@ -838,8 +839,8 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                                            int32_t _device_id_v, int64_t _queue_id_v) {
                         if(_group_by_queue)
                         {
-                            return JOIN("", "GPU Kernel Dispatch [", _device_id_v,
-                                        "] Queue ", _queue_id_v);
+                            return JOIN("", "GPU Kernel Dispatch [", _device_id_v, "] Queue ",
+                                        _queue_id_v);
                         }
                         else
                         {
@@ -863,10 +864,8 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                                 tracing::add_perfetto_annotation(ctx, "corr_id",
                                                                  _corr_id);
                                 if(_stream_id.handle != 0)
-                                {
                                     tracing::add_perfetto_annotation(ctx, "stream_id",
                                                                      _stream_id.handle);
-                                }
                                 tracing::add_perfetto_annotation(
                                     ctx, "node_id", _agent->agent->logical_node_id);
                                 tracing::add_perfetto_annotation(ctx, "queue",
@@ -968,10 +967,8 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                                 tracing::add_perfetto_annotation(ctx, "corr_id",
                                                                  _corr_id);
                                 if(_stream_id.handle != 0)
-                                {
                                     tracing::add_perfetto_annotation(ctx, "stream_id",
                                                                      _stream_id.handle);
-                                }
                                 tracing::add_perfetto_annotation(
                                     ctx, "dst_agent", _dst_agent->logical_node_id);
                                 tracing::add_perfetto_annotation(
