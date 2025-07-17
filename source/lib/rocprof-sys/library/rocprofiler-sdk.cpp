@@ -774,6 +774,24 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
 {
     if(num_headers == 0 || headers == nullptr) return;
 
+    static auto _mtx = std::mutex{};
+    auto        _lk  = std::unique_lock<std::mutex>{ _mtx };
+
+    auto _track_desc_stream = [](int32_t                 _device_id_v,
+                                 rocprofiler_stream_id_t _stream_id) {
+        if(_stream_id.handle != 0)
+        {
+            return JOIN("", "HIP Activity [", _device_id_v, "] Stream ",
+                        _stream_id.handle);
+        }
+        else
+        {
+            return JOIN("", "HIP Activity [", _device_id_v, "]");
+        }
+    };
+
+    bool _group_by_queue = get_group_by_queue();
+
     for(size_t i = 0; i < num_headers; ++i)
     {
         auto* header = headers[i];
@@ -786,7 +804,7 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                     static_cast<rocprofiler_buffer_tracing_kernel_dispatch_record_t*>(
                         header->payload);
 
-                auto stream_id = get_stream_id(record);
+                auto _stream_id = get_stream_id(record);
 
                 const auto* _kern_sym_data =
                     get_kernel_symbol_info(record->dispatch_info.kernel_id);
@@ -816,9 +834,17 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
 
                 if(get_use_perfetto())
                 {
-                    auto _track_desc = [](int32_t _device_id_v, int64_t _queue_id_v) {
-                        return JOIN("", "GPU Kernel Dispatch [", _device_id_v, "] Queue ",
-                                    _queue_id_v);
+                    auto _track_desc = [_group_by_queue, _stream_id, _track_desc_stream](
+                                           int32_t _device_id_v, int64_t _queue_id_v) {
+                        if(_group_by_queue)
+                        {
+                            return JOIN("", "GPU Kernel Dispatch [", _device_id_v,
+                                        "] Queue ", _queue_id_v);
+                        }
+                        else
+                        {
+                            return _track_desc_stream(_device_id_v, _stream_id);
+                        }
                     };
 
                     const auto _track = tracing::get_perfetto_track(
@@ -836,9 +862,11 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                                 tracing::add_perfetto_annotation(ctx, "end_ns", _end_ns);
                                 tracing::add_perfetto_annotation(ctx, "corr_id",
                                                                  _corr_id);
-                                if(stream_id.handle != 0)
+                                if(_stream_id.handle != 0)
+                                {
                                     tracing::add_perfetto_annotation(ctx, "stream_id",
-                                                                     stream_id.handle);
+                                                                     _stream_id.handle);
+                                }
                                 tracing::add_perfetto_annotation(
                                     ctx, "node_id", _agent->agent->logical_node_id);
                                 tracing::add_perfetto_annotation(ctx, "queue",
@@ -880,7 +908,7 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                     static_cast<rocprofiler_buffer_tracing_memory_copy_record_t*>(
                         header->payload);
 
-                auto stream_id = get_stream_id(record);
+                auto _stream_id = get_stream_id(record);
 
                 auto        _corr_id      = record->correlation_id.internal;
                 auto        _beg_ns       = record->start_timestamp;
@@ -909,11 +937,19 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
 
                 if(get_use_perfetto())
                 {
-                    auto _track_desc = [](int32_t                 _device_id_v,
-                                          rocprofiler_thread_id_t _tid) {
-                        const auto& _tid_v = thread_info::get(_tid, SystemTID);
-                        return JOIN("", "GPU Memory Copy to Agent [", _device_id_v,
-                                    "] Thread ", _tid_v->index_data->sequent_value);
+                    auto _track_desc = [_group_by_queue, _stream_id, _track_desc_stream](
+                                           int32_t                 _device_id_v,
+                                           rocprofiler_thread_id_t _tid) {
+                        if(_group_by_queue)
+                        {
+                            const auto& _tid_v = thread_info::get(_tid, SystemTID);
+                            return JOIN("", "GPU Memory Copy to Agent [", _device_id_v,
+                                        "] Thread ", _tid_v->index_data->sequent_value);
+                        }
+                        else
+                        {
+                            return _track_desc_stream(_device_id_v, _stream_id);
+                        }
                     };
 
                     const auto _track = tracing::get_perfetto_track(
@@ -931,9 +967,11 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                                 tracing::add_perfetto_annotation(ctx, "end_ns", _end_ns);
                                 tracing::add_perfetto_annotation(ctx, "corr_id",
                                                                  _corr_id);
-                                if(stream_id.handle != 0)
+                                if(_stream_id.handle != 0)
+                                {
                                     tracing::add_perfetto_annotation(ctx, "stream_id",
-                                                                     stream_id.handle);
+                                                                     _stream_id.handle);
+                                }
                                 tracing::add_perfetto_annotation(
                                     ctx, "dst_agent", _dst_agent->logical_node_id);
                                 tracing::add_perfetto_annotation(
