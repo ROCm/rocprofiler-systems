@@ -1,6 +1,6 @@
 include_guard(GLOBAL)
 
-if(ROCPROFILER_BUILD_SQLITE3)
+if(ROCPROFSYS_BUILD_SQLITE3)
     # checkout submodule if not already checked out or clone repo if no .gitmodules file
     rocprofiler_systems_checkout_git_submodule(
         RECURSIVE
@@ -40,5 +40,5 @@ if(ROCPROFILER_BUILD_SQLITE3)
     add_dependencies(rocprofiler-systems-sqlite3 rocprofiler-systems-sqlite-build)
 else()
     find_package(SQLite3 REQUIRED)
-    target_link_libraries(rocprofiler-systems-sqlite3 INTERFACE SQLite3::SQLite3)
+    target_link_libraries(rocprofiler-systems-sqlite3 INTERFACE SQLite::SQLite3)
 endif()
