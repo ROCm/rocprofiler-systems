@@ -92,6 +92,44 @@ thread_postcreate(rocprofiler_runtime_library_t /*lib*/, void* /*tool_data*/)
     pop_thread_state();
 }
 
+#if(ROCPROFILER_VERSION < 700)
+/**
+ * @brief Stream ID.
+ */
+typedef struct rocprofiler_stream_id_t
+{
+    uint64_t handle;
+} rocprofiler_stream_id_t;
+
+#endif
+
+auto&
+get_stream_stack()
+{
+    static thread_local std::vector<rocprofiler_stream_id_t> _v{ rocprofiler_stream_id_t{
+        .handle = 0 } };
+    return _v;
+}
+
+void
+stream_id_push(rocprofiler_stream_id_t stream_id)
+{
+    get_stream_stack().emplace_back(stream_id);
+}
+
+rocprofiler_stream_id_t
+stream_id_top()
+{
+    auto stream_id = get_stream_stack().back();
+    return stream_id;
+}
+
+void
+stream_id_pop()
+{
+    get_stream_stack().pop_back();
+}
+
 // Stores stream ids and kernel region ids for kernel-rename service and hip stream
 // display service
 struct kernel_rename_and_stream_data
@@ -315,33 +353,6 @@ tool_tracing_callback_start(CategoryT, rocprofiler_callback_tracing_record_t rec
         component::category_region<category::rocm_marker_api>::start<quirk::timemory>(
             _name);
     }
-}
-
-auto&
-get_stream_stack()
-{
-    static thread_local std::vector<rocprofiler_stream_id_t> _v{ rocprofiler_stream_id_t{
-        .handle = 0 } };
-    return _v;
-}
-
-void
-stream_id_push(rocprofiler_stream_id_t stream_id)
-{
-    get_stream_stack().emplace_back(stream_id);
-}
-
-rocprofiler_stream_id_t
-stream_id_top()
-{
-    auto stream_id = get_stream_stack().back();
-    return stream_id;
-}
-
-void
-stream_id_pop()
-{
-    get_stream_stack().pop_back();
 }
 
 template <typename CategoryT>
@@ -1163,6 +1174,7 @@ set_kernel_rename_and_stream_correlation_id(
     return 0;
 }
 
+#if(ROCPROFILER_VERSION >= 700)
 void
 tool_hip_stream_callback(rocprofiler_callback_tracing_record_t record,
                          rocprofiler_user_data_t* /* user_data */, void* /* data */)
@@ -1210,6 +1222,7 @@ tool_hip_stream_callback(rocprofiler_callback_tracing_record_t record,
         ROCPROFSYS_FAIL_F("Unknown operation for hip_stream_callback!");
     }
 }
+#endif
 
 int
 tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
@@ -1284,6 +1297,7 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
         external_corr_id_request_kinds.size(),
         set_kernel_rename_and_stream_correlation_id, _data));
 
+#if(ROCPROFILER_VERSION >= 700)
     if((_buffered_domain.count(ROCPROFILER_BUFFER_TRACING_KERNEL_DISPATCH) > 0) ||
        (_buffered_domain.count(ROCPROFILER_BUFFER_TRACING_MEMORY_COPY) > 0))
     {
@@ -1291,6 +1305,7 @@ tool_init(rocprofiler_client_finalize_t fini_func, void* user_data)
             _data->primary_ctx, ROCPROFILER_CALLBACK_TRACING_HIP_STREAM, nullptr, 0,
             tool_hip_stream_callback, nullptr));
     }
+#endif
 
     if(_buffered_domain.count(ROCPROFILER_BUFFER_TRACING_KERNEL_DISPATCH) > 0)
     {
