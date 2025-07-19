@@ -532,7 +532,7 @@ function(ROCPROFILER_SYSTEMS_ADD_TEST)
     cmake_parse_arguments(
         TEST
         "SKIP_BASELINE;SKIP_SAMPLING;SKIP_REWRITE;SKIP_RUNTIME"
-        "NAME;TARGET;MPI;GPU;NUM_PROCS;SAMPLING_TIMEOUT;REWRITE_TIMEOUT;RUNTIME_TIMEOUT"
+        "NAME;TARGET;MPI;GPU;NUM_PROCS;SAMPLING_TIMEOUT;REWRITE_TIMEOUT;RUNTIME_TIMEOUT;WILL_FAIL;DISABLED"
         "${_KWARGS}"
         ${ARGN}
     )
@@ -582,6 +582,14 @@ function(ROCPROFILER_SYSTEMS_ADD_TEST)
 
     if(NOT TEST_SAMPLING_TIMEOUT)
         set(TEST_SAMPLING_TIMEOUT 120)
+    endif()
+
+    if(NOT TEST_DISABLED)
+        set(TEST_DISABLED OFF)
+    endif()
+
+    if(NOT TEST_WILL_FAIL)
+        set(TEST_WILL_FAIL OFF)
     endif()
 
     if(NOT DEFINED TEST_ENVIRONMENT OR "${TEST_ENVIRONMENT}" STREQUAL "")
@@ -768,6 +776,8 @@ function(ROCPROFILER_SYSTEMS_ADD_TEST)
             )
             if(TEST ${TEST_NAME}-${_TEST})
                 rocprofiler_systems_write_test_config(${TEST_NAME}-${_TEST}.cfg _environ)
+                message(STATUS "test_name: ${TEST_NAME}-${_TEST}")
+                message(STATUS "will_fail: ${TEST_WILL_FAIL}")
                 set_tests_properties(
                     ${TEST_NAME}-${_TEST}
                     PROPERTIES
@@ -777,6 +787,8 @@ function(ROCPROFILER_SYSTEMS_ADD_TEST)
                         PASS_REGULAR_EXPRESSION "${${_PASS_REGEX}}"
                         FAIL_REGULAR_EXPRESSION "${${_FAIL_REGEX}}"
                         SKIP_REGULAR_EXPRESSION "${${_SKIP_REGEX}}"
+                        WILL_FAIL ${TEST_WILL_FAIL}
+                        DISABLED ${TEST_DISABLED}
                         ${_props}
                 )
             endif()
