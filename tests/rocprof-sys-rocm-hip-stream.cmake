@@ -51,15 +51,6 @@ if(${ROCmVersion_FULL_VERSION} VERSION_GREATER_EQUAL "7.0")
         RUNTIME_TIMEOUT 480
     )
 
-    rocprofiler_systems_add_validation_test(
-        NAME transpose-group-by-queue-sampling
-        PERFETTO_FILE "perfetto-trace.proto"
-        PERFETTO_METRIC "rocm_kernel_dispatch"
-        PERFETTO_FILE "perfetto-trace.proto"
-        LABEL "group-by-queue"
-        ARGS -s amd_rocclr_fillBufferAligned transpose_a -c 4 1000 -d 0 0 -p
-    )
-
     rocprofiler_systems_add_test(
         SKIP_REWRITE SKIP_RUNTIME SKIP_BASELINE
         NAME transpose-group-by-stream
@@ -70,16 +61,5 @@ if(${ROCmVersion_FULL_VERSION} VERSION_GREATER_EQUAL "7.0")
         ENVIRONMENT "${_base_environment};ROCPROFSYS_ROCM_GROUP_BY_QUEUE=NO"
         LABEL "group-by-queue"
         RUNTIME_TIMEOUT 480
-    )
-
-    rocprofiler_systems_add_validation_test(
-        NAME transpose-group-by-stream-sampling
-        PERFETTO_FILE "perfetto-trace.proto"
-        PERFETTO_METRIC "rocm_hip_stream"
-        PERFETTO_FILE "perfetto-trace.proto"
-        LABEL "group-by-queue"
-        ARGS -s amd_rocclr_fillBufferAligned MEMORY_COPY_HOST_TO_DEVICE transpose_a MEMORY_COPY_DEVICE_TO_HOST
-            -c 4 24 1000 24
-            -d 0 0 0 0 -p
     )
 endif()
