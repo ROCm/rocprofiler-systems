@@ -30,6 +30,14 @@ find_package(ROCmVersion)
 
 message(STATUS "ROCmVersion_FULL_VERSION: ${ROCmVersion_FULL_VERSION}")
 
+if(NOT DEFINED ROCmVersion_FULL_VERSION)
+    message(
+        WARNING
+        "ROCmVersion_FULL_VERSION not found, skipping tests in ${CMAKE_CURRENT_LIST_FILE}"
+    )
+    return()
+endif()
+
 if(${ROCmVersion_FULL_VERSION} VERSION_GREATER_EQUAL "7.0")
     message(STATUS "Adding Group-By Tests")
 
