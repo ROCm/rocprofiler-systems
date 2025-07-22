@@ -776,8 +776,6 @@ function(ROCPROFILER_SYSTEMS_ADD_TEST)
             )
             if(TEST ${TEST_NAME}-${_TEST})
                 rocprofiler_systems_write_test_config(${TEST_NAME}-${_TEST}.cfg _environ)
-                message(STATUS "test_name: ${TEST_NAME}-${_TEST}")
-                message(STATUS "will_fail: ${TEST_WILL_FAIL}")
                 set_tests_properties(
                     ${TEST_NAME}-${_TEST}
                     PROPERTIES
