@@ -845,6 +845,49 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
 
                 if(get_use_perfetto())
                 {
+                    // Lambda to add common perfetto annotations for kernel dispatch
+                    auto add_perfetto_annotations = [&](::perfetto::EventContext ctx) {
+                        if(config::get_perfetto_annotations())
+                        {
+                            tracing::add_perfetto_annotation(ctx, "begin_ns", _beg_ns);
+                            tracing::add_perfetto_annotation(ctx, "end_ns", _end_ns);
+                            tracing::add_perfetto_annotation(ctx, "corr_id", _corr_id);
+
+                            if(_stream_id.handle != 0)
+                            {
+                                tracing::add_perfetto_annotation(ctx, "stream_id",
+                                                                 _stream_id.handle);
+                            }
+
+                            tracing::add_perfetto_annotation(ctx, "queue",
+                                                             _queue_id.handle);
+                            tracing::add_perfetto_annotation(
+                                ctx, "dispatch_id", record->dispatch_info.dispatch_id);
+                            tracing::add_perfetto_annotation(
+                                ctx, "kernel_id", record->dispatch_info.kernel_id);
+                            tracing::add_perfetto_annotation(
+                                ctx, "private_segment_size",
+                                record->dispatch_info.private_segment_size);
+                            tracing::add_perfetto_annotation(
+                                ctx, "group_segment_size",
+                                record->dispatch_info.group_segment_size);
+                            tracing::add_perfetto_annotation(
+                                ctx, "workgroup_size",
+                                JOIN("", "(",
+                                     JOIN(',', record->dispatch_info.workgroup_size.x,
+                                          record->dispatch_info.workgroup_size.y,
+                                          record->dispatch_info.workgroup_size.z),
+                                     ")"));
+                            tracing::add_perfetto_annotation(
+                                ctx, "grid_size",
+                                JOIN("", "(",
+                                     JOIN(',', record->dispatch_info.grid_size.x,
+                                          record->dispatch_info.grid_size.y,
+                                          record->dispatch_info.grid_size.z),
+                                     ")"));
+                        }
+                    };
+
                     if(_group_by_queue)
                     {
                         auto _track_desc = [](int32_t _device_id_v, int64_t _queue_id_v) {
@@ -856,54 +899,10 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                             category::rocm_kernel_dispatch{}, _track_desc,
                             _agent->device_id, _queue_id.handle);
 
-                        tracing::push_perfetto(
-                            category::rocm_kernel_dispatch{}, _name.c_str(), _track,
-                            _beg_ns, ::perfetto::Flow::ProcessScoped(_corr_id),
-                            [&](::perfetto::EventContext ctx) {
-                                if(config::get_perfetto_annotations())
-                                {
-                                    tracing::add_perfetto_annotation(ctx, "begin_ns",
-                                                                     _beg_ns);
-                                    tracing::add_perfetto_annotation(ctx, "end_ns",
-                                                                     _end_ns);
-                                    tracing::add_perfetto_annotation(ctx, "corr_id",
-                                                                     _corr_id);
-                                    if(_stream_id.handle != 0)
-                                        tracing::add_perfetto_annotation(
-                                            ctx, "stream_id", _stream_id.handle);
-                                    tracing::add_perfetto_annotation(
-                                        ctx, "node_id", _agent->agent->logical_node_id);
-                                    tracing::add_perfetto_annotation(ctx, "queue",
-                                                                     _queue_id.handle);
-                                    tracing::add_perfetto_annotation(
-                                        ctx, "dispatch_id",
-                                        record->dispatch_info.dispatch_id);
-                                    tracing::add_perfetto_annotation(
-                                        ctx, "kernel_id",
-                                        record->dispatch_info.kernel_id);
-                                    tracing::add_perfetto_annotation(
-                                        ctx, "private_segment_size",
-                                        record->dispatch_info.private_segment_size);
-                                    tracing::add_perfetto_annotation(
-                                        ctx, "group_segment_size",
-                                        record->dispatch_info.group_segment_size);
-                                    tracing::add_perfetto_annotation(
-                                        ctx, "workgroup_size",
-                                        JOIN("", "(",
-                                             JOIN(',',
-                                                  record->dispatch_info.workgroup_size.x,
-                                                  record->dispatch_info.workgroup_size.y,
-                                                  record->dispatch_info.workgroup_size.z),
-                                             ")"));
-                                    tracing::add_perfetto_annotation(
-                                        ctx, "grid_size",
-                                        JOIN("", "(",
-                                             JOIN(',', record->dispatch_info.grid_size.x,
-                                                  record->dispatch_info.grid_size.y,
-                                                  record->dispatch_info.grid_size.z),
-                                             ")"));
-                                }
-                            });
+                        tracing::push_perfetto(category::rocm_kernel_dispatch{},
+                                               _name.c_str(), _track, _beg_ns,
+                                               ::perfetto::Flow::ProcessScoped(_corr_id),
+                                               add_perfetto_annotations);
 
                         tracing::pop_perfetto(category::rocm_kernel_dispatch{},
                                               _name.c_str(), _track, _end_ns);
@@ -913,128 +912,14 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                         const auto _track = tracing::get_perfetto_track(
                             category::rocm_hip_stream{}, _track_desc_stream, _stream_id);
 
-                        tracing::push_perfetto(
-                            category::rocm_hip_stream{}, _name.c_str(), _track, _beg_ns,
-                            ::perfetto::Flow::ProcessScoped(_corr_id),
-                            [&](::perfetto::EventContext ctx) {
-                                if(config::get_perfetto_annotations())
-                                {
-                                    tracing::add_perfetto_annotation(ctx, "begin_ns",
-                                                                     _beg_ns);
-                                    tracing::add_perfetto_annotation(ctx, "end_ns",
-                                                                     _end_ns);
-                                    tracing::add_perfetto_annotation(ctx, "corr_id",
-                                                                     _corr_id);
-                                    if(_stream_id.handle != 0)
-                                        tracing::add_perfetto_annotation(
-                                            ctx, "stream_id", _stream_id.handle);
-                                    tracing::add_perfetto_annotation(
-                                        ctx, "node_id", _agent->agent->logical_node_id);
-                                    tracing::add_perfetto_annotation(ctx, "queue",
-                                                                     _queue_id.handle);
-                                    tracing::add_perfetto_annotation(
-                                        ctx, "dispatch_id",
-                                        record->dispatch_info.dispatch_id);
-                                    tracing::add_perfetto_annotation(
-                                        ctx, "kernel_id",
-                                        record->dispatch_info.kernel_id);
-                                    tracing::add_perfetto_annotation(
-                                        ctx, "private_segment_size",
-                                        record->dispatch_info.private_segment_size);
-                                    tracing::add_perfetto_annotation(
-                                        ctx, "group_segment_size",
-                                        record->dispatch_info.group_segment_size);
-                                    tracing::add_perfetto_annotation(
-                                        ctx, "workgroup_size",
-                                        JOIN("", "(",
-                                             JOIN(',',
-                                                  record->dispatch_info.workgroup_size.x,
-                                                  record->dispatch_info.workgroup_size.y,
-                                                  record->dispatch_info.workgroup_size.z),
-                                             ")"));
-                                    tracing::add_perfetto_annotation(
-                                        ctx, "grid_size",
-                                        JOIN("", "(",
-                                             JOIN(',', record->dispatch_info.grid_size.x,
-                                                  record->dispatch_info.grid_size.y,
-                                                  record->dispatch_info.grid_size.z),
-                                             ")"));
-                                }
-                            });
+                        tracing::push_perfetto(category::rocm_hip_stream{}, _name.c_str(),
+                                               _track, _beg_ns,
+                                               ::perfetto::Flow::ProcessScoped(_corr_id),
+                                               add_perfetto_annotations);
 
                         tracing::pop_perfetto(category::rocm_hip_stream{}, _name.c_str(),
                                               _track, _end_ns);
                     }
-
-                    // auto _track_desc = [_group_by_queue, _stream_id,
-                    // _track_desc_stream](
-                    //                        int32_t _device_id_v, int64_t _queue_id_v) {
-                    //     if(_group_by_queue)
-                    //     {
-                    //         return JOIN("", "GPU Kernel Dispatch [", _device_id_v,
-                    //                     "] Queue ", _queue_id_v);
-                    //     }
-                    //     else
-                    //     {
-                    //         return _track_desc_stream(_stream_id);
-                    //     }
-                    // };
-
-                    // const auto _track = tracing::get_perfetto_track(
-                    //     category::rocm_kernel_dispatch{}, _track_desc,
-                    //     _agent->device_id, _queue_id.handle);
-
-                    // tracing::push_perfetto(
-                    //     category::rocm_kernel_dispatch{}, _name.c_str(), _track,
-                    //     _beg_ns,
-                    //     ::perfetto::Flow::ProcessScoped(_corr_id),
-                    //     [&](::perfetto::EventContext ctx) {
-                    //         if(config::get_perfetto_annotations())
-                    //         {
-                    //             tracing::add_perfetto_annotation(ctx, "begin_ns",
-                    //                                              _beg_ns);
-                    //             tracing::add_perfetto_annotation(ctx, "end_ns",
-                    //             _end_ns); tracing::add_perfetto_annotation(ctx,
-                    //             "corr_id",
-                    //                                              _corr_id);
-                    //             if(_stream_id.handle != 0)
-                    //                 tracing::add_perfetto_annotation(ctx, "stream_id",
-                    //                                                  _stream_id.handle);
-                    //             tracing::add_perfetto_annotation(
-                    //                 ctx, "node_id", _agent->agent->logical_node_id);
-                    //             tracing::add_perfetto_annotation(ctx, "queue",
-                    //                                              _queue_id.handle);
-                    //             tracing::add_perfetto_annotation(
-                    //                 ctx, "dispatch_id",
-                    //                 record->dispatch_info.dispatch_id);
-                    //             tracing::add_perfetto_annotation(
-                    //                 ctx, "kernel_id", record->dispatch_info.kernel_id);
-                    //             tracing::add_perfetto_annotation(
-                    //                 ctx, "private_segment_size",
-                    //                 record->dispatch_info.private_segment_size);
-                    //             tracing::add_perfetto_annotation(
-                    //                 ctx, "group_segment_size",
-                    //                 record->dispatch_info.group_segment_size);
-                    //             tracing::add_perfetto_annotation(
-                    //                 ctx, "workgroup_size",
-                    //                 JOIN("", "(",
-                    //                      JOIN(',',
-                    //                      record->dispatch_info.workgroup_size.x,
-                    //                           record->dispatch_info.workgroup_size.y,
-                    //                           record->dispatch_info.workgroup_size.z),
-                    //                      ")"));
-                    //             tracing::add_perfetto_annotation(
-                    //                 ctx, "grid_size",
-                    //                 JOIN("", "(",
-                    //                      JOIN(',', record->dispatch_info.grid_size.x,
-                    //                           record->dispatch_info.grid_size.y,
-                    //                           record->dispatch_info.grid_size.z),
-                    //                      ")"));
-                    //         }
-                    //     });
-                    // tracing::pop_perfetto(category::rocm_kernel_dispatch{},
-                    // _name.c_str(),
-                    //                       _track, _end_ns);
                 }
             }
             else if(header->kind == ROCPROFILER_BUFFER_TRACING_MEMORY_COPY)
@@ -1072,6 +957,26 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
 
                 if(get_use_perfetto())
                 {
+                    auto add_perfetto_annotations = [&](::perfetto::EventContext ctx) {
+                        if(config::get_perfetto_annotations())
+                        {
+                            tracing::add_perfetto_annotation(ctx, "begin_ns", _beg_ns);
+                            tracing::add_perfetto_annotation(ctx, "end_ns", _end_ns);
+                            tracing::add_perfetto_annotation(ctx, "corr_id", _corr_id);
+
+                            if(_stream_id.handle != 0)
+                            {
+                                tracing::add_perfetto_annotation(ctx, "stream_id",
+                                                                 _stream_id.handle);
+                            }
+
+                            tracing::add_perfetto_annotation(ctx, "dst_agent",
+                                                             _dst_agent->logical_node_id);
+                            tracing::add_perfetto_annotation(ctx, "src_agent",
+                                                             _src_agent->logical_node_id);
+                        }
+                    };
+
                     if(_group_by_queue)
                     {
                         auto _track_desc = [](int32_t                 _device_id_v,
@@ -1085,27 +990,10 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                             category::rocm_memory_copy{}, _track_desc,
                             _dst_agent->logical_node_id, record->thread_id);
 
-                        tracing::push_perfetto(
-                            category::rocm_memory_copy{}, _name.data(), _track, _beg_ns,
-                            ::perfetto::Flow::ProcessScoped(_corr_id),
-                            [&](::perfetto::EventContext ctx) {
-                                if(config::get_perfetto_annotations())
-                                {
-                                    tracing::add_perfetto_annotation(ctx, "begin_ns",
-                                                                     _beg_ns);
-                                    tracing::add_perfetto_annotation(ctx, "end_ns",
-                                                                     _end_ns);
-                                    tracing::add_perfetto_annotation(ctx, "corr_id",
-                                                                     _corr_id);
-                                    if(_stream_id.handle != 0)
-                                        tracing::add_perfetto_annotation(
-                                            ctx, "stream_id", _stream_id.handle);
-                                    tracing::add_perfetto_annotation(
-                                        ctx, "dst_agent", _dst_agent->logical_node_id);
-                                    tracing::add_perfetto_annotation(
-                                        ctx, "src_agent", _src_agent->logical_node_id);
-                                }
-                            });
+                        tracing::push_perfetto(category::rocm_memory_copy{}, _name.data(),
+                                               _track, _beg_ns,
+                                               ::perfetto::Flow::ProcessScoped(_corr_id),
+                                               add_perfetto_annotations);
 
                         tracing::pop_perfetto(category::rocm_memory_copy{}, "", _track,
                                               _end_ns);
@@ -1115,75 +1003,14 @@ tool_tracing_buffered(rocprofiler_context_id_t /*context*/,
                         const auto _track = tracing::get_perfetto_track(
                             category::rocm_hip_stream{}, _track_desc_stream, _stream_id);
 
-                        tracing::push_perfetto(
-                            category::rocm_hip_stream{}, _name.data(), _track, _beg_ns,
-                            ::perfetto::Flow::ProcessScoped(_corr_id),
-                            [&](::perfetto::EventContext ctx) {
-                                if(config::get_perfetto_annotations())
-                                {
-                                    tracing::add_perfetto_annotation(ctx, "begin_ns",
-                                                                     _beg_ns);
-                                    tracing::add_perfetto_annotation(ctx, "end_ns",
-                                                                     _end_ns);
-                                    tracing::add_perfetto_annotation(ctx, "corr_id",
-                                                                     _corr_id);
-                                    if(_stream_id.handle != 0)
-                                        tracing::add_perfetto_annotation(
-                                            ctx, "stream_id", _stream_id.handle);
-                                    tracing::add_perfetto_annotation(
-                                        ctx, "dst_agent", _dst_agent->logical_node_id);
-                                    tracing::add_perfetto_annotation(
-                                        ctx, "src_agent", _src_agent->logical_node_id);
-                                }
-                            });
+                        tracing::push_perfetto(category::rocm_hip_stream{}, _name.data(),
+                                               _track, _beg_ns,
+                                               ::perfetto::Flow::ProcessScoped(_corr_id),
+                                               add_perfetto_annotations);
+
                         tracing::pop_perfetto(category::rocm_hip_stream{}, "", _track,
                                               _end_ns);
                     }
-
-                    // auto _track_desc = [_group_by_queue, _stream_id,
-                    // _track_desc_stream](
-                    //                        int32_t                 _device_id_v,
-                    //                        rocprofiler_thread_id_t _tid) {
-                    //     if(_group_by_queue)
-                    //     {
-                    //         const auto& _tid_v = thread_info::get(_tid, SystemTID);
-                    //         return JOIN("", "GPU Memory Copy to Agent [", _device_id_v,
-                    //                     "] Thread ",
-                    //                     _tid_v->index_data->sequent_value);
-                    //     }
-                    //     else
-                    //     {
-                    //         return _track_desc_stream(_stream_id);
-                    //     }
-                    // };
-
-                    // const auto _track = tracing::get_perfetto_track(
-                    //     category::rocm_memory_copy{}, _track_desc,
-                    //     _dst_agent->logical_node_id, record->thread_id);
-
-                    // tracing::push_perfetto(
-                    //     category::rocm_memory_copy{}, _name.data(), _track, _beg_ns,
-                    //     ::perfetto::Flow::ProcessScoped(_corr_id),
-                    //     [&](::perfetto::EventContext ctx) {
-                    //         if(config::get_perfetto_annotations())
-                    //         {
-                    //             tracing::add_perfetto_annotation(ctx, "begin_ns",
-                    //                                              _beg_ns);
-                    //             tracing::add_perfetto_annotation(ctx, "end_ns",
-                    //             _end_ns); tracing::add_perfetto_annotation(ctx,
-                    //             "corr_id",
-                    //                                              _corr_id);
-                    //             if(_stream_id.handle != 0)
-                    //                 tracing::add_perfetto_annotation(ctx, "stream_id",
-                    //                                                  _stream_id.handle);
-                    //             tracing::add_perfetto_annotation(
-                    //                 ctx, "dst_agent", _dst_agent->logical_node_id);
-                    //             tracing::add_perfetto_annotation(
-                    //                 ctx, "src_agent", _src_agent->logical_node_id);
-                    //         }
-                    //     });
-                    // tracing::pop_perfetto(category::rocm_memory_copy{}, "", _track,
-                    //                       _end_ns);
                 }
             }
             else
