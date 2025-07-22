@@ -28,15 +28,10 @@
 
 find_package(ROCmVersion)
 
-message(STATUS "ROCmVersion_FULL_VERSION: ${ROCmVersion_FULL_VERSION}")
-
-if(
-    (NOT DEFINED ROCmVersion_FULL_VERSION)
-    OR ("${ROCmVersion_FULL_VERSION}x" STREQUAL "x")
-)
+if(NOT ROCmVersion_FOUND)
     message(
         WARNING
-        "ROCmVersion_FULL_VERSION not found, skipping tests in ${CMAKE_CURRENT_LIST_FILE}"
+        "ROCmVersion_FOUND not found, skipping tests in ${CMAKE_CURRENT_LIST_FILE}"
     )
     return()
 endif()
@@ -52,7 +47,17 @@ if(${ROCmVersion_FULL_VERSION} VERSION_GREATER_EQUAL "7.0")
         GPU ON
         NUM_PROCS ${NUM_PROCS}
         ENVIRONMENT "${_base_environment};ROCPROFSYS_ROCM_GROUP_BY_QUEUE=YES"
+        LABEL "group-by-queue"
         RUNTIME_TIMEOUT 480
+    )
+
+    rocprofiler_systems_add_validation_test(
+        NAME transpose-group-by-queue-sampling
+        PERFETTO_FILE "perfetto-trace.proto"
+        PERFETTO_METRIC "rocm_kernel_dispatch"
+        PERFETTO_FILE "perfetto-trace.proto"
+        LABEL "group-by-queue"
+        ARGS -l transpose -c 1 -d 1 -p
     )
 
     rocprofiler_systems_add_test(
@@ -63,6 +68,16 @@ if(${ROCmVersion_FULL_VERSION} VERSION_GREATER_EQUAL "7.0")
         GPU ON
         NUM_PROCS ${NUM_PROCS}
         ENVIRONMENT "${_base_environment};ROCPROFSYS_ROCM_GROUP_BY_QUEUE=NO"
+        LABEL "group-by-queue"
         RUNTIME_TIMEOUT 480
+    )
+
+    rocprofiler_systems_add_validation_test(
+        NAME transpose-group-by-stream-sampling
+        PERFETTO_FILE "perfetto-trace.proto"
+        PERFETTO_METRIC "rocm_kernel_dispatch"
+        PERFETTO_FILE "perfetto-trace.proto"
+        LABEL "group-by-queue"
+        ARGS -l transpose -c 1 -d 1 -p
     )
 endif()
