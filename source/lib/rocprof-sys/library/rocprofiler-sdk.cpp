@@ -107,7 +107,7 @@ auto&
 get_stream_stack()
 {
     static thread_local std::vector<rocprofiler_stream_id_t> _v{ rocprofiler_stream_id_t{
-        .handle = 0 } };
+        0 } };
     return _v;
 }
 
@@ -135,14 +135,14 @@ stream_id_pop()
 struct kernel_rename_and_stream_data
 {
     uint64_t                region_id = 0;  // roctx region correlation id
-    rocprofiler_stream_id_t stream_id = { .handle = 0 };
+    rocprofiler_stream_id_t stream_id = { 0 };
 };
 
 template <typename Tp>
 rocprofiler_stream_id_t
 get_stream_id(Tp* _record)
 {
-    auto _stream_id = rocprofiler_stream_id_t{ .handle = 0 };
+    auto _stream_id = rocprofiler_stream_id_t{ 0 };
     if(_record->correlation_id.external.ptr != nullptr)
     {
         // Extract the stream id
