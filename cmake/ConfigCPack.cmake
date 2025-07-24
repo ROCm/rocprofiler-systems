@@ -1,38 +1,5 @@
 # configure packaging
 
-function(rocprofiler_systems_parse_release)
-    if(EXISTS /etc/lsb-release AND NOT IS_DIRECTORY /etc/lsb-release)
-        file(READ /etc/lsb-release _LSB_RELEASE)
-        if(_LSB_RELEASE)
-            string(
-                REGEX REPLACE
-                "DISTRIB_ID=(.*)\nDISTRIB_RELEASE=(.*)\nDISTRIB_CODENAME=.*"
-                "\\1-\\2"
-                _SYSTEM_NAME
-                "${_LSB_RELEASE}"
-            )
-        endif()
-    elseif(EXISTS /etc/os-release AND NOT IS_DIRECTORY /etc/os-release)
-        file(READ /etc/os-release _OS_RELEASE)
-        if(_OS_RELEASE)
-            string(REPLACE "\"" "" _OS_RELEASE "${_OS_RELEASE}")
-            string(REPLACE "-" " " _OS_RELEASE "${_OS_RELEASE}")
-            string(
-                REGEX REPLACE
-                "NAME=.*\nVERSION=([0-9\.]+).*\nID=([a-z]+).*"
-                "\\2-\\1"
-                _SYSTEM_NAME
-                "${_OS_RELEASE}"
-            )
-        endif()
-    endif()
-    string(TOLOWER "${_SYSTEM_NAME}" _SYSTEM_NAME)
-    if(NOT _SYSTEM_NAME)
-        set(_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}")
-    endif()
-    set(_SYSTEM_NAME "${_SYSTEM_NAME}" PARENT_SCOPE)
-endfunction()
-
 # parse either /etc/lsb-release or /etc/os-release
 rocprofiler_systems_parse_release()
 
