@@ -41,7 +41,7 @@ set(_rocm_ld_env
     "LD_LIBRARY_PATH=${_rocm_llvm_lib}:$ENV{LD_LIBRARY_PATH}"
 )
 
-if(NOT EXISTS "${_rocm_llvm_lib}/libomptarget.so")
+if(NOT EXISTS "${_rocm_llvm_lib}/libomptarget.so" AND ROCPROFSYS_USE_ROCM)
     message(
         FATAL_ERROR
         "libomptarget.so not found in ${_rocm_llvm_lib}. "
