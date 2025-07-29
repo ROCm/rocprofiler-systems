@@ -4,10 +4,7 @@ project(rocprofiler-systems-fork LANGUAGES CXX)
 
 set(CMAKE_BUILD_TYPE "RelWithDebInfo")
 string(REPLACE " " ";" _FLAGS "${CMAKE_CXX_FLAGS_DEBUG}")
-rocprofiler_systems_parse_release()
-if("${_SYSTEM_NAME}" STREQUAL "ubuntu-24.04")
-    list(APPEND _FLAGS -fno-inline)
-endif()
+list(APPEND _FLAGS -fno-inline)
 
 find_package(Threads REQUIRED)
 find_package(rocprofiler-systems REQUIRED COMPONENTS user)
