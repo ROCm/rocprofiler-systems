@@ -220,10 +220,10 @@ The following example:
 ROCPROFSYS_ROCM_GROUP_BY_QUEUE
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-By default, Perfetto trace will show the HIP streams to which kernel
-and memory copy operations submitted. With the
-``ROCPROFSYS_ROCM_GROUP_BY_QUEUE=ON`` setting, the trace will display HSA queues
-to which these kernel and memory operations were submitted.
+By default, Perfetto trace shows the HIP streams to which the kernel
+and memory copy operations are submitted. However, with the
+``ROCPROFSYS_ROCM_GROUP_BY_QUEUE=ON`` setting, the trace will rather display HSA queues
+to which these kernel and memory operations are submitted.
 
 Exploring GPU Metrics
 ---------------------
