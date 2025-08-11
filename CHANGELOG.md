@@ -10,11 +10,11 @@ Full documentation for ROCm Systems Profiler is available at [https://rocm.docs.
 - How-to document for VCN and JPEG activity sampling and tracing.
 - Support for tracing Fortran applications.
 - Support for tracing MPI API in Fortran.
-- By default, group "kernel dispatch" and "memory copy" events by HIP stream ID in Perfetto traces.
-  - Add the "ROCPROFSYS_ROCM_GROUP_BY_QUEUE" configuration setting to group events by queue, instead.
+-``ROCPROFSYS_ROCM_GROUP_BY_QUEUE`` configuration setting to allow grouping of events by hardware queue, instead of the default grouping.
 
 ### Changed
 
+- Updated the grouping of "kernel dispatch" and "memory copy" events in Perfetto traces. They are now grouped together by HIP Stream rather than separately and by hardware queue.
 - Replaced ROCm SMI backend with AMD SMI backend for collecting GPU metrics.
 - ROCprofiler-SDK is now used to trace RCCL API and collect communication counters.
 - Updated the Dyninst submodule to v13.0.
