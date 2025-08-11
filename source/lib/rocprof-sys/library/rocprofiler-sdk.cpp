@@ -419,8 +419,8 @@ tool_tracing_callback_stop(
                                                                      &args);
         }
 
-        uint64_t _beg_ts = user_data->value;
-        uint64_t _end_ts = ts;
+        uint64_t _beg_ts   = user_data->value;
+        uint64_t _end_ts   = ts;
         auto     stream_id = stream_id_top();
 
         tracing::push_perfetto_ts(
