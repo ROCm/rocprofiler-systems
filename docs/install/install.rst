@@ -24,7 +24,7 @@ To review and install either the current ROCm Systems Profiler release or earlie
 Operating system support
 ========================================
 
-ROCm Systems Profiler is only supported on Linux. See `Supported operating systems <https://rocm.docs.amd.com/projects/install-on-linux/en/latest/reference/system-requirements.html#supported-operating-systems>`_, for the detailed list of operating systems supported on ROCm.
+ROCm Systems Profiler is only supported on Linux. See `Supported operating systems <https://rocm.docs.amd.com/projects/install-on-linux/en/latest/reference/system-requirements.html#supported-operating-systems>`_ for ROCm supported operating systems.
 
 Other OS distributions might function but are not supported or tested.
 
