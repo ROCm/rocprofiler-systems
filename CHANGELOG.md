@@ -1,6 +1,14 @@
+<!-- markdownlint-disable MD024 -->
+
 # Changelog for ROCm Systems Profiler
 
 Full documentation for ROCm Systems Profiler is available at [https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/](https://rocm.docs.amd.com/projects/rocprofiler-systems/en/latest/).
+
+## ROCm Systems Profiler 1.1.1 for ROCm 7.0.2
+
+### Resolved issues
+
+- Fixed an issue where ROC-TX ranges were displayed as two separate events instead of a single spanning event.
 
 ## ROCm Systems Profiler 1.1.0 for ROCm 7.0
 
